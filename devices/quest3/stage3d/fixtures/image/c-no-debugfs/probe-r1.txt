@@ -1,0 +1,60 @@
+FSPR1 helper=r1 start up=348.83
+== backlight-verify node=/sys/class/backlight/panel0-backlight/brightness (read only) up=348.87
+readback=127
+== point pre run=r1 up=348.91
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 348.95
+-- drm connectors
+card0-DSI-1 status=connected enabled=enabled dpms=On
+-- crtc-0
+backlight_timing=55,4828,4828
+backlight_event=BACKLIGHT=7197969,4972614692528,909583
+active_event=ACTIVE=1868543,4972593066018,3315573
+measured_fps=fps: 0.0 duration:1000000 frame_count:0
+vsync_timing=32,2208,2918@90
+-- backlight
+brightness=127 actual_brightness=0 bl_power=0
+-- fan
+hwmon2 name=pwmfan rpm=0 pwm=0
+cooling_device4 type=pwm-tach-fan0 cur_state=0
+-- dmesg: not read at pre (it is read at mods, mid and post)
+== end pre up=349.35
+== point end run=r1 up=350.29
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 350.34
+== end end up=350.37
+== point post run=r1 up=350.38
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 350.43
+-- drm connectors
+card0-DSI-1 status=connected enabled=enabled dpms=On
+-- crtc-0
+backlight_timing=55,4828,4828
+backlight_event=BACKLIGHT=7197969,4972614692528,909583
+active_event=ACTIVE=1868543,4972593066018,3315573
+measured_fps=fps: 0.0 duration:1000000 frame_count:0
+vsync_timing=32,2208,2918@90
+-- backlight
+brightness=127 actual_brightness=0 bl_power=0
+-- fan
+hwmon2 name=pwmfan rpm=0 pwm=0
+cooling_device4 type=pwm-tach-fan0 cur_state=0
+-- dmesg (new matching lines, last 80, <= 200 bytes each, <= 4096 bytes)
+[    0.217951] pid_max: default: 32768 minimum: 301
+[    1.340837] iommu: Default domain type: Translated
+[    1.340837] iommu: DMA domain TLB invalidation policy: lazy mode
+[    1.388130] NetLabel:  unlabeled traffic allowed by default
+[    1.549638] PCI: CLS 0 bytes, default 64
+[    1.555741] SGI XFS with ACLs, security attributes, realtime, verbose warnings, quota, no debug enabled
+[    1.727211] ACPI: bus type drm_connector registered
+[    2.129188] bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this.
+-- dmesg: 8 new matching line(s), 8 shown
+-- dmesg: 0 mode-validation line(s) not kept (dsi_conn_mode_valid / dsi_display_find_mode)
+== end post up=351.21
+FSPR1 helper=r1 end up=351.23

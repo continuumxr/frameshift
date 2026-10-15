@@ -1,0 +1,1 @@
+BUILD REFUSED: stock boot hash differs from the pin (<repo>/firmware/quest3/v66_unit1_slotA/vendor_boot.img: 1e3b3762724478a7f592a11a7872cb8f7c55f0f882d7bb283ecbeffd691dbbcf != 49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50)

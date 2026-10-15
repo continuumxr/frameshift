@@ -1,0 +1,170 @@
+{
+ "ack": "53e09485fadb022c",
+ "challenges": {
+  "p0": "c97e20f000dc8104002b34959a4338ad",
+  "r1": "086a897c5330cfca06369e20637dbe92",
+  "r2": "c5087b81bce81ee8fcd9af90ca8969a6",
+  "r3": "e226643328e0458aab94cdac5c2b2ba8"
+ },
+ "checks": [
+  {
+   "detail": "FSV1 nonce=b7cf9a0bfb559dcb resp=dda7d6cafc779a6e05c38ce633625638e44cc9f7c7613019d7b9d4bfd4c279a9 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=b7cf9a0bfb559dcb stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=53e09485fadb022c END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=3606 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "idle limit started before SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "3806 vs t0=3606",
+   "label": "/run/fs.deadline = T0 + DEADLINE",
+   "ok": true
+  },
+  {
+   "detail": "3658.72 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "3658.72 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "token=idle reboot at activity+181.7",
+   "label": "idle limit fired: fs.collected = idle, reboot collected at activity + 180 s (+0..2)",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase p0 FSB1 VALID (exp s3c_p0, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('hash', 'exited', 0), 2: ('probe0', 'exited', 0)}",
+   "label": "p0 steps in order hash,probe0",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=b7cf9a0bfb559dcb p=p0 e=begin t=3623650 END | FSPM1 n=b7cf9a0bfb559dcb p=p0 e=rec t=3626750 END",
+   "label": "p0 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,rec",
+   "label": "p0 markers in order begin,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "write_rc=0 readback=127",
+   "label": "p0: exactly one backlight write line (value 127), read-back 127",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0: hash step exited 0 (sha256sum of /bin/fs-pattern)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0: irq0 sample, mods snapshot with cmdline, dmesg and the fan",
+   "ok": true
+  },
+  {
+   "detail": "a9ce1705ec886446 / a9ce1705ec886446",
+   "label": "chain p0: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "1 write-close event(s): wd=1 mask=0x8 ",
+   "label": "backlight node written exactly 1 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never named the decoy crtc nodes or debugfs",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "modules attempted in order fake_a, fake_b, fake_c",
+   "ok": true
+  }
+ ],
+ "mod_notes": [],
+ "mods": [],
+ "nonce": "b7cf9a0bfb559dcb",
+ "ok": true,
+ "phases": {
+  "p0": {
+   "end": "FSB1 END v=1 nonce=b7cf9a0bfb559dcb chal=c97e20f000dc8104002b34959a4338ad lines=53 rec_sha256=a9ce1705ec886446b904d59e39f1f2d21134b2911aa51beb6108c2c33b3cabd5",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=b7cf9a0bfb559dcb p=p0 e=begin t=3623650 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=p0 e=rec t=3626750 END"
+   ],
+   "refusal": null,
+   "settled": true
+  }
+ },
+ "plan": [
+  "p0",
+  "stuck"
+ ],
+ "reboot_at_T0_plus": 52.7,
+ "reboots": "3658.72 final pid=1 arg=collected\n",
+ "scenario": "c-idle-stuck",
+ "sim_args": "",
+ "stuck_activity": 3477,
+ "t_total_s": 55.4,
+ "tail": "idle-stuck",
+ "verify_challenge": "1a6aecdf4a271003a7d634063d5e4c00",
+ "want_reboot": "collected"
+}

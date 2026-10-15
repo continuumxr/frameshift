@@ -1,0 +1,1 @@
+modA.ko: modB.ko modQ.ko

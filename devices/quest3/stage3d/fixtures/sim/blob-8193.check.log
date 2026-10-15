@@ -1,0 +1,37 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 150 records, 55577 bytes
+CHECK eos_last_after_exit PASS {'records': '150', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '38448', 'opt_skipped': '10'}
+CHECK start_mode_ver PASS show-off-quad
+CHECK start_picture_options_roll_21_eyes_swap PASS {'mode': 'show-off-quad', 'ver': '0.7.1', 'hold_req': '1', 'hold': '1', 'hold_max': '10', 'clamped': '0', 'setup_alarm_s': '30', 'close_margin_s': '5', 'dev': '/mock/card0', 'out': 'file', 'rot': '180', 'roll': '21', 'eyes': 'swap', 't0_ms': '217804'}
+CHECK stream_within_the_step_cap PASS 55577 <= 57344 bytes
+CHECK opt_budget_record_once_at_the_kind_budget PASS {'max': '38912', 'used': '38448', 'first_skipped': 'prop_vals'}
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=38448 measured=38448 budget=38912
+INFO essential_bytes=17129 opt_bytes=38448 total=55577 cap=57344 (essential + budget = 56041)
+CHECK set_properties_subset_of_v05_set_plus_zpos PASS ['ACTIVE', 'CRTC_H', 'CRTC_ID', 'CRTC_W', 'CRTC_X', 'CRTC_Y', 'FB_ID', 'MODE_ID', 'SRC_H', 'SRC_W', 'SRC_X', 'SRC_Y', 'zpos']
+CHECK zpos_only_in_quad_attempts_on_the_four_planes_values_0011_by_slot PASS
+CHECK at_most_one_real_commit_and_it_equals_the_last_accepted_test PASS [('quad_vig', True)]
+CHECK precondition_inactive_proven PASS
+CHECK plan_quad_vig_71.97.100.103 PASS 71.97.100.103
+CHECK plan_quad_dma_115.134.112.131 PASS 115.134.112.131
+CHECK plan_values_need_no_percent_encoding (a digit-splitting reader gets the right numbers) PASS
+CHECK plan_pipe_types_from_max_upscale PASS vig-0.vig-1.vig-2.vig-3 / dma-3.dma-3.dma-2.dma-2
+CHECK plan_zpos_before_and_zpos_set PASS
+CHECK plan_splash_set PASS match
+CHECK plan_attempts_and_split_probe PASS
+CHECK attempt_order_split_probe_quad_vig_quad_dma (unavailable: no TEST_ONLY) PASS [('0', '1', 'split_probe', 0), ('1', '1', 'quad_vig', 0)]
+CHECK mock_saw_the_same_test_only_layouts PASS ['split+modeset', 'quad_vig']
+CHECK split_probe_never_committed PASS
+CHECK committed_quad_vig PASS {'attempt': '1', 'modeset': '1', 'layout': 'quad_vig', 'commit_ms': '111'}
+CHECK commit_geometry_4x1032_global_x_no_scaling PASS [(71, 0, 0, 1032, 1032, 2208, 2208, 0, 0, 0), (97, 1032, 1032, 1032, 1032, 2208, 2208, 0, 0, 0), (100, 2064, 2064, 1032, 1032, 2208, 2208, 0, 0, 1), (103, 3096, 3096, 1032, 1032, 2208, 2208, 0, 0, 1)]
+CHECK E15_stage_slots: {0,0,1,1} fills stage 1 and stage 2 with 2 pipes each PASS {1: 2, 2: 2}
+CHECK E15_negative_control: {0,0,0,0} overflows stage 1 (2 pipes alias into the next stage) PASS {1: 4}
+CHECK E11_atomic_check_model_passes_both (why the {0,0,0,0} bug survives TEST_ONLY) PASS
+CHECK post_state_after_the_commit (active, mode, topology, votes as GET) PASS {'conn': '55', 'topology_val': '14', 'topology_name': 'sde_quadpipe_dsc4hsmerge', 'dsc_mode_val': '0', 'control_val': '0', 'crtc': '155', 'active': '1', 'mode_id': '208', 'core_clk': '155011', 'core_ab': '155012', 'core_ib': '155013', 'llcc_ab': '155014', 'llcc_ib': '155015', 'dram_ab': '155016', 'dram_ib': '155017', 'getcrtc_rc': '0', 'mode_valid': '1', 'fb': '207'}
+CHECK post_plane_slots_planes PASS
+CHECK post_plane_matches_the_plan_after_the_right_half_conversion (SRC_X 0/1032/2064/3096, CRTC_X 0/1032/0/1032, zpos 0/0/1/1) PASS match [('0', '0', '0'), ('1032', '1032', '0'), ('2064', '0', '1'), ('3096', '1032', '1')]
+CHECK post_records_between_commit_and_hold_start PASS ['commit', 'post_state', 'post_plane', 'post_plane', 'post_plane', 'post_plane', 'hold_start']
+CHECK mode_properties_blob_8193_over_8192_length_only PASS [{'what': 'mode_properties', 'obj': '55', 'blob': '201', 'read_rc': '-27', 'bytes': '8193'}]
+CHECK plane_caps_every_plane_in_order PASS 20 records
+CHECK plane_caps_values_rederived_from_the_mock_blobs (pipe_idx, max_upscale, primary_smart_plane_id, zpos, nv12) PASS
+CHECK plane_caps_essential_in_quad_modes (never cut by the opt budget) PASS
+CHECK pattern_buffer_two_levels_white_ppm_within_37618 PASS white_ppm=27982

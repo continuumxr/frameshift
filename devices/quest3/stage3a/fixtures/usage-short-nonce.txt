@@ -1,0 +1,4 @@
+FSP1 nonce=none seq=0 step=usage rc=-22 help=see_README len=55 crc=6c6e1eb1 END
+FSP1 nonce=none seq=1 step=exit rc=0 code=2 reason=usage shown=0 closed_at_exit=0 elapsed_ms=6 len=94 crc=350868cc END
+FSP1 nonce=none seq=2 step=eos rc=0 records=3 dropped=0 overflows=0 out=file len=76 crc=2d50adc7 END
+# exit=2

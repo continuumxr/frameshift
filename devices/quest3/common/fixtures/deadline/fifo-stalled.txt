@@ -1,0 +1,7 @@
+# scenario fifo-stalled (sim.sh, action a_fifo_stalled), deadline=8 ack_window=4 STALL=1
+# T0=185 reboot records (fake syscall; first one counts):
+#   195 backstop pid=3836 via=fork
+#   195 fallback pid=3845 via=fork
+# fs.log is a FIFO (attack in place)
+# harness: fifo fs.log 
+# sim stdout/stderr:

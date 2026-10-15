@@ -1,0 +1,9 @@
+# scenario stalled-pid1 (sim.sh, action a_ack), deadline=8 ack_window=4 STALL=1
+# T0=185 reboot records (fake syscall; first one counts):
+#   195 backstop pid=3841 via=fork
+#   195 fallback pid=3848 via=fork
+# PID 1 log:
+#   FS t=185s DEADLINE armed t0=185 deadline=T0+8 ack_window=4 backstop=T0+9 reboot-reasons-not-logged-at-reboot
+#   FS t=185s BACKSTOP armed pid=2324 in=9s
+#   FS REBOOT_RETURNED reason=backstop
+# sim stdout/stderr:

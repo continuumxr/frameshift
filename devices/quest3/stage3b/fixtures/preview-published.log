@@ -1,0 +1,18 @@
+PORT 3f9c07ab 4128x2208 grey-pixels sha256=674f966ba906251fa23051f6ded29eba400f88ce6881c999a59bcebc6eaba8f2
+VALIDATE port == C render (/tmp/tmp.aUk3lFhIQ5/b-3f9c07ab.ppm): IDENTICAL
+STATS lit_ppm=36070 max=0xff mean_x1000=132580 levels=0x80,0xff
+PNG scanout sha256=c729bf5eb0d304abf1c49e74fabb548a0a5fdf4b51eb0d2482df567594c08d92
+PNG viewer sha256=99a21ab2f89ce224df70fcb03e72e386e86ffd5001254fcfc0bf68cc51fbaaa0
+PNG digits sha256=a86699ca9c0f9c7b3bfd72a5fab94d2604d8788f8b0b6f9be0ba84c1fc3fd18d
+PORT 01234567 4128x2208 grey-pixels sha256=09d61c0e698a1bb627be805124a8ac5fb419343dd6d5b92b65e9991e6255e1c0
+VALIDATE port == C render (/tmp/tmp.aUk3lFhIQ5/b-01234567.ppm): IDENTICAL
+STATS lit_ppm=35102 max=0xff mean_x1000=132458 levels=0x80,0xff
+PNG scanout sha256=ba3107a2335126212c64c056c572b0ec00300d1e05deca18ebff1720d9e56559
+PNG viewer sha256=eeca91936c2ee803b201230669870fc9b7929f05313d0a6811d288defa1f688d
+PNG digits sha256=c6d227eccd77ae04e1f1ff9eabd27fdb72ee84cb7ea0f13d3f15cea34aa86218
+PORT 89abcdef 4128x2208 grey-pixels sha256=bfeb85a7d265e7b8b0ffd70636b682d2ef02fe9c6b0eb4790a4c77a3bfa7937b
+VALIDATE port == C render (/tmp/tmp.aUk3lFhIQ5/b-89abcdef.ppm): IDENTICAL
+STATS lit_ppm=36941 max=0xff mean_x1000=132691 levels=0x80,0xff
+PNG scanout sha256=6853d3b8fb4c15e03300c4ae2c3ca0c329679f017a8970fab0a7fa4a58a96452
+PNG viewer sha256=227e0bb1621bdb4bdd344ab8840d86848040ca648f47cd6de14ccdae065bbd85
+PNG digits sha256=753c78045f00e2e88076a022bf8f95f972fbabc53880158a41c4fb9835aa79c6

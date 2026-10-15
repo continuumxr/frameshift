@@ -1,0 +1,9 @@
+# Explicit allowlist of unrequested .config differences for kgate check (exact values).
+
+# --- build-environment differences (NOT request fallout; present in the stock-config build too) ---
+# CC_CAN_LINK / CC_CAN_LINK_STATIC: Kconfig def_bool $(success,...) probes of the host
+# toolchain; no prompt; the stock config (Meta build env) recorded them unset. They gate
+# userspace-linking helpers (e.g. usermode test programs), not vmlinux code paths used by
+# vendor modules [C]. Real difference from stock: recorded here, visible to review.
+CONFIG_CC_CAN_LINK=y
+CONFIG_CC_CAN_LINK_STATIC=y

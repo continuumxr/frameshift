@@ -1,0 +1,4 @@
+FSP1 nonce=a1b2c3d4 seq=0 step=start rc=0 mode=show ver=0.6 hold_req=1 hold=1 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/dev/null out=file rot=180 t0_ms=4774622 len=178 crc=9fee5f5c END
+FSP1 nonce=a1b2c3d4 seq=1 step=open rc=-25 error=not_drm_chardev dev=/dev/null mode=0x21b6 at=stat len=98 crc=56b8cb94 END
+FSP1 nonce=a1b2c3d4 seq=2 step=exit rc=0 code=11 reason=not_drm_device shown=0 closed_at_exit=0 elapsed_ms=154 len=110 crc=377b2225 END
+FSP1 nonce=a1b2c3d4 seq=3 step=eos rc=0 records=4 dropped=0 overflows=0 out=file opt_bytes=0 opt_skipped=0 len=106 crc=b1d9095d END

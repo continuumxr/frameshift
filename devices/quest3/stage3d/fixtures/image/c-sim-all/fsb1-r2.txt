@@ -1,0 +1,3 @@
+VALID
+  step 1 probe2 end=exited code=0 sig=0 out=3906B(sha256 08eb87ad0848ac31b827fbb5bd46fe7d1a2c11ce716d29a2a952db9603ee7dbf) err=0B(sha256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855)
+  step 2 pattern2 end=exited code=0 sig=0 out=5124B(sha256 60d161704c9ac97cb2a2c607ac2e6ffcc56de94be7ae9f0fb40c2308a2fb1dc1) err=0B(sha256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855)

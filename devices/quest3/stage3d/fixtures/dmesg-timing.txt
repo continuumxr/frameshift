@@ -1,0 +1,7 @@
+11167 lines
+1048664 bytes
+-- dmesg: 2810 new matching line(s), 41 shown
+-- dmesg: 0 mode-validation line(s) not kept (dsi_conn_mode_valid / dsi_display_find_mode)
+qemu wall: .632693200 s (first pass over the whole 1 MB log)
+-- dmesg: 0 mode-validation line(s) not kept (dsi_conn_mode_valid / dsi_display_find_mode)
+qemu wall: .650222300 s (a later point: no new lines)

@@ -1,0 +1,6 @@
+fs-phase r1 0302e42cd172780a738417d2459ea718 39d08308d51c0960
+FSPM1 n=b7cf9a0bfb559dcb p=r1 e=begin t=3787390 END
+FSPM1 n=b7cf9a0bfb559dcb p=r1 e=go t=3788040 END
+FSPM1 n=b7cf9a0bfb559dcb p=r1 e=end t=3791830 END
+FSXE1 p=r1 ran=1 error=record-too-large lines=2472 max=1545 END
+~ $ [6n

@@ -1,0 +1,82 @@
+{
+ "build_sections": [
+  "\".mmuoff.data.read\"",
+  ".BTF",
+  ".altinstr_replacement",
+  ".altinstructions",
+  ".bss",
+  ".builtin_fw",
+  ".data",
+  ".data..percpu",
+  ".exit.text",
+  ".head.text",
+  ".init.data",
+  ".init.text",
+  ".mmuoff.data.read",
+  ".mmuoff.data.write",
+  ".notes",
+  ".pci_fixup",
+  ".rela.dyn",
+  ".relr.dyn",
+  ".rodata",
+  ".rodata1",
+  ".sbss",
+  ".text",
+  "__bug_table",
+  "__ex_table",
+  "__init_rodata",
+  "__kcrctab",
+  "__kcrctab_gpl",
+  "__kcrctab_gpl_future",
+  "__kcrctab_unused",
+  "__kcrctab_unused_gpl",
+  "__ksymtab",
+  "__ksymtab_gpl",
+  "__ksymtab_gpl_future",
+  "__ksymtab_strings",
+  "__ksymtab_unused",
+  "__ksymtab_unused_gpl",
+  "__modver",
+  "__param"
+ ],
+ "builds": {
+  "a": {
+   "allow_sha256": "4d512de07d3b46fdb3996b55c0a6b22b1cb6029e1bd579a03b59c0442547770c",
+   "baseline": "stock-build",
+   "requested_sha256": "ce84a32d88f7f90a2b67630e7e009347f5009c4ea5c6b60238d0c005f2d35a62"
+  },
+  "a2": {
+   "allow_sha256": "4d512de07d3b46fdb3996b55c0a6b22b1cb6029e1bd579a03b59c0442547770c",
+   "baseline": "stock-build",
+   "requested_sha256": "eef50114b87e2e496015716ba72159388b152eb45587e02e4ae7746485b80d45"
+  },
+  "acm": {
+   "allow_sha256": "d26cb2ab720484270fe0500fdabe77e1c363af64047f34d9bd0e5f2b20c447d6",
+   "baseline": "stock-build",
+   "requested_sha256": "6fc052ed53db29aaab14a1d93a16cc5d5f6ea81081653d68b5837412e1b3ae56"
+  },
+  "stock": {
+   "allow_sha256": "69550599be67906042917a9cde3ed5625df3a0f263812010a300a0eb7cb7397d",
+   "baseline": "waived",
+   "requested_sha256": "e1a84f89f3c569c84e638278fb41841aac869fdb1042497c3aca03f6e9ff99d6"
+  }
+ },
+ "counts": {
+  "module_copies": 28,
+  "required_from_vmlinux": 838,
+  "unique_modules": 28
+ },
+ "device": "quest2",
+ "note": "counts pinned from FS-A-006 (838 required; 28 modules); reference_sha256 pinned from this project's own deterministic kgate reference build (self-referential; see README 'Pins')",
+ "pins": {
+  "independently_anchored": "required_from_vmlinux (verified by the Chair in FS-R-006 s2: 2601/838/2583/776)",
+  "self_referential": "module_copies, unique_modules, reference_sha256, stock_build_symvers_sha256 and the per-build request/allowlist hashes and build_sections (allocated section names of the stock-config build) were pinned from this project's own outputs/files on 2026-10-09"
+ },
+ "reference_sha256": "db052332604bde1384e1c03096ffaf276e30c49907ae50dc27a010b5a3ab5186",
+ "sources": {
+  "boot": "boot",
+  "vendor": "ext4"
+ },
+ "stock_build_symvers_sha256": "5698abe2796e310b7e7b85062e1fb24e49b93ff245321d6a188aec625ea9f471",
+ "stock_kernel": "../../../../firmware/quest2/v2.7-user_ota/boot.img"
+}

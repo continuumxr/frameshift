@@ -1,0 +1,1 @@
+T1 note: paths in valid-t1.txt are under the WSL stage directory; uname -r is the WSL host kernel (qemu-user)

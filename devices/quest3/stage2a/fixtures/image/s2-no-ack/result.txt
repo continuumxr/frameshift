@@ -1,0 +1,13 @@
+# s2-no-ack (stage2a) mods=[] plan=verify-only; image <repo>/build/stage2a/20261009T085209Z-93a1501f0b1fb692
+# reboots: 1024.22 final pid=1 arg=no-host-ack
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=93a1501f0b1fb692 resp=08fa50bbeca72e5efa7c91611f929532d0900b9bfa2acbd1f350b62503834392 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=865 deadline=T0+260 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = no-host-ack  [1024.22 final pid=1 arg=no-host-ack]
+PASS  LEDs magenta (255 0 255) at the no-host-ack reboot, as in stage 1  [255 0 255]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [1024.22 final pid=1 arg=no-host-ack]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  no-ack reboot at loop start + ACK_WINDOW..+3  [SHELL_READY+150.2]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+SCENARIO s2-no-ack PASS

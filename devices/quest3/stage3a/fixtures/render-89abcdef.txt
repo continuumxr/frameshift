@@ -1,0 +1,5 @@
+FSP1 nonce=89abcdef seq=0 step=start rc=0 mode=render ver=0.4 out=file len=70 crc=515274e3 END
+FSP1 nonce=89abcdef seq=1 step=render rc=0 w=4128 h=2208 out=/tmp/tmp.60BScpC7RV/89abcdef.ppm lit_ppm=36941 max=0x90 mean_x1000=19745 rot=180 len=141 crc=77deca75 END
+FSP1 nonce=89abcdef seq=2 step=exit rc=0 code=0 reason=rendered shown=0 closed_at_exit=0 elapsed_ms=209 len=103 crc=1e73a491 END
+FSP1 nonce=89abcdef seq=3 step=eos rc=0 records=4 dropped=0 overflows=0 out=file len=80 crc=e59a35cb END
+# exit=0

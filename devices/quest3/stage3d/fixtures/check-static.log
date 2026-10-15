@@ -1,0 +1,79 @@
+CHECK identical_to_v06_hold PASS
+CHECK identical_to_v06_a_obj PASS
+CHECK identical_to_v06_a_prop PASS
+CHECK identical_to_v06_a_plane PASS
+CHECK identical_to_v06_a_plane_off PASS
+CHECK identical_to_v06_a_commit PASS
+CHECK identical_to_v06_plan_attempts PASS
+CHECK identical_to_v06_pick_mode PASS
+CHECK identical_to_v06_is_expected_mode PASS
+CHECK identical_to_v06_mode_eq PASS
+CHECK identical_to_v06_mode_in_list PASS
+CHECK identical_to_v06_crtc_provably_inactive PASS
+CHECK identical_to_v06_kv_text_int PASS
+CHECK identical_to_v06_xioctl_n PASS
+CHECK identical_to_v06_obj_props PASS
+CHECK identical_to_v06_find_prop PASS
+CHECK identical_to_v06_plane_props PASS
+CHECK identical_to_v06_finish PASS
+CHECK identical_to_v06_check_stop PASS
+CHECK identical_to_v06_rec_frame PASS
+CHECK identical_to_v06_rec_write PASS
+CHECK identical_to_v06_stdout_setup PASS
+CHECK identical_to_v06_signals_init PASS
+CHECK identical_to_v06_pending_stop PASS
+CHECK identical_to_v06_fill_buf PASS
+CHECK identical_to_v06_read_blob PASS
+CHECK identical_to_v06_log_blob PASS
+CHECK identical_to_v06_obj_pinfo PASS
+CHECK identical_to_v06_enum_name PASS
+CHECK identical_to_v06_build_v05 PASS
+CHECK identical_to_v06_build_quad PASS
+CHECK identical_to_v06_a_plane_z PASS
+CHECK identical_to_v06_quad_select PASS
+CHECK identical_to_v06_quad_pick1 PASS
+CHECK identical_to_v06_pipe_type PASS
+CHECK identical_to_v06_log_post_state PASS
+CHECK identical_to_v06_log_post_plane PASS
+CHECK identical_to_v06_log_plane_caps PASS
+CHECK identical_to_v06_log_properties PASS
+CHECK identical_to_v06_draw_glyph PASS
+CHECK identical_to_v06_draw_group PASS
+CHECK identical_to_v06_draw_solid PASS
+CHECK identical_to_v06_struct_areq PASS
+CHECK no_new_ioctl (DRM_IOCTL set = v0.6's) PASS new: []
+CHECK a_prop_property_ids = v0.6's set (no new property id is ever set) PASS v0.7 ['c_active', 'c_mode', 'k_crtc', 'p->p_ch', 'p->p_crtc', 'p->p_cw', 'p->p_cx', 'p->p_cy', 'p->p_fb', 'p->p_sh', 'p->p_sw', 'p->p_sx', 'p->p_sy', 'p->p_zpos']; v0.6 ['c_active', 'c_mode', 'k_crtc', 'p->p_ch', 'p->p_crtc', 'p->p_cw', 'p->p_cx', 'p->p_cy', 'p->p_fb', 'p->p_sh', 'p->p_sw', 'p->p_sx', 'p->p_sy', 'p->p_zpos']
+CHECK p_zpos_set_only_inside_a_plane_z PASS 1 site(s)
+CHECK a_plane_z_called_only_with_FSP_QUAD_Z[k] PASS ['FSP_QUAD_Z[k]']
+CHECK FSP_QUAD_Z = {0, 0, 1, 1} PASS static const uint64_t FSP_QUAD_Z[4] = { 0, 0, 1, 1 };
+CHECK find_prop_names = v0.6's PASS ['"ACTIVE"', '"CRTC_H"', '"CRTC_ID"', '"CRTC_W"', '"CRTC_X"', '"CRTC_Y"', '"FB_ID"', '"MODE_ID"', '"SRC_H"', '"SRC_W"', '"SRC_X"', '"SRC_Y"', '"type"']
+CHECK never_set_names_only_in_the_read_only_loggers (log_conn_topology, log_post_state) PASS
+CHECK no_sysfs_procfs_debugfs_path_in_the_device_build PASS []
+CHECK exit_code_table_equals_v06 (no new exit code) PASS [('EX_OK', '0'), ('EX_INTERNAL', '1'), ('EX_USAGE', '2'), ('EX_STDOUT', '3'), ('EX_NODEV', '10'), ('EX_OPENFAIL', '11'), ('EX_WRONGDRV', '12'), ('EX_NOCONN', '20'), ('EX_NOPIPE', '21'), ('EX_NOMODE', '30'), ('EX_PRECOND', '31'), ('EX_BUFFER', '40'), ('EX_TESTREJECT', '50'), ('EX_COMMITFAIL', '60'), ('EX_INTERRUPTED', '70')]
+CHECK limits: hold 10, opt 38912/10240, blob 8192, close 5, setup 30; roll default 21, max 25; eyes swap; reset post_plane 4 PASS {'FSP_HOLD_MAX_S': '10', 'FSP_OPT_MAX': '38912', 'FSP_OPT_MAX_SOLID': '10240', 'FSP_BLOB_MAX': '8192', 'FSP_CLOSE_MARGIN_S': '5', 'FSP_SETUP_BUDGET_S': '30', 'FSP_ROLL_DEFAULT': '21', 'FSP_ROLL_MAX': '25', 'FSP_EYES_SWAP': '1', 'FSP_RESET_POST_PLANES': '4'}
+CHECK FSP_VERSION 0.7.1 PASS
+CHECK v0.7.1: MAXMODES >= 480 (v2.7: 305 listed, 338 built) PASS #define MAXMODES 512
+CHECK v0.7.1: FSP_LOG_MODES 48 PASS
+CHECK v0.7.1: the mode loop skips (and counts in opt_skipped) only modes at index >= FSP_LOG_MODES that are not expected PASS
+CHECK v0.7.1: the too_many_modes refusal is kept (count_modes > MAXMODES -> exit 30) PASS
+CHECK the quad branch of run_show (plane selection, split probe, quad attempts) is textually v0.6's PASS
+CHECK policy: in the quad modes the split probe's a_commit carries DRM_MODE_ATOMIC_TEST_ONLY (never committed) PASS ['g_fd, &a, DRM_MODE_ATOMIC_TEST_ONLY | DRM_MODE_ATOMIC_ALLOW_MODESET, 100']
+CHECK policy: the quad branch commits only a quad tag (tag = qtag[ok]) PASS ['qtag[ok]']
+CHECK essential cap: FSP_ESS_CONNECTORS 3, FSP_ESS_MODES 24, FSP_ESS_PLANES 20 PASS {'FSP_ESS_CONNECTORS': '3', 'FSP_ESS_MODES': '24', 'FSP_ESS_PLANES': '20'}
+CHECK reset A (build_reset): a_prop only k_crtc, c_mode, c_active, each with the value 0 PASS [['a', 'k_crtc', '0'], ['a', 'c_mode', '0'], ['a', 'c_active', '0']]
+CHECK reset A: the planes bound to the CRTC switched off with a_plane_off only; no a_plane / a_plane_z PASS
+CHECK reset: four a_commit sites in order TEST_ONLY|ALLOW_MODESET (A), ALLOW_MODESET (A), TEST_ONLY|ALLOW_MODESET (B), ALLOW_MODESET (B); real commits tried once PASS ['DRM_MODE_ATOMIC_TEST_ONLY | DRM_MODE_ATOMIC_ALLOW_MODESET', 'DRM_MODE_ATOMIC_ALLOW_MODESET', 'DRM_MODE_ATOMIC_TEST_ONLY | DRM_MODE_ATOMIC_ALLOW_MODESET', 'DRM_MODE_ATOMIC_ALLOW_MODESET']
+CHECK reset: B is planned (a modeset attempt exists) BEFORE A is sent; A is committed only after its TEST_ONLY was accepted PASS
+CHECK reset: B = the v0.5 modeset attempts only (plan_attempts with use_current 0) built by build_v05 PASS
+CHECK reset: no picture, no hold: run_reset calls neither draw_pattern, draw_solid, hold nor a_plane_z PASS
+CHECK reset: the fd is closed before the reset_close record and before finish PASS
+CHECK reset: the buffer of a reset is drawn by draw_black only; draw_black writes zero bytes only PASS
+CHECK reset: dispatched after the buffer record and before any show/quad attempt PASS
+CHECK reset: off_mode (the inactive-CRTC precondition) is for show-off* only, not for reset PASS
+CHECK SIN_Q16 / COS_Q16 = round(65536 sin d) / round(65536 cos d), d = 0..25 (recomputed here) PASS
+CHECK eye_sin: the left eye gets +sin(roll) (counter-clockwise), the right eye -sin(roll) PASS
+CHECK eye_half: swap -> the left eye is half 1; direct -> half 0 PASS
+CHECK draw_pattern: the left eye 1|2, the right eye 3|4; legacy layout only for roll 0 with eyes direct PASS
+CHECK blit_eye writes grey levels from the eye canvas or C_BG only (no other value) PASS
+CHECK parse_opt: roll bounded by FSP_ROLL_MAX, eyes swap|direct only, each once PASS
+CHECK show-off-solid takes no picture option (main: o == 1 && kind != K_SOLID) PASS

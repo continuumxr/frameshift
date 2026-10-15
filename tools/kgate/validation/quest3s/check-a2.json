@@ -1,0 +1,265 @@
+{
+ "baseline_result": {
+  "added": 12,
+  "added_symbols": [
+   "__put_user_ns",
+   "current_in_userns",
+   "from_kgid",
+   "from_kgid_munged",
+   "from_kprojid",
+   "from_kprojid_munged",
+   "from_kuid",
+   "from_kuid_munged",
+   "make_kgid",
+   "make_kprojid",
+   "make_kuid",
+   "put_pid_ns"
+  ],
+  "baseline_vmlinux": 14052,
+  "changed": 0,
+  "removed": 0,
+  "type_or_ns_changed": 0
+ },
+ "btf": {
+  "blob_sha256": "e5129bc5d93a0a84f593333e189b3989d2fcdab12dc83ab63d0931249911aaf1",
+  "kinds": {
+   "ARRAY": 2892,
+   "CONST": 2141,
+   "DATASEC": 1,
+   "ENUM": 1793,
+   "FUNC": 49327,
+   "FUNC_PROTO": 26815,
+   "FWD": 51,
+   "INT": 15,
+   "PTR": 14660,
+   "RESTRICT": 2,
+   "STRUCT": 9533,
+   "TYPEDEF": 2055,
+   "UNION": 1884,
+   "VAR": 226,
+   "VOLATILE": 277
+  },
+  "located_by": "raw scan (single well-formed candidate)",
+  "offset": 33833788,
+  "types": 111672
+ },
+ "checks": [
+  {
+   "id": "reference-integrity",
+   "message": "device quest3s; reference sha256 89407ffa0c241932e88fa74b1ca110e58eee7d6d25650e1a648a0df8a4bc3457 matches the profile pin; all derived fields re-derived from 268 module records; stock BTF kinds re-scanned",
+   "status": "PASS"
+  },
+  {
+   "id": "profile-committed",
+   "message": "profile equals its committed git blob 4ca9b453fa87afce7c71560c1e9e136aa64dc6b5",
+   "status": "PASS"
+  },
+  {
+   "id": "build-pins",
+   "message": "build 'a2': request list, allowlist and baseline match the profile pins",
+   "status": "PASS"
+  },
+  {
+   "id": "base-config",
+   "message": "requested base config equals the IKCONFIG of the device's pinned stock kernel",
+   "status": "PASS"
+  },
+  {
+   "id": "symvers-duplicates",
+   "message": "no duplicate rows (15930 rows, 14064 vmlinux)",
+   "status": "PASS"
+  },
+  {
+   "id": "crc",
+   "message": "2583/2583 vendor-required (symbol, CRC) pairs match vmlinux",
+   "status": "PASS"
+  },
+  {
+   "id": "module-layout",
+   "message": "module_layout 0xb1f01218 matches",
+   "status": "PASS"
+  },
+  {
+   "id": "unversioned-imports",
+   "message": "0 unversioned vendor import(s) present in vmlinux",
+   "status": "PASS"
+  },
+  {
+   "id": "export-collision",
+   "message": "none of the 1854 vendor-exported symbols is exported by vmlinux",
+   "status": "PASS"
+  },
+  {
+   "id": "namespace",
+   "message": "no vendor import needs a symbol namespace it does not declare",
+   "status": "PASS"
+  },
+  {
+   "id": "gpl-only",
+   "message": "no GPL-only export is used by a non-GPL-compatible vendor module",
+   "status": "PASS"
+  },
+  {
+   "id": "baseline",
+   "message": "0 of 14052 baseline vmlinux exports changed or removed; 12 added",
+   "status": "PASS"
+  },
+  {
+   "id": "requested-options",
+   "message": "all 8 requested option(s) satisfied",
+   "status": "PASS"
+  },
+  {
+   "count": 1,
+   "id": "requested-config-toolchain",
+   "items": [
+    "CONFIG_PAHOLE_VERSION: base 0, resulting .config 131"
+   ],
+   "message": "1 difference(s) in CONFIG_PAHOLE_VERSION (host pahole probe; justified in README)",
+   "status": "WARN"
+  },
+  {
+   "count": 6,
+   "id": "requested-config-allowlisted",
+   "items": [
+    "CONFIG_CC_CAN_LINK: base not set, resulting .config y",
+    "CONFIG_CC_CAN_LINK_STATIC: base not set, resulting .config y",
+    "CONFIG_CRYPTO_XXHASH: base not set, resulting .config m",
+    "CONFIG_RAID6_PQ: base not set, resulting .config m",
+    "CONFIG_RAID6_PQ_BENCHMARK: base not set, resulting .config y",
+    "CONFIG_XOR_BLOCKS: base not set, resulting .config m"
+   ],
+   "message": "6 unrequested change(s) accepted by the explicit allowlist <repo>/tools/kgate/validation/requests/quest3s-a2.allow",
+   "status": "WARN"
+  },
+  {
+   "id": "requested-config",
+   "message": ".config equals base <repo>/firmware/quest3s/v2.7-user_ota/kernel.config + requests, except the allowlisted/toolchain entries reported above",
+   "status": "PASS"
+  },
+  {
+   "id": "vermagic-image",
+   "message": "kernel image carries the module-loader vermagic '5.10.246-gdbc2bc83a2b6 SMP preempt mod_unload modversions aarch64'",
+   "status": "PASS"
+  },
+  {
+   "id": "vermagic",
+   "message": "vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)",
+   "status": "PASS"
+  },
+  {
+   "id": "btf-kinds",
+   "message": "111672 types; no kinds beyond stock (ARRAY, CONST, DATASEC, ENUM, FUNC, FUNC_PROTO, FWD, INT, PTR, RESTRICT, STRUCT, TYPEDEF, UNION, VAR, VOLATILE) -- kind scan only, not BTF validation",
+   "status": "PASS"
+  },
+  {
+   "id": "config-binding",
+   "message": "supplied .config is byte-identical to the image's embedded IKCONFIG (197042 bytes)",
+   "status": "PASS"
+  },
+  {
+   "id": "input-binding",
+   "message": "Module.symvers vmlinux rows equal the 14064 decoded entries of the __ksymtab*/__kcrctab* tables (name, CRC, type, namespace; both ways); kernel image equals objcopy -O binary of vmlinux (exact length, gaps zero); in the Image's own kallsyms, __start/__stop___ksymtab* and __start___kcrctab* equal the decoded tables' bounds and every entry's address equals its symbol's kallsyms address; tables sorted; sections end before _edata and match the pinned section set; .symtab agrees (cross-check); banner, IKCONFIG and BTF blob match",
+   "status": "PASS"
+  }
+ ],
+ "config_diff": {
+  "allowlisted": [
+   "CONFIG_CC_CAN_LINK: base not set, resulting .config y",
+   "CONFIG_CC_CAN_LINK_STATIC: base not set, resulting .config y",
+   "CONFIG_CRYPTO_XXHASH: base not set, resulting .config m",
+   "CONFIG_RAID6_PQ: base not set, resulting .config m",
+   "CONFIG_RAID6_PQ_BENCHMARK: base not set, resulting .config y",
+   "CONFIG_XOR_BLOCKS: base not set, resulting .config m"
+  ],
+  "stale_allow_entries": [],
+  "toolchain_warn": [
+   "CONFIG_PAHOLE_VERSION: base 0, resulting .config 131"
+  ],
+  "unrequested_changes": 0
+ },
+ "exit_code": 0,
+ "inputs": {
+  "allow_config_changes": {
+   "path": "<repo>/tools/kgate/validation/requests/quest3s-a2.allow",
+   "sha256": "2244b9e3d781fd098a837ab0476c925b2f5b88d92334251506f1907c66b91e6d"
+  },
+  "baseline_symvers": {
+   "path": "$HOME/work/kgateq3s/out/Module.symvers",
+   "sha256": "0b0c713c677e066ccfcb986329f211fa8d6bc5ba59cd9b0ebcf1ff1b64e0aca7",
+   "vmlinux_rows": 14052
+  },
+  "config": {
+   "path": "$HOME/work/kgateq3s/out-a2/.config",
+   "sha256": "ae22dcfe4f2933e1b36d73a37ee55483f820db81211ebff3855e21e862dadfb8"
+  },
+  "kernel": {
+   "path": "$HOME/work/kgateq3s/out-a2/arch/arm64/boot/Image",
+   "sha256": "160a1d7e5f8d780d72688cf2a0723a18dbcf5aa394c961106eec47290bf7d860"
+  },
+  "profile": {
+   "build": "a2",
+   "git_blob_sha1": "4ca9b453fa87afce7c71560c1e9e136aa64dc6b5",
+   "path": "<repo>/tools/kgate/validation/requests/quest3s.profile.json",
+   "sha256": "bd4a117fe41449a550f8f35b56468da0cb7e9ce4623379571a3c2aa53413648c"
+  },
+  "reference": {
+   "device": "quest3s",
+   "path": "$HOME/work/kgate-refs/quest3s/reference.json",
+   "pinned": true,
+   "sha256": "89407ffa0c241932e88fa74b1ca110e58eee7d6d25650e1a648a0df8a4bc3457"
+  },
+  "requested": {
+   "path": "<repo>/tools/kgate/validation/requests/quest3s-a2.txt",
+   "sha256": "0b5dabc1fc41cd330e83c2e748dd5b374a5aa3fc3e93a50eaaa05ecb57d00a4d"
+  },
+  "requested_config": {
+   "path": "<repo>/firmware/quest3s/v2.7-user_ota/kernel.config",
+   "sha256": "5beee4cf898a2fa98c37528a9b9788433f24d5e7491f5526b409959595c5d07b"
+  },
+  "stock_kernel": {
+   "path": "<repo>/firmware/quest3s/v2.7-user_ota/boot.img",
+   "sha256": "3aef9160328d02167b5dc2000f06f09eff09d97d09e82ada8df27c4de3f5f4f4"
+  },
+  "symvers": {
+   "path": "$HOME/work/kgateq3s/out-a2/Module.symvers",
+   "rows": 15930,
+   "sha256": "5d5f31f202cfcb7f2c45ac15ae2f11cda931bb7e32cccc4e12ad54ad2d1e48dc"
+  },
+  "vmlinux": {
+   "kallsyms_symbols": 157045,
+   "ksymtab_exports": 14064,
+   "path": "$HOME/work/kgateq3s/out-a2/vmlinux",
+   "sha256": "0221f7a5090c81c791906c984791282b2f68c3653822f58d2da81abdde232c71",
+   "symtab_crc_symbols": 14064
+  }
+ },
+ "label": "quest3s-a2",
+ "mode": "gate",
+ "reference_counts": {
+  "imported_pairs": 15073,
+  "module_copies": 396,
+  "presence_required_unversioned": 0,
+  "required_from_vmlinux": 2583,
+  "unique_imported_pairs": 3514,
+  "unique_modules": 268,
+  "vendor_exported_symbols": 1854
+ },
+ "reference_device": "quest3s",
+ "requested_result": {
+  "explicit_none": false,
+  "requested": 8,
+  "unsatisfied": 0
+ },
+ "required_result": {
+  "match": 2583,
+  "mismatch": 0,
+  "missing": 0,
+  "required": 2583
+ },
+ "result": "PASS",
+ "schema": "kgate-check/3",
+ "statement": "matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open",
+ "tool_version": "2.3",
+ "waivers": {}
+}

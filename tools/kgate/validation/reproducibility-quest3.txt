@@ -1,0 +1,100 @@
+# Reproducibility check (2026-10-09), Quest 3 v2.7 stock-config build, 5.10.246, Meta public source
+# dbc2bc83a2b673f5d1c24ee9dadb0cd708ffda3f, clang r450784e, AOSP make 4.3. Offline only (no adb/fastboot, no device).
+# Script: validation/repro_q3.sh (mirror of repro_q2.sh; make variables exactly as FS-A-006 (private review record))
+#   bash repro_q3.sh          -> runs 1-2 (ASLR on, as every earlier build)
+#   bash repro_q3.sh noaslr   -> runs 3-4 (every make under `setarch x86_64 -R`)
+# Raw logs/manifests: WSL ~/work/kgate27/repro/ (repro.aslr.log, repro.noaslr.log, manifest.{orig,run1..run4}.txt,
+#   build.N.log, cmp.runN.txt, objdiff.*.txt, tu_determinism.log). Object dirs kept: out-repro-1/-2/-3, out-repro (= run 4).
+
+## Environment (identical for all runs)
+host Linux 6.18.33.2-microsoft-standard-WSL2 x86_64, nproc 12, -j12; source tree clean (0 dirty files)
+make GNU Make 4.3 (~/toolchains/build-tools/bin/make); clang/LLD 14.0.7 Android r450784e (~/toolchains/clang-r450784e)
+pahole v1.31 (serial, no -j); GNU tar 1.35; xz 5.8.3; python3 3.14.4; perl 5.40.1; date = uutils coreutils 0.8.0
+  (parses the pinned timestamp correctly: 1791483434 = 2026-10-08 18:17:14 UTC)
+locale LANG=C.UTF-8, localtime [removed for publication], umask 0022, kernel.randomize_va_space=2
+config: ~/work/kgate27/stock.config == CRLF-stripped firmware/quest3/extracted/v2.7-user_ota/kernel.config; olddefconfig
+  output .config sha256 1ff62de42f803fe5ad0790a2ae8ac74bc74cebf6f1f6defc04eab6b92b7aa00c in every run (== original out/)
+pinned to the original FS-A-006 banner (out/include/generated/compile.h, "#2 SMP PREEMPT Thu Oct 8 18:17:14 UTC 2026", converted to UTC for publication):
+  KBUILD_BUILD_TIMESTAMP="Thu Oct 8 18:17:14 UTC 2026" KBUILD_BUILD_USER=<build-user> KBUILD_BUILD_HOST=<build-host>
+  KBUILD_BUILD_VERSION=2   (this timestamp also drives the kheaders tar --mtime and the initramfs cpio mtimes)
+make vars: ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CLANG_TRIPLE=aarch64-linux-gnu-
+  REAL_CC=$CL/clang LLVM=1 LLVM_IAS=1 LD/AR/NM/OBJCOPY/OBJDUMP/READELF/OBJSIZE/STRIP=$CL/llvm-* (ld.lld) HOSTCC=$CL/clang
+  HOSTAR=$CL/llvm-ar HOSTLD=$CL/ld.lld HOSTLDFLAGS=-fuse-ld=lld PYTHON=python3; targets: Image modules
+reproducibility-relevant config: LTO_CLANG_FULL, CFI_CLANG, SHADOW_CALL_STACK, DEBUG_INFO(+BTF), IKCONFIG, IKHEADERS,
+  MODVERSIONS, no MODULE_SIG (no random signing key), INITRAMFS_SOURCE="" (default cpio),
+  META_SAMPLE_PGO=y (stock; Makefile adds -gline-tables-only -fprofile-sample-use=$(srctree)/vmlinux.profdata,
+  profdata sha256 c254ba50a58163446cdb18cd44ec7a87cdc8b7c8e311a0047fdede6b8cc68f8b, 5165 functions, binary sample format)
+
+## Run 1: pinned, ASLR on, ~/work/kgate27/out-repro vs original FS-A-006 build ~/work/kgate27/out (unpinned, path out/)
+start 2026-10-09T15:48:11Z, build rc=0 in 5346s
+IDENTICAL .config
+DIFFERS   vmlinux orig=bba1862888303652a205fcd022550d24f72860d7dc59f401ac045b50d508e61b run1=a5ef1be83dd1d3ffdb519f030939bf606d11e451a0d4ceb03a935eebb3a008b2
+DIFFERS   Image   orig=6ebe28d529e5c1d92bcc54e9b6187749d22ef909dccd7d4df606b3a197c28e6d run1=012965a0a97d0e6f53137b409741613d42d05c979f78a0624b4839dbaf9ebac7
+IDENTICAL Module.symvers 7b5cfa8f54c41945e38f493196a55bfe1baff454f2c7e82e93d4959aa684b28d
+.ko: 272/272 DIFFER (list sha256 orig f052caac... run1 cc663369bf6cf608f7483f41a1c816909e536e2e4b8e330fbafe7e1c659ff348)
+vendor-required 2601/2601 match, 0 mismatch, 0 missing; module_layout 0xb1f01218; all 14059 vmlinux (symbol,CRC) == original
+
+## Run 2: pinned, ASLR on, SAME path out-repro vs run 1 (moved to out-repro-1)
+start 2026-10-09T17:17:46Z, build rc=0 in 4493s
+IDENTICAL .config, Module.symvers (7b5cfa8f...)
+DIFFERS   vmlinux run1=a5ef1be8... run2=a1718e69cd7d6f8b076a78608ac5faa677a75fb88140a0249e9786814bd3da1a
+DIFFERS   Image   run1=012965a0... run2=b20b8e935ac1a51a0d0b9fa473de3ae3d467e561b396075fb1a9e54ef34bbd7e
+          (same size 42967552; 25,349,637 bytes differ; 49,615 System.map lines move)
+.ko: 272/272 IDENTICAL (list sha256 cc663369...)
+vendor-required 2601/2601; module_layout 0xb1f01218; 14059 vmlinux CRCs == original
+=> NOT bit-reproducible with the Quest 2 recipe.
+
+## Cause of the run 1 / run 2 difference (same path, same pins): sample-PGO annotation depends on ASLR
+- Of 4696 objects, 10 differ: 8 LLVM-bitcode TUs + their products (vmlinux.o, .btf.vmlinux.bin.o):
+  fs/dcache.o fs/fs-writeback.o fs/proc/base.o kernel/cgroup/cgroup.o kernel/fork.o kernel/printk/printk.o
+  kernel/sched/fair.o mm/kfence/core.o. (Run 2 vs run 3 gave a partly different set: fork, printk, sched/core,
+  sched/fair, kfence/core.) llvm-dis of each: the only primary differences are profile metadata
+  (function_entry_count, branch_weights, call-site !prof), e.g. dcache.o branch_weights 137 vs 136, proc/base.o
+  function_entry_count 1495 vs 680; fork.o/fair.o/cgroup.o then make different inlining decisions (fork.o: 96 vs 95
+  defined functions), and full LTO propagates the changed code into a shifted vmlinux layout.
+- Isolated per-TU test (identical kbuild command line re-run 20x, tu_determinism.log):
+    printk.o  ASLR on: 7 distinct outputs/20; setarch -R: 1/20; ASLR on + -fno-profile-sample-use: 1/20
+    fair.o    ASLR on: 3 distinct/20;        setarch -R: 1/20; no profile: 1/20
+    kfence/core.o ASLR on: 2 distinct/20;    setarch -R: 1/20; no profile: 1/20
+  printk.o under setarch -R was also unchanged when the environment size was varied (1..4097 bytes; stack shift).
+  So clang r450784e's -fprofile-sample-use annotation is address-dependent (iteration over a pointer-ordered
+  structure); with ASLR off it is stable. Nothing in it is a timestamp or path. Modules happened to be stable
+  (no module TU flipped in 4 runs) but are compiled with the same flag and are not guaranteed.
+- The Quest 2 4.19 tree has no -fprofile-sample-use (Makefile grep 0), which is why its recipe sufficed.
+
+## Run 3: pinned, ASLR OFF (setarch x86_64 -R make ...), out-repro vs run 2 (ASLR on, moved to out-repro-2)
+start 2026-10-09T18:33:25Z, build rc=0 in 4675s
+DIFFERS vmlinux (run3=1d855c2c961552eabe36f478a6be3ed677c2dfa10a396e947012ae79f7e15da9) and Image; IDENTICAL .config,
+Module.symvers, 272/272 .ko; 2601/2601; module_layout 0xb1f01218; 14059 CRCs == original
+
+## Run 4: pinned, ASLR OFF, SAME path out-repro vs run 3 (moved to out-repro-3)
+start 2026-10-09T19:52:00Z, build rc=0 in 5854s, end 2026-10-09T21:30:27Z
+IDENTICAL .config                 1ff62de42f803fe5ad0790a2ae8ac74bc74cebf6f1f6defc04eab6b92b7aa00c
+IDENTICAL vmlinux                 1d855c2c961552eabe36f478a6be3ed677c2dfa10a396e947012ae79f7e15da9
+IDENTICAL arch/arm64/boot/Image   fbfb86f448880405dd44d21e2dcfd99a65811e11c200ac64efedc46e84597ff3
+IDENTICAL Module.symvers          7b5cfa8f54c41945e38f493196a55bfe1baff454f2c7e82e93d4959aa684b28d
+IDENTICAL .ko 272/272             (manifest list sha256 cc663369bf6cf608f7483f41a1c816909e536e2e4b8e330fbafe7e1c659ff348)
+all 4114 intermediate objects compared before the final link identical (objdiff.run3-run4.txt empty)
+vendor-required 2601/2601 match; module_layout 0xb1f01218; all 14059 vmlinux (symbol,CRC) == original FS-A-006 build
+
+## Original FS-A-006 build (out/) vs pinned builds: why it cannot be matched bit-for-bit
+- .ko: all 272 differ only in debug info and the GNU build-id (object path ".../kgate27/out" vs ".../out-repro" in
+  DW_AT_comp_dir; build-id hashes it). After llvm-objcopy --strip-debug --remove-section=.note.gnu.build-id: 272/272
+  identical to run 1.
+- vmlinux/Image: object path in debug info/build-ids (41 path strings in vmlinux), kheaders tar mtimes (unpinned
+  original: wall-clock mtimes), initramfs cpio mtimes, AND the ASLR-dependent PGO annotation (e.g. fork.o
+  release_task_stack entry count -1 vs 2; account_kernel_stack not inlined in run 1). The original was built
+  with ASLR on and unpinned, so its exact code layout is not recoverable.
+- Symbol-version interface is fully stable: Module.symvers (7b5cfa8f...) is identical in runs 1-4, and every run
+  reproduces module_layout 0xb1f01218 and 2601/2601 vendor-required CRCs; the whole 14059-entry vmlinux CRC set
+  equals ~/work/kgate27/built_vmlinux_crcs.txt. Sample-PGO changes code, not types, so CRCs never moved.
+
+## Verdict
+The Quest 3 v2.7 (5.10) tree is NOT bit-reproducible with the Quest 2 recipe (same path + pinned
+KBUILD_BUILD_TIMESTAMP/USER/HOST/VERSION): vmlinux and Image differ run to run because Meta's stock config enables
+CONFIG_META_SAMPLE_PGO and clang r450784e's sample-profile annotation varies with address-space randomisation.
+It IS bit-reproducible (vmlinux, Image, Module.symvers, all 272 .ko) when, in addition, the whole build runs with
+ASLR disabled (`setarch x86_64 -R make ...`), as runs 3 and 4 show. Not tested: whether ASLR-off output is also
+independent of the object-directory path or of host/heap differences (keep the same path; pin the toolchain).
+Future gate builds should use the same path, the four KBUILD_BUILD_* pins, and setarch -R. Alternatives not taken:
+-fno-profile-sample-use / META_SAMPLE_PGO=n would be deterministic but changes code generation away from stock.

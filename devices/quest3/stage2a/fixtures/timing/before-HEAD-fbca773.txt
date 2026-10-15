@@ -1,0 +1,52 @@
+== stage 2a (init.sh DEADLINE=260 ACK_WINDOW=150; runner fs-valve.sh)
+   i   id          -t    -g   worst s
+   1   hash         5     2      15.0
+   2   absent       5     2      15.0
+   3   diag         5     2      15.0
+   4   list         5     2      15.0
+   5   uname        5     2      15.0
+   6   b2kat        5     2      15.0
+   7   b2chal       5     2      15.0
+   8   inv         10     2      20.0
+   runner worst case W = 127.0 s (incl. 2 s emission)
+   host: give-up = BootStartUtc + 260 - 15 s; collector start = BootStartUtc + 20 s (planning); phases before the runner (3 fs-status tries) <= 76.5 s
+   display cue before the runner: 0.0 s; post-record host time (beep 1 + pre-done pause + beep 2): 0.0 s
+   host record budget B = 260 - 15 - 20 - 76.5 - 0.0 - 0.0 = 148.5 s; spare (B - W) 21.5 s; guard spare (B - RunnerWorst - margin) 16.5 s
+   PASS  collector device deadline (260 s) = image DEADLINE (260 s)
+   PASS  DEADLINE 260 <= 299 (common clamp)
+   PASS  ACK_WINDOW 150 <= DEADLINE 260
+   PASS  every step timeout <= 60 s and grace <= 10 s
+   PASS  runner worst case 127.0 s <= host record budget 148.5 s
+   PASS  collector RunnerWorstSec (127 s) >= computed W (127.0 s)
+   PASS  run-time guard fits: B 148.5 s >= RunnerWorstSec + RunnerMarginSec = 132 s
+   PASS  collector ack window (150 s) = image ACK_WINDOW (150 s)
+   PASS  phases before the runner 76.5 s <= ack-window budget 150 - 15 - 20 = 115.0 s
+== stage 3a (init.sh DEADLINE=170 ACK_WINDOW=150; runner fs-display.sh)
+   i   id          -t    -g   worst s
+   1   hash         3     2      13.0
+   2   pattern     16     3      27.0
+   runner worst case W = 42.0 s (incl. 2 s emission)
+   host: give-up = BootStartUtc + 170 - 15 s; collector start = BootStartUtc + 20 s (planning); phases before the runner (2 fs-status tries) <= 61.0 s
+   display cue before the runner: 3.0 s; post-record host time (beep 1 + pre-done pause + beep 2): 11.0 s
+   host record budget B = 170 - 15 - 20 - 61.0 - 3.0 - 11.0 = 60.0 s; spare (B - W) 18.0 s; guard spare (B - RunnerWorst - margin) 13.0 s
+   PASS  collector device deadline (170 s) = image DEADLINE (170 s)
+   PASS  DEADLINE 170 <= 299 (common clamp)
+   PASS  ACK_WINDOW 150 <= DEADLINE 170
+   PASS  every step timeout <= 60 s and grace <= 10 s
+   PASS  runner worst case 42.0 s <= host record budget 60.0 s
+   PASS  collector RunnerWorstSec (42 s) >= computed W (42.0 s)
+   PASS  run-time guard fits: B 60.0 s >= RunnerWorstSec + RunnerMarginSec = 47 s
+   PASS  collector ack window (150 s) = image ACK_WINDOW (150 s)
+   PASS  phases before the runner 61.0 s <= ack-window budget 150 - 15 - 20 = 115.0 s
+== clock model (FS-R-007 B1; static source checks and arithmetic, not a device measurement)
+   guarantee: host stop <= BootStartUtc + DEADLINE - 15 s <= T0 + DEADLINE - 15 s (BootStartUtc <= T0);
+   assumptions: BootStartUtc taken before fastboot is invoked; host UTC does not jump before the conversion; Stopwatch monotonic after it
+   PASS  M1 fs-observe.ps1: BootStartUtc is taken before the one fastboot boot call
+   FAIL  M2 fs-observe.ps1: the collector gets -BootStartUtc (origin) in the printed command and in -ThenCollect; no HandoffBasisUtc
+   FAIL  M3a fs-collect.ps1 live: both deadlines come from BootStartUtc (Get-FsHostDeadlines -OriginUtc $origin, $origin = -BootStartUtc)
+   FAIL  M3b fs-collect.ps1 live: the transport-clock conversion follows Get-FsGadget and New-FsRawSerialTransport, and the collector uses it
+   FAIL  M3c fs-collect.ps1 live: the start refusals are re-checked after the preparation; no remaining time computed before it is used
+   PASS  M4a arithmetic grid (both stages): with origin BootStartUtc every admitted runner ends by T0 + DEADLINE - margin
+   PASS  M4b Chair counterexample (3a: start 0, T0 2, Th 60, collector 80, runner at 144): refused with origin BootStartUtc (11 s left < 58 s)
+   PASS  M4c ...and with origin Th it would be admitted (71 s left) and end at 197 s > T0 + DEADLINE = 172 s: the old model was unsafe
+TIMING: INCONSISTENT

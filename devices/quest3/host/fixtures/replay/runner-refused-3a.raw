@@ -1,0 +1,10 @@
+~ # [6nfs-verify 0f1e2d3c4b5a69788796a5b4c3d2e1f0
+FSV1 nonce=a1b2c3d4e5f60718 resp=37c834bf85f9383b22aadca2c2a86c85fc178fd66077d16c23139f0e43caf0e8 kernel=5.10.198-01402-g1c5986fe21ee pid1=/bin/busybox,sh,/init stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY END
+~ # [6nfs-ack 5a5a0123456789ab
+FSA1 queued END
+~ # [6nfs-status
+FSS1 nonce=a1b2c3d4e5f60718 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=5a5a0123456789ab END
+~ # [6nfs-display c3c3a1b2c3d4e5f60718293a4b5c6d7e
+FSDE1 error=bad-nonce END
+~ # [6nfs-done
+FSD1 queued END

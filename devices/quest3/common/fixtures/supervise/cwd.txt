@@ -1,0 +1,6 @@
+# cmd: fs-supervise -t 5 -e PATH=$W/bin -o $W/cap/cwd.out -r $W/cap/cwd.err -- $W/bin/busybox pwd
+# report: FSUP1 end=exited code=0 sig=0 errno=0 ms=164 term_ms=-1 kill_ms=-1 out_total=2 out_kept=2 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+# exit=0 wall_ms=378
+# stdout capture: 2 bytes, first 64 as hex:
+#      /  \n
+# stderr capture: 0 bytes, first 64 as hex:

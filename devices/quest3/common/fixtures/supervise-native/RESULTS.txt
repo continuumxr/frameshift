@@ -1,0 +1,22 @@
+source sha256=261f23a0f028766b01f156a80a83e8f221edc4bed86b036539dcfc3e717f756e
+native: gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, binary sha256=432f0598a97749699ba717198a5ac483ddbc4b8ffb8b1809290d77875328d32f (test build only)
+flood1 PASS 1 writer: timer-term, TERM at 1000..1100 ms, reaped < 1500 ms
+flood4 PASS 4 writers: timer-term, TERM at 1000..1100 ms, no KILL, reaped < 1500 ms
+flood4ign PASS 4 TERM-ignoring writers: timer-kill, TERM ~1000 ms, KILL a full grace (1000..1100 ms) after the TERM (gap=1006)
+sleeper PASS deadline precision: TERM at 1000..1030 ms
+stopped PASS a stopped child: TERM stays pending, KILL ends it (timer-kill)
+fdleak PASS caller's fd 7 not inherited; child fds exactly 0 1 2
+session PASS child is a session leader with no controlling tty (pid=83666 pgrp=83666 sid=83666 tty=0)
+sigchld-ignored PASS caller ignored SIGCHLD: /bin/true still end=exited code=0 at once
+sigalrm-ignored PASS caller ignored SIGALRM: the supervisor's SigIgn (0000000001001000) has no SIGALRM bit, so its 90 s backstop is armed
+escape PASS setsid escapee (setsid=ok asserted) killed via /proc: strays=1 why=none, none left
+hopper PASS fork-hopper in its own session hunted down: none alive 1 s later, why=none (strays=8)
+hopper-marker PASS no hopper instance survived to 5 s (no marker)
+noproc PASS /proc hidden: the surviving escapee is REPORTED (why=no-proc, exit 7), not strays=0/why=none
+dup-option-g PASS '-g 1 -g 2' refused
+dup-option-c PASS '-c 10 -c 20' refused
+dup-option-i PASS '-i /dev/null -i /dev/null' refused
+env-SCUDO_OPTIONS PASS -e SCUDO_OPTIONS refused
+env-LIBC_DEBUG_MALLOC_OPTIONS PASS -e LIBC_DEBUG_MALLOC_OPTIONS refused
+env-MUSL_LOCPATH PASS -e MUSL_LOCPATH refused
+TOTAL pass=19 fail=0

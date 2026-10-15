@@ -1,0 +1,2 @@
+# select fallout of --module BTRFS_FS (fixture)
+CONFIG_XOR_BLOCKS=m

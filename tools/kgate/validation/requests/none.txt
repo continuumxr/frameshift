@@ -1,0 +1,2 @@
+# stock-config build: nothing requested beyond the stock config
+--none

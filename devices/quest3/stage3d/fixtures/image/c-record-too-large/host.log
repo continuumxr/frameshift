@@ -1,0 +1,12 @@
+  13905 ms  W fs-verify 471d0616c584781c7f0d19fe96f925a7
+  15241 ms  R FSV1 nonce=13ed21be49c7b4ba resp=5c703bc445025dd4480ffca497e96d955c1a2f93a243f4182c8aa1eb232fac63 kernel=6.18.33.2-microsoft-standard-WSL2 pid1=/usr/b
+  15241 ms  W fs-ack f83f918bebd43042
+  15696 ms  R FSA1 queued END
+  18198 ms  W fs-status
+  19007 ms  R FSS1 nonce=13ed21be49c7b4ba stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=f83f918bebd43042 END
+  19007 ms  W fs-phase p0 95696ff22911bcffb59c759d6845b880 0000000000000000
+  24987 ms  R FSB1 END v=1 nonce=13ed21be49c7b4ba chal=95696ff22911bcffb59c759d6845b880 lines=40 rec_sha256=f62b3f34d8bf63aa40533f5b24686d36c75b6fb246395e11b402d342
+  25675 ms  W fs-phase r1 d29d103b7a7874a1d6e89f112bc648a1 f62b3f34d8bf63aa
+  34032 ms  R FSXE1 p=r1 ran=1 error=record-too-large lines=2443 max=1545 END
+  34033 ms  W fs-done
+  34436 ms  R FSD1 queued END

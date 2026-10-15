@@ -1,0 +1,28 @@
+FSP1 nonce=c2c16b95 seq=0 step=start rc=0 mode=show ver=0.6 hold_req=3 hold=3 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/dev/dri/card0 out=pipe rot=180 t0_ms=20000 len=181 crc=186d7c40 END
+FSP1 nonce=c2c16b95 seq=1 step=open rc=0 dev=/dev/dri/card0 major=226 minor=0 len=77 crc=96a18a18 END
+FSP1 nonce=c2c16b95 seq=2 step=version rc=0 drv=msm_drm major=1 minor=4 patch=0 len=79 crc=1a51b7e5 END
+FSP1 nonce=c2c16b95 seq=3 step=caps rc=0 universal_rc=0 atomic_rc=0 len=67 crc=f717d8ad END
+FSP1 nonce=c2c16b95 seq=4 step=resources rc=0 crtcs=3 connectors=3 encoders=3 fbs=0 max_w=20480 max_h=8640 len=106 crc=ebfd6f2f END
+FSP1 nonce=c2c16b95 seq=5 step=connector rc=0 id=55 type=16 type_id=1 status=1 modes=24 encoders=1 encoder=54 mm_w=0 mm_h=0 len=123 crc=fbd2a102 END
+FSP1 nonce=c2c16b95 seq=6 step=chosen_connector rc=0 id=55 type=16 connected=2 modes=24 encoder=54 len=98 crc=3eca7197 END
+FSP1 nonce=c2c16b95 seq=7 step=mode rc=0 idx=0 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid preferred=1 expected=1 len=213 crc=de55a921 END
+FSP1 nonce=c2c16b95 seq=8 step=pipeline rc=0 encoder=54 crtc=155 crtc_idx=0 len=75 crc=1f324ccd END
+FSP1 nonce=c2c16b95 seq=9 step=crtc_state rc=0 idx=-1 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid getcrtc_rc=0 mode_valid=1 fb=0 active_prop=22 active=1 in_list=1 interlaced=0 expected=1 len=286 crc=1c09453a END
+FSP1 nonce=c2c16b95 seq=10 step=chosen_mode rc=0 idx=-1 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid why=crtc_current expected=1 len=227 crc=3f86618c END
+FSP1 nonce=c2c16b95 seq=11 step=planes rc=0 count=20 len=52 crc=7f8f2ca4 END
+FSP1 nonce=c2c16b95 seq=12 step=atomic_props rc=0 primary=71 helper=97 crtc_mode_id=23 crtc_active=22 conn_crtc_id=20 len=117 crc=609df7af END
+FSP1 nonce=c2c16b95 seq=13 step=conn_topology rc=0 conn=55 props=24 topology_prop=51 topology_val=0 topology_name=sde_none control_prop=52 control_val=0 dsc_mode_prop=63 dsc_mode_val=0 mode_props_blob=60 len=203 crc=a22f590f END
+FSP1 nonce=c2c16b95 seq=14 step=buffer rc=0 w=4128 h=2208 handle=1 pitch=16512 size=36458496 fb=207 mode_blob=208 format=0x34325258 len=131 crc=690547e2 END
+FSP1 nonce=c2c16b95 seq=15 step=plan rc=0 attempts=4 use_current=1 modeset_allowed=1 helper=1 len=93 crc=fb86588c END
+FSP1 nonce=c2c16b95 seq=16 step=test_commit rc=-22 attempt=0 modeset=0 layout=single objs=4 props=16 planes_off=3 overflow=0 result=rejected len=140 crc=bd450087 END
+FSP1 nonce=c2c16b95 seq=17 step=test_commit rc=-22 attempt=1 modeset=0 layout=split objs=4 props=24 planes_off=2 overflow=0 result=rejected len=139 crc=43f4cdb6 END
+FSP1 nonce=c2c16b95 seq=18 step=test_commit rc=-7 attempt=2 modeset=1 layout=single objs=6 props=19 planes_off=3 overflow=0 result=rejected len=139 crc=5f49c176 END
+FSP1 nonce=c2c16b95 seq=19 step=test_commit rc=0 attempt=3 modeset=1 layout=split objs=6 props=27 planes_off=2 overflow=0 result=accepted len=137 crc=9bb9944c END
+FSP1 nonce=c2c16b95 seq=20 step=commit rc=0 attempt=3 modeset=1 layout=split commit_ms=643 len=90 crc=25f3710d END
+FSP1 nonce=c2c16b95 seq=21 step=post_state rc=0 conn=55 topology_val=14 topology_name=sde_quadpipe_dsc4hsmerge dsc_mode_val=0 control_val=0 crtc=155 active=1 mode_id=208 core_clk=550000000 core_ab=16000000000 core_ib=16000000000 llcc_ab=0 llcc_ib=0 dram_ab=0 dram_ib=0 getcrtc_rc=0 mode_valid=1 fb=207 len=301 crc=0c29a27f END
+FSP1 nonce=c2c16b95 seq=22 step=post_plane rc=0 slot=0 plane=71 crtc_id=155 fb_id=207 crtc_x=0 crtc_y=0 crtc_w=2064 crtc_h=2208 src_x=0 src_y=0 src_w=2064 src_h=2208 src_frac=0 zpos=0 len=183 crc=c103b74b END
+FSP1 nonce=c2c16b95 seq=23 step=post_plane rc=0 slot=1 plane=97 crtc_id=155 fb_id=207 crtc_x=0 crtc_y=0 crtc_w=2064 crtc_h=2208 src_x=2064 src_y=0 src_w=2064 src_h=2208 src_frac=0 zpos=0 len=186 crc=cd932cbf END
+FSP1 nonce=c2c16b95 seq=24 step=hold_start rc=0 hold_s=3 start_ms=21000 deadline_ms=24000 alarm_s=8 len=99 crc=fdc24328 END
+FSP1 nonce=c2c16b95 seq=25 step=hold_end rc=0 reason=deadline sig=0 held_ms=3000 late_ms=0 fd_closed=1 close_rc=0 close_ms=534 len=126 crc=cf46aa18 END
+FSP1 nonce=c2c16b95 seq=26 step=exit rc=0 code=0 reason=held_to_deadline shown=1 closed_at_exit=0 elapsed_ms=3600 len=113 crc=603be4dd END
+FSP1 nonce=c2c16b95 seq=27 step=eos rc=0 records=28 dropped=0 overflows=0 out=pipe opt_bytes=14168 opt_skipped=0 len=112 crc=43399aec END

@@ -1,0 +1,20 @@
+# c-ack-no-done mods=[] plan=[] tail=no-done; image <repo>/build/stage3c/20261012T010256Z-b7cf9a0bfb559dcb
+# reboots: 3806.86 final pid=1 arg=deadline | 3807.96 fork pid=461 arg=backstop
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=b7cf9a0bfb559dcb resp=4f13064af1852811e1bfdeeb335508dd862e14c04b5458342605dd524315a0ad kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=b7cf9a0bfb559dcb stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=1552f15606fd2ef5 END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=3606 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  idle limit started before SHELL_READY
+PASS  /run/fs.deadline = T0 + DEADLINE  [3806 vs t0=3606]
+PASS  first reboot reason = deadline  [3806.86 final pid=1 arg=deadline]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [3806.86 final pid=1 arg=deadline]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1  [3807.96 fork pid=461 arg=backstop]
+PASS  deadline reboot at T0+DEADLINE..+3 (HOST_ACK did not cancel it; idle limit unarmed without p0)  [T0+200.9]
+PASS  no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)
+PASS  backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)  [0 write-close event(s): ]
+PASS  tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)
+PASS  probes never named the decoy crtc nodes or debugfs
+PASS  modules attempted in order fake_a, fake_b, fake_c
+SCENARIO c-ack-no-done PASS

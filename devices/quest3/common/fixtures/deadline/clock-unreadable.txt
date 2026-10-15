@@ -1,0 +1,10 @@
+# scenario clock-unreadable (sim.sh, action a_none), deadline=8 ack_window=4 
+# T0=0 reboot records (fake syscall; first one counts):
+#   186 backstop pid=2402 via=fork
+#   186 deadline pid=2143 via=final
+#   186 fallback pid=2438 via=fork
+# PID 1 log:
+#   FS t=185s DEADLINE armed t0=0 deadline=T0+8 ack_window=4 backstop=T0+9 reboot-reasons-not-logged-at-reboot
+#   FS t=186s BACKSTOP armed pid=2336 in=0s
+#   FS REBOOT_RETURNED reason=backstop
+# sim stdout/stderr:

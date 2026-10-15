@@ -1,0 +1,16 @@
+#!/bin/busybox sh
+# fs-done [token]: the host has collected the record; ask PID 1 to recover
+# NOW (DEADLINE.md). It can only shorten the hold: PID 1 reboots to the
+# bootloader within about one second of seeing /run/fs.collected (of any
+# type, any content). It never touches the deadline. It reports "queued"
+# only if the file was really written and moved into place.
+# (FS_RUN overrides /run for the offline fixtures only.)
+r=${FS_RUN:-/run}
+t=${1:-done}
+case "$t" in *[!0-9a-z]*) t=done ;; esac
+if { printf '%s\n' "$t" > "$r/fs.collected.tmp"; } 2>/dev/null && mv "$r/fs.collected.tmp" "$r/fs.collected" 2>/dev/null; then
+    echo "FSD1 queued END"
+else
+    echo "FSD1 error=write END"
+    exit 1
+fi

@@ -1,0 +1,8 @@
+### fixtures (fix round 6) against cf251bb fs-gitcheck.sh (expected: G25a FAILS: it accepted a tracked symlink)
+FAIL  G25a tracked symlink, unchanged (rc=0 out=)
+FAIL  G25 tracked symlink retargeted (rc=1 out=REFUSED: working tree is modified (ignored and untracked files included):  M link.py;
+TOTAL: 37 passed, 2 failed
+### against the current fs-gitcheck.sh
+PASS  G25a tracked symlink, unchanged (refused: REFUSED: symlink entry in the pinned tree (not supported by this check): link.py)
+PASS  G25 tracked symlink retargeted (refused: REFUSED: working tree is modified (ignored and untracked files included):  M link.py;|REFUSED: symlink entry in the pinned tree (not supported by this)
+TOTAL: 39 passed, 0 failed

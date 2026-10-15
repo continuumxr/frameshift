@@ -1,0 +1,75 @@
+{
+ "build_sections": [
+  ".BTF",
+  ".BTF_ids",
+  ".altinstructions",
+  ".bss",
+  ".builtin_fw",
+  ".data",
+  ".data..percpu",
+  ".exit.text",
+  ".head.text",
+  ".init.data",
+  ".init.text",
+  ".mmuoff.data.read",
+  ".mmuoff.data.write",
+  ".notes",
+  ".pci_fixup",
+  ".pecoff_edata_padding",
+  ".rela.dyn",
+  ".relr.dyn",
+  ".rodata",
+  ".rodata1",
+  ".sbss",
+  ".text",
+  "__bug_table",
+  "__ex_table",
+  "__init_rodata",
+  "__kcrctab",
+  "__kcrctab_gpl",
+  "__kcrctab_gpl_future",
+  "__kcrctab_unused",
+  "__kcrctab_unused_gpl",
+  "__ksymtab",
+  "__ksymtab_gpl",
+  "__ksymtab_gpl_future",
+  "__ksymtab_strings",
+  "__ksymtab_unused",
+  "__ksymtab_unused_gpl",
+  "__modver",
+  "__param"
+ ],
+ "builds": {
+  "a2": {
+   "allow_sha256": "2244b9e3d781fd098a837ab0476c925b2f5b88d92334251506f1907c66b91e6d",
+   "baseline": "stock-build",
+   "requested_sha256": "0b5dabc1fc41cd330e83c2e748dd5b374a5aa3fc3e93a50eaaa05ecb57d00a4d"
+  },
+  "stock": {
+   "allow_sha256": "4bb7bb44ef055ab481e4f975a2a4dfcc82a836d7f04779b54cc78d777c3c8321",
+   "baseline": "waived",
+   "requested_sha256": "e1a84f89f3c569c84e638278fb41841aac869fdb1042497c3aca03f6e9ff99d6"
+  }
+ },
+ "counts": {
+  "module_copies": 396,
+  "required_from_vmlinux": 2583,
+  "unique_modules": 268
+ },
+ "device": "quest3s",
+ "note": "counts pinned from FS-A-006 (2583 required; 268 unique modules) and the first kgate inventory (396 copies); reference_sha256 pinned from this project's own deterministic kgate reference build (self-referential; see README 'Pins')",
+ "pins": {
+  "independently_anchored": "required_from_vmlinux (verified by the Chair in FS-R-006 s2: 2601/838/2583/776)",
+  "self_referential": "module_copies, unique_modules, reference_sha256, stock_build_symvers_sha256 and the per-build request/allowlist hashes and build_sections (allocated section names of the stock-config build) were pinned from this project's own outputs/files on 2026-10-09"
+ },
+ "reference_sha256": "89407ffa0c241932e88fa74b1ca110e58eee7d6d25650e1a648a0df8a4bc3457",
+ "sources": {
+  "boot": "boot",
+  "odm_dlkm": "ext4",
+  "vendor": "ext4",
+  "vendor_boot": "vendor_boot",
+  "vendor_dlkm": "ext4"
+ },
+ "stock_build_symvers_sha256": "0b0c713c677e066ccfcb986329f211fa8d6bc5ba59cd9b0ebcf1ff1b64e0aca7",
+ "stock_kernel": "../../../../firmware/quest3s/v2.7-user_ota/boot.img"
+}

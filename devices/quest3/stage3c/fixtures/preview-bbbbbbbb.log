@@ -1,0 +1,7 @@
+PORT bbbbbbbb 4128x2208 grey-pixels sha256=613b818350f2010405fbbd6666e140039152c3a4bdbb7106fee190818fa226a6
+VALIDATE port == C render (/tmp/tmp.p6doBfZ1WV/v6-bbbbbbbb.ppm): IDENTICAL
+STATS white_ppm=30885 max=0xff mean_x1000=131922 levels=0x80,0xff
+PNG scanout sha256=280af00d294d4cf786b333edd70e5661258c7c9a911b05ce036e65024bcaafb8
+PNG viewer sha256=f8d57de439b3453e87b741ba4701eef4a9a788b3d7d2c4731b272d170f507b08
+PNG mixermap sha256=96152e0ae5a80771ffd153a083060a6205ed7e8daffab5543eeea0f27152c895
+PNG digits sha256=eba0b0be05e99287f9d6926927a3a508d6cf5c2666f2b9782858ca674fd7417a

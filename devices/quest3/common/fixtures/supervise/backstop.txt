@@ -1,0 +1,2 @@
+# fs-supervise -t 60 -- busybox sleep 3000; fs-supervise SIGSTOPped for 92 s (past its 90 s alarm), then SIGCONT
+# rc=142 wall_ms=95379 children_left=0 report=

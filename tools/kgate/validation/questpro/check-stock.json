@@ -1,0 +1,229 @@
+{
+ "btf": {
+  "blob_sha256": "bd70741ac8890c01c82ece3109e484f28030a34c9726f631eac7e375e60d2dd6",
+  "kinds": {
+   "ARRAY": 3656,
+   "CONST": 2022,
+   "DATASEC": 1,
+   "ENUM": 2522,
+   "ENUM64": 2,
+   "FUNC": 52517,
+   "FUNC_PROTO": 28386,
+   "FWD": 47,
+   "INT": 15,
+   "PTR": 17129,
+   "RESTRICT": 2,
+   "STRUCT": 12043,
+   "TYPEDEF": 969,
+   "UNION": 980,
+   "VAR": 235,
+   "VOLATILE": 16
+  },
+  "located_by": "raw scan (single well-formed candidate)",
+  "offset": 21399312,
+  "types": 120542
+ },
+ "checks": [
+  {
+   "id": "reference-integrity",
+   "message": "device questpro; reference sha256 0b75e7571653c094dff8d688c8760b5915e6a5be9524c9f9a84927349f003386 matches the profile pin; all derived fields re-derived from 29 module records; stock BTF kinds re-scanned",
+   "status": "PASS"
+  },
+  {
+   "id": "profile-committed",
+   "message": "profile equals its committed git blob ef548266a05dde319e4ef406de9df6a43fb47f12",
+   "status": "PASS"
+  },
+  {
+   "id": "waiver-baseline",
+   "message": "baseline check waived by the operator: stock-config build: it is the baseline Module.symvers of this device's option-group builds",
+   "status": "WARN"
+  },
+  {
+   "id": "build-pins",
+   "message": "build 'stock': request list, allowlist and baseline match the profile pins",
+   "status": "PASS"
+  },
+  {
+   "id": "base-config",
+   "message": "requested base config equals the IKCONFIG of the device's pinned stock kernel",
+   "status": "PASS"
+  },
+  {
+   "id": "symvers-duplicates",
+   "message": "no duplicate rows (11617 rows, 11099 vmlinux)",
+   "status": "PASS"
+  },
+  {
+   "id": "crc",
+   "message": "776/776 vendor-required (symbol, CRC) pairs match vmlinux",
+   "status": "PASS"
+  },
+  {
+   "id": "module-layout",
+   "message": "module_layout 0x74b4ebeb matches",
+   "status": "PASS"
+  },
+  {
+   "id": "unversioned-imports",
+   "message": "0 unversioned vendor import(s) present in vmlinux",
+   "status": "PASS"
+  },
+  {
+   "id": "export-collision",
+   "message": "none of the 518 vendor-exported symbols is exported by vmlinux",
+   "status": "PASS"
+  },
+  {
+   "id": "namespace",
+   "message": "no vendor import needs a symbol namespace it does not declare",
+   "status": "PASS"
+  },
+  {
+   "id": "gpl-only",
+   "message": "no GPL-only export is used by a non-GPL-compatible vendor module",
+   "status": "PASS"
+  },
+  {
+   "id": "baseline",
+   "message": "waived: stock-config build: it is the baseline Module.symvers of this device's option-group builds",
+   "status": "SKIP"
+  },
+  {
+   "id": "requested-options",
+   "message": "all 0 requested option(s) satisfied (explicit --none)",
+   "status": "PASS"
+  },
+  {
+   "count": 2,
+   "id": "requested-config-allowlisted",
+   "items": [
+    "CONFIG_COMPAT_VDSO: base not set, resulting .config y",
+    "CONFIG_GENERIC_COMPAT_VDSO: base not set, resulting .config y"
+   ],
+   "message": "2 unrequested change(s) accepted by the explicit allowlist <repo>/tools/kgate/validation/requests/questpro-stock.allow",
+   "status": "WARN"
+  },
+  {
+   "id": "requested-config",
+   "message": ".config equals base <repo>/firmware/questpro/v2.7-user_ota/kernel.config + requests, except the allowlisted/toolchain entries reported above",
+   "status": "PASS"
+  },
+  {
+   "id": "vermagic-image",
+   "message": "kernel image carries the module-loader vermagic '4.19.325-cip128-st12-g6bde5fc06b25 SMP preempt mod_unload modversions aarch64'",
+   "status": "PASS"
+  },
+  {
+   "id": "vermagic",
+   "message": "vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)",
+   "status": "PASS"
+  },
+  {
+   "id": "btf-kinds",
+   "message": "120542 types; no kinds beyond stock (ARRAY, CONST, DATASEC, ENUM, ENUM64, FUNC, FUNC_PROTO, FWD, INT, PTR, RESTRICT, STRUCT, TYPEDEF, UNION, VAR, VOLATILE) -- kind scan only, not BTF validation",
+   "status": "PASS"
+  },
+  {
+   "id": "config-binding",
+   "message": "supplied .config is byte-identical to the image's embedded IKCONFIG (153250 bytes)",
+   "status": "PASS"
+  },
+  {
+   "id": "input-binding",
+   "message": "Module.symvers vmlinux rows equal the 11099 decoded entries of the __ksymtab*/__kcrctab* tables (name, CRC, type, namespace; both ways); kernel image equals objcopy -O binary of vmlinux (exact length, gaps zero); in the Image's own kallsyms, __start/__stop___ksymtab* and __start___kcrctab* equal the decoded tables' bounds and every entry's address equals its symbol's kallsyms address; tables sorted; sections end before _edata and match the pinned section set; .symtab agrees (cross-check); banner, IKCONFIG and BTF blob match",
+   "status": "PASS"
+  }
+ ],
+ "config_diff": {
+  "allowlisted": [
+   "CONFIG_COMPAT_VDSO: base not set, resulting .config y",
+   "CONFIG_GENERIC_COMPAT_VDSO: base not set, resulting .config y"
+  ],
+  "stale_allow_entries": [],
+  "toolchain_warn": [],
+  "unrequested_changes": 0
+ },
+ "exit_code": 0,
+ "inputs": {
+  "allow_config_changes": {
+   "path": "<repo>/tools/kgate/validation/requests/questpro-stock.allow",
+   "sha256": "69550599be67906042917a9cde3ed5625df3a0f263812010a300a0eb7cb7397d"
+  },
+  "baseline_symvers": null,
+  "config": {
+   "path": "$HOME/work/kgateqpro/out/.config",
+   "sha256": "b1a7990c5a85a9d6c62a346bae3df3dde140ced2608c485b4c0170897ab9ac17"
+  },
+  "kernel": {
+   "path": "$HOME/work/kgateqpro/out/arch/arm64/boot/Image.gz",
+   "sha256": "958e62aa2fcc4f03f5267049b831e29d145f37308fc3f090aab55a7ca657ef9d"
+  },
+  "profile": {
+   "build": "stock",
+   "git_blob_sha1": "ef548266a05dde319e4ef406de9df6a43fb47f12",
+   "path": "<repo>/tools/kgate/validation/requests/questpro.profile.json",
+   "sha256": "4356e2291e39c5e1a8bab0cc6fc03392ff1ceaca053294c7671eae4d057b01c5"
+  },
+  "reference": {
+   "device": "questpro",
+   "path": "$HOME/work/kgate-refs/questpro/reference.json",
+   "pinned": true,
+   "sha256": "0b75e7571653c094dff8d688c8760b5915e6a5be9524c9f9a84927349f003386"
+  },
+  "requested": {
+   "path": "<repo>/tools/kgate/validation/requests/none.txt",
+   "sha256": "e1a84f89f3c569c84e638278fb41841aac869fdb1042497c3aca03f6e9ff99d6"
+  },
+  "requested_config": {
+   "path": "<repo>/firmware/questpro/v2.7-user_ota/kernel.config",
+   "sha256": "88875d26e51f4a506d2948e0c59f3946ab526935e47dcad4c376dd92d41ae1db"
+  },
+  "stock_kernel": {
+   "path": "<repo>/firmware/questpro/v2.7-user_ota/boot.img",
+   "sha256": "8db4bf9be77a6c355d421d6a83542914d600cc72c7e0e2a41b366ec18a2b82a7"
+  },
+  "symvers": {
+   "path": "$HOME/work/kgateqpro/out/Module.symvers",
+   "rows": 11617,
+   "sha256": "19d3ac39efd57aa0286a37172cfc5c77f9ea1a1f8dc02d6b2c98f675778f8115"
+  },
+  "vmlinux": {
+   "kallsyms_symbols": 107175,
+   "ksymtab_exports": 11099,
+   "path": "$HOME/work/kgateqpro/out/vmlinux",
+   "sha256": "de2e5cb30f598e47853c75c82dd2fbb1ab43ec03bd31ba3e0ba071e1ab220564",
+   "symtab_crc_symbols": 11099
+  }
+ },
+ "label": "questpro-stock",
+ "mode": "gate",
+ "reference_counts": {
+  "imported_pairs": 2096,
+  "module_copies": 29,
+  "presence_required_unversioned": 0,
+  "required_from_vmlinux": 776,
+  "unique_imported_pairs": 1093,
+  "unique_modules": 29,
+  "vendor_exported_symbols": 518
+ },
+ "reference_device": "questpro",
+ "requested_result": {
+  "explicit_none": true,
+  "requested": 0,
+  "unsatisfied": 0
+ },
+ "required_result": {
+  "match": 776,
+  "mismatch": 0,
+  "missing": 0,
+  "required": 776
+ },
+ "result": "PASS",
+ "schema": "kgate-check/3",
+ "statement": "matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open",
+ "tool_version": "2.3",
+ "waivers": {
+  "baseline": "stock-config build: it is the baseline Module.symvers of this device's option-group builds"
+ }
+}

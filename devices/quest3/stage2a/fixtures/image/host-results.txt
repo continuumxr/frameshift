@@ -1,0 +1,278 @@
+# test-host.ps1  2026-10-09T09:11:11  dir=<repo>\build\stage2a-harness
+# fsb1.ps1 1f84c633e8cf358fce3e006cef996bae9b372ee2914a97a0c5ab864312f0a703  fs-classify.ps1 762579e0f928535fb026ffe8302d325fc03acb8f95966c5ee36d92e43734d57b  fs-collect.ps1 19b230d9469b50e9f58ebfed295053e39736c95a9ba4b3a028d2b3785315eb0c
+
+## s2-ack-no-done (stage2a, plan full-no-done, mods: )
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=183 term_ms=-1 kill_ms=-1 out=352B err=0B why=none
+     step 2 absent  end=exited code=0 sig=0 errno=0 ms=56 term_ms=-1 kill_ms=-1 out=0B err=0B why=none
+     step 3 diag    end=exited code=0 sig=0 errno=0 ms=16 term_ms=-1 kill_ms=-1 out=1633B err=0B why=none
+     step 4 list    end=exited code=0 sig=0 errno=0 ms=50 term_ms=-1 kill_ms=-1 out=179B err=0B why=none
+     step 5 uname   end=exited code=0 sig=0 errno=0 ms=94 term_ms=-1 kill_ms=-1 out=34B err=0B why=none
+     step 6 b2kat   end=exited code=0 sig=0 errno=0 ms=138 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 7 b2chal  end=exited code=0 sig=0 errno=0 ms=124 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 8 inv     end=exited code=0 sig=0 errno=0 ms=660 term_ms=-1 kill_ms=-1 out=1298B err=0B why=none
+     OUTCOME PASS (rule 7) integrity shown by hash and absent; every Valve step OK
+       1 hash    MEASURED    all four digests equal the pins
+       2 absent  MEASURED    none of the five paths exists
+       3 diag    OK          ok
+       4 list    OK          ok
+       5 uname   OK          ok
+       6 b2kat   OK          ok
+       7 b2chal  OK          ok
+       8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+PASS  classifier (stage 2a) outcome = expected 'PASS'
+
+## s2-done-early (stage2a, plan verify-done, mods: )
+     (no runner request in this scenario: nothing to decode; the harness checked the reboot)
+
+## s2-hung-step (stage2a, plan full, mods: hang-loader)
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=86 term_ms=-1 kill_ms=-1 out=352B err=0B why=none
+     step 2 absent  end=exited code=0 sig=0 errno=0 ms=51 term_ms=-1 kill_ms=-1 out=0B err=0B why=none
+     step 3 diag    end=timer-kill code=-1 sig=9 errno=0 ms=7002 term_ms=5001 kill_ms=7001 out=0B err=0B why=none
+     step 4 list    end=timer-kill code=-1 sig=9 errno=0 ms=7001 term_ms=5000 kill_ms=7000 out=0B err=0B why=none
+     step 5 uname   end=timer-kill code=-1 sig=9 errno=0 ms=7002 term_ms=5001 kill_ms=7001 out=0B err=0B why=none
+     step 6 b2kat   end=timer-kill code=-1 sig=9 errno=0 ms=7001 term_ms=5000 kill_ms=7000 out=0B err=0B why=none
+     step 7 b2chal  end=timer-kill code=-1 sig=9 errno=0 ms=7003 term_ms=5000 kill_ms=7001 out=0B err=0B why=none
+     step 8 inv     end=exited code=0 sig=0 errno=0 ms=264 term_ms=-1 kill_ms=-1 out=1298B err=0B why=none
+     OUTCOME INTEGRITY FAULT (rule 3) image or build fault, not a compatibility result: hash: /valve/lib/ld-linux-aarch64.so.1 digest 7296bc1d79f250d4d18446579b9e05791c5a61191257910bcd24602c3e44f7e1 != pin 2ddc56a02f476765a21e31d69144e68bee933950fe613747d54b87a2369a037e
+       1 hash    MEASURED    /valve/lib/ld-linux-aarch64.so.1 digest 7296bc1d79f250d4d18446579b9e05791c5a61191257910bcd24602c3e44f7e1 != pin 2ddc56a02f476765a21e31d69144e68bee933950fe613747d54b87a2369a037e
+       2 absent  MEASURED    none of the five paths exists
+       3 diag    FAILED      timer-kill (hang) term_ms=5001 kill_ms=7001; strays=1; content: missing line version.version="2.39"
+       4 list    FAILED      timer-kill (hang) term_ms=5000 kill_ms=7000; strays=1; content: not exactly 3 terminated lines
+       5 uname   FAILED      timer-kill (hang) term_ms=5001 kill_ms=7001; strays=1; content: output is not '6.18.33.2-microsoft-standard-WSL2\n'
+       6 b2kat   FAILED      timer-kill (hang) term_ms=5000 kill_ms=7000; strays=1; content: not the BLAKE2b-512("") KAT line
+       7 b2chal  FAILED      timer-kill (hang) term_ms=5000 kill_ms=7001; strays=1; content: challenge digest differs from the host computation
+       8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+PASS  classifier (stage 2a) outcome = expected 'INTEGRITY FAULT'
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify c9d26bc860922715cfb9c96ad63e89ac | fs-ack c83d07266f9953ed | fs-status | fs-valve ef687f8664bcbc6e2eb9a365f84e115a | fs-done
+     | CAPTURE: <repo>\build\stage2a-harness\s2-hung-step\replay-collect\capture.raw bytes=6739 sha256=9a5af24248cfd455cf9026ddb6ad91da4146b1d3502941c89a31d04e7bdabf32 consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 2a -Replay: status COLLECTED-VALID, stage 2a, runner fs-valve (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (6739/6747 bytes)
+     | OUTCOME: INTEGRITY FAULT   (OUTCOMES \xa76 rule 3) image or build fault, not a compatibility result: hash: /valve/lib/ld-linux-aarch64.so.1 digest 7296bc1d79f250d4d18446579b9e05791c5a61191257910bcd24602c3e44f7e1 != pin 2ddc56a02f476765a21e31d69144e68bee933950fe613747d54b87a2369a037e
+     |   step 1 hash    MEASURED    /valve/lib/ld-linux-aarch64.so.1 digest 7296bc1d79f250d4d18446579b9e05791c5a61191257910bcd24602c3e44f7e1 != pin 2ddc56a02f476765a21e31d69144e68bee933950fe613747d54b87a2369a037e
+     |   step 2 absent  MEASURED    none of the five paths exists
+     |   step 3 diag    FAILED      timer-kill (hang) term_ms=5001 kill_ms=7001; strays=1; content: missing line version.version="2.39"
+     |   step 4 list    FAILED      timer-kill (hang) term_ms=5000 kill_ms=7000; strays=1; content: not exactly 3 terminated lines
+     |   step 5 uname   FAILED      timer-kill (hang) term_ms=5001 kill_ms=7001; strays=1; content: output is not '6.18.33.2-microsoft-standard-WSL2\n'
+     |   step 6 b2kat   FAILED      timer-kill (hang) term_ms=5000 kill_ms=7000; strays=1; content: not the BLAKE2b-512("") KAT line
+     |   step 7 b2chal  FAILED      timer-kill (hang) term_ms=5000 kill_ms=7001; strays=1; content: challenge digest differs from the host computation
+     |   step 8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+     |   failing (lowest first): 3 diag: timer-kill (hang) term_ms=5001 kill_ms=7001; strays=1; content: missing line version.version="2.39" | 4 list: timer-kill (hang) term_ms=5000 kill_ms=7000; strays=1; content: not exactly 3 terminated lines | 5 uname: timer-kill (hang) term_ms=5001 kill_ms=7001; strays=1; content: output is not '6.18.33.2-microsoft-standard-WSL2\n' | 6 b2kat: timer-kill (hang) term_ms=5000 kill_ms=7000; strays=1; content: not the BLAKE2b-512("") KAT line | 7 b2chal: timer-kill (hang) term_ms=5000 kill_ms=7001; strays=1; content: challenge digest differs from the host computation
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 2a -CollectDir on the replay: OUTCOME INTEGRITY FAULT (exit 12); expected INTEGRITY FAULT
+
+## s2-inv-absent (stage2a, plan full, mods: no-inv-paths)
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=84 term_ms=-1 kill_ms=-1 out=352B err=0B why=none
+     step 2 absent  end=exited code=0 sig=0 errno=0 ms=46 term_ms=-1 kill_ms=-1 out=0B err=0B why=none
+     step 3 diag    end=exited code=0 sig=0 errno=0 ms=13 term_ms=-1 kill_ms=-1 out=1633B err=0B why=none
+     step 4 list    end=exited code=0 sig=0 errno=0 ms=25 term_ms=-1 kill_ms=-1 out=179B err=0B why=none
+     step 5 uname   end=exited code=0 sig=0 errno=0 ms=60 term_ms=-1 kill_ms=-1 out=34B err=0B why=none
+     step 6 b2kat   end=exited code=0 sig=0 errno=0 ms=69 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 7 b2chal  end=exited code=0 sig=0 errno=0 ms=90 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 8 inv     end=exited code=0 sig=0 errno=0 ms=72 term_ms=-1 kill_ms=-1 out=858B err=0B why=none
+     OUTCOME PASS (rule 7) integrity shown by hash and absent; every Valve step OK
+       1 hash    MEASURED    all four digests equal the pins
+       2 absent  MEASURED    none of the five paths exists
+       3 diag    OK          ok
+       4 list    OK          ok
+       5 uname   OK          ok
+       6 b2kat   OK          ok
+       7 b2chal  OK          ok
+       8 inv     INFO        end=exited code=0 sig=0 why=none out=858B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+PASS  classifier (stage 2a) outcome = expected 'PASS'
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 52d459040c805d060c31a4ab8b9996be | fs-ack c265c12545604d6e | fs-status | fs-valve 84fd992548894d55a70091aa6743fec9 | fs-done
+     | CAPTURE: <repo>\build\stage2a-harness\s2-inv-absent\replay-collect\capture.raw bytes=9785 sha256=0aff944a9d0a0e8926918edb5f5ec2e8d7cfe6d95865bba9a2b9ab7b4cffaf3b consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 2a -Replay: status COLLECTED-VALID, stage 2a, runner fs-valve (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (9785/9793 bytes)
+     | OUTCOME: PASS   (OUTCOMES \xa76 rule 7) integrity shown by hash and absent; every Valve step OK
+     |   step 1 hash    MEASURED    all four digests equal the pins
+     |   step 2 absent  MEASURED    none of the five paths exists
+     |   step 3 diag    OK          ok
+     |   step 4 list    OK          ok
+     |   step 5 uname   OK          ok
+     |   step 6 b2kat   OK          ok
+     |   step 7 b2chal  OK          ok
+     |   step 8 inv     INFO        end=exited code=0 sig=0 why=none out=858B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 2a -CollectDir on the replay: OUTCOME PASS (exit 10); expected PASS
+
+## s2-missing-forced (stage2a, plan full, mods: missing-uname)
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=1 sig=0 errno=0 ms=99 term_ms=-1 kill_ms=-1 out=269B err=68B why=none
+     step 2 absent  end=exited code=0 sig=0 errno=0 ms=48 term_ms=-1 kill_ms=-1 out=0B err=0B why=none
+     step 3 diag    end=exited code=0 sig=0 errno=0 ms=13 term_ms=-1 kill_ms=-1 out=1633B err=0B why=none
+     step 4 list    end=exited code=0 sig=0 errno=0 ms=36 term_ms=-1 kill_ms=-1 out=179B err=0B why=none
+     step 5 uname   end=exited code=127 sig=0 errno=0 ms=18 term_ms=-1 kill_ms=-1 out=0B err=132B why=none
+     step 6 b2kat   end=exited code=0 sig=0 errno=0 ms=96 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 7 b2chal  end=exited code=0 sig=0 errno=0 ms=99 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 8 inv     end=exited code=0 sig=0 errno=0 ms=353 term_ms=-1 kill_ms=-1 out=1298B err=0B why=none
+     OUTCOME INTEGRITY FAULT (rule 3) image or build fault, not a compatibility result: hash: /valve/bin/uname cannot be read: sha256sum: can't open '/valve/bin/uname': No such file or directory
+       1 hash    MEASURED    /valve/bin/uname cannot be read: sha256sum: can't open '/valve/bin/uname': No such file or directory
+       2 absent  MEASURED    none of the five paths exists
+       3 diag    OK          ok
+       4 list    OK          ok
+       5 uname   FAILED      exited code=127; stderr 132 bytes; content: output is not '6.18.33.2-microsoft-standard-WSL2\n'
+       6 b2kat   OK          ok
+       7 b2chal  OK          ok
+       8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+PASS  classifier (stage 2a) outcome = expected 'INTEGRITY FAULT'
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 02e5602fd01b07e7e09e96e136e33455 | fs-ack 2055966c07195370 | fs-status | fs-valve cb212dfc0305f5a4f20ac4cd1e347ca4 | fs-done
+     | CAPTURE: <repo>\build\stage2a-harness\s2-missing-forced\replay-collect\capture.raw bytes=10779 sha256=46dfbb8bfb09713b7e3a20f8763ce9982b7e6a073e658921f2650b6d19bda208 consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 2a -Replay: status COLLECTED-VALID, stage 2a, runner fs-valve (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (10779/10787 bytes)
+     | OUTCOME: INTEGRITY FAULT   (OUTCOMES \xa76 rule 3) image or build fault, not a compatibility result: hash: /valve/bin/uname cannot be read: sha256sum: can't open '/valve/bin/uname': No such file or directory
+     |   step 1 hash    MEASURED    /valve/bin/uname cannot be read: sha256sum: can't open '/valve/bin/uname': No such file or directory
+     |   step 2 absent  MEASURED    none of the five paths exists
+     |   step 3 diag    OK          ok
+     |   step 4 list    OK          ok
+     |   step 5 uname   FAILED      exited code=127; stderr 132 bytes; content: output is not '6.18.33.2-microsoft-standard-WSL2\n'
+     |   step 6 b2kat   OK          ok
+     |   step 7 b2chal  OK          ok
+     |   step 8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+     |   failing (lowest first): 5 uname: exited code=127; stderr 132 bytes; content: output is not '6.18.33.2-microsoft-standard-WSL2\n'
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 2a -CollectDir on the replay: OUTCOME INTEGRITY FAULT (exit 12); expected INTEGRITY FAULT
+
+## s2-no-ack (stage2a, plan verify-only, mods: )
+     (no runner request in this scenario: nothing to decode; the harness checked the reboot)
+
+## s2-no-udc (stage2a, plan none, mods: no-udc)
+     (no runner request in this scenario: nothing to decode; the harness checked the reboot)
+
+## s2-pass (stage2a, plan full, mods: )
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=192 term_ms=-1 kill_ms=-1 out=352B err=0B why=none
+     step 2 absent  end=exited code=0 sig=0 errno=0 ms=52 term_ms=-1 kill_ms=-1 out=0B err=0B why=none
+     step 3 diag    end=exited code=0 sig=0 errno=0 ms=21 term_ms=-1 kill_ms=-1 out=1633B err=0B why=none
+     step 4 list    end=exited code=0 sig=0 errno=0 ms=44 term_ms=-1 kill_ms=-1 out=179B err=0B why=none
+     step 5 uname   end=exited code=0 sig=0 errno=0 ms=99 term_ms=-1 kill_ms=-1 out=34B err=0B why=none
+     step 6 b2kat   end=exited code=0 sig=0 errno=0 ms=132 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 7 b2chal  end=exited code=0 sig=0 errno=0 ms=123 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 8 inv     end=exited code=0 sig=0 errno=0 ms=689 term_ms=-1 kill_ms=-1 out=1298B err=0B why=none
+     OUTCOME PASS (rule 7) integrity shown by hash and absent; every Valve step OK
+       1 hash    MEASURED    all four digests equal the pins
+       2 absent  MEASURED    none of the five paths exists
+       3 diag    OK          ok
+       4 list    OK          ok
+       5 uname   OK          ok
+       6 b2kat   OK          ok
+       7 b2chal  OK          ok
+       8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+PASS  classifier (stage 2a) outcome = expected 'PASS'
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 782dc23bbad2574fc70534a62068bdd9 | fs-ack 6197d367efb47e37 | fs-status | fs-valve ffa6a6044336c9630f71e4bb2916e41a | fs-done
+     | CAPTURE: <repo>\build\stage2a-harness\s2-pass\replay-collect\capture.raw bytes=10620 sha256=1cdc86226056128ce3b1167dfc590cf95eb6cb08da948fbc03bc219b52ecf9f3 consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 2a -Replay: status COLLECTED-VALID, stage 2a, runner fs-valve (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (10620/10628 bytes)
+     | OUTCOME: PASS   (OUTCOMES \xa76 rule 7) integrity shown by hash and absent; every Valve step OK
+     |   step 1 hash    MEASURED    all four digests equal the pins
+     |   step 2 absent  MEASURED    none of the five paths exists
+     |   step 3 diag    OK          ok
+     |   step 4 list    OK          ok
+     |   step 5 uname   OK          ok
+     |   step 6 b2kat   OK          ok
+     |   step 7 b2chal  OK          ok
+     |   step 8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 2a -CollectDir on the replay: OUTCOME PASS (exit 10); expected PASS
+
+## s2-preload-forced (stage2a, plan full, mods: preload)
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=113 term_ms=-1 kill_ms=-1 out=352B err=0B why=none
+     step 2 absent  end=exited code=0 sig=0 errno=0 ms=69 term_ms=-1 kill_ms=-1 out=19B err=0B why=none
+     step 3 diag    end=exited code=0 sig=0 errno=0 ms=31 term_ms=-1 kill_ms=-1 out=1633B err=0B why=none
+     step 4 list    end=exited code=0 sig=0 errno=0 ms=60 term_ms=-1 kill_ms=-1 out=179B err=0B why=none
+     step 5 uname   end=exited code=0 sig=0 errno=0 ms=88 term_ms=-1 kill_ms=-1 out=34B err=0B why=none
+     step 6 b2kat   end=exited code=0 sig=0 errno=0 ms=115 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 7 b2chal  end=exited code=0 sig=0 errno=0 ms=76 term_ms=-1 kill_ms=-1 out=132B err=0B why=none
+     step 8 inv     end=exited code=0 sig=0 errno=0 ms=321 term_ms=-1 kill_ms=-1 out=1298B err=0B why=none
+     OUTCOME INTEGRITY FAULT (rule 3) image or build fault, not a compatibility result: absent: present: /etc/ld.so.preload
+       1 hash    MEASURED    all four digests equal the pins
+       2 absent  MEASURED    present: /etc/ld.so.preload
+       3 diag    OK          ok
+       4 list    OK          ok
+       5 uname   OK          ok
+       6 b2kat   OK          ok
+       7 b2chal  OK          ok
+       8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+PASS  classifier (stage 2a) outcome = expected 'INTEGRITY FAULT'
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 0d7b354fb61ba6056b2bee80acaf2f42 | fs-ack 93a3910230c5a5f6 | fs-status | fs-valve 72a53ce34c895434e38fdbad0ce38bc8 | fs-done
+     | CAPTURE: <repo>\build\stage2a-harness\s2-preload-forced\replay-collect\capture.raw bytes=10673 sha256=e60d4fd495f3decf2b9eb415166082831ac510146cd54fd08c3d40c0452c765a consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 2a -Replay: status COLLECTED-VALID, stage 2a, runner fs-valve (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (10673/10681 bytes)
+     | OUTCOME: INTEGRITY FAULT   (OUTCOMES \xa76 rule 3) image or build fault, not a compatibility result: absent: present: /etc/ld.so.preload
+     |   step 1 hash    MEASURED    all four digests equal the pins
+     |   step 2 absent  MEASURED    present: /etc/ld.so.preload
+     |   step 3 diag    OK          ok
+     |   step 4 list    OK          ok
+     |   step 5 uname   OK          ok
+     |   step 6 b2kat   OK          ok
+     |   step 7 b2chal  OK          ok
+     |   step 8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 2a -CollectDir on the replay: OUTCOME INTEGRITY FAULT (exit 12); expected INTEGRITY FAULT
+
+## s2-tamper-forced (stage2a, plan full, mods: tamper-b2sum)
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=81 term_ms=-1 kill_ms=-1 out=352B err=0B why=none
+     step 2 absent  end=exited code=0 sig=0 errno=0 ms=62 term_ms=-1 kill_ms=-1 out=0B err=0B why=none
+     step 3 diag    end=exited code=0 sig=0 errno=0 ms=25 term_ms=-1 kill_ms=-1 out=1633B err=0B why=none
+     step 4 list    end=exited code=0 sig=0 errno=0 ms=32 term_ms=-1 kill_ms=-1 out=179B err=0B why=none
+     step 5 uname   end=exited code=0 sig=0 errno=0 ms=90 term_ms=-1 kill_ms=-1 out=34B err=0B why=none
+     step 6 b2kat   end=signaled code=-1 sig=11 errno=0 ms=55 term_ms=-1 kill_ms=-1 out=0B err=67B why=none
+     step 7 b2chal  end=signaled code=-1 sig=11 errno=0 ms=52 term_ms=-1 kill_ms=-1 out=0B err=67B why=none
+     step 8 inv     end=exited code=0 sig=0 errno=0 ms=291 term_ms=-1 kill_ms=-1 out=1298B err=0B why=none
+     OUTCOME INTEGRITY FAULT (rule 3) image or build fault, not a compatibility result: hash: /valve/bin/b2sum digest ed0cd4d35dbeff5082f475e6c8a11374c9ce738e0578df0c7ac1cfad7f950a65 != pin 90154680070cfcb2a3027b8fa26a8091d24333329294a2f4be7a12c7f11f6402
+       1 hash    MEASURED    /valve/bin/b2sum digest ed0cd4d35dbeff5082f475e6c8a11374c9ce738e0578df0c7ac1cfad7f950a65 != pin 90154680070cfcb2a3027b8fa26a8091d24333329294a2f4be7a12c7f11f6402
+       2 absent  MEASURED    none of the five paths exists
+       3 diag    OK          ok
+       4 list    OK          ok
+       5 uname   OK          ok
+       6 b2kat   FAILED      signaled sig=11; stderr 67 bytes; content: not the BLAKE2b-512("") KAT line
+       7 b2chal  FAILED      signaled sig=11; stderr 67 bytes; content: challenge digest differs from the host computation
+       8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+PASS  classifier (stage 2a) outcome = expected 'INTEGRITY FAULT'
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 16a579c63b1486189bed4bed732de331 | fs-ack 6070f146143b55c0 | fs-status | fs-valve 484518525743a0d18b8a0fe70c439599 | fs-done
+     | CAPTURE: <repo>\build\stage2a-harness\s2-tamper-forced\replay-collect\capture.raw bytes=10405 sha256=7428407531af421348df9bdb6a6eb0c53952891cce0bfd487fde46f72cac962c consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 2a -Replay: status COLLECTED-VALID, stage 2a, runner fs-valve (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (10405/10413 bytes)
+     | OUTCOME: INTEGRITY FAULT   (OUTCOMES \xa76 rule 3) image or build fault, not a compatibility result: hash: /valve/bin/b2sum digest ed0cd4d35dbeff5082f475e6c8a11374c9ce738e0578df0c7ac1cfad7f950a65 != pin 90154680070cfcb2a3027b8fa26a8091d24333329294a2f4be7a12c7f11f6402
+     |   step 1 hash    MEASURED    /valve/bin/b2sum digest ed0cd4d35dbeff5082f475e6c8a11374c9ce738e0578df0c7ac1cfad7f950a65 != pin 90154680070cfcb2a3027b8fa26a8091d24333329294a2f4be7a12c7f11f6402
+     |   step 2 absent  MEASURED    none of the five paths exists
+     |   step 3 diag    OK          ok
+     |   step 4 list    OK          ok
+     |   step 5 uname   OK          ok
+     |   step 6 b2kat   FAILED      signaled sig=11; stderr 67 bytes; content: not the BLAKE2b-512("") KAT line
+     |   step 7 b2chal  FAILED      signaled sig=11; stderr 67 bytes; content: challenge digest differs from the host computation
+     |   step 8 inv     INFO        end=exited code=0 sig=0 why=none out=1298B err=0B sections=/proc/modules,/sys/class/remoteproc,/sys/bus/platform/devices/3000000.remoteproc-adsp/driver,/sys/class/power_supply,end
+     |   failing (lowest first): 6 b2kat: signaled sig=11; stderr 67 bytes; content: not the BLAKE2b-512("") KAT line | 7 b2chal: signaled sig=11; stderr 67 bytes; content: challenge digest differs from the host computation
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 2a -CollectDir on the replay: OUTCOME INTEGRITY FAULT (exit 12); expected INTEGRITY FAULT
+
+TOTAL: all host checks PASS

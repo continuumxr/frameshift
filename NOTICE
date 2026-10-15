@@ -1,0 +1,18 @@
+FrameShift
+Copyright 2026 the FrameShift contributors
+
+Licences (see docs/PROVENANCE-POLICY.md section 6):
+- Code (tools, host scripts, on-device services, build scripts, test fixtures and
+  records): Apache License, Version 2.0 (see LICENSE).
+- Kernel patches in kernel-patches/ and FrameShift's own kernel modules:
+  GPL-2.0-only (see kernel-patches/README.md).
+- Documentation (Markdown files and other prose): Creative Commons Attribution 4.0
+  International (CC-BY-4.0), https://creativecommons.org/licenses/by/4.0/.
+
+This repository contains no Valve or Meta software, firmware or images. Users
+obtain SteamOS from Valve; firmware stays on, and is read from, the user's own
+headset.
+
+Meta and Quest are trademarks of Meta Platforms, Inc.; Valve, Steam, SteamOS and
+Steam Frame are trademarks of Valve Corporation; other names are the property of
+their respective owners. FrameShift is not affiliated with or endorsed by them.

@@ -1,0 +1,55 @@
+fs-supervise sha256=77f7a70a7904a7091db8e132b6c8f0ee68e6187f94d4690ec2a42a26f5206a74
+busybox      sha256=c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02 (children)
+qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2)
+normal PASS end=exited code=0, exit 0, out 6 B, err 4 B, nothing sent
+nonzero PASS end=exited code=3, no timer
+exit143 PASS end=exited code=143 term_ms=-1 (143 alone is not timer evidence)
+sleeper PASS end=timer-term sig=15, TERM at ~2000 ms, no KILL, wall < 4 s
+term143 PASS end=timer-term code=143 (raw status kept apart from the timer evidence)
+ignterm PASS end=timer-kill sig=9, TERM ~2000 ms, KILL ~4000 ms, wall < 6 s, exit 4
+ignterm-nothing-left PASS no 'sleep 1' loop survives
+inherit PASS inherited SIG_IGN is reset in the child: timer-term, not timer-kill
+grandchild PASS child exits 0; grandchild in the group killed (strays=1); pipes eof; wall < 3 s
+grouphang PASS timer-term; the whole group dies at the TERM; wall < 4 s
+grouphang-nothing-left PASS no 'sleep 30'/'sleep 31' survives
+escape PASS setsid succeeded (escapee pid=76747 = sid=76747); killed and reaped (strays=1), pipes eof, why=none, wall < 3 s
+escape-nothing-left PASS no 'sleep 33' survives
+flood PASS 4 concurrent writers: out_total=200000 out_kept=1000 (file 1000 B); err_total=10000 err_kept=1000
+endless PASS an endless writer is stopped by the deadline on time: timer-term, out_total >> cap, kept = 4096
+cap0 PASS cap 0: counted, nothing kept
+envempty PASS no -e: the child sees an EMPTY environment (0 bytes from env)
+envone PASS -e FOO=bar: the child sees exactly FOO=bar
+env-LD_PRELOAD PASS -e LD_PRELOAD=… refused, exit 64, nothing started, no capture file
+env-LD_LIBRARY_PATH PASS -e LD_LIBRARY_PATH=… refused, exit 64, nothing started, no capture file
+env-LD_DEBUG PASS -e LD_DEBUG=… refused, exit 64, nothing started, no capture file
+env-GLIBC_TUNABLES PASS -e GLIBC_TUNABLES=… refused, exit 64, nothing started, no capture file
+env-MALLOC_ARENA_MAX PASS -e MALLOC_ARENA_MAX=… refused, exit 64, nothing started, no capture file
+env-LC_ALL PASS -e LC_ALL=… refused, exit 64, nothing started, no capture file
+env-LANG PASS -e LANG=… refused, exit 64, nothing started, no capture file
+env-TZ PASS -e TZ=… refused, exit 64, nothing started, no capture file
+env-GCONV_PATH PASS -e GCONV_PATH=… refused, exit 64, nothing started, no capture file
+env-LOCPATH PASS -e LOCPATH=… refused, exit 64, nothing started, no capture file
+env-POSIXLY_CORRECT PASS -e POSIXLY_CORRECT=… refused, exit 64, nothing started, no capture file
+envdup PASS duplicate key refused
+envsyntax PASS bad key refused
+envnoeq PASS KEY without = refused
+relprog PASS relative program refused
+dotdot PASS '..' in program path refused
+t0 PASS timeout 0 refused
+t61 PASS timeout 61 (> compiled max 60) refused
+g11 PASS grace 11 (> compiled max 10) refused
+bigcap PASS cap > 1 MiB refused
+notimeout PASS missing -t refused
+lead0 PASS non-canonical number refused
+exists PASS existing capture file refused (O_EXCL)
+stdinzero PASS stdin from a non-null char device refused
+samefile PASS same file for stdout and stderr refused
+stdinnull PASS default stdin is /dev/null: cat ends at once with 0 bytes
+stdinfile PASS -i FILE: the child reads exactly its bytes
+cwd PASS cwd is /
+enoent PASS end=exec-failed errno=2, exit 5 (not confused with exit 127)
+eacces PASS end=exec-failed errno=13
+segv PASS end=signaled sig=11 (not a timer event)
+binary PASS raw bytes captured exactly (NUL, CR, LF, 0xff)
+backstop PASS fs-supervise dies by its own SIGALRM (status 142) and the child dies with it
+TOTAL pass=51 fail=0

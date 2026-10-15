@@ -1,0 +1,20 @@
+CHECK size PASS 4128x2208
+CHECK grey PASS R=G=B everywhere
+CHECK levels PASS levels=0x80,0xff
+CHECK two_levels PASS mid-grey 0x80 field and white 0xff marks only
+CHECK bright_field PASS white=3.51% mean=132.46
+CHECK nonce_left PASS decoded=01234567 expected=01234567
+CHECK underline_left PASS
+CHECK cross_left PASS
+CHECK border_left PASS
+CHECK orient_square_left PASS viewer top-left only
+CHECK link_bars_left PASS bars=1 expected=1
+CHECK nonce_right PASS decoded=01234567 expected=01234567
+CHECK underline_right PASS
+CHECK cross_right PASS
+CHECK border_right PASS
+CHECK orient_square_right PASS viewer top-left only
+CHECK link_bars_right PASS bars=2 expected=2
+PREVIEW /tmp/tmp.aUk3lFhIQ5/chk-01234567-scanout.png 1032x552
+PREVIEW /tmp/tmp.aUk3lFhIQ5/chk-01234567-viewer.png 1032x552
+PREVIEW /tmp/tmp.aUk3lFhIQ5/chk-01234567-digits.png 1071x252

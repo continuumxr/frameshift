@@ -1,0 +1,7 @@
+11167 lines
+1048664 bytes
+[   55.273431] msm_drm: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-- dmesg: 2810 new matching line(s), 41 shown
+qemu wall: .650168493 s (first pass over the whole 1 MB log)
+-- dmesg: 0 new matching line(s), 0 shown
+qemu wall: .497309325 s (a later point: no new lines)

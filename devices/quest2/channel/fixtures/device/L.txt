@@ -1,0 +1,53 @@
+# L (unshare -rn rc=0)
+## l1.out
+#   LOG NET if=veth0 addr=fe80::0123:4567:89ab:cdef/64 flags=permanent
+#   LOG RPC pid=661757 addr=[fe80::0123:4567:89ab:cdef%veth0]:47101 runner=none listening
+#   DONE ll=fe80::0123:4567:89ab:cdef if=veth0 pid=661757
+#   RC 0
+## l1.inet6
+#   00000000000000000000000000000001 01 80 10 80       lo
+#   fe800000000000000123456789abcdef 03 40 20 80    veth0
+## l2.out
+#   OK b'FSV1 nonce=0123456789abcdef resp=b9e04d7c97c70a71930910a210345b89db976520e0af1efdd02158c2480b94c5 kernel=6.18.33.2-microsoft-standard-WSL2 pid1=/sbin/init stages=- END\n'
+#   RC 0
+## l3.out
+#   b'FSA1 queued END\n'
+## l4.out
+#   b'FSD1 queued END\n'
+## l5.out
+#   Traceback (most recent call last):
+#     File "<repo>/devices/quest2/channel/tools/rpc.py", line 59, in <module>
+#       sys.exit(main(sys.argv[1:]))
+#                ~~~~^^^^^^^^^^^^^^
+#     File "<repo>/devices/quest2/channel/tools/rpc.py", line 53, in main
+#       out = req(addr, port, a[2], float(a[3]) if len(a) > 3 else 10.0)
+#     File "<repo>/devices/quest2/channel/tools/rpc.py", line 22, in req
+#       s = conn(addr, port, timeout)
+#     File "<repo>/devices/quest2/channel/tools/rpc.py", line 17, in conn
+#       s.connect(info[4])
+#       ~~~~~~~~~^^^^^^^^^
+#   ConnectionRefusedError: [Errno 111] Connection refused
+#   RC 1
+## l6.out
+#   Traceback (most recent call last):
+#     File "<repo>/devices/quest2/channel/tools/rpc.py", line 59, in <module>
+#       sys.exit(main(sys.argv[1:]))
+#                ~~~~^^^^^^^^^^^^^^
+#     File "<repo>/devices/quest2/channel/tools/rpc.py", line 53, in main
+#       out = req(addr, port, a[2], float(a[3]) if len(a) > 3 else 10.0)
+#     File "<repo>/devices/quest2/channel/tools/rpc.py", line 22, in req
+#       s = conn(addr, port, timeout)
+#     File "<repo>/devices/quest2/channel/tools/rpc.py", line 17, in conn
+#       s.connect(info[4])
+#       ~~~~~~~~~^^^^^^^^^
+#   ConnectionRefusedError: [Errno 111] Connection refused
+#   RC 1
+## l.rpclog
+#   FSRPC listening port=47101 fam=inet6 if=veth0
+#   FSRPC seq=1 verb=fs-verify result=ok
+#   FSRPC seq=2 verb=fs-ack result=ok
+#   FSRPC seq=3 verb=fs-done result=ok
+## l7.out
+#   FAIL net address state: fe80000000000000fedcba9876543210 05 40 20 80    veth2
+#   fe8000000000000070d021fffe902ff3 05 40 20 80    veth2
+#   RC 3

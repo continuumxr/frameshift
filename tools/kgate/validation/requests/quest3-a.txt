@@ -1,0 +1,2 @@
+# Quest 3 step-3 group "a" (FS-A-006 (private review record))
+--enable DEVTMPFS --disable DEVTMPFS_MOUNT --enable FHANDLE --module AUTOFS_FS --module BTRFS_FS

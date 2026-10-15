@@ -1,0 +1,114 @@
+binary sha256=4c36e4d97b7a04b0e8695c3731a7f679b3034598d50e3b52f523b19b4c6b02a6
+unittest sha256=4db6d1c03f624f53da1f466527ff04f0cf03ba4e92450e41f1108740c9368bc6
+qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2)
+unittest PASS 45 unit tests
+render-3f9c07ab PASS exit=0
+check-3f9c07ab PASS 17 checks
+render-01234567 PASS exit=0
+check-01234567 PASS 17 checks
+render-89abcdef PASS exit=0
+check-89abcdef PASS 17 checks
+render-deterministic PASS identical bytes
+render-nonce-differs PASS 
+render 3f9c07ab ppm sha256=59d739bc36761abc2008a1e017a2fef8ffd7714a9f30a6064805fd71f8b28024
+render-odd-size PASS exit=0
+nodev-default PASS exit=10
+nodev-default-record PASS open rc=-2 ENOENT
+nodev-default-exit PASS 
+nodev-path PASS exit=10
+notdrm-regular PASS exit=11
+notdrm-devnull PASS exit=11
+notdrm-devnull-record PASS 
+usage-noargs PASS exit=2
+usage-upper-nonce PASS exit=2
+usage-short-nonce PASS exit=2
+usage-hold-zero PASS exit=2
+usage-hold-nondigit PASS exit=2
+usage-hold-7digits PASS exit=2
+usage-extra-arg PASS exit=2
+usage-path-201 PASS exit=2
+stdout-tty-refused PASS exit=3, nothing written
+stdout-devnull-accepted PASS exit=0
+stdout-pipe-accepted PASS out=pipe
+blocked-stdout-hold PASS exit=0 wall_ms=3046 (hold 3 s; records dropped, not waited for)
+blocked-stdout-term PASS exit=70 term_to_exit_ms=11
+hold-3s PASS exit=0
+hold-3s-duration PASS held_ms=3000 wall_ms=3081
+strace-close-before-write PASS deadline: close(3) precedes write(1)
+strace-close-before-write-term PASS SIGTERM: close(3) precedes write(1)
+strace-show-stat-not-open PASS exit=11; stat only, never opened
+strace-holdtest-stat-then-open PASS stat precedes open; O_NOCTTY
+sigxfsz-ignored PASS exit=0 under ulimit -f 0 (records dropped)
+empty-value-token PASS name=- drv=- dash=%2D
+hold-alarm-rearmed PASS alarm_s=8 (hold 3 + 5)
+alarm-rearm-fires PASS SIGALRM at hold+5
+sigterm-clamp-reported PASS 999 -> 10
+sigterm PASS exit=70 sig=15 signal_to_exit_ms=16
+sigint-clamp-reported PASS 999 -> 10
+sigint PASS exit=70 sig=2 signal_to_exit_ms=30
+sighup-clamp-reported PASS 999 -> 10
+sighup PASS exit=70 sig=1 signal_to_exit_ms=18
+sigint-parent-ignored-clamp-reported PASS 999 -> 10
+sigint-parent-ignored PASS exit=70 sig=2 signal_to_exit_ms=16
+hold-clamp-full-start PASS 
+hold-clamp-full PASS exit=0 held_ms=10000 (999 requested; alarm at 15 s not reached)
+backstop PASS SIGALRM (142), no hold_end; alarm due at 15 s, kill landed 16 ms after SIGCONT at 18 s (a stopped process can only die on SIGCONT)
+stream_alarm-rearm PASS INCOMPLETE no eos after 3 records
+stream_backstop PASS INCOMPLETE no eos after 3 records
+stream_hold-3s PASS COMPLETE 6 records
+stream_hold-clamp-full PASS COMPLETE 6 records
+stream_nodev-default PASS COMPLETE 4 records
+stream_nodev-path PASS COMPLETE 4 records
+stream_notdrm-devnull PASS COMPLETE 4 records
+stream_notdrm-regular PASS COMPLETE 4 records
+stream_render-01234567 PASS COMPLETE 4 records
+stream_render-3f9c07ab PASS COMPLETE 4 records
+stream_render-89abcdef PASS COMPLETE 4 records
+stream_render-odd-size PASS COMPLETE 4 records
+stream_sighup PASS COMPLETE 6 records
+stream_sigint-parent-ignored PASS COMPLETE 6 records
+stream_sigint PASS COMPLETE 6 records
+stream_sigterm PASS COMPLETE 6 records
+stream_stdout-pipe PASS COMPLETE 6 records
+stream_stdout-tty PASS EMPTY no records
+stream_strace-hold PASS COMPLETE 6 records
+stream_strace-notdrm PASS COMPLETE 4 records
+stream_strace-term PASS COMPLETE 6 records
+stream_stream-sample PASS COMPLETE 5 records
+stream_usage-extra-arg PASS COMPLETE 3 records
+stream_usage-hold-7digits PASS COMPLETE 3 records
+stream_usage-hold-nondigit PASS COMPLETE 3 records
+stream_usage-hold-zero PASS COMPLETE 3 records
+stream_usage-noargs PASS COMPLETE 3 records
+stream_usage-path-201 PASS COMPLETE 3 records
+stream_usage-short-nonce PASS COMPLETE 3 records
+stream_usage-upper-nonce PASS COMPLETE 3 records
+stream-neg-gap PASS seq gap -> INVALID
+stream-neg-noeos PASS no eos -> INCOMPLETE
+stream-neg-crc PASS changed byte -> INVALID (crc)
+stream-neg-emptyval-v0.3 PASS v0.3 empty value (name=) -> INVALID; v0.5 writes name=- (stream_stream-sample)
+showoff-nodev PASS exit=10
+showoff-nodev-records PASS mode=show-off ver=0.5; exit 10
+showoff-notdrm PASS exit=11
+usage-showoff-extra PASS exit=2
+usage-show-other PASS exit=2
+propsim-full PASS 14 checks; 17236 bytes
+propsim-off PASS 9 checks; 983 bytes
+propsim-budget PASS second pass hits FSP_OPT_MAX: one opt_budget record, opt_skipped=27, opt_bytes=20288 <= 20480; exit/eos still follow
+propsim-budget-stream PASS COMPLETE (gap-free seq across the discarded records)
+static-no-new-set PASS a_prop occurrences identical in number to v0.4 (16); a_plane/a_plane_off identical
+static-topology-dsc-read-only PASS device build: topology_control and dsc_mode appear only in two pinfo_find lookups (read); never in a_prop
+static-ioctl-set PASS new ioctl vs v0.4: only DRM_IOCTL_MODE_GETPROPBLOB (a GET)
+static-layout-unchanged PASS plan_attempts, pick_mode, is_expected_mode, the TEST_ONLY/commit block and hold() are identical to v0.4
+check-bright-3f9c07ab PASS 17 checks
+preview-port-3f9c07ab PASS Python port == C render, byte for byte
+check-bright-01234567 PASS 17 checks
+preview-port-01234567 PASS Python port == C render, byte for byte
+check-bright-89abcdef PASS 17 checks
+preview-port-89abcdef PASS Python port == C render, byte for byte
+check-bright-4e0addd8 PASS 17 checks
+preview-port-4e0addd8 PASS Python port == C render, byte for byte
+render-bright-stats PASS 4e0addd8: white 3.76 %, mean 132.8/255, max 0xff
+preview-published PASS docs/research/pattern-preview/bright-v0.5-*
+bright-is-the-render-checked-above PASS section (a) renders are v0.5 too
+TOTAL failures=0

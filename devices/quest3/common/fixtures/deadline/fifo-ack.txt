@@ -1,0 +1,8 @@
+# scenario fifo-ack (sim.sh, action a_fifo_ack), deadline=8 ack_window=4 
+# T0=176 reboot records (fake syscall; first one counts):
+#   180 no-host-ack pid=1043 via=final
+# PID 1 log:
+#   FS t=176s DEADLINE armed t0=176 deadline=T0+8 ack_window=4 backstop=T0+9 reboot-reasons-not-logged-at-reboot
+#   FS t=176s BACKSTOP armed pid=1185 in=9s
+# harness: fifo host_ack 
+# sim stdout/stderr:

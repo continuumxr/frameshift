@@ -1,0 +1,3 @@
+PORT solid 4128x2208 rgb sha256=164bb117db20886236fad1a51841e32539db0023846b95e812a888be18cf38d6
+VALIDATE port == C render-solid (/tmp/tmp.IfrAOVi3Yw/solid.ppm): IDENTICAL
+PNG viewer sha256=ecd8dcdd80c4786b4848645a5e3473db65b9bf7ec99bfa454603d08d31328c15

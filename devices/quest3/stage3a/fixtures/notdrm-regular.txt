@@ -1,0 +1,5 @@
+FSP1 nonce=3f9c07ab seq=0 step=start rc=0 mode=show ver=0.4 hold_req=5 hold=5 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/tmp/tmp.60BScpC7RV/regular out=file rot=180 t0_ms=155137 len=195 crc=944070f7 END
+FSP1 nonce=3f9c07ab seq=1 step=open rc=-25 error=not_drm_chardev dev=/tmp/tmp.60BScpC7RV/regular mode=0x81a4 at=stat len=116 crc=1d8e5d7b END
+FSP1 nonce=3f9c07ab seq=2 step=exit rc=0 code=11 reason=not_drm_device shown=0 closed_at_exit=0 elapsed_ms=19 len=109 crc=47080b15 END
+FSP1 nonce=3f9c07ab seq=3 step=eos rc=0 records=4 dropped=0 overflows=0 out=file len=80 crc=ae9f7753 END
+# exit=11

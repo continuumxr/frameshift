@@ -1,0 +1,66 @@
+# c-markers mods=['sim-all'] plan=['p0', 'r1', 'r2', 'r3'] tail=done; image <repo>/build/stage3d/20261014T014738Z-13ed21be49c7b4ba
+# mod: replaced /bin/fs-pattern by a replay of pre-generated v0.6 FSP1 streams (sim-all); the hash step measures the replacement
+# reboots: 334.53 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=13ed21be49c7b4ba resp=5e057ac8f6baf6fdef9c7c06887e3f625efaaa95f3a585030bbad7514ded2c67 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=13ed21be49c7b4ba stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=95962872cd616b48 END]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=268 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  idle limit started before SHELL_READY
+PASS  /run/fs.deadline = T0 + DEADLINE  [468 vs t0=268]
+PASS  first reboot reason = collected  [334.53 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [334.53 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.0 s]
+PASS  phase p0 FSB1 VALID (exp s3d_p0, 2 steps, its own challenge)  [VALID]
+PASS  p0 steps in order hash,probe0  [{1: ('hash', 'exited', 0), 2: ('probe0', 'exited', 0)}]
+PASS  p0 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=13ed21be49c7b4ba p=p0 e=begin t=286240 END | FSPM1 n=13ed21be49c7b4ba p=p0 e=rec t=290650 END]
+PASS  p0 markers in order begin,rec, t non-decreasing  [begin,rec]
+PASS  p0 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  p0: exactly one backlight write line (value 127), read-back 127  [write_rc=0 readback=127]
+PASS  p0: hash step exited 0 (sha256sum of /bin/fs-pattern)
+PASS  p0: irq0 sample, mods snapshot with cmdline, dmesg and the fan
+PASS  phase r1 FSB1 VALID (exp s3d_r1, 2 steps, its own challenge)  [VALID]
+PASS  r1 steps in order probe1,pattern1  [{1: ('probe1', 'exited', 0), 2: ('pattern1', 'exited', 0)}]
+PASS  r1 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=13ed21be49c7b4ba p=r1 e=begin t=292400 END | FSPM1 n=13ed21be49c7b4ba p=r1 e=go t=293290 END | FSPM1 n=13ed21be49c7b4ba p=r1 e=end t=294140 END | FSPM1 n=13ed21be49c7b4ba p=r1 e=rec t=297840 END]
+PASS  r1 markers in order begin,go,end,rec, t non-decreasing  [begin,go,end,rec]
+PASS  r1 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  r1 step 2 pattern1 exited code 0  [('pattern1', 'exited', 0)]
+PASS  r1 FSP1 stream COMPLETE, nonce = chal[0:8], mode reset  [STREAM <repo>/build/stage3d-harness/c-markers/fsp1-r1.txt COMPLETE 33 records]
+PASS  r1 probe: read-back only (no write line), readback=127
+PASS  r1 probe points pre,end,post  [pre,end,post]
+PASS  r1 probe: no dmesg at pre
+PASS  r1: fs-pattern called as 'reset ceb6ee47'  [reset ceb6ee47 | show-off-quad a509f63e 10 /dev/dri/card0 roll=21 eyes=swap | show-off-solid b0092ef6 5]
+PASS  phase r2 FSB1 VALID (exp s3d_r2, 2 steps, its own challenge)  [VALID]
+PASS  r2 steps in order probe2,pattern2  [{1: ('probe2', 'exited', 0), 2: ('pattern2', 'exited', 0)}]
+PASS  r2 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=13ed21be49c7b4ba p=r2 e=begin t=300260 END | FSPM1 n=13ed21be49c7b4ba p=r2 e=go t=301350 END | FSPM1 n=13ed21be49c7b4ba p=r2 e=end t=312150 END | FSPM1 n=13ed21be49c7b4ba p=r2 e=rec t=316820 END]
+PASS  r2 markers in order begin,go,end,rec, t non-decreasing  [begin,go,end,rec]
+PASS  r2 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  r2 step 2 pattern2 exited code 0  [('pattern2', 'exited', 0)]
+PASS  r2 FSP1 stream COMPLETE, nonce = chal[0:8], mode show-off-quad  [STREAM <repo>/build/stage3d-harness/c-markers/fsp1-r2.txt COMPLETE 29 records]
+PASS  r2 probe: read-back only (no write line), readback=127
+PASS  r2 probe points pre,go+1,mid,end,post  [pre,go+1,mid,end,post]
+PASS  r2 probe: no dmesg at pre
+PASS  r2: fs-pattern called as 'show-off-quad a509f63e 10 /dev/dri/card0 roll=21 eyes=swap'  [reset ceb6ee47 | show-off-quad a509f63e 10 /dev/dri/card0 roll=21 eyes=swap | show-off-solid b0092ef6 5]
+PASS  phase r3 FSB1 VALID (exp s3d_r3, 2 steps, its own challenge)  [VALID]
+PASS  r3 steps in order probe3,pattern3  [{1: ('probe3', 'exited', 0), 2: ('pattern3', 'exited', 0)}]
+PASS  r3 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=13ed21be49c7b4ba p=r3 e=begin t=319370 END | FSPM1 n=13ed21be49c7b4ba p=r3 e=go t=321190 END | FSPM1 n=13ed21be49c7b4ba p=r3 e=end t=326960 END | FSPM1 n=13ed21be49c7b4ba p=r3 e=rec t=331420 END]
+PASS  r3 markers in order begin,go,end,rec, t non-decreasing  [begin,go,end,rec]
+PASS  r3 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  r3 step 2 pattern3 exited code 0  [('pattern3', 'exited', 0)]
+PASS  r3 FSP1 stream COMPLETE, nonce = chal[0:8], mode show-off-solid  [STREAM <repo>/build/stage3d-harness/c-markers/fsp1-r3.txt COMPLETE 29 records]
+PASS  r3 probe: read-back only (no write line), readback=127
+PASS  r3 probe points pre,go+1,mid,end,post  [pre,go+1,mid,end,post]
+PASS  r3 probe: no dmesg at pre
+PASS  chain p0: device sha16 (from its END line) = host decode  [6a4498d39cba30db / 6a4498d39cba30db]
+PASS  chain r1: device sha16 (from its END line) = host decode  [a17a660ce8c8773a / a17a660ce8c8773a]
+PASS  chain r2: device sha16 (from its END line) = host decode  [169f5b0a61ee7184 / 169f5b0a61ee7184]
+PASS  chain r3: device sha16 (from its END line) = host decode  [9d4a0eec87ddf3ed / 9d4a0eec87ddf3ed]
+PASS  no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)
+PASS  backlight node written exactly 1 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)  [1 write-close event(s): wd=1 mask=0x8 ]
+PASS  tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)
+PASS  probes never named the decoy crtc nodes or debugfs
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order (nautilus,cmd-db,gh_msgq); the vendor list (decoy) never used  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+SCENARIO c-markers PASS

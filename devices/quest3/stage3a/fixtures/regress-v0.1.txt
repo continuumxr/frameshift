@@ -1,0 +1,8 @@
+REG v0.1 R2-alarm-rearmed FAIL exit=0 (v0.1 alarm only at 150 s)
+REG v0.1 R3-tty-stdout-refused FAIL exit=0 records=5
+REG v0.1 R4-framing FAIL INVALID malformed record 0: b'FSP1 nonce=a1b2c3d4 seq=0 step=start rc=0 mode=holdtest ver=0.1 hold_req=1 hold='
+REG v0.1 R5-close-before-hold_end FAIL no fd_closed in hold_end
+REG v0.1 R6-no-legacy-setcrtc FAIL 1 occurrences
+REG v0.1 R7-real-commit-no-retry FAIL real commit goes through the 100-try wrapper
+REG v0.1 R1b-blocked-stdout-term FAIL exit=142 term_to_exit_ms=148069
+REG v0.1 R1-blocked-stdout-hold FAIL exit=142 ms=150087 (hold 3 s requested)

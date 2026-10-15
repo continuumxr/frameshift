@@ -1,0 +1,9 @@
+# cmd: fs-supervise -t 10 -e PATH=$W/bin -o $W/cap/escape.out -r $W/cap/escape.err -- $W/bin/busybox sh -c setsid sh -c "cat /proc/\$\$/stat; exec sleep 33" & sleep 0.5; echo out
+# report: FSUP1 end=exited code=0 sig=0 errno=0 ms=871 term_ms=-1 kill_ms=-1 out_total=323 out_kept=323 err_total=0 err_kept=0 strays=1 pipes=eof why=none END
+# exit=0 wall_ms=1142
+# stdout capture: 323 bytes, first 64 as hex:
+#      7   6   7   4   7       (   b   u   s   y   b   o   x   )    
+#      S       7   6   7   2   2       7   6   7   4   7       7   6
+#      7   4   7       0       -   1       4   1   9   4   3   0   4
+#          1   5   8   5       0       0       0       2   3       5
+# stderr capture: 0 bytes, first 64 as hex:

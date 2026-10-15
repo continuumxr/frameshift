@@ -1,0 +1,50 @@
+~ # [6nfs-verify 0f1e2d3c4b5a69788796a5b4c3d2e1f0
+FSV1 nonce=a1b2c3d4e5f60718 resp=37c834bf85f9383b22aadca2c2a86c85fc178fd66077d16c23139f0e43caf0e8 kernel=5.10.198-01402-g1c5986fe21ee pid1=/bin/busybox,sh,/init stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY END
+~ # [6nfs-ack 5a5a0123456789ab
+FSA1 queued END
+~ # [6nfs-status
+FSS1 nonce=a1b2c3d4e5f60718 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=5a5a0123456789ab END
+~ # [6nfs-valve c3c3a1b2c3d4e5f60718293a4b5c6d7e
+FSB1 BEGIN v=1 exp=stage2a nonce=a1b2c3d4e5f60718 chal=c3c3a1b2c3d4e5f60718293a4b5c6d7e steps=8
+FSB1 STEP i=1 id=hash end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=352 out_kept=352 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=352 out_sha256=42c96b60b83fcd72fd9e1b289f52f1869ca02be32e7189eef213158561da67e3 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=1 s=o n=0 MmRkYzU2YTAyZjQ3Njc2NWEyMWUzMWQ2OTE0NGU2OGJlZTkzMzk1MGZlNjEzNzQ3
+FSB1 DATA i=1 s=o n=1 ZDU0Yjg3YTIzNjlhMDM3ZSAgL3ZhbHZlL2xpYi9sZC1saW51eC1hYXJjaDY0LnNv
+FSB1 DATA i=1 s=o n=2 LjEKYmU3ZWUzOTM0MjlkNDkzYzRkM2I5OTZlZDI1Y2JiMDJmYWJiMjg5NmE3N2Vm
+FSB1 DATA i=1 s=o n=3 ZTZkNTdlNTk5M2VhZDViYmIzYiAgL3ZhbHZlL2xpYi9saWJjLnNvLjYKNDI5NWYw
+FSB1 DATA i=1 s=o n=4 MzRlZGY3ZDYyZjcyMWNmZTk5NDIzMGJhMTM5NjQ2Yzc4NzJkYzJhNjg5OWFhNjgx
+FSB1 DATA i=1 s=o n=5 Zjc2ZmNhMzFmMSAgL3ZhbHZlL2Jpbi91bmFtZQo5MDE1NDY4MDA3MGNmY2IyYTMw
+FSB1 DATA i=1 s=o n=6 MjdiOGZhMjZhODA5MWQyNDMzMzMyOTI5NGEyZjRiZTdhMTJjN2YxMWY2NDAyICAv
+FSB1 DATA i=1 s=o n=7 dmFsdmUvYmluL2Iyc3VtCg==
+FSB1 STEP i=2 id=absent end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=0 out_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 STEP i=3 id=diag end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=219 out_kept=219 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=219 out_sha256=1770a804b25415bb4de096db7a83005b8f8cc198ddfcdc7c801e79048b05eb5c err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=3 s=o n=0 ZGxfZHN0X2xpYj0ibGliIgpkbF9od2NhcD0weDExOWZmCmRsX3BhZ2VzaXplPTB4
+FSB1 DATA i=3 s=o n=1 MTAwMApkbF9wbGF0Zm9ybT0iYWFyY2g2NCIKcGF0aC5wcmVmaXg9Ii91c3IiCnBh
+FSB1 DATA i=3 s=o n=2 dGgucnRsZD0iL3Vzci9saWIvbGQtbGludXgtYWFyY2g2NC5zby4xIgpwYXRoLnN5
+FSB1 DATA i=3 s=o n=3 c3RlbV9kaXJzWzB4MF09Ii91c3IvbGliLyIKdmVyc2lvbi5yZWxlYXNlPSJzdGFi
+FSB1 DATA i=3 s=o n=4 bGUiCnZlcnNpb24udmVyc2lvbj0iMi4zOSIK
+FSB1 STEP i=4 id=list end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=179 out_kept=179 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=179 out_sha256=dce3c03ca456e98cd6769118c9f672098a8874db8e6bacbd4e3921aa6170655d err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=4 s=o n=0 CWxpbnV4LXZkc28uc28uMSAoMHgwMDAwZmZmZjlhM2YwMDAwKQoJbGliYy5zby42
+FSB1 DATA i=4 s=o n=1 ID0+IC92YWx2ZS9saWIvbGliYy5zby42ICgweDAwMDBmZmZmOWEyMDAwMDApCgkv
+FSB1 DATA i=4 s=o n=2 bGliL2xkLWxpbnV4LWFhcmNoNjQuc28uMSA9PiAvdmFsdmUvbGliL2xkLWxpbnV4
+FSB1 DATA i=4 s=o n=3 LWFhcmNoNjQuc28uMSAoMHgwMDAwZmZmZjlhM2IwMDAwKQo=
+FSB1 STEP i=5 id=uname end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=29 out_kept=29 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=29 out_sha256=f803a8027b0971806b792e15f127f726a9c9ce048a5beb4dbdcd7d532cf311ba err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=5 s=o n=0 NS4xMC4xOTgtMDE0MDItZzFjNTk4NmZlMjFlZQo=
+FSB1 STEP i=6 id=b2kat end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=132 out_kept=132 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=132 out_sha256=92129b0999048443dd372f10c666200a702f2c1d0b02412386658c8b2a598837 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=6 s=o n=0 Nzg2YTAyZjc0MjAxNTkwM2M2YzZmZDg1MjU1MmQyNzI5MTJmNDc0MGUxNTg0NzYx
+FSB1 DATA i=6 s=o n=1 OGE4NmUyMTdmNzFmNTQxOWQyNWUxMDMxYWZlZTU4NTMxMzg5NjQ0NDkzNGViMDRi
+FSB1 DATA i=6 s=o n=2 OTAzYTY4NWIxNDQ4Yjc1NWQ1NmY3MDFhZmU5YmUyY2UgIC0K
+FSB1 STEP i=7 id=b2chal end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=132 out_kept=132 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=132 out_sha256=21aa1ba2aaabb579a5f5d67cf08b075510d4e4f2cb43be9e5e93ec8408ee15f8 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=7 s=o n=0 NTg3NjRkY2RkNTZiYTE0Y2JmMzZkYjM0NTkxMmY1NWEwOGJjMWUzYTNkODBlNWM5
+FSB1 DATA i=7 s=o n=1 OGFmMGNhNmRiOTZjMzkyMGJjMzkzN2JlZDFhNDQ3OTRhNjY3YzJkMTU4MDMwN2Y1
+FSB1 DATA i=7 s=o n=2 OGMyMDM3NDhlN2M3YjQ2NjU4YmYwMWQ2NDIwZTgwZTcgIC0K
+FSB1 STEP i=8 id=inv end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=359 out_kept=359 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=359 out_sha256=1a61f58d493d27f5d2248b2e81643dd6c9877e3dd56513e5ef83610f8f221755 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=8 s=o n=0 PT0gL3Byb2MvbW9kdWxlcwpxY29tX3E2djVfcGFzIDQ5MTUyIDAgLSBMaXZlIDB4
+FSB1 DATA i=8 s=o n=1 MDAwMDAwMDAwMDAwMDAwMAo9PSAvc3lzL2NsYXNzL3JlbW90ZXByb2MKLS0gL3N5
+FSB1 DATA i=8 s=o n=2 cy9jbGFzcy9yZW1vdGVwcm9jL3JlbW90ZXByb2MwL25hbWUKYWRzcAotLSAvc3lz
+FSB1 DATA i=8 s=o n=3 L2NsYXNzL3JlbW90ZXByb2MvcmVtb3RlcHJvYzAvc3RhdGUKb2ZmbGluZQo9PSAv
+FSB1 DATA i=8 s=o n=4 c3lzL2J1cy9wbGF0Zm9ybS9kZXZpY2VzLzMwMDAwMDAucmVtb3RlcHJvYy1hZHNw
+FSB1 DATA i=8 s=o n=5 L2RyaXZlcgooYWJzZW50KQo9PSAvc3lzL2NsYXNzL3Bvd2VyX3N1cHBseQotLSAv
+FSB1 DATA i=8 s=o n=6 c3lzL2NsYXNzL3Bvd2VyX3N1cHBseS9iYXR0ZXJ5L3VldmVudApQT1dFUl9TVVBQ
+FSB1 DATA i=8 s=o n=7 TFlfTkFNRT1iYXR0ZXJ5Cj09IGVuZAo=
+FSB1 END v=1 nonce=a1b2c3d4e5f60718 chal=c3c3a1b2c3d4e5f60718293a4b5c6d7e lines=41 rec_sha256=e64a718fe810f8a26e8c5979e6d04aa4b12e7aad3d8a2e58cf583cac28524098
+~ # [6n

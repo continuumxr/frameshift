@@ -1,0 +1,114 @@
+{
+ "ack": "ef6d3b949f2c7d60",
+ "challenges": {
+  "p0": "02feb17fbf97cfe3a7e2bfd8ed33d0ea",
+  "r1": "5b91ee98838ebeb302f407dbb68fadcc",
+  "r2": "4c8c2281d687c1802aba1c158e4718f4",
+  "r3": "1241b899eed51383ad198ebd9db01224"
+ },
+ "checks": [
+  {
+   "detail": "FSV1 nonce=13ed21be49c7b4ba resp=1b9fde4168d9e38bbca365425c12056f0cf3486f4eecf2443a15a3855deb82ac kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=341 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "idle limit started before SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "541 vs t0=341",
+   "label": "/run/fs.deadline = T0 + DEADLINE",
+   "ok": true
+  },
+  {
+   "detail": "420.25 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "420.25 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "0.8 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "0 write-close event(s): ",
+   "label": "backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never named the decoy crtc nodes or debugfs",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "MODULE_INDEX logged (= the pinned v2.7 index) before the first module",
+   "ok": true
+  },
+  {
+   "detail": "attempted 95, first ['nautilus', 'qcom-scm', 'secure_buffer']",
+   "label": "modules attempted = the image's /lib/fs/modules.load (95), each once (dependencies first: modules.dep order), nothing outside it; the vendor list (decoy fake_*) never used",
+   "ok": true
+  }
+ ],
+ "mod_notes": [
+  "the image's own /lib/fs/modules.load (95) with the real v2.7 modules.dep/softdep (no .ko files: every load fails)"
+ ],
+ "mods": [
+  "modules-real"
+ ],
+ "nonce": "13ed21be49c7b4ba",
+ "ok": true,
+ "phases": {},
+ "plan": [],
+ "reboot_at_T0_plus": 79.2,
+ "reboots": "420.25 final pid=1 arg=collected\n",
+ "scenario": "c-modules-real",
+ "sim_args": "",
+ "t_total_s": 81.4,
+ "tail": "verify-done",
+ "verify_challenge": "cb4bb78a56cb3ed00dd7d57cdd6f32c3",
+ "want_reboot": "collected"
+}

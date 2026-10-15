@@ -1,0 +1,538 @@
+== test-host2  2026-10-11T04:50:22.5033466Z  PowerShell 5.1.26100.9549  code=<repo>\devices\quest3\host  scratch=$HOME\AppData\Local\Temp\fs-host2-9d984043  python=python
+== N. BLAKE2b-512 (host computation for OUTCOMES §5 b2chal)
+PASS  N1 empty input = OUTCOMES §5 KAT
+PASS  N2 "abc" = RFC 7693 Appendix A
+PASS  N3.1 length 0 equals Python hashlib
+PASS  N3.2 length 49 equals Python hashlib
+PASS  N3.3 length 127 equals Python hashlib
+PASS  N3.4 length 128 equals Python hashlib
+PASS  N3.5 length 129 equals Python hashlib
+PASS  N3.6 length 256 equals Python hashlib
+PASS  N3.7 length 1000 equals Python hashlib
+== C. commands: fixed verbs, host tokens, [a-z0-9 -] only
+PASS  C1 accepted: fs-verify
+PASS  C1 accepted: fs-ack
+PASS  C1 accepted: fs-status
+PASS  C1 accepted: fs-valve
+PASS  C1 accepted: fs-display
+PASS  C1 accepted: fs-done
+PASS  C2.1 refused: 'fs-verify' + 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+PASS  C2.2 refused: 'fs-verify' + 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+PASS  C2.3 refused: 'fs-verify' + 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n'
+PASS  C2.4 refused: 'fs-verify' + 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"x'
+PASS  C2.5 refused: 'fs-verify' + 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';'
+PASS  C2.6 refused: 'fs-ack' + '000000000000000$'
+PASS  C2.7 refused: 'fs-status' + 'x'
+PASS  C2.8 refused: 'fs-done' + '"'
+PASS  C2.9 refused: 'cat' + '/proc/cmdline'
+PASS  C2.10 refused: 'fs-verify' + ''
+PASS  C2.11 refused: 'fs-valve' + 'ffffffffffffffffffffffffffffffff ; reboot'
+PASS  C2.12 refused: '"' + ''
+PASS  C2.13 refused: 'fs-verify' + 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\r'
+PASS  C3 exactly one WriteBytes call site in fs-collect.ps1 (Invoke-FsPhase)
+PASS  C4 ...and it writes exactly ASCII($cmd + LF), with $cmd assigned once, from New-FsCommand
+PASS  C5 no ReadExisting/ReadLine/ReadTo (text decoding) in the capture path
+== R. Replay of synthetic and real-encoder captures (fixtures\replay)
+PASS  R0 fixtures\replay matches MANIFEST.sha256 (89 files)
+PASS  R good-lf                            COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=PASS
+PASS  R good-crlf                          COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=PASS
+PASS  R good-crcrlf                        COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=PASS
+PASS  R no-echo-record-joins-prompt        COLLECTED-REJECTED | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=no-begin | class=INCONCLUSIVE
+PASS  R no-echo-leading-newline            COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=PASS
+PASS  R good-split-reads                   COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=PASS
+PASS  R binary-noise-pre                   COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=PASS
+PASS  R noise-outside-records              COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=PASS
+PASS  R noise-inside-record                COLLECTED-REJECTED | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=line-count | class=INCONCLUSIVE
+PASS  R noise-mid-line                     COLLECTED-REJECTED | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=rec-hash | class=INCONCLUSIVE
+PASS  R truncated-record                   INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-valve | fsb1=no-end | class=INCONCLUSIVE
+PASS  R truncated-verify                   INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R echo-only                          INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R silent                             INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R continuation-after-verify          INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R pre-continuation                   INCONCLUSIVE | sent=none | fsb1=- | class=-
+PASS  R verify-unterminated-then-prompt    INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R ack-echo-only                      INCONCLUSIVE | sent=fs-verify,fs-ack | fsb1=- | class=-
+PASS  R status-partial                     INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status | fsb1=- | class=-
+PASS  R verify-no-prompt                   INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R record-not-at-line-start           INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R verify-echoed-challenge            INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R verify-wrong-nonce                 INCONCLUSIVE | sent=fs-verify | fsb1=- | class=-
+PASS  R ack-not-recorded                   INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-status,fs-status,fs-done | fsb1=- | class=-
+PASS  R spliced-old-record-before-send     COLLECTED-REJECTED | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=multiple-begin | class=INCONCLUSIVE
+PASS  R spliced-other-attempt-response     COLLECTED-REJECTED | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=nonce-mismatch | class=INCONCLUSIVE
+PASS  R spliced-two-records                COLLECTED-REJECTED | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=multiple-begin | class=INCONCLUSIVE
+PASS  R late-record                        INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-valve | fsb1=no-begin | class=INCONCLUSIVE
+PASS  R no-prompt-after-record             COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve | fsb1=valid | class=PASS
+PASS  R continuation-after-record          COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve | fsb1=valid | class=PASS
+PASS  R real-encoder-valid                 COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=-
+PASS  R real-encoder-valid-pty             COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=-
+PASS  R e2e-integrity-fault                COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=INTEGRITY FAULT
+PASS  R e2e-compat-fail                    COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=valid | class=COMPATIBILITY FAIL
+PASS  R 3a-committed                       COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-display,fs-done | fsb1=valid | class=PASS (machine side)
+PASS  R 3a-no-device                       COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-display,fs-done | fsb1=valid | class=NO-DISPLAY
+PASS  R 3a-no-echo                         COLLECTED-VALID | sent=fs-verify,fs-ack,fs-status,fs-display,fs-done | fsb1=valid | class=PASS (machine side)
+PASS  R already-acked                      INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-done | fsb1=- | class=-
+PASS  R runner-refused-2a                  INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-valve,fs-done | fsb1=no-begin | class=-
+PASS  R runner-refused-3a                  INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-display,fs-done | fsb1=no-begin | class=-
+PASS  R ack-window-reached                 INCONCLUSIVE | sent=fs-verify,fs-ack | fsb1=- | class=-
+PASS  R runner-budget                      INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-done | fsb1=- | class=-
+PASS  R b1-late-2a                         INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-status,fs-done | fsb1=- | class=-
+PASS  R b1-late-3a                         INCONCLUSIVE | sent=fs-verify,fs-ack,fs-status,fs-status,fs-done | fsb1=- | class=-
+PASS  R+1 continuation: the 3 writes a blind collector made are NOT made
+PASS  R+2 pre-continuation: zero bytes sent
+PASS  R+3 good-lf re-capture is byte-identical to the source and its SHA-256 matches
+PASS  R+3 good-crlf re-capture is byte-identical to the source and its SHA-256 matches
+PASS  R+3 good-crcrlf re-capture is byte-identical to the source and its SHA-256 matches
+PASS  R+3 binary-noise-pre re-capture is byte-identical to the source and its SHA-256 matches
+PASS  R+3 good-split-reads re-capture is byte-identical to the source and its SHA-256 matches
+PASS  R+4 good-lf echo recognised as echo on every phase, never as completion
+PASS  R+4 good-crlf echo recognised as echo on every phase, never as completion
+PASS  R+5 no-echo target: echo absent on every phase
+PASS  R+6 truncated-record : fs-done not sent (state unknown or unverified)
+PASS  R+6 late-record : fs-done not sent (state unknown or unverified)
+PASS  R+6 no-prompt-after-record : fs-done not sent (state unknown or unverified)
+PASS  R+6 continuation-after-record : fs-done not sent (state unknown or unverified)
+PASS  R+6 verify-echoed-challenge : fs-done not sent (state unknown or unverified)
+PASS  R+6 verify-no-prompt : fs-done not sent (state unknown or unverified)
+PASS  R+7 fs-classify.ps1 CLI on the good-lf collection: OUTCOME PASS (rule 7)
+PASS  R+8 fs-classify.ps1 CLI with stage 1 not PASS: that class (rule 1), exit 13
+== X. Replay robustness and refusals
+PASS  X1 index with a missing read chunk (mid-capture) is refused
+PASS  X2 index with a bad header is refused
+PASS  X3 capture shorter than its index is refused
+PASS  X4 -Nonce differing from the index nonce is refused
+PASS  X5 existing output directory is refused (captures are never overwritten)
+PASS  X6 divergence (collector write differs from the recorded write): reported, no further device bytes, INCONCLUSIVE
+PASS  X7 CLI refuses a malformed -Port (no port is opened), exit 20
+PASS  X8 CLI refuses to run without -Port (never auto-picks), exit 20
+PASS  X9 CLI replay of good-lf: exit 10, collect.json written
+PASS  X10 B1 live CLI with -HandoffUtc but no -BootStartUtc: refused (Th is evidence, never the origin), exit 20, nothing written
+PASS  X11 B1 live CLI with -HandoffUtc earlier than -BootStartUtc: refused (inconsistent observer times), exit 20
+== K. outcome classifier (OUTCOMES.md rev 3)
+PASS  K01 all steps correct                                          -> PASS (rule 7)
+PASS  K02 stage 1 DEVICE_REJECTED (valid record ignored)             -> DEVICE_REJECTED (rule 1)
+PASS  K03 stage 1 TRANSPORT/SHELL FAILURE                            -> TRANSPORT/SHELL FAILURE (rule 1)
+PASS  K04 stage 1 INCONCLUSIVE beats a valid record                  -> INCONCLUSIVE (rule 1)
+PASS  K05 stage 1 not PASS beats a rejected record (1 before 2)      -> DEVICE_REJECTED (rule 1)
+PASS  K06 no FSB1 record                                             -> INCONCLUSIVE (rule 2)
+PASS  K07 FSB1 rejected (no-end)                                     -> INCONCLUSIVE (rule 2)
+PASS  K08 valid record but completed after the collection deadline   -> INCONCLUSIVE (rule 2)
+PASS  K09 decoded step list is not the stage-2a list                 -> INCONCLUSIVE (rule 2)
+PASS  K10 hash end=nosup (TOOL FAULT)                                -> INCONCLUSIVE (rule 4)
+PASS  K11 hash why=capture-write-failed (TOOL FAULT)                 -> INCONCLUSIVE (rule 4)
+PASS  K12 hash exec-failed EACCES 13 (TOOL FAULT)                    -> INCONCLUSIVE (rule 4)
+PASS  K13 hash exec-failed ENOEXEC 8 (UNPARSEABLE)                   -> INCONCLUSIVE (rule 4)
+PASS  K14 hash extra stdout line                                     -> INCONCLUSIVE (rule 4)
+PASS  K15 hash lines out of pin order                                -> INCONCLUSIVE (rule 4)
+PASS  K16 hash code=1 with empty stderr                              -> INCONCLUSIVE (rule 4)
+PASS  K17 hash code=0 with a stderr line                             -> INCONCLUSIVE (rule 4)
+PASS  K18 hash path reported twice                                   -> INCONCLUSIVE (rule 4)
+PASS  K19 hash unterminated last line                                -> INCONCLUSIVE (rule 4)
+PASS  K20 hash capture truncated (out_kept < out_total)              -> INCONCLUSIVE (rule 4)
+PASS  K21 hash only three paths                                      -> INCONCLUSIVE (rule 4)
+PASS  K22 hash uppercase digest                                      -> INCONCLUSIVE (rule 4)
+PASS  K23 hash stderr in another format                              -> INCONCLUSIVE (rule 4)
+PASS  K24 absent: stderr not empty                                   -> INCONCLUSIVE (rule 4)
+PASS  K25 absent: unknown path                                       -> INCONCLUSIVE (rule 4)
+PASS  K26 absent: paths out of list order                            -> INCONCLUSIVE (rule 4)
+PASS  K27 absent: code=1                                             -> INCONCLUSIVE (rule 4)
+PASS  K28 absent: exec-failed ENOEXEC (not a tool fault, UNPARSEABLE) -> INCONCLUSIVE (rule 4)
+PASS  K29 hash UNPARSEABLE + absent mismatch (rev 3: 3 before 4)     -> INTEGRITY FAULT (rule 3)
+PASS  K30 hash digest differs from its pin                           -> INTEGRITY FAULT (rule 3)
+PASS  K31 hash: pinned file missing (can't open, code 1)             -> INTEGRITY FAULT (rule 3)
+PASS  K32 hash: pinned path is a directory (can't read)              -> INTEGRITY FAULT (rule 3)
+PASS  K33 absent: /usr exists                                        -> INTEGRITY FAULT (rule 3)
+PASS  K34 absent: two paths, in order                                -> INTEGRITY FAULT (rule 3)
+PASS  K35 integrity mismatch + Valve TOOL FAULT (3 before 5)         -> INTEGRITY FAULT (rule 3)
+PASS  K36 integrity mismatch + Valve FAILED (3 before 6)             -> INTEGRITY FAULT (rule 3)
+PASS  K37 diag why=strays-alive (Valve TOOL FAULT)                   -> INCONCLUSIVE (rule 5)
+PASS  K38 uname end=refused                                          -> INCONCLUSIVE (rule 5)
+PASS  K39 b2kat exec-failed EACCES 13                                -> INCONCLUSIVE (rule 5)
+PASS  K40 list end=unreaped                                          -> INCONCLUSIVE (rule 5)
+PASS  K41 Valve TOOL FAULT + another step FAILED (5 before 6)        -> INCONCLUSIVE (rule 5)
+PASS  K42 diag exited code=1                                         -> COMPATIBILITY FAIL (rule 6)
+PASS  K43 list signaled SIGILL                                       -> COMPATIBILITY FAIL (rule 6)
+PASS  K44 uname timer-term (hang; code 143 is raw status)            -> COMPATIBILITY FAIL (rule 6)
+PASS  K45 uname timer-kill                                           -> COMPATIBILITY FAIL (rule 6)
+PASS  K46 b2kat exec-failed ENOEXEC 8                                -> COMPATIBILITY FAIL (rule 6)
+PASS  K47 b2kat exec-failed ELIBBAD 80                               -> COMPATIBILITY FAIL (rule 6)
+PASS  K48 b2chal strays=1 with why=none                              -> COMPATIBILITY FAIL (rule 6)
+PASS  K49 b2chal pipes=open with why=none                            -> COMPATIBILITY FAIL (rule 6)
+PASS  K50 diag output over the cap (why=none)                        -> COMPATIBILITY FAIL (rule 6)
+PASS  K51 uname wrote to stderr                                      -> COMPATIBILITY FAIL (rule 6)
+PASS  K52 diag missing version.version line                          -> COMPATIBILITY FAIL (rule 6)
+PASS  K53 diag shows an env[ line                                    -> COMPATIBILITY FAIL (rule 6)
+PASS  K54 list has 4 lines                                           -> COMPATIBILITY FAIL (rule 6)
+PASS  K55 list resolves libc outside /valve/lib                      -> COMPATIBILITY FAIL (rule 6)
+PASS  K56 list last line unterminated                                -> COMPATIBILITY FAIL (rule 6)
+PASS  K57 uname reports another kernel                               -> COMPATIBILITY FAIL (rule 6)
+PASS  K58 b2kat wrong digest                                         -> COMPATIBILITY FAIL (rule 6)
+PASS  K59 b2chal wrong digest                                        -> COMPATIBILITY FAIL (rule 6)
+PASS  K60 b2chal newline variant                                     -> COMPATIBILITY FAIL (rule 6)
+PASS  K61 diag exited 143 on its own (not a timeout)                 -> COMPATIBILITY FAIL (rule 6)
+PASS  K62 two FAILED steps: lowest reported first                    -> COMPATIBILITY FAIL (rule 6)
+PASS  K64 hash mismatch + absent TOOL FAULT (rev 3)                  -> INTEGRITY FAULT (rule 3)
+PASS  K65 hash mismatch + absent UNPARSEABLE (rev 3)                 -> INTEGRITY FAULT (rule 3)
+PASS  K66 hash TOOL FAULT + absent mismatch (rev 3, symmetric)       -> INTEGRITY FAULT (rule 3)
+PASS  K67 Valve step killed by outside SIGKILL (e.g. OOM): TOOL FAULT -> INCONCLUSIVE (rule 5)
+PASS  K68 Valve step killed by outside SIGTERM: TOOL FAULT           -> INCONCLUSIVE (rule 5)
+PASS  K69 Valve step SIGHUP / SIGINT: TOOL FAULT                     -> INCONCLUSIVE (rule 5)
+PASS  K70 Valve step SIGSEGV: still compatibility FAIL               -> COMPATIBILITY FAIL (rule 6)
+PASS  K71 hash step killed by outside SIGKILL: integrity unmeasured  -> INCONCLUSIVE (rule 4)
+PASS  K72 both integrity steps TOOL FAULT                            -> INCONCLUSIVE (rule 4)
+PASS  K73 Valve SIGABRT stays FAILED                                 -> COMPATIBILITY FAIL (rule 6)
+PASS  K63 hash mismatch AND stderr line together                     -> INTEGRITY FAULT (rule 3)
+PASS  K74 inv TOOL FAULT (why=strays-alive): noted, still PASS       -> PASS (rule 7)
+PASS  K75 inv exited 1 with stderr: noted, still PASS                -> PASS (rule 7)
+PASS  K76 inv timer-kill: noted, still PASS                          -> PASS (rule 7)
+PASS  K77 inv: every path absent: noted, still PASS                  -> PASS (rule 7)
+PASS  K78 inv end=nosup: noted, still PASS                           -> PASS (rule 7)
+PASS  K79 inv TOOL FAULT + Valve FAILED: still COMPATIBILITY FAIL (inv never escalates or masks) -> COMPATIBILITY FAIL (rule 6)
+PASS  K80 inv TOOL FAULT + integrity mismatch: still INTEGRITY FAULT -> INTEGRITY FAULT (rule 3)
+PASS  K81 the seven-step (revision 3) list: not the stage-2a list (framing, rule 2) -> INCONCLUSIVE (rule 2)
+   (rule 8 is the catch-all; OUTCOMES says it is unreachable when §3-§4 hold, and no input reaches it here)
+== L. step-4 list rule versions (v1 registered; v2A = amended rule A, FS-R-009 section 4)
+PASS  L01 real trial (i) capture.raw (CRLF->LF) has the SHA-256 recorded in collect.json
+PASS  L02 real record decodes: FSB1 valid, 8 steps, nonce 93a1501f0b1fb692
+PASS  L03 real step 4 bytes = FS-A-009 (private review record), 4 lines, first is the main-map line
+PASS  L04 v1 (registered) on the real output: FAILED "not exactly 3 terminated lines" (registered behaviour preserved)
+PASS  L05 v2A (amended rule A) on the real output: OK, 4 lines, unnamed-map line accepted [fixture only, not a re-grade]
+PASS  L06 real record, default rule for its nonce: v1 applied, COMPATIBILITY FAIL rule 6, lowest failing step 4 (as registered, FS-A-009 (private review record))
+PASS  L07 real record, explicit -ListRule v1: identical to the default
+PASS  L08 CLI on the real collection (default rule for its nonce): the registered classify.txt output line for line, plus "Step-4 list rule applied: list rule v1", exit 11
+PASS  L09 CLI -ListRule v3 (unknown): usage, exit 64, no OUTCOME line
+PASS  L10 CLI -Stage 3a with -ListRule: usage, exit 64 (the rule is stage 2a only)
+PASS  L11 function, unknown rule (V2A wrong case on the real record; v3 on another nonce): INCONCLUSIVE rule 0 "unknown list rule version" (not rule 8; never a silent v1)
+PASS  L18a CLI -ListRule v2A on the real trial (i) collection: refused, exit 64, "rule-version refused for registered run" citing FS-R-009 section 3, no OUTCOME/STAGE-1 line
+PASS  L18b function -ListRule v2A on the real record: INCONCLUSIVE rule 0 "rule-version refused for registered run", no step classes (not a PASS, not rule 8)
+PASS  L18c Resolve-FsS2ListRule v2A for the registered nonce throws the refusal; v1 and the default (v1) are allowed
+PASS  L12 qemu 3-line --list b2sum (step2.out, SHA-256 as in fixture-transcript.txt): OK under v1 and under v2A
+PASS  L12 qemu 3-line --list uname (step3.out, SHA-256 as in fixture-transcript.txt): OK under v1 and under v2A
+PASS  L13 qemu 4-line, unnamed map below the loader (B-a72-b2sum run 1/15): v1 FAILED, v2A OK
+PASS  L13 qemu 4-line, unnamed map above the loader (B-a72-b2sum run 3/15): v1 FAILED, v2A OK
+PASS  L13 qemu 4-line, unnamed map above the loader (B-a72-uname run 5/15): v1 FAILED, v2A OK
+PASS  L14+ v2A OK: unnamed map above the loader, below the vDSO
+PASS  L14+ v2A OK: unnamed map above the vDSO
+PASS  L14+ v2A OK: unnamed map at the lowest nonzero address
+PASS  L14.01 v2A FAILED: duplicate optional line (the same unnamed-map line twice, first)
+PASS  L14.02 v2A FAILED: two optional lines (different addresses), first
+PASS  L14.03 v2A FAILED: extra mapping: 5 lines (an unnamed-map line after the loader)
+PASS  L14.04 v2A FAILED: extra mapping: 5 lines (an extra named line after the loader)
+PASS  L14.05 v2A FAILED: extra named first line (libx.so.1)
+PASS  L14.06 v2A FAILED: extra named first line with an arrow
+PASS  L14.07 v2A FAILED: extra named line last
+PASS  L14.08 v2A FAILED: misplaced optional line: second
+PASS  L14.09 v2A FAILED: misplaced optional line: third
+PASS  L14.10 v2A FAILED: misplaced optional line: last
+PASS  L14.11 v2A FAILED: duplicate address: unnamed map = libc
+PASS  L14.12 v2A FAILED: duplicate address: unnamed map = loader
+PASS  L14.13 v2A FAILED: duplicate address: unnamed map = vDSO
+PASS  L14.14 v2A FAILED: zero address in the unnamed-map line
+PASS  L14.15 v2A FAILED: malformed address: upper-case hex
+PASS  L14.16 v2A FAILED: malformed address: 15 hex digits
+PASS  L14.17 v2A FAILED: malformed address: 17 hex digits
+PASS  L14.18 v2A FAILED: malformed address: no 0x
+PASS  L14.19 v2A FAILED: malformed address in a required line (vDSO, 15 digits)
+PASS  L14.20 v2A FAILED: malformed unnamed-map line: two spaces
+PASS  L14.21 v2A FAILED: malformed unnamed-map line: no tab
+PASS  L14.22 v2A FAILED: malformed unnamed-map line: trailing space
+PASS  L14.23 v2A FAILED: altered path: libc from /usr/lib (4-line form)
+PASS  L14.24 v2A FAILED: altered path: loader target /lib (4-line form)
+PASS  L14.25 v2A FAILED: altered path: interpreter name /XYZ (4-line form)
+PASS  L14.26 v2A FAILED: altered path: libc from /usr/lib (3-line form)
+PASS  L14.27 v2A FAILED: missing vDSO line (unnamed map, libc, loader)
+PASS  L14.28 v2A FAILED: missing vDSO line (libc, loader)
+PASS  L14.29 v2A FAILED: CRLF line ends
+PASS  L14.30 v2A FAILED: unterminated output (last line without LF)
+PASS  L14.31 v2A FAILED: unterminated output (3-line form)
+PASS  L14.32 v2A FAILED: empty output
+PASS  L14.33 v2A FAILED: unnamed-map line alone
+PASS  L15 synthetic record (new nonce), 4-line list: v1 COMPATIBILITY FAIL rule 6; v2A PASS rule 7; no -ListRule = v2A; each states its rule
+PASS  L16 v2A does not mask another step: 4-line list + wrong uname = COMPATIBILITY FAIL, lowest failing step 5
+PASS  L17 v2A keeps the other step-4 checks: a TOOL FAULT stays INCONCLUSIVE rule 5; stderr output stays FAILED
+== S. stage-3a classifier (OUTCOMES §8) and FSP1 stream check
+PASS  S01 committed, held to the deadline, shown=1               -> PASS (machine side) (rule 10)
+PASS  S02 stage 1 not PASS                                       -> DEVICE_REJECTED (rule 1)
+PASS  S03 no record                                              -> INCONCLUSIVE (rule 2)
+PASS  S04 FSB1 rejected                                          -> INCONCLUSIVE (rule 2)
+PASS  S05 completed after the host deadline                      -> INCONCLUSIVE (rule 2)
+PASS  S06 a stage-2a step list                                   -> INCONCLUSIVE (rule 2)
+PASS  S07 hash: digest is not the pin                            -> INTEGRITY FAULT (rule 3)
+PASS  S08 hash: fs-pattern missing (can't open, code 1)          -> INTEGRITY FAULT (rule 3)
+PASS  S09 hash: TOOL FAULT (why=no-proc)                         -> INCONCLUSIVE (rule 4)
+PASS  S10 hash: extra stdout line (UNPARSEABLE)                  -> INCONCLUSIVE (rule 4)
+PASS  S11 hash: uppercase digest (UNPARSEABLE)                   -> INCONCLUSIVE (rule 4)
+PASS  S12 pattern: TOOL FAULT (why=strays-alive)                 -> INCONCLUSIVE (rule 5)
+PASS  S13 pattern: outside SIGKILL                               -> INCONCLUSIVE (rule 5)
+PASS  S14 pattern: exec-failed ENOENT (TOOL FAULT)               -> INCONCLUSIVE (rule 5)
+PASS  S15 pattern: timer-term (hang)                             -> DISPLAY FAIL (rule 6)
+PASS  S16 pattern: timer-kill (hang)                             -> DISPLAY FAIL (rule 6)
+PASS  S17 pattern: its own SIGALRM (stall)                       -> DISPLAY FAIL (rule 6)
+PASS  S18 pattern: exec-failed ENOEXEC                           -> DISPLAY FAIL (rule 6)
+PASS  S19 exit 0, one record's CRC wrong                         -> INCONCLUSIVE (rule 7)
+PASS  S20 exit 0, stream without eos                             -> INCONCLUSIVE (rule 7)
+PASS  S21 exit 0, FSP1 nonce is not chal[0:8]                    -> INCONCLUSIVE (rule 7)
+PASS  S22 exit 0, nonce changes mid-stream                       -> INCONCLUSIVE (rule 7)
+PASS  S23 stream exit code=10 but the process exited 0           -> INCONCLUSIVE (rule 7)
+PASS  S24 committed stream, but stderr not empty                 -> INCONCLUSIVE (rule 7)
+PASS  S25 committed stream, capture truncated                    -> INCONCLUSIVE (rule 7)
+PASS  S26 exit 10 (no_device)                                    -> NO-DISPLAY (rule 8)
+PASS  S27 exit 11 (not_drm)                                      -> NO-DISPLAY (rule 8)
+PASS  S28 exit 12 (not_msm_drm)                                  -> NO-DISPLAY (rule 8)
+PASS  S29 exit 20 (no_connector)                                 -> NO-DISPLAY (rule 8)
+PASS  S30 exit 21 (atomic_refused)                               -> NO-DISPLAY (rule 8)
+PASS  S31 exit 30 (mode_refused)                                 -> NO-DISPLAY (rule 8)
+PASS  S32 exit 40 (buffer_failed)                                -> NO-DISPLAY (rule 8)
+PASS  S33 exit 50 (test_rejected)                                -> NO-DISPLAY (rule 8)
+PASS  S34 exit 60 (real commit failed)                           -> DISPLAY FAIL (rule 9)
+PASS  S35 exit 1 (internal error in the hold)                    -> DISPLAY FAIL (rule 9)
+PASS  S36 exit 0 but shown=0                                     -> INCONCLUSIVE (rule 11)
+PASS  S37 exit 0 but hold_end reason=signal                      -> INCONCLUSIVE (rule 11)
+PASS  S38 exit 0 but commit rc=-22                               -> INCONCLUSIVE (rule 11)
+PASS  S39 exit 70 (stopped by an outside signal)                 -> INCONCLUSIVE (rule 11)
+PASS  S40 exit 2 (usage: our invocation)                         -> INCONCLUSIVE (rule 11)
+PASS  S41 FSP1 'committed': PowerShell COMPLETE = Python (COMPLETE) = COMPLETE
+PASS  S41 FSP1 'nodisplay': PowerShell COMPLETE = Python (COMPLETE) = COMPLETE
+PASS  S41 FSP1 'badcrc': PowerShell INVALID = Python (INVALID) = INVALID
+PASS  S41 FSP1 'noeos': PowerShell INCOMPLETE = Python (INCOMPLETE) = INCOMPLETE
+PASS  S41 FSP1 'nonce': PowerShell INVALID = Python (INVALID) = INVALID
+PASS  S42 fs-pattern's own sample stream (unit-test build): PowerShell = Python
+PASS  S43 -Stage 3a replay: the collector sent fs-display (not fs-valve) and recorded stage 3a, deadline 170 s
+PASS  S44 fs-classify.ps1 -Stage 3a CLI: OUTCOME PASS (machine side), exit 10, and the PM-reading caveat is printed
+PASS  S45 a stage-3a collection given to the stage-2a classifier: INCONCLUSIVE, exit 14
+PASS  S47 stage 3a: the display cue (N display-cue) precedes the fs-display write in capture.raw.idx, by at least 3 s
+PASS  S48 stage 2a: no display cue in the index
+PASS  S49 stage 3a order in capture.raw.idx: W fs-display < N beep-1 < N beep-2 < W fs-done (one of each)
+PASS  S50 ...the pause is read-only (no write between the beeps) and lasts >= PreDoneMs 10 s after beep 1 (+ its 300 ms)
+PASS  S51 ...two distinct host beeps (1760 Hz/300 ms, then 440 Hz/700 ms); none written to the device
+PASS  S52 ...the stage-3a collector used 2 fs-status tries at most (revision 8 timing)
+PASS  S53 stage 2a: no beeps and no pause (no N lines, no replay beeps)
+PASS  S54 stage 3a: bytes arriving during the pre-done pause: fs-done NOT sent (send gate; no re-settle), beep 2 still marks the end of the pause
+PASS  S46 fs-classify.ps1 -Stage 3a CLI on the no-device collection: NO-DISPLAY, exit 15
+== O. fs-observe.ps1: one attempt, no session; dry observer -> collector -> classifier
+PASS  O1 the observer code opens no serial port and runs no session (no SerialPort / New-FsSerialTransport / Invoke-FsSession / New-FsCommand / fs-ack / fs-verify outside comments)
+PASS  O2 no -ConfirmNonce: exit 3, no fastboot call, nothing written (no ledger, no lock, no observe dir)
+PASS  O3 a wrong -ConfirmNonce: exit 3, no fastboot call
+PASS  O4 -Preflight: exit 0 with no fastboot call and nothing written
+PASS  O5 a MANIFEST with TEST OVERRIDES is refused (exit 2, no fastboot call)
+PASS  O6 an image that does not match its MANIFEST is refused (exit 2, no fastboot call)
+PASS  O7 the attempt: exactly two fastboot calls, `devices` then `-s <serial> boot <image>`
+PASS  O8 ledger marker and image-directory lock written before the boot; observe.json written
+PASS  O9 handoff HANDOFF_ACKNOWLEDGED, Th recorded, gadget FS-<nonce> on COM9, collector command printed with -BootStartUtc (origin) then -HandoffUtc (evidence)
+PASS  O10 the same nonce again: refused (one attempt per nonce), no fastboot call
+PASS  O11 stage 3a, device refuses the boot: DEVICE_REJECTED, one boot call, no gadget wait
+PASS  O12 ...and the derived stage-1 class is DEVICE_REJECTED
+PASS  O13 dry e2e: the collector (fake serial) sent exactly one fs-ack (the observer sent none), ran fs-valve once, COLLECTED-VALID
+PASS  O14 dry e2e: fs-classify.ps1 -ObserveDir derives STAGE-1 CLASS PASS from the verified FSV1, then OUTCOME PASS (exit 10)
+PASS  O15 CLI without -ConfirmNonce or -Preflight: exit 3
+PASS  O16 stage-1 class TRANSPORT/SHELL FAILURE when the gadget came up but no FSV1 verified
+PASS  O17 stage-1 class INCONCLUSIVE when observer and collector disagree on the nonce
+PASS  O19 SF1 a build folder copied elsewhere is refused (fixed ledger <repo>\build\stage2a\attempted), no fastboot call, nothing written
+PASS  O20 fastboot boot times out: handoff INCONCLUSIVE, the budget origin is the boot START and the printed command passes it as -BootStartUtc
+PASS  O22 B1 acknowledged handoff: the budget origin is still the boot START (taken before fastboot boot), not Th; -BootStartUtc in the printed command
+PASS  O23 B1 source order: BootStartUtc is taken before the one fastboot boot invocation (the origin precedes the command)
+PASS  O21 NIT7 foreign ack at the very end of the ack window: the gated fs-done is still sent (after the window), the device recovers at once
+PASS  O18 B1 already-acked: stopped at the first FSS1 showing a foreign ack (one fs-status), no fs-valve, gated fs-done sent
+== T. FS-R-007 B1 timing: origin BootStartUtc, preparation counted (fixtures\b1-timing.ps1: observer -> live collector CLI; simulated device side, no port)
+PASS  T1 stage 3a, Chair counterexample (start 0, T0 2, return 60, collector 80): the runner is refused (INCONCLUSIVE, no fs-display, gated fs-done)
+        exit=14 writes=fs-verify,fs-ack,fs-status,fs-status,fs-done stop='runner budget: 28 s left before the host give-up, the runner needs 58 s (worst case 42 s + margin 5 s + post-record 11 s); the runner is not sent; recover now' giveUpMs=74258 ackGiveUpMs=54258 args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-11T04:52:27.1444150Z = BootStartUtc 2026-10-11T04:49:52.1444150Z + 170 s - 15 s (device deadline no earlier than 2026-10-11T04:52:42.1444150Z); 74 s left after 0 s of preparation STOP:   runner budget: 28 s left before the host give-up, the runner needs 58 s (worst case 42 s + margin 5 s + post-record 11 s); the runner is not sent; recover now'
+PASS  T2 stage 2a, the same timeline: the runner is refused (INCONCLUSIVE, no fs-valve, gated fs-done)
+        exit=14 writes=fs-verify,fs-ack,fs-status,fs-status,fs-done stop='runner budget: 122 s left before the host give-up, the runner needs 132 s (worst case 127 s + margin 5 s + post-record 0 s); the runner is not sent; recover now' giveUpMs=164857 ackGiveUpMs=54857 args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-11T04:53:58.9266103Z = BootStartUtc 2026-10-11T04:49:53.9266103Z + 260 s - 15 s (device deadline no earlier than 2026-10-11T04:54:13.9266103Z); 164 s left after 0 s of preparation STOP:   runner budget: 122 s left before the host give-up, the runner needs 132 s (worst case 127 s + margin 5 s + post-record 0 s); the runner is not sent; recover now'
+PASS  T3 stage 2a, 20 s gadget discovery: host give-up and ack give-up on the transport clock are both <= (absolute deadline - collector start - 20 s); collection still VALID
+        bound giveUp<=216387 ack<=106387; exit=10 writes=fs-verify,fs-ack,fs-status,fs-valve,fs-done stop='' giveUpMs=214808 ackGiveUpMs=104808 args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-11T04:55:09.3169409Z = BootStartUtc 2026-10-11T04:51:04.3169409Z + 260 s - 15 s (device deadline no earlier than 2026-10-11T04:55:24.3169409Z); 214 s left after 20 s of preparation'
+PASS  T4 stage 3a, 20 s preparation pushes the remaining budget below the 60 s start minimum: refused after preparation, nothing sent (exit 20)
+        exit=20 writes= stop='' giveUpMs= ackGiveUpMs= args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='REFUSED/ERROR: refused (after 20 s of preparation): only 49 s left before the host give-up (BootStartUtc + DEADLINE - margin); let the device deadline recover'
+PASS  T5 acknowledged handoff: the collector command passes -BootStartUtc (origin) and -HandoffUtc (evidence); collect.json Timing records origin BootStartUtc and the absolute give-up
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-valve,fs-done stop='' giveUpMs=214821 ackGiveUpMs=104821 args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-11T04:55:30.4695581Z = BootStartUtc 2026-10-11T04:51:25.4695581Z + 260 s - 15 s (device deadline no earlier than 2026-10-11T04:55:45.4695581Z); 214 s left after 0 s of preparation'
+PASS  T6 preserved: stage 3a normal collection through the live path (handoff 11 s, collector +15 s): fs-display sent, COLLECTED-VALID, beeps, fs-done
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-display,fs-done stop='' giveUpMs=139835 ackGiveUpMs=119835 args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-11T04:54:15.8924878Z = BootStartUtc 2026-10-11T04:51:40.8924878Z + 170 s - 15 s (device deadline no earlier than 2026-10-11T04:54:30.8924878Z); 139 s left after 0 s of preparation'
+PASS  T7 preserved: stage 2a normal collection through the live path: fs-valve sent, COLLECTED-VALID, fs-done
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-valve,fs-done stop='' giveUpMs=229886 ackGiveUpMs=119886 args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-11T04:55:46.4524787Z = BootStartUtc 2026-10-11T04:51:41.4524787Z + 260 s - 15 s (device deadline no earlier than 2026-10-11T04:56:01.4524787Z); 229 s left after 0 s of preparation'
+PASS  T8 preserved: uncertain handoff (fastboot boot timed out after 120 s): origin = boot START, the ack window is spent, refused at start, nothing sent (exit 20)
+        exit=20 writes= stop='' giveUpMs= ackGiveUpMs= args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='REFUSED/ERROR: refused: only 9 s of the ack window left (BootStartUtc + 150 s - margin; PID 1 reboots without an ack by SHELL_READY + 150 s); let the device recover'
+PASS  T9 a -BootStartUtc 3 s in the future is refused before any preparation (no gadget query, nothing sent, exit 20)
+        exit=20 writes= stop='' giveUpMs= ackGiveUpMs= args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='REFUSED/ERROR: refused: -BootStartUtc 2026-10-11T04:52:00.0038804Z is later than now 2026-10-11T04:51:57.0639578Z (clock step or bad input; a future origin would inflate the budget)'
+PASS  T0 fixtures\b1-timing.ps1 ran all 9 regressions (T1-T5 fail on fbca773: b1-timing.fbca773.txt; T9 fails on 5c2e3f9: b1-timing.5c2e3f9.txt)
+== M. misc rule: fs-miscrule.ps1 vs common/tools/misc_rule.py (full output, case for case)
+PASS  M real-control-ctrl0-ctrl1     RECORDED     (py)
+PASS  M real-trial-after-eq-ctrl0    UNCHANGED    (py)
+PASS  M identical                    UNCHANGED    (py)
+PASS  M c-E1-to-E0                   STOP         (py)
+PASS  M c-recovery                   STOP         (py)
+PASS  M c-junk-after-nul             STOP         (py)
+PASS  M c-before-unexpected          STOP         (py)
+PASS  M o-status-field               STOP         (py)
+PASS  M o-just-below-v               STOP         (py)
+PASS  M o-just-above-v               STOP         (py)
+PASS  M o-vab-message                STOP         (py)
+PASS  M o-slot-suffix                STOP         (py)
+PASS  M v-and-other                  STOP         (py)
+PASS  M truncated-after              INCONCLUSIVE (py)
+PASS  M empty-before                 INCONCLUSIVE (py)
+PASS  M real-dump-march-to-ctrl0     RECORDED     (py)
+PASS  M c-E0-to-E1-only              EXPECTED     (py)
+PASS  M c-E0-unchanged               UNCHANGED    (py)
+PASS  M x-v-high-byte-0x101b         RECORDED     (extra)
+PASS  M x-v-first-byte-0x1010        RECORDED     (extra)
+PASS  M x-c-E0-to-other              STOP         (extra)
+PASS  M x-c-E0-to-E1-plus-V          RECORDED     (extra)
+PASS  M x-o-last-byte                STOP         (extra)
+PASS  M x-o-many-runs                STOP         (extra)
+PASS  M x-oversize-after             INCONCLUSIVE (extra)
+PASS  M x-both-empty                 INCONCLUSIVE (extra)
+   CROSS-CHECK fs-miscrule.ps1 = misc_rule.py (all lines, VERDICT, exit status) on 26 of 26 cases
+PASS  M+ fs-miscrule.ps1 CLI on the real control: VERDICT RECORDED, exit 12
+PASS  M+ missing capture file: VERDICT INCONCLUSIVE, exit 14 in both implementations (never an EXPECTED-like code)
+PASS  M+ unreadable capture (a directory): VERDICT INCONCLUSIVE, exit 14 in both implementations (never an EXPECTED-like code)
+PASS  M+ cli-unchanged: exit 10 in both implementations
+PASS  M+ cli-short-after: exit 14 in both implementations
+PASS  M+ cli-usage: exit 64 in both implementations
+PASS  K+ fs-classify.ps1 CLI on an unreadable collection: INCONCLUSIVE, exit 14
+== G. E1 git checks (PowerShell; git version 2.55.0.windows.4)
+PASS  G1 clean checkout accepted
+PASS  G2 planted untracked hashlib.py (refused: working tree is modified (ignored and untracked files included): ?? hashlib.py | files not in the pinned tree (filesystem walk): hashlib.py)
+PASS  G4 planted ignored file (refused: working tree is modified (ignored and untracked files included): !! gki.pyc | files not in the pinned tree (filesystem walk): gki.pyc)
+PASS  G5 status.showUntrackedFiles=no cannot hide a planted file (refused: working tree is modified (ignored and untracked files included): ?? hashlib.py | files not in the pinned tree (filesystem walk): hashlib.py)
+PASS  G6c CONTROL: the stage-1 ag() form reports the redirected checkout clean (E1 reproduced)
+PASS  G6 core.worktree redirect: refused for the config entry (refused: core.worktree is set in the repository config: $HOME/AppData/Local/Temp/fs-host2-9d984043/git/e1alt | working tree is modified (ign)
+PASS  G6b core.worktree redirect: explicit --work-tree status finds the planted file (refused: core.worktree is set in the repository config: $HOME/AppData/Local/Temp/fs-host2-9d984043/git/e1alt | working tree is modified (ign)
+PASS  G7 GIT_WORK_TREE in the caller's environment is removed (refused: working tree is modified (ignored and untracked files included): ?? hashlib.py | files not in the pinned tree (filesystem walk): hashlib.py)
+PASS  G8 GIT_DIR/GIT_INDEX_FILE in the caller's environment are removed (refused: working tree is modified (ignored and untracked files included): ?? hashlib.py | files not in the pinned tree (filesystem walk): hashlib.py)
+PASS  G9 assume-unchanged entry (refused: assume-unchanged/skip-worktree entries: h mkbootimg.py | file content differs from the pinned tree (no filters): mkbootimg.py)
+PASS  G10 skip-worktree entry (refused: assume-unchanged/skip-worktree entries: S README)
+PASS  G12 HEAD is not the pinned commit (refused: HEAD is e0e6d6c699ee3f43ce1136c478024f27f3d1e9ed, not the pinned ee152c5dfd519fc5553a904ba85885454503fc7c | file content differs from the pi)
+PASS  G13 .git is a gitfile (refused: .git is a file (gitfile redirect), not a directory)
+PASS  G14 .git is a junction (refused: .git is a link or junction, not a real directory)
+PASS  G15 relative repository path (refused: repository path is not absolute: clean)
+PASS  G16 malformed pinned commit (refused: pinned commit is not 40 lowercase hex)
+   [dash] == git: git version 2.53.0  shell: /usr/bin/dash
+   [dash] PASS  G1 clean checkout accepted
+   [dash] PASS  G1b trailing slash accepted
+   [dash] PASS  G2 planted untracked hashlib.py (refused: REFUSED: working tree is modified (ignored and untracked files included): ?? hashlib.py;|REFUSED: files not in the pinned tree (file-system walk): has)
+   [dash] PASS  G3 modified tracked file (refused: REFUSED: working tree is modified (ignored and untracked files included):  M mkbootimg.py;|REFUSED: file content differs from the pinned tree (no filt)
+   [dash] PASS  G4 planted ignored file (info/exclude) (refused: REFUSED: working tree is modified (ignored and untracked files included): !! gki.pyc;|REFUSED: files not in the pinned tree (file-system walk): gki.py)
+   [dash] PASS  G5 config status.showUntrackedFiles=no cannot hide a planted file (refused: REFUSED: working tree is modified (ignored and untracked files included): ?? hashlib.py;|REFUSED: files not in the pinned tree (file-system walk): has)
+   [dash] PASS  G6c CONTROL: stage-1 ag() reports the redirected checkout clean (E1 reproduced on this git)
+   [dash] PASS  G6 core.worktree redirect: refused (config entry) (refused: REFUSED: core.worktree is set in the repository config: /tmp/tmp.ouVeWV509Y/e1alt|REFUSED: working tree is modified (ignored and untracked files inclu)
+   [dash] PASS  G6b core.worktree redirect: explicit --work-tree status sees the planted file (refused: REFUSED: core.worktree is set in the repository config: /tmp/tmp.ouVeWV509Y/e1alt|REFUSED: working tree is modified (ignored and untracked files inclu)
+   [dash] PASS  G6d core.worktree via include.path (refused: REFUSED: core.worktree is set in the repository config: /tmp/tmp.ouVeWV509Y/e1incalt|REFUSED: working tree is modified (ignored and untracked files in)
+   [dash] PASS  G7c CONTROL: GIT_WORK_TREE blinds a plain status
+   [dash] PASS  G7 GIT_WORK_TREE in the caller's environment ignored (planted file found)
+   [dash] PASS  G8 GIT_DIR/GIT_INDEX_FILE in the caller's environment ignored
+   [dash] PASS  G8b positive despite a bogus GIT_DIR in the caller
+   [dash] PASS  G9 assume-unchanged entry (refused: REFUSED: assume-unchanged/skip-worktree entries: h mkbootimg.py;|REFUSED: file content differs from the pinned tree (no filters): mkbootimg.py;)
+   [dash] PASS  G10 skip-worktree entry (refused: REFUSED: assume-unchanged/skip-worktree entries: S README;)
+   [dash] PASS  G11 fsmonitor hook configured: modification still found (refused: REFUSED: working tree is modified (ignored and untracked files included):  M README;|REFUSED: file content differs from the pinned tree (no filters): )
+   [dash] PASS  G11b the configured fsmonitor hook was not executed
+   [dash] PASS  G12 HEAD is not the pinned commit (refused: REFUSED: HEAD is 'a7019cbe4a008dec5e158ca703c72c53fba31e12', not the pinned da55fb5cacaf94f5565859bddff29f129d237b01|REFUSED: file content differs fro)
+   [dash] PASS  G13 .git is a gitfile (refused: REFUSED: .git is a file (gitfile redirect), not a directory)
+   [dash] PASS  G14 .git is a symlink (refused: REFUSED: .git is a symlink, not a real directory)
+   [dash] PASS  G15 relative path refused
+   [dash] PASS  G16 malformed pinned commit (refused: REFUSED: pinned commit is not lowercase hex)
+   [dash] PASS  G16b short pinned commit (refused: REFUSED: pinned commit is not 40 hex characters)
+   [dash] PASS  G17c CONTROL: with a replace ref, HEAD == pin and status is clean
+   [dash] PASS  G17 git replace <pin> <evil>: refused (replace ref) (refused: REFUSED: replace refs present (refs/replace): refs/replace/da55fb5cacaf94f5565859bddff29f129d237b01;|REFUSED: working tree is modified (ignored and un)
+   [dash] PASS  G17b git replace: content compared without replacement (refused: REFUSED: replace refs present (refs/replace): refs/replace/da55fb5cacaf94f5565859bddff29f129d237b01;|REFUSED: working tree is modified (ignored and un)
+   [dash] PASS  G18c CONTROL: the clean filter hides the modification from status
+   [dash] PASS  G18 clean filter: content compared with --no-filters (refused: REFUSED: file content differs from the pinned tree (no filters): mkbootimg.py;)
+   [dash] PASS  G19c CONTROL: core.fileMode=false hides the mode change from status
+   [dash] PASS  G19 mode bits read from the file system, not core.fileMode (refused: REFUSED: mode differs (pinned 100644, file executable): README)
+   [dash] PASS  G20c CONTROL: GIT_CONFIG_GLOBAL filter hides the modification
+   [dash] PASS  G20 GIT_CONFIG_GLOBAL from the caller is ignored (difference found)
+   [dash] PASS  G21 HOME/.gitconfig from the caller is ignored (difference found)
+   [dash] PASS  G22 objects/info/alternates present (refused: REFUSED: .git/objects/info/alternates exists (object substitution))
+   [dash] PASS  G23 info/grafts present (refused: REFUSED: .git/info/grafts exists (object substitution)|hint: Support for <GIT_DIR>/info/grafts is deprecated|hint: and will be removed in a future Git)
+   [dash] PASS  G24 nested repository with a planted file (refused: REFUSED: working tree is modified (ignored and untracked files included): ?? gki/;|REFUSED: nested repository in the checkout: gki/.git;|REFUSED: file)
+   [dash] PASS  G25a tracked symlink, unchanged (refused: REFUSED: symlink entry in the pinned tree (not supported by this check): link.py)
+   [dash] PASS  G25 tracked symlink retargeted (refused: REFUSED: working tree is modified (ignored and untracked files included):  M link.py;|REFUSED: symlink entry in the pinned tree (not supported by this)
+   [dash] TOTAL: 39 passed, 0 failed
+PASS  G-sh fixtures under WSL dash: TOTAL: 39 passed, 0 failed
+   [bash --posix] == git: git version 2.53.0  shell: /usr/bin/bash
+   [bash --posix] PASS  G1 clean checkout accepted
+   [bash --posix] PASS  G1b trailing slash accepted
+   [bash --posix] PASS  G2 planted untracked hashlib.py (refused: REFUSED: working tree is modified (ignored and untracked files included): ?? hashlib.py;|REFUSED: files not in the pinned tree (file-system walk): has)
+   [bash --posix] PASS  G3 modified tracked file (refused: REFUSED: working tree is modified (ignored and untracked files included):  M mkbootimg.py;|REFUSED: file content differs from the pinned tree (no filt)
+   [bash --posix] PASS  G4 planted ignored file (info/exclude) (refused: REFUSED: working tree is modified (ignored and untracked files included): !! gki.pyc;|REFUSED: files not in the pinned tree (file-system walk): gki.py)
+   [bash --posix] PASS  G5 config status.showUntrackedFiles=no cannot hide a planted file (refused: REFUSED: working tree is modified (ignored and untracked files included): ?? hashlib.py;|REFUSED: files not in the pinned tree (file-system walk): has)
+   [bash --posix] PASS  G6c CONTROL: stage-1 ag() reports the redirected checkout clean (E1 reproduced on this git)
+   [bash --posix] PASS  G6 core.worktree redirect: refused (config entry) (refused: REFUSED: core.worktree is set in the repository config: /tmp/tmp.GycA86eLpp/e1alt|REFUSED: working tree is modified (ignored and untracked files inclu)
+   [bash --posix] PASS  G6b core.worktree redirect: explicit --work-tree status sees the planted file (refused: REFUSED: core.worktree is set in the repository config: /tmp/tmp.GycA86eLpp/e1alt|REFUSED: working tree is modified (ignored and untracked files inclu)
+   [bash --posix] PASS  G6d core.worktree via include.path (refused: REFUSED: core.worktree is set in the repository config: /tmp/tmp.GycA86eLpp/e1incalt|REFUSED: working tree is modified (ignored and untracked files in)
+   [bash --posix] PASS  G7c CONTROL: GIT_WORK_TREE blinds a plain status
+   [bash --posix] PASS  G7 GIT_WORK_TREE in the caller's environment ignored (planted file found)
+   [bash --posix] PASS  G8 GIT_DIR/GIT_INDEX_FILE in the caller's environment ignored
+   [bash --posix] PASS  G8b positive despite a bogus GIT_DIR in the caller
+   [bash --posix] PASS  G9 assume-unchanged entry (refused: REFUSED: assume-unchanged/skip-worktree entries: h mkbootimg.py;|REFUSED: file content differs from the pinned tree (no filters): mkbootimg.py;)
+   [bash --posix] PASS  G10 skip-worktree entry (refused: REFUSED: assume-unchanged/skip-worktree entries: S README;)
+   [bash --posix] PASS  G11 fsmonitor hook configured: modification still found (refused: REFUSED: working tree is modified (ignored and untracked files included):  M README;|REFUSED: file content differs from the pinned tree (no filters): )
+   [bash --posix] PASS  G11b the configured fsmonitor hook was not executed
+   [bash --posix] PASS  G12 HEAD is not the pinned commit (refused: REFUSED: HEAD is 'bc9f254b53b281db20ba1e56747f6f40efb90f27', not the pinned f06c33663476de148dbb03b79f874b2cd699cb5d|REFUSED: file content differs fro)
+   [bash --posix] PASS  G13 .git is a gitfile (refused: REFUSED: .git is a file (gitfile redirect), not a directory)
+   [bash --posix] PASS  G14 .git is a symlink (refused: REFUSED: .git is a symlink, not a real directory)
+   [bash --posix] PASS  G15 relative path refused
+   [bash --posix] PASS  G16 malformed pinned commit (refused: REFUSED: pinned commit is not lowercase hex)
+   [bash --posix] PASS  G16b short pinned commit (refused: REFUSED: pinned commit is not 40 hex characters)
+   [bash --posix] PASS  G17c CONTROL: with a replace ref, HEAD == pin and status is clean
+   [bash --posix] PASS  G17 git replace <pin> <evil>: refused (replace ref) (refused: REFUSED: replace refs present (refs/replace): refs/replace/f06c33663476de148dbb03b79f874b2cd699cb5d;|REFUSED: working tree is modified (ignored and un)
+   [bash --posix] PASS  G17b git replace: content compared without replacement (refused: REFUSED: replace refs present (refs/replace): refs/replace/f06c33663476de148dbb03b79f874b2cd699cb5d;|REFUSED: working tree is modified (ignored and un)
+   [bash --posix] PASS  G18c CONTROL: the clean filter hides the modification from status
+   [bash --posix] PASS  G18 clean filter: content compared with --no-filters (refused: REFUSED: file content differs from the pinned tree (no filters): mkbootimg.py;)
+   [bash --posix] PASS  G19c CONTROL: core.fileMode=false hides the mode change from status
+   [bash --posix] PASS  G19 mode bits read from the file system, not core.fileMode (refused: REFUSED: mode differs (pinned 100644, file executable): README)
+   [bash --posix] PASS  G20c CONTROL: GIT_CONFIG_GLOBAL filter hides the modification
+   [bash --posix] PASS  G20 GIT_CONFIG_GLOBAL from the caller is ignored (difference found)
+   [bash --posix] PASS  G21 HOME/.gitconfig from the caller is ignored (difference found)
+   [bash --posix] PASS  G22 objects/info/alternates present (refused: REFUSED: .git/objects/info/alternates exists (object substitution))
+   [bash --posix] PASS  G23 info/grafts present (refused: REFUSED: .git/info/grafts exists (object substitution)|hint: Support for <GIT_DIR>/info/grafts is deprecated|hint: and will be removed in a future Git)
+   [bash --posix] PASS  G24 nested repository with a planted file (refused: REFUSED: working tree is modified (ignored and untracked files included): ?? gki/;|REFUSED: nested repository in the checkout: gki/.git;|REFUSED: file)
+   [bash --posix] PASS  G25a tracked symlink, unchanged (refused: REFUSED: symlink entry in the pinned tree (not supported by this check): link.py)
+   [bash --posix] PASS  G25 tracked symlink retargeted (refused: REFUSED: working tree is modified (ignored and untracked files included):  M link.py;|REFUSED: symlink entry in the pinned tree (not supported by this)
+   [bash --posix] TOTAL: 39 passed, 0 failed
+PASS  G-sh fixtures under WSL bash --posix: TOTAL: 39 passed, 0 failed
+[removed for publication]
+== F. review findings of da0ad56 (each fails on da0ad56, passes after)
+PASS  F1a [B1] continuation arriving during the ack settle: fs-status NOT sent
+PASS  F1b [B1] "Password: " arriving during the ack settle: fs-status NOT sent
+PASS  F1c [B1] a second, identical prompt arriving during the settle: still bytes after the settled prompt, NOT sent
+PASS  F1d [B1] "login: root / Password: " before the first command: nothing sent
+PASS  F1e [B1] pager "--More-- (42%)" before the first command: nothing sent
+PASS  F1f [B1] output ending in a newline (no prompt) before the first command: nothing sent
+PASS  F1g [B1] the prompt changes between commands (/ # instead of ~ #): fs-status NOT sent
+PASS  F1h [B1] positive control: a quiet settle still sends fs-status
+PASS  F1i [B1] COLLECTOR.md states the send gate (rule 3)
+PASS  F2a [S2] git replace <pin> <evil> (HEAD == pin, status clean): refused for the replace ref
+PASS  F2b [S2] objects/info/alternates present: refused
+PASS  F2c [S2] info/grafts present: refused
+PASS  F2d [S2] modification hidden from status by assume-unchanged AND a matching size/mtime: found by --no-filters content compare
+PASS  F2e [S2] a nested repository / file outside the pinned tree is found by the file-system walk
+PASS  F2f [S2] mode bits: Windows check states it cannot see exec bits (Evidence.mode_bits)
+   [dash] TOTAL: 39 passed, 0 failed
+PASS  F2g [S2] fs-gitcheck.sh under WSL dash: all E1 fixtures incl. replace/filter/fileMode/env/alternates/grafts/nested/symlink
+   [bash --posix] TOTAL: 39 passed, 0 failed
+PASS  F2g [S2] fs-gitcheck.sh under WSL bash --posix: all E1 fixtures incl. replace/filter/fileMode/env/alternates/grafts/nested/symlink
+   [git-bash] INFO  G14 ln -s made a copy, not a link, on this platform (MSYS): skipped
+   [git-bash] INFO  G20c not blinded on this git
+   [git-bash] INFO  G25 symlinks not created on this platform (skipped)
+   [git-bash] TOTAL: 34 passed, 0 failed
+PASS  F2h [S2] fs-gitcheck.sh under Git Bash (MSYS): all applicable E1 fixtures
+[removed for publication]
+PASS  F4a [S4] FSA1 value with ESC/OSC/BEL: the collector CLI output is printable ASCII only
+PASS  F4b [S4] classifier notes quoting device output (ESC, OSC 52, BEL in the hash step): CLI output printable only
+PASS  F5a [S5] exec-failed with errno=4294967309 is a TOOL FAULT (INCONCLUSIVE, rule 5), not a compatibility FAIL
+PASS  F5b [S5] signaled with sig=999999999999999 stays FAILED (not an outside signal), and code=999999999999999 on hash is UNPARSEABLE
+PASS  F5c [S5] an internal classifier error (malformed pins) is INCONCLUSIVE rule 8 "classifier error", never a verdict or a skipped check
+PASS  F5d [S5] verdict exit codes never 0/1/2: classifier PASS exits 10, collector valid exits 10
+PASS  F6a [nit] disk full during capture: no throw, INCONCLUSIVE, capture error stated, fs-done not sent
+PASS  F6b [nit] disk full, CLI: collect.json written, RECOVERY line printed, exit 14
+PASS  F6c [nit] capture close fails: still a RECOVERY line, CAPTURE ERROR, exit 14 (not 2)
+PASS  F6d [nit] a failing write is not logged as a W line and stops everything
+PASS  F6e [nit] live Flush/Close run under a bounded timeout (a 5 s blocking call is abandoned at 100 ms)
+PASS  F6f [nit] host deadline derived from the device deadline: with 3 s left the collector stops itself, says so, sends nothing more
+PASS  F6g [nit] default host give-up is the image deadline - margin 15 s (rev 3: stage2a 260 s, stage3a 170 s), and COLLECTOR.md has the timing table
+PASS  F6h [nit] live mode refuses to start without its timing origin (-BootStartUtc since FS-R-007 B1; -HandoffUtc at da0ad56), nothing opened
+PASS  F6i [nit] misc CLI, empty first argument: same exit status and VERDICT/usage line as misc_rule.py
+PASS  F6i [nit] misc CLI, three arguments: same exit status and VERDICT/usage line as misc_rule.py
+PASS  F6i [nit] misc CLI, one argument: same exit status and VERDICT/usage line as misc_rule.py
+PASS  F6j [nit] test-host2.ps1 takes -OutFile
+PASS  F6k [nit] C4 is a strict check (the only write is of New-FsCommand output + LF; one $cmd assignment)
+TOTAL: 459 passed, 0 failed, 0 skipped

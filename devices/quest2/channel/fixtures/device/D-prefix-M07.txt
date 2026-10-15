@@ -1,0 +1,11 @@
+# pre-fix variant of src/fs-rpcd.c (raw-byte charset loop removed; diff below), native gcc build
+# 291,296d290
+# <                 /* the charset check runs over the RAW bytes, before any C-string use:
+# <                  * a NUL must not truncate the line into something valid (fixture M07) */
+# <                 for (size_t k = 0; k < i; k++) {
+# <                     char ch = buf[k];
+# <                     if (!((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == ' ' || ch == '-')) return "grammar";
+# <                 }
+M07-nul FAIL b'fs-status 0123456789abcdef\x00\n' -> b'FSS1 nonce=0123456789abcdef stages=INIT_STARTED,SHELL_READY acked=none END\n'
+TOTAL 75/77 PASS
+# note: the second failure is F1 (this run did not supply the FSB1 encoder paths, so F2-F6 were skipped: 77 cases)

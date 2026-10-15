@@ -1,0 +1,14 @@
+FS[93a1501f0b1fb692] t=930s DEADLINE armed t0=930 deadline=T0+260 ack_window=150 backstop=T0+261 reboot-reasons-not-logged-at-reboot
+FS[93a1501f0b1fb692] t=930s STAGE=INIT_STARTED pid=1 kernel=6.18.33.2-microsoft-standard-WSL2 deadline=T0+260
+FS[93a1501f0b1fb692] t=930s BACKSTOP armed pid=53 in=261s
+FS[93a1501f0b1fb692] t=930s FW_TIMEOUT=1
+FS[93a1501f0b1fb692] t=931s MODULE_FAIL fake_a.ko: insmod: short read
+FS[93a1501f0b1fb692] t=931s MODULE_FAIL fake_b.ko: insmod: short read
+FS[93a1501f0b1fb692] t=931s MODULE_FAIL fake_c.ko: insmod: short read
+FS[93a1501f0b1fb692] t=935s STAGE=MODULES_READY ok=0 fail=3 udc=a600000.dwc3  drm=
+FS[93a1501f0b1fb692] t=935s ROLE mode=peripheral roles=device 
+FS[93a1501f0b1fb692] t=935s STAGE=ACM_SETUP_ATTEMPTED 
+FS[93a1501f0b1fb692] t=936s GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-93a1501f0b1fb692
+FS[93a1501f0b1fb692] t=936s STAGE=UDC_BOUND state=configured
+FS[93a1501f0b1fb692] t=936s STAGE=SHELL_READY 
+FS t=938s STAGE=HOST_ACK ack=93a3910230c5a5f6 deadline-unchanged=T0+260

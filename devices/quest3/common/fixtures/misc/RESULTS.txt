@@ -1,0 +1,83 @@
+real-control-ctrl0-ctrl1     PASS got=RECORDED want=RECORDED  the PM's stock reboot control (FS-A-005): only V changes
+    ok boot command unchanged E1(bootonce-bootloader)
+    RECORDED vendor field 0x1010-0x101b changed: w0 0x000006d0->0x000005bf (1744->1471), w1 0xfffffa09->0xfffffb21 (-1527->-1247), w2 0x00000073->0x00000077 (115->119); presumed reboot-related (the stock control changed the same field); location alone does not establish harmlessness
+    info VAB message 0x8000: unchanged
+real-trial-after-eq-ctrl0    PASS got=UNCHANGED want=UNCHANGED  trial-after vs control-before: byte-identical
+    ok boot command unchanged E1(bootonce-bootloader)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+identical                    PASS got=UNCHANGED want=UNCHANGED  
+    ok boot command unchanged E1(bootonce-bootloader)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+c-E1-to-E0                   PASS got=STOP want=STOP  command cleared: never observed
+    STOP boot command transition not specifically expected: E1(bootonce-bootloader) -> E0(empty)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+c-recovery                   PASS got=STOP want=STOP  other boot command
+    STOP boot command transition not specifically expected: E1(bootonce-bootloader) -> other:626f6f742d7265636f7665727900000000000000000000000000000000000000
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+c-junk-after-nul             PASS got=STOP want=STOP  E1 string with a non-NUL tail byte
+    STOP boot command transition not specifically expected: E1(bootonce-bootloader) -> other:626f6f746f6e63652d626f6f746c6f6164657200000000000000000000000001
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+c-before-unexpected          PASS got=STOP want=STOP  unexpected before-state, unchanged
+    STOP boot command transition not specifically expected: other:626f6f742d7265636f7665727900000000000000000000000000000000000000 -> other:626f6f742d7265636f7665727900000000000000000000000000000000000000
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+o-status-field               PASS got=STOP want=STOP  bootloader_message.status
+    STOP 1 byte(s) changed outside C and V: 0x00020-0x00020
+    ok boot command unchanged E1(bootonce-bootloader)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+o-just-below-v               PASS got=STOP want=STOP  0x100f, adjacent to V
+    STOP 1 byte(s) changed outside C and V: 0x0100f-0x0100f
+    ok boot command unchanged E1(bootonce-bootloader)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+o-just-above-v               PASS got=STOP want=STOP  0x101c (constant 0x02 in all dumps)
+    STOP 1 byte(s) changed outside C and V: 0x0101c-0x0101c
+    ok boot command unchanged E1(bootonce-bootloader)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+o-vab-message                PASS got=STOP want=STOP  virtual A/B message
+    STOP 1 byte(s) changed outside C and V: 0x08008-0x08008
+    ok boot command unchanged E1(bootonce-bootloader)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: CHANGED (already STOP above)
+o-slot-suffix                PASS got=STOP want=STOP  bootloader_message_ab.slot_suffix
+    STOP 2 byte(s) changed outside C and V: 0x00800-0x00801
+    ok boot command unchanged E1(bootonce-bootloader)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+v-and-other                  PASS got=STOP want=STOP  V change plus a change elsewhere
+    STOP 1 byte(s) changed outside C and V: 0x01400-0x01400
+    ok boot command unchanged E1(bootonce-bootloader)
+    RECORDED vendor field 0x1010-0x101b changed: w0 0x000006d0->0x000005bf (1744->1471), w1 0xfffffa09->0xfffffb21 (-1527->-1247), w2 0x00000073->0x00000077 (115->119); presumed reboot-related (the stock control changed the same field); location alone does not establish harmlessness
+    info VAB message 0x8000: unchanged
+truncated-after              PASS got=INCONCLUSIVE want=INCONCLUSIVE  capture one byte short
+    INCONCLUSIVE capture size is not 1048576 bytes: persistent-state accounting impossible
+empty-before                 PASS got=INCONCLUSIVE want=INCONCLUSIVE  no before capture (the FS-A-005 situation)
+    INCONCLUSIVE capture size is not 1048576 bytes: persistent-state accounting impossible
+real-dump-march-to-ctrl0     PASS got=RECORDED want=RECORDED  real images, synthetic pairing: E0->E1 plus V
+    EXPECTED boot command E0(empty) -> E1(bootonce-bootloader) (Android 'reboot bootloader')
+    RECORDED vendor field 0x1010-0x101b changed: w0 0x0000066e->0x000006d0 (1646->1744), w1 0xfffffa63->0xfffffa09 (-1437->-1527), w2 0x0000006b->0x00000073 (107->115); presumed reboot-related (the stock control changed the same field); location alone does not establish harmlessness
+    info VAB message 0x8000: unchanged
+c-E0-to-E1-only              PASS got=EXPECTED want=EXPECTED  Android 'reboot bootloader' only
+    EXPECTED boot command E0(empty) -> E1(bootonce-bootloader) (Android 'reboot bootloader')
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+c-E0-unchanged               PASS got=UNCHANGED want=UNCHANGED  
+    ok boot command unchanged E0(empty)
+    ok vendor field 0x1010-0x101b unchanged
+    info VAB message 0x8000: unchanged
+cli-recorded                 PASS rc=12 verdict=RECORDED (want rc=12 RECORDED)
+cli-unchanged                PASS rc=10 verdict=UNCHANGED (want rc=10 UNCHANGED)
+cli-missing-after            PASS rc=14 verdict=INCONCLUSIVE (want rc=14 INCONCLUSIVE)
+cli-missing-before           PASS rc=14 verdict=INCONCLUSIVE (want rc=14 INCONCLUSIVE)
+cli-unreadable-dir           PASS rc=14 verdict=INCONCLUSIVE (want rc=14 INCONCLUSIVE)
+cli-short-after              PASS rc=14 verdict=INCONCLUSIVE (want rc=14 INCONCLUSIVE)
+cli-usage                    PASS rc=64 verdict=None (want rc=64 None)
+cli-codes-disjoint           PASS verdict exit codes [10, 11, 12, 13, 14] never equal 0/1/2 (traceback=1, argparse/interpreter=2)
+TOTAL pass=26 fail=0

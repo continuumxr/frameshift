@@ -1,0 +1,2 @@
+# fs-done into a writable dir: 'FSD1 queued END' rc=0 file=abc
+# fs-done into a missing dir: 'FSD1 error=write END' rc=1

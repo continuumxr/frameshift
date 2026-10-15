@@ -1,0 +1,57 @@
+== stage 3c device side (init.sh DEADLINE=200 ACK_WINDOW=150; fs-phase.sh; fs-idle.sh IDLE_S=120)
+   step        -t   -g      -c   worst s
+   hash         2    1     256      10.0
+   probe0       8    1   16384      16.0
+   probe1      24    1   16384      32.0
+   pattern1     9    3   57344      19.0  show hold 3
+   probe2      32    1   16384      40.0
+   pattern2    16    3   57344      26.0  show-off-quad hold 10
+   probe3      26    1   16384      34.0
+   pattern3    11    3   28672      21.0  show-off-solid hold 5
+   skip         2    1     256      10.0
+   fs-supervise waits: reap 3 s, strays 3 s, drain 1 s; pacing 20 lines per 0.10 s (+0.01 s write margin)
+   encoder measured (fixtures/encode-timing.txt, max of 6 repetitions and 1 recorded cold repetition(s)): probe 16384 B 0.67 s, pattern 57344 B 0.75 s, pattern 28672 B 0.58 s, end 0.16 s
+   encode term per step = max(1 s, 1.5 x measured): probe 1.005 s, pattern 57344 B 1.125 s, pattern 28672 B 1.000 s, hash 1.000 s; END pass 1.5 x 0.16 = 0.240 s per phase
+   W_p0 = 22.22 s (1 s-encode model without END pass 21.98 s); PHASE_WORST_p0 = 23 (margin 0.78 s); emission(MAXLINES 360) = 2.98 s; MAXLINES from caps 358
+   W_r1 = 36.95 s (1 s-encode model without END pass 36.58 s); PHASE_WORST_r1 = 38 (margin 1.05 s); emission(MAXLINES 1545) = 9.58 s; MAXLINES from caps 1541
+   W_r2 = 45.95 s (1 s-encode model without END pass 45.58 s); PHASE_WORST_r2 = 47 (margin 1.05 s); emission(MAXLINES 1545) = 9.58 s; MAXLINES from caps 1541
+   W_r3 = 37.52 s (1 s-encode model without END pass 37.28 s); PHASE_WORST_r3 = 39 (margin 1.48 s); emission(MAXLINES 945) = 6.28 s; MAXLINES from caps 944
+   host (DESIGN §9.3, constants of this checker; cross-checked below against the host files when present): give-up = BootStartUtc + 185; G = {'p0': 34, 'r1': 68, 'r2': 82, 'r3': 64}
+   PASS  DEADLINE 200 <= 200 (FS-R-010 §6 ceiling; backstop 201) and <= 299 (common clamp); ACK_WINDOW 150 <= DEADLINE
+   PASS  every step: -t <= 60, -g <= 10, -c <= 1048576
+   PASS  holds r1 3 s, r2 10 s, r3 5 s (DESIGN §10), each <= FSP_HOLD_MAX_S 10; total lit 18 s <= 18 s
+   PASS  modes: r1 show, r2 show-off-quad, r3 show-off-solid
+   PASS  pattern -t >= hold + close margin 5 + 1 (the PID 1 contract): r1 9 >= 9, r2 16 >= 16, r3 11 >= 11
+   PASS  probe -t covers its window TW + worst(pattern) + TQ: r1 24 >= 24, r2 32 >= 31, r3 26 >= 26
+   PASS  probe0 (p0) and hash end inside W_p0; the skip step's worst 10 s <= every pattern step's worst
+   PASS  PHASE_WORST covers the recomputed worst case (encode measured incl. the cold repetition, END pass 0.24 s) with >= 0.5 s margin: p0 23 >= 22.22 + 0.5, r1 38 >= 36.95 + 0.5, r2 47 >= 45.95 + 0.5, r3 39 >= 37.52 + 0.5
+   PASS  PHASE_WORST = the DESIGN values 23/38/47/39 (= ceil(W + 0.5 s): 22.72, 37.45, 46.45, 38.02)
+   PASS  MAXLINES matches the caps (3b review M1 rule: 4 framing + every stdout at cap/48 + the hash stderr): p0 358 <= 360, r1 1541 <= 1545, r2 1541 <= 1545, r3 944 <= 945
+   PASS  pacing burst: a 20-line chunk is at most about 2478 bytes < the 12,289-byte first-read boundary of trial (iii)
+   PASS  stderr basis: fs-probe.sh's first command is exec 2>/dev/null; the device build of fs-pattern writes no stderr
+   PASS  stream bounds (DESIGN §6.5): essential 17886 + FSP_OPT_MAX 38912 = 56798 <= 57344; + FSP_OPT_MAX_SOLID 10240 = 28126 <= 28672
+   PASS  stream bounds, mock-model maximum fixtures (24 modes, 3 connectors, 20 planes, 8 KiB blobs): quad-max essential 17121 + budget = 56033, show-max essential 13140 + budget = 52052, solid-max essential 17111 + budget = 27351
+   PASS  essential-record cap independent of the counts (build review): fs-pattern FSP_ESS_CONNECTORS 3, FSP_ESS_MODES 24, FSP_ESS_PLANES 20 = the counts of the maximum fixtures; every per-object record beyond them is optional (inside the opt budget); fixture record counts quad-max connectors=3,modes=24,plane_caps=20,planes=20; show-max connectors=3,modes=24,plane_caps=20,planes=20; solid-max connectors=3,modes=24,plane_caps=20,planes=20
+   PASS  pause: PAUSE_CS 200 (2.00 s) and the bounded loop PAUSE_ITER 20 x 0.1 s = 2.0 s >= the largest admitted wait (rem <= PAUSE_CS)
+   PASS  device time refusal: headroom 5 s (DESIGN §5.2)
+   PASS  idle limit: IDLE_S 120 >= host gap cap 110 + 10; STUCK_S 180 = IDLE_S + 60 >= the longest phase (47 s)
+   PASS  host guards G_k = PHASE_WORST + 5 + PostMin + DoneReserve 3 = 34/68/82/64 (DESIGN 34/68/82/64); each G_k >= PHASE_WORST + 5 + 3
+   PASS  per-lit-phase limits (give-up 185 - G): r1 117, r2 103, r3 121; each admitted at its limit, refused at limit + 1, and a send at 144 s refused for r1, r2 and r3
+   PASS  §9.4: run 1 admitted after the worst pre-runner (86 s) and worst p0: 86 + 23 + 3 cue = 112 <= 117
+   PASS  §9.4: run 2 admitted if the run-1 prompts take <= 50 s (r1 done 51 + banner 2 + P1 <= 103)
+   PASS  §9.4: run 3 admitted if P1 + P2 <= 46 s (51 + 2 + P1 + 20 + 2 + P2 <= 121); planning P1 15 + P2 25 leaves 6 s
+   PASS  §9.4 (d, d) path: r2 prompts end at about 160 s <= the prompt cut-off 182 and <= the gap cap 88 + 110 = 198
+   NOTE encode: the 57344-byte pattern step measured 0.75 s (cold repetition included), x1.5 = 1.125 s > the 1 s term of DESIGN §9.1; with the END pass (0.240 s) and TQ 3 s the build review raised PHASE_WORST to 23/38/47/39 so that each covers W + 0.5 s (p0 22.22 + 0.5 <= 23, r1 36.95 + 0.5 <= 38, r2 45.95 + 0.5 <= 47, r3 37.52 + 0.5 <= 39); DESIGN §9.1-§9.4 and the host guards carry the new numbers (for the PM).
+== host side (fs-collect3c.ps1, fs-observe3c.ps1)
+   PASS  M1 fs-observe3c.ps1: BootStartUtc is taken before the one fastboot boot call
+   PASS  M1b fs-observe3c.ps1: the dwell gate (unconditional) runs before the attempt is registered and before BootStartUtc
+   PASS  M2 fs-observe3c.ps1 passes the origin to fs-collect3c.ps1 (-S3cBootStartUtc); no HandoffBasisUtc
+   PASS  M3a fs-collect3c.ps1 live: deadlines from the BootStartUtc origin (Get-FsHostDeadlines)
+   PASS  M3b fresh conversion AFTER the gadget lookup and the transport
+   PASS  M3c start refusals re-checked after the preparation (Get-FsLiveStartRefusal)
+   PASS  host DEADLINE/ACK_WINDOW = image (200/150)
+   PASS  host PhaseWorstSec {'p0': 23, 'r1': 38, 'r2': 47, 'r3': 39} = device PHASE_WORST {'p0': 23, 'r1': 38, 'r2': 47, 'r3': 39}
+   PASS  host RunnerMargin 5, DoneReserve 3, Banner 2, HumanSec {'p0': 3, 'r1': 20, 'r2': 25, 'r3': 15} -> G {'p0': 34, 'r1': 68, 'r2': 82, 'r3': 64} = {'p0': 34, 'r1': 68, 'r2': 82, 'r3': 64}
+   PASS  host IdleSec 120 = device IDLE_S 120; host GapCapSec 110 <= IDLE_S - 10
+   (all host items located)
+TIMING 3C: CONSISTENT

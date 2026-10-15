@@ -1,0 +1,13 @@
+FSP1 nonce=3b4d855b seq=0 step=start rc=0 mode=show-off ver=0.5 hold_req=10 hold=10 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/dev/dri/card0 out=pipe rot=180 t0_ms=26980 len=187 crc=070d4b86 END
+FSP1 nonce=3b4d855b seq=1 step=open rc=0 dev=/dev/dri/card0 major=226 minor=0 len=77 crc=458563f0 END
+FSP1 nonce=3b4d855b seq=2 step=version rc=0 drv=msm_drm major=1 minor=4 patch=0 len=79 crc=552047f9 END
+FSP1 nonce=3b4d855b seq=3 step=caps rc=0 universal_rc=0 atomic_rc=0 len=67 crc=9cbc86a7 END
+FSP1 nonce=3b4d855b seq=4 step=resources rc=0 crtcs=3 connectors=3 encoders=3 fbs=0 max_w=20480 max_h=8640 len=106 crc=9684ae61 END
+FSP1 nonce=3b4d855b seq=5 step=connector rc=0 id=55 type=16 type_id=1 status=1 modes=1 encoders=1 encoder=54 mm_w=0 mm_h=0 len=122 crc=38d88ca7 END
+FSP1 nonce=3b4d855b seq=6 step=chosen_connector rc=0 id=55 type=16 connected=1 modes=1 encoder=54 len=97 crc=967945cd END
+FSP1 nonce=3b4d855b seq=7 step=mode rc=0 idx=0 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid preferred=1 expected=1 len=213 crc=04f3ae86 END
+FSP1 nonce=3b4d855b seq=8 step=pipeline rc=0 encoder=54 crtc=155 crtc_idx=0 len=75 crc=6021659e END
+FSP1 nonce=3b4d855b seq=9 step=crtc_state rc=0 idx=-1 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid getcrtc_rc=0 mode_valid=1 fb=0 active_prop=22 active=1 in_list=1 interlaced=0 expected=1 len=286 crc=0e5a15cd END
+FSP1 nonce=3b4d855b seq=10 step=precondition rc=-16 required=crtc_inactive getcrtc_rc=0 active_prop=22 active=1 len=111 crc=f2812a4c END
+FSP1 nonce=3b4d855b seq=11 step=exit rc=0 code=31 reason=crtc_active shown=0 closed_at_exit=1 elapsed_ms=40 len=107 crc=15ab24b8 END
+FSP1 nonce=3b4d855b seq=12 step=eos rc=0 records=13 dropped=0 overflows=0 out=pipe opt_bytes=0 opt_skipped=0 len=108 crc=e6c873d2 END

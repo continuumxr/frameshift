@@ -1,0 +1,12 @@
+# s3-no-udc (stage3a) mods=['no-udc'] plan=none; image <repo>/build/stage3a/20261009T085209Z-17449af173f0633a
+# mod: removed /sys/class/udc (the UDC never appears: init's fail() path)
+# reboots: 924.18 final pid=1 arg=error-udc
+PASS  no shell output on the tty (no host command sent)
+PASS  deadline armed with the image's values  [DEADLINE armed t0=863 deadline=T0+170 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = error-udc  [924.18 final pid=1 arg=error-udc]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [924.18 final pid=1 arg=error-udc]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  fail() reboot at T0+ERR_DELAY..+3, by exec (no shell was started)  [T0+61.2]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+SCENARIO s3-no-udc PASS

@@ -1,0 +1,29 @@
+CHECK size PASS 4128x2208
+CHECK grey PASS R=G=B everywhere
+CHECK two_levels_only PASS 0x80 field, 0xFF marks
+CHECK white_ppm_within_v05_envelope PASS white_ppm=30885 <= 37618 (3.09 %)
+CHECK mean_within_v05_envelope PASS mean_x1000=131922 <= 132777
+STATS white_ppm=30885 mean_x1000=131922
+CHECK nonce_left PASS decoded=bbbbbbbb expected=bbbbbbbb
+CHECK underline_left PASS
+CHECK centre_line_left_spans_M_X_to_ew-M_X PASS x 480..1583 (want 480..1583), 8 rows
+CHECK vertical_arm_left_on_the_seam PASS
+CHECK no_frame_no_corner_square_left PASS
+CHECK marks_inside_recovery_margins_left PASS 0 white pixels outside [480,1584)x[456,1752)
+CHECK F_upright_left_viewer_left PASS rows=1f,10,10,1e,10,10,10
+CHECK F_upright_left_viewer_right PASS rows=1f,10,10,1e,10,10,10
+CHECK LM0_buffer_cols_0-1031_F_and_2_bars_wholly_inside PASS bars=2 white=20286 (want 20286)
+CHECK LM1_buffer_cols_1032-2063_F_and_1_bars_wholly_inside PASS bars=1 white=13230 (want 13230)
+CHECK nonce_right PASS decoded=bbbbbbbb expected=bbbbbbbb
+CHECK underline_right PASS
+CHECK centre_line_right_spans_M_X_to_ew-M_X PASS x 480..1583 (want 480..1583), 8 rows
+CHECK vertical_arm_right_on_the_seam PASS
+CHECK no_frame_no_corner_square_right PASS
+CHECK marks_inside_recovery_margins_right PASS 0 white pixels outside [480,1584)x[456,1752)
+CHECK F_upright_right_viewer_left PASS rows=1f,10,10,1e,10,10,10
+CHECK F_upright_right_viewer_right PASS rows=1f,10,10,1e,10,10,10
+CHECK LM2_buffer_cols_2064-3095_F_and_4_bars_wholly_inside PASS bars=4 white=34398 (want 34398)
+CHECK LM3_buffer_cols_3096-4127_F_and_3_bars_wholly_inside PASS bars=3 white=27342 (want 27342)
+PREVIEW /tmp/tmp.p6doBfZ1WV/chk-bbbbbbbb-scanout.png 1032x552
+PREVIEW /tmp/tmp.p6doBfZ1WV/chk-bbbbbbbb-viewer.png 1032x552
+PREVIEW /tmp/tmp.p6doBfZ1WV/chk-bbbbbbbb-digits.png 1071x252

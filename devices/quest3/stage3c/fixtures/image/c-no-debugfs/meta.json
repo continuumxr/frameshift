@@ -1,0 +1,381 @@
+{
+ "ack": "0eaf9e82f3b8d7dc",
+ "challenges": {
+  "p0": "74fff83e98496501d7633bec394c34ab",
+  "r1": "701f083b7beca13921f1748bd1b1fcfb",
+  "r2": "264838614c20d02c956260d0c998e682",
+  "r3": "018391727692299461c32bdf939c1525"
+ },
+ "checks": [
+  {
+   "detail": "FSV1 nonce=b7cf9a0bfb559dcb resp=990acd8a398cd5151305054b21da8ce17ae48a3f1bf902bb28c8a13b4ab639a9 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=b7cf9a0bfb559dcb stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=0eaf9e82f3b8d7dc END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=3799 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "idle limit started before SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "3999 vs t0=3799",
+   "label": "/run/fs.deadline = T0 + DEADLINE",
+   "ok": true
+  },
+  {
+   "detail": "3846.17 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "3846.17 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "0.5 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase p0 FSB1 VALID (exp s3c_p0, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('hash', 'exited', 0), 2: ('probe0', 'exited', 0)}",
+   "label": "p0 steps in order hash,probe0",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=b7cf9a0bfb559dcb p=p0 e=begin t=3812480 END | FSPM1 n=b7cf9a0bfb559dcb p=p0 e=rec t=3814310 END",
+   "label": "p0 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,rec",
+   "label": "p0 markers in order begin,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "write_rc=0 readback=127",
+   "label": "p0: exactly one backlight write line (value 127), read-back 127",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0: hash step exited 0 (sha256sum of /bin/fs-pattern)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0: irq0 sample, mods snapshot with cmdline, dmesg and the fan",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase r1 FSB1 VALID (exp s3c_r1, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('probe1', 'exited', 0), 2: ('pattern1', 'exited', 0)}",
+   "label": "r1 steps in order probe1,pattern1",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=b7cf9a0bfb559dcb p=r1 e=begin t=3815450 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=go t=3816010 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=end t=3819810 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=rec t=3821150 END",
+   "label": "r1 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,go,end,rec",
+   "label": "r1 markers in order begin,go,end,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r1 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "('pattern1', 'exited', 0)",
+   "label": "r1 step 2 pattern1 exited code 0",
+   "ok": true
+  },
+  {
+   "detail": "STREAM <repo>/build/stage3c-harness/c-no-debugfs/fsp1-r1.txt COMPLETE 28 records",
+   "label": "r1 FSP1 stream COMPLETE, nonce = chal[0:8], mode show",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r1 probe: read-back only (no write line), readback=127",
+   "ok": true
+  },
+  {
+   "detail": "pre,go+1,mid,end,post",
+   "label": "r1 probe points pre,go+1,mid,end,post",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r1 probe: no dmesg at pre",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase r2 FSB1 VALID (exp s3c_r2, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('probe2', 'exited', 0), 2: ('pattern2', 'exited', 0)}",
+   "label": "r2 steps in order probe2,pattern2",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=b7cf9a0bfb559dcb p=r2 e=begin t=3822710 END | FSPM1 n=b7cf9a0bfb559dcb p=r2 e=go t=3823290 END | FSPM1 n=b7cf9a0bfb559dcb p=r2 e=end t=3833540 END | FSPM1 n=b7cf9a0bfb559dcb p=r2 e=rec t=3834890 END",
+   "label": "r2 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,go,end,rec",
+   "label": "r2 markers in order begin,go,end,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r2 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "('pattern2', 'exited', 0)",
+   "label": "r2 step 2 pattern2 exited code 0",
+   "ok": true
+  },
+  {
+   "detail": "STREAM <repo>/build/stage3c-harness/c-no-debugfs/fsp1-r2.txt COMPLETE 29 records",
+   "label": "r2 FSP1 stream COMPLETE, nonce = chal[0:8], mode show-off-quad",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r2 probe: read-back only (no write line), readback=127",
+   "ok": true
+  },
+  {
+   "detail": "pre,go+1,mid,end,post",
+   "label": "r2 probe points pre,go+1,mid,end,post",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r2 probe: no dmesg at pre",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase r3 FSB1 VALID (exp s3c_r3, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('probe3', 'exited', 0), 2: ('pattern3', 'exited', 0)}",
+   "label": "r3 steps in order probe3,pattern3",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=b7cf9a0bfb559dcb p=r3 e=begin t=3836530 END | FSPM1 n=b7cf9a0bfb559dcb p=r3 e=go t=3837220 END | FSPM1 n=b7cf9a0bfb559dcb p=r3 e=end t=3842480 END | FSPM1 n=b7cf9a0bfb559dcb p=r3 e=rec t=3843770 END",
+   "label": "r3 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,go,end,rec",
+   "label": "r3 markers in order begin,go,end,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r3 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "('pattern3', 'exited', 0)",
+   "label": "r3 step 2 pattern3 exited code 0",
+   "ok": true
+  },
+  {
+   "detail": "STREAM <repo>/build/stage3c-harness/c-no-debugfs/fsp1-r3.txt COMPLETE 29 records",
+   "label": "r3 FSP1 stream COMPLETE, nonce = chal[0:8], mode show-off-solid",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r3 probe: read-back only (no write line), readback=127",
+   "ok": true
+  },
+  {
+   "detail": "pre,go+1,mid,end,post",
+   "label": "r3 probe points pre,go+1,mid,end,post",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r3 probe: no dmesg at pre",
+   "ok": true
+  },
+  {
+   "detail": "be741e2412ed44b1 / be741e2412ed44b1",
+   "label": "chain p0: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "f7f1e945b02c9719 / f7f1e945b02c9719",
+   "label": "chain r1: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "fca74210e26a131d / fca74210e26a131d",
+   "label": "chain r2: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "93687599e384aa90 / 93687599e384aa90",
+   "label": "chain r3: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "1 write-close event(s): wd=1 mask=0x8 ",
+   "label": "backlight node written exactly 1 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never named the decoy crtc nodes or debugfs",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "modules attempted in order fake_a, fake_b, fake_c",
+   "ok": true
+  }
+ ],
+ "mod_notes": [
+  "replaced /bin/fs-pattern by a replay of pre-generated v0.6 FSP1 streams (sim-all); the hash step measures the replacement"
+ ],
+ "mods": [
+  "sim-all"
+ ],
+ "nonce": "b7cf9a0bfb559dcb",
+ "ok": true,
+ "phases": {
+  "p0": {
+   "end": "FSB1 END v=1 nonce=b7cf9a0bfb559dcb chal=74fff83e98496501d7633bec394c34ab lines=38 rec_sha256=be741e2412ed44b1c182d813b6421b3babb25ece1d84ee2bf2700d233fcbc5ee",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=b7cf9a0bfb559dcb p=p0 e=begin t=3812480 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=p0 e=rec t=3814310 END"
+   ],
+   "refusal": null,
+   "settled": true
+  },
+  "r1": {
+   "end": "FSB1 END v=1 nonce=b7cf9a0bfb559dcb chal=701f083b7beca13921f1748bd1b1fcfb lines=178 rec_sha256=f7f1e945b02c971973fcbfb967b65aa0d8757f29da97fb9555e52d9d16bc94af",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=b7cf9a0bfb559dcb p=r1 e=begin t=3815450 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r1 e=go t=3816010 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r1 e=end t=3819810 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r1 e=rec t=3821150 END"
+   ],
+   "refusal": null,
+   "settled": true
+  },
+  "r2": {
+   "end": "FSB1 END v=1 nonce=b7cf9a0bfb559dcb chal=264838614c20d02c956260d0c998e682 lines=188 rec_sha256=fca74210e26a131d334bc80cf92c7c736090cd1ed0f1e22d8481420bac00bd51",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=b7cf9a0bfb559dcb p=r2 e=begin t=3822710 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r2 e=go t=3823290 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r2 e=end t=3833540 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r2 e=rec t=3834890 END"
+   ],
+   "refusal": null,
+   "settled": true
+  },
+  "r3": {
+   "end": "FSB1 END v=1 nonce=b7cf9a0bfb559dcb chal=018391727692299461c32bdf939c1525 lines=188 rec_sha256=93687599e384aa90974dd37170d6af831ed1bbab8026f8a75939a84661058b04",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=b7cf9a0bfb559dcb p=r3 e=begin t=3836530 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r3 e=go t=3837220 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r3 e=end t=3842480 END",
+    "FSPM1 n=b7cf9a0bfb559dcb p=r3 e=rec t=3843770 END"
+   ],
+   "refusal": null,
+   "settled": true
+  }
+ },
+ "plan": [
+  "p0",
+  "r1",
+  "r2",
+  "r3"
+ ],
+ "reboot_at_T0_plus": 47.2,
+ "reboots": "3846.17 final pid=1 arg=collected\n",
+ "scenario": "c-no-debugfs",
+ "sim_args": "show 701f083b 3\nshow-off-quad 26483861 10\nshow-off-solid 01839172 5\n",
+ "t_total_s": 49.6,
+ "tail": "done",
+ "verify_challenge": "f36af6faf2e8cdfa5ebdde2047396609",
+ "want_reboot": "collected"
+}

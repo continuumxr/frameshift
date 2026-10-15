@@ -1,0 +1,19 @@
+# s2-preload-forced (stage2a) mods=['preload'] plan=full; image <repo>/build/stage2a/20261009T085209Z-93a1501f0b1fb692
+# mod: created an empty /etc/ld.so.preload
+# reboots: 947.35 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=93a1501f0b1fb692 resp=34174f74febd89e78dcea20644502a8161e103d30a53586d8262e429aedc3c09 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=93a1501f0b1fb692 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=93a3910230c5a5f6 END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=93a1501f0b1fb692 chal=72a53ce34c895434e38fdbad0ce38bc8 lines=92 rec_sha256=8e2bea3e77084188b06c103e72d905572b2b5ef59aa097ba2b153d920f82c9db]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=930 deadline=T0+260 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [947.35 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [947.35 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.5 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  an empty line immediately before FSB1 BEGIN
+SCENARIO s2-preload-forced PASS

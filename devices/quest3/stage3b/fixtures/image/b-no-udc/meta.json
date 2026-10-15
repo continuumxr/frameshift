@@ -1,0 +1,76 @@
+{
+ "ack": "c2da5b75a2bcfd2d",
+ "challenge": "9831bec55840c95e8426662a1371177f",
+ "checks": [
+  {
+   "detail": "",
+   "label": "no shell output on the tty (no host command sent)",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=59 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "119.49 final pid=1 arg=error-udc",
+   "label": "first reboot reason = error-udc",
+   "ok": true
+  },
+  {
+   "detail": "119.49 final pid=1 arg=error-udc",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "T0+60.5",
+   "label": "fail() reboot at T0+ERR_DELAY..+3, by exec (no shell was started)",
+   "ok": true
+  },
+  {
+   "detail": "fake_a fake_b fake_c",
+   "label": "modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)",
+   "ok": true
+  }
+ ],
+ "exp": "stage3b",
+ "expect": {
+  "err_delay": 60
+ },
+ "image_dir": "<repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc",
+ "kernel": null,
+ "mod_notes": [
+  "removed /sys/class/udc (the UDC never appears: init's fail() path)"
+ ],
+ "mods": [
+  "no-udc"
+ ],
+ "nonce": "6cf0f15867f14edc",
+ "ok": true,
+ "pid1": null,
+ "plan": "none",
+ "reboot_at_T0_plus": 60.5,
+ "reboots": "119.49 final pid=1 arg=error-udc\n",
+ "scenario": "b-no-udc",
+ "stage": "stage3b",
+ "steps": [
+  "hash",
+  "probe1",
+  "pattern1",
+  "probe2",
+  "pattern2"
+ ],
+ "t_total_s": 62.5,
+ "verify_challenge": "d6ee2c2a7d5ea11711ff621dc3fed140",
+ "want_reboot": "error-udc"
+}

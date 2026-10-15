@@ -1,0 +1,4 @@
+FSP1 nonce=b0b0b0b0 seq=0 step=start rc=0 mode=holdtest ver=0.4 hold_req=999 hold=10 hold_max=10 clamped=1 setup_alarm_s=30 close_margin_s=5 dev=/dev/null out=file rot=180 t0_ms=150158 len=184 crc=bea5026e END
+FSP1 nonce=b0b0b0b0 seq=1 step=open rc=0 dev=/dev/null mock=1 len=61 crc=61e36478 END
+FSP1 nonce=b0b0b0b0 seq=2 step=hold_start rc=0 hold_s=10 start_ms=150169 deadline_ms=160169 alarm_s=15 len=102 crc=788cc827 END
+# exit=142 died_ms_after_sigcont=18

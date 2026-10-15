@@ -1,0 +1,5 @@
+== FS-R-007 B1 timing regressions, code under test: $HOME\AppData\Local\Temp\q3head-5c2e\devices\quest3\host
+   (device side simulated: fake fastboot, fake gadget, simulated shell on COM999; no device, no port)
+FAIL  T9 a -BootStartUtc 3 s in the future is refused before any preparation (no gadget query, nothing sent, exit 20)
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-valve,fs-done stop='' giveUpMs=247672 ackGiveUpMs=137672 args=BootStartUtc/HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:58:39.6355298Z = BootStartUtc 2026-10-09T16:54:34.6355298Z + 260 s - 15 s (device deadline no earlier than 2026-10-09T16:58:54.6355298Z); 248 s left after 0 s of preparation'
+TOTAL: 0 passed, 1 failed

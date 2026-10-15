@@ -1,0 +1,71 @@
+# fs-rpcd external-symbol ALLOWLIST (rev 3, re-review N2). tools/undef-gate.sh fails the build on
+# any undefined symbol of fs-rpcd.o that is not listed here. Reviewed by hand; adding a line is a
+# reviewable change. Exec: execve only (the fixed -c runner). Never listed: syscall, system, popen,
+# posix_spawn*, exec* other than execve, fexecve, ptrace, dlopen, dlsym (undef-gate.sh refuses them).
+# process / exec
+_exit
+execve
+exit
+fork
+getpid
+kill
+prctl
+setpgid
+waitpid
+# signals
+sigemptyset
+signal
+sigprocmask
+# files
+chdir
+close
+closedir
+dup2
+fstat
+lstat
+open
+opendir
+pipe2
+read
+readdir
+rename
+umask
+unlink
+write
+# network
+accept4
+bind
+if_nametoindex
+inet_pton
+listen
+recv
+send
+setsockopt
+shutdown
+socket
+# time
+clock_gettime
+nanosleep
+poll
+# memory / strings / formatting / args
+__errno_location
+__isoc23_strtol
+free
+fwrite
+getopt
+malloc
+memcpy
+optarg
+optind
+perror
+realloc
+snprintf
+stderr
+strcmp
+strlen
+strnlen
+strrchr
+strspn
+strstr
+strtok
+uname

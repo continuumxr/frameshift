@@ -1,0 +1,4 @@
+# fixture request list (scripts/config syntax)
+--enable DEVTMPFS --disable DEVTMPFS_MOUNT --module AUTOFS_FS
+--set-str LOCALVERSION ""
+--set-val FIXTURE_VAL a#b

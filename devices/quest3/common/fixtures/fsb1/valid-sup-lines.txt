@@ -1,0 +1,7 @@
+sup: FSUP1 end=exited code=0 sig=0 errno=0 ms=23 term_ms=-1 kill_ms=-1 out_total=24 out_kept=24 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+sup: FSUP1 end=exited code=0 sig=0 errno=0 ms=1777 term_ms=-1 kill_ms=-1 out_total=256 out_kept=256 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+sup: FSUP1 end=exited code=0 sig=0 errno=0 ms=35 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+sup: FSUP1 end=exited code=7 sig=0 errno=0 ms=35 term_ms=-1 kill_ms=-1 out_total=4 out_kept=4 err_total=4 err_kept=4 strays=0 pipes=eof why=none END
+sup: FSUP1 end=timer-term code=-1 sig=15 errno=0 ms=1002 term_ms=1001 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+sup: FSUP1 end=exited code=0 sig=0 errno=0 ms=32 term_ms=-1 kill_ms=-1 out_total=68 out_kept=68 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+sup: FSUP1 end=exited code=0 sig=0 errno=0 ms=27 term_ms=-1 kill_ms=-1 out_total=68 out_kept=68 err_total=0 err_kept=0 strays=0 pipes=eof why=none END

@@ -1,0 +1,28 @@
+PASS reference-integrity: device quest2; reference sha256 db052332604bde1384e1c03096ffaf276e30c49907ae50dc27a010b5a3ab5186 matches the profile pin; all derived fields re-derived from 28 module records; stock BTF kinds re-scanned
+PASS profile-committed: profile equals its committed git blob b05834f6d3074a99b362e9b0080a2a7bcd31eef7
+PASS build-pins: build 'a': request list, allowlist and baseline match the profile pins
+PASS base-config: requested base config equals the IKCONFIG of the device's pinned stock kernel
+PASS symvers-duplicates: no duplicate rows (12379 rows, 11143 vmlinux)
+PASS crc: 838/838 vendor-required (symbol, CRC) pairs match vmlinux
+PASS module-layout: module_layout 0x74b4ebeb matches
+PASS unversioned-imports: 0 unversioned vendor import(s) present in vmlinux
+PASS export-collision: none of the 1175 vendor-exported symbols is exported by vmlinux
+PASS namespace: no vendor import needs a symbol namespace it does not declare
+PASS gpl-only: no GPL-only export is used by a non-GPL-compatible vendor module
+PASS baseline: 0 of 11137 baseline vmlinux exports changed or removed; 6 added
+PASS requested-options: all 6 requested option(s) satisfied
+WARN requested-config-allowlisted: 7 unrequested change(s) accepted by the explicit allowlist <repo>/tools/kgate/validation/requests/quest2-a.allow
+   warn requested-config-allowlisted: CONFIG_AUTOFS_FS: base not set, resulting .config m
+   warn requested-config-allowlisted: CONFIG_COMPAT_VDSO: base not set, resulting .config y
+   warn requested-config-allowlisted: CONFIG_GENERIC_COMPAT_VDSO: base not set, resulting .config y
+   warn requested-config-allowlisted: CONFIG_RAID6_PQ: base not set, resulting .config m
+   warn requested-config-allowlisted: CONFIG_USB_F_ACM: base not set, resulting .config y
+   warn requested-config-allowlisted: CONFIG_USB_U_SERIAL: base not set, resulting .config y
+   warn requested-config-allowlisted: CONFIG_XOR_BLOCKS: base not set, resulting .config m
+PASS requested-config: .config equals base <repo>/firmware/quest2/v2.7-user_ota/kernel.config + requests, except the allowlisted/toolchain entries reported above
+PASS vermagic-image: kernel image carries the module-loader vermagic '4.19.325-cip128-st12-g6bde5fc06b25 SMP preempt mod_unload modversions aarch64'
+PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+PASS btf-kinds: 120977 types; no kinds beyond stock (ARRAY, CONST, DATASEC, ENUM, ENUM64, FUNC, FUNC_PROTO, FWD, INT, PTR, RESTRICT, STRUCT, TYPEDEF, UNION, VAR, VOLATILE) -- kind scan only, not BTF validation
+PASS config-binding: supplied .config is byte-identical to the image's embedded IKCONFIG (153768 bytes)
+PASS input-binding: Module.symvers vmlinux rows equal the 11143 decoded entries of the __ksymtab*/__kcrctab* tables (name, CRC, type, namespace; both ways); kernel image equals objcopy -O binary of vmlinux (exact length, gaps zero); in the Image's own kallsyms, __start/__stop___ksymtab* and __start___kcrctab* equal the decoded tables' bounds and every entry's address equals its symbol's kallsyms address; tables sorted; sections end before _edata and match the pinned section set; .symtab agrees (cross-check); banner, IKCONFIG and BTF blob match
+RESULT: PASS (exit 0) -- build ACCEPTED -- matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open

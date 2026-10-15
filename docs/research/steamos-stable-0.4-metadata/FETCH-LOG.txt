@@ -1,0 +1,53 @@
+FETCH-LOG -- SteamOS 0.4 stable (Steam Frame) public metadata
+PM-approved task 2026-10-12. Agent pass. Metadata only; no bundle, image,
+chunk or archive bytes fetched. No credentials, tokens or client.conf
+endpoints used: every URL below is an unauthenticated public URL
+(steamdeck-images.steamos.cloud HTML listings / files, and the public Steam
+Web API news endpoint, which needs no key). Tool: curl (Git Bash, Windows).
+
+Columns: UTC time | HTTP | bytes | sha256 | URL | kept
+
+2026-10-12T23:54:17Z | 200 | 24730 | a57859c9983892ee2de853756d1bffb9192e9aa058c51b3a9a89aa92d001ff29 | https://steamdeck-images.steamos.cloud/vr/ | vr-listing.html
+2026-10-12T23:54:37Z | 200 | 21910 | 8a78474fa88af044c5aec9cedc136150b6ee54654536525d28ce4b1c52fcfac5 | https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=4165890&count=30&maxlength=0&format=json | not kept (Valve post text; scratch only)
+2026-10-12T23:54:57Z | 200 |  2272 | 8388d611ff255cc47aa47354a1a0d961d13b25bb4b8ae97bccc9ae4bdb4bc4a1 | https://steamdeck-images.steamos.cloud/vr/20261007.6125817/ | dir-20261007.6125817.html
+2026-10-12T23:55:19Z | 200 |   361 | 22625b883ae5b91cc9c6a42d0659217cc7f66a6653a7b6ad9546b1babc1f6260 | https://steamdeck-images.steamos.cloud/vr/20261007.6125817/deckard-stable-20261007.6125817-0.4.5.manifest.json | deckard-stable-20261007.6125817-0.4.5.manifest.json
+  (response headers: Last-Modified Thu, 08 Oct 2026 23:21:16 GMT; ETag "6ac8256c-169")
+2026-10-12T23:55:20Z | 200 | 0 (HEAD only) | - | https://steamdeck-images.steamos.cloud/vr/20261007.6125817/deckard-stable-20261007.6125817-0.4.5.raucb | headers only: Content-Length 2283618, Last-Modified Thu, 08 Oct 2026 23:21:16 GMT, ETag "6ac8256c-22d862", Accept-Ranges bytes. NO body bytes fetched.
+
+Directory listings of the 17 build dirs newer than 20261007.6125817 in the
+vr/ listing, to check for another stable build (each 200, 2188 B; scratch
+only, not kept). All hold deckard-<build>-0.5.5.* (no "stable" filename):
+2026-10-12T23:56:22Z 20261007.6172301 d5e671f894b5ae31ebeb1a6a4862534fe80111be7948e5765bf1fadb213525d3
+2026-10-12T23:56:23Z 20261007.6173904 db24a094fcffa2c6d32fa5bad63183a993d4f2c3c044b563a844a2fbad08e562
+2026-10-12T23:56:23Z 20261007.6180005 5641b3304098f515a4c47209cfb7b1fbbcadca5785f29b288e62ecedab92ad9c
+2026-10-12T23:56:24Z 20261008.6004012 9a2e29604378b8ab9374b6a1abf175f9452ebdef89a2f504dd45b9765d9ebd0f
+2026-10-12T23:56:25Z 20261008.6144751 1db824f745ccea1a84859d33aac658988bac88b9901a8069d8dbd7795555946c
+2026-10-12T23:56:26Z 20261008.6170717 9931140029eb175aa8402e1bb6c1d584b9d4f91c7fc1df074a46aac694f8d6f3
+2026-10-12T23:56:26Z 20261008.6172051 46a414a8ec242b4307b223e6873898a02b051461059c8eed49d0ebc973adf32e
+2026-10-12T23:56:27Z 20261009.6110713 efac8a5015fb363c4fcbf4d2a018f79d3d59f88d78f368736fb3bf53dcb18946
+2026-10-12T23:56:28Z 20261009.6135156 e5a05d5ee4ef62251e31fb99276da3fb3b539eea2ce0d6e4173b889670cad7ef
+2026-10-12T23:56:29Z 20261009.6135524 74ebf85b4ce1886b89d128705043b876190410e57682955eacc79f923c45390d
+2026-10-12T23:56:29Z 20261009.6141814 ed2f8d548ff431b1dd6d9bfd29f217de1b7317d62b2f9206ce0c6e4d976360c8
+2026-10-12T23:56:30Z 20261009.6142859 94520e4bc00fba903c391c7e719a737bc5252cd6eb3a1df05c46ad0fdf4bab62
+2026-10-12T23:56:31Z 20261009.6171650 9a765a43eea26666d10b384180c474d03b6c112ddf11b582ab683aa38ea35238
+2026-10-12T23:56:31Z 20261009.6181428 17f7932619bffe310d09abb4ee5087a5667dc8609edb401c28db34aee79442ad
+2026-10-12T23:56:32Z 20261009.6183636 169c4ec488676c635d447ccc4f048ae071c9fea6d936b4c167fd01d328b1e7d9
+2026-10-12T23:56:33Z 20261012.6141103 351b92db7697de060509f7a6dd478391769af1309fdd74cdd4864e118170c8ce
+2026-10-12T23:56:34Z 20261012.6153511 0fe814832acab3015f18bb0ba936a0f95d55d7eb5041eb96c0ebef798a930204
+
+Total body bytes fetched: 24730 + 21910 + 2272 + 361 + 17*2188 = 86469 B.
+
+NOT FETCHED (stopped per hard limit): the signature. The build directory
+holds no detached signature file (only .raucb, .manifest.json,
+.chunks_details.json 12.5 MiB, .castr/). RAUC stores its CMS signature
+inside the .raucb trailer. Getting it needs an HTTP Range read of the
+bundle's last bytes (8-byte length, then the CMS, a few KB). That reads part
+of a RAUC bundle, which the task excludes, so it was not done; awaiting PM.
+
+Local trust anchor (read-only, WSL ~/sfroot-full, rootfs 20260922.6152327):
+  path   ~/sfroot-full/etc/rauc/trusted_keys/ba942c60.0 (2025 B)
+  file sha256 1d6e246961284ee152cce21e5197a2a0f03dc2fbc0f66a66566850b77714100d
+  subject/issuer C=US, ST=Washington, L=Bellevue, O=Valve Corp, CN=steamdeck-images (self-signed)
+  validity 2021-11-23 01:44:23Z .. 2038-04-28 01:44:23Z
+  cert SHA-256 fingerprint D5:62:FE:FE:25:1B:76:EA:B0:E9:E9:99:35:4A:D1:86:B8:EB:2E:2F:B3:45:0F:AD:BE:C7:F6:AA:59:B6:02:D9
+  (stable_keyring.pem on the server was NOT fetched or used.)

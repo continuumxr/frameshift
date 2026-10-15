@@ -1,0 +1,56 @@
+FrameShift Quest 3 stage-3c image (interactive per-phase display run, fs-pattern v0.6) — ONE ATTEMPT ONLY, never reuse
+No Valve file. Phases p0 r1 r2 [r3]: runs of 3 s, 10 s (4 planes x 1032, zpos 0,0,1,1) and 5 s (red field) (fs-pattern compiled cap 10 s); one write: panel0-backlight brightness=127; idle limit 120 s; PID 1 deadline T0+200 s, backstop T0+201 s (init.sh DEADLINE)
+built:            20260101T000000Z
+nonce:            0123456789abcdef   (USB serial FS-0123456789abcdef)
+TEST OVERRIDES:   FS_TEST_NONCE=0123456789abcdef FS_TEST_OUTBASE=$HOME/work/fsbuild-neg/stage3c/repro2 FS_TEST_STAMP=20260101T000000Z (negative fixtures only; NOT a candidate image)
+OUTPUT IMAGE:     boot-stage3c.img  size=43167744  sha256=6f759239fc59c46f31c67768760961859d135b3fba73110c3083b59c25573b3c
+
+## inputs (sha256 enforced unless noted)
+stock boot        49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50  <repo>/firmware/quest3/v66_unit1_slotA/boot.img
+stock vendor_boot 1e3b3762724478a7f592a11a7872cb8f7c55f0f882d7bb283ecbeffd691dbbcf  <repo>/firmware/quest3/v66_unit1_slotA/vendor_boot.img
+stock kernel      f34165b35a826052ce5b520d9313387c96970b498733f1a7b141dcf4afc94e7b  (byte-identical in the output: AOSP re-unpack)
+vendor modules    1ec0253fa9b80e7121722259ab9d6de0f1c4e5015846fea4737cd14af80a6745  lib/modules/modules.load.recovery (97 modules)
+vendor file list  403e891e9eb71e638afe1fceb715f87d6da02cfe4b12df2253c33efddae1c040  (111 entries)
+AOSP mkbootimg    d2bb0af5ba6d3198a3e99529c97eda1be0b5a093  (E1 fs_gitcheck CLEAN; helper adbe27e92be16da5d2d8a2bc8f3ea35bd2040cd41ed38068c1360030433487e8)
+E1 notes          NOTE: mode bits not checkable here: skip (drvfs without metadata: no exec bits) 
+t1-ramdisk-scan   73e969caf90418c6dd0ab9c06f10570ba6656f7472db6e337a3f24af3d28c524  (recorded; output in ramdisk-scan.txt)
+init.sh source    479fd2c65d68df580e4b621fc63e9cc5fa83df84a88c2ab5a22310a641a69fbe  (recorded)
+fs-phase.sh       3d9b9bec5132ceadb6aa722c16e410ee307b801db6bf6850b67afd26f788f877  (recorded)
+fs-probe.sh       f043af6fa9a6e3bec726339c329b094ece28883e5f97cf8acb0cb9c035bb9c4f  (recorded)
+fs-idle.sh        989472569328413928b5c2ab01b53060aa3a99081cf66209e45d161737ed6124  (recorded)
+fsb1-pace.sh      71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c  (pinned)
+build-image.sh    25b4a0094805d0e11279ea64a3f0ced1e39297b40647461b0c343816441688da  (recorded)
+ramdisk.cpio      ab9e81cdedcd71f0d1d8b2f0e5eff870b2fd5d9fa3fec776f39af7656e773008  size=3384320
+ramdisk.lz4       a25bfc1682d634a3c53d847366232570711bea00636d66fb8b03a97cf9d8e82c  size=1950169
+
+## ramdisk files (sha256  size  path  source); directories: bin config dev lib lib/fs proc run sys tmp 
+c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02  1981032  /bin/busybox  <repo>/build/third_party/busybox/busybox
+7ad5f1106acd828fa3e9d6da9cfa0e50d66431b4b2d3a951ce39f12375064959  705  /bin/fs-done  common/target/fs-done
+066bdc3ee01e5974518f96e8311c071c8f3aed302cadefa42c1273d5196b27bc  664168  /bin/fs-pattern  <repo>/devices/quest3/stage3c/build/fs-pattern
+3d9b9bec5132ceadb6aa722c16e410ee307b801db6bf6850b67afd26f788f877  14062  /bin/fs-phase  stage3c/fs-phase.sh
+c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29  1400  /bin/fs-reboot  <repo>/build/stage1-tools/fs-reboot
+ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e  808  /bin/fs-reboot-final  <repo>/devices/quest3/common/build/fs-reboot-final
+77f7a70a7904a7091db8e132b6c8f0ee68e6187f94d4690ec2a42a26f5206a74  676952  /bin/fs-supervise  <repo>/devices/quest3/common/build/fs-supervise
+3b7a5b5bc7e21e3075324794153a3bcd5217bd54128a6533ee443d4559fc6b95  13150  /init  stage3c/init.sh (479fd2c65d68df580e4b621fc63e9cc5fa83df84a88c2ab5a22310a641a69fbe) with nonce
+989472569328413928b5c2ab01b53060aa3a99081cf66209e45d161737ed6124  2276  /lib/fs/fs-idle.sh  stage3c/fs-idle.sh
+f043af6fa9a6e3bec726339c329b094ece28883e5f97cf8acb0cb9c035bb9c4f  10666  /lib/fs/fs-probe.sh  stage3c/fs-probe.sh
+11e44d2fa386d06c596c03ff54ecfb5aeeea4790a560c8e65bf26e76733bf1a7  4943  /lib/fs/fsb1-enc.sh  common/target/fsb1-enc.sh
+71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c  3255  /lib/fs/fsb1-pace.sh  common/target/fsb1-pace.sh
+4294c9d57f3a94eba9847596aa614f557e7b4278cfeb5a22e38955fdd5b81dc4  7556  /lib/fs/pid1-hold.sh  common/target/pid1-hold.sh
+
+## checks passed
+E1 git check; every pin above; static ELF (aarch64, ET_EXEC, no INTERP/NEEDED) for busybox, fs-reboot, fs-reboot-final, fs-supervise, fs-pattern;
+applets present: sh mount mknod mkdir cut cat echo printf sync reboot sleep insmod mdev ls tr sed grep basename setsid kill ln uname sha256sum stty mv rm chmod base64 awk wc head mkfifo tail dmesg; no BLAKE2 applet; no debugfs in any non-comment script line;
+exact ramdisk list; no symlinks; no vendor collision (only shared directories); union lacks /etc/ld.so.preload /etc/ld.so.cache /usr /lib/libc.so.6 /lib/ld-linux-aarch64.so.1 /valve;
+only the 5 expected ELF files in the union; BLAKE2 scan of the final image: no hit; kernel AF_ALG hash off;
+kernel bytes unchanged; header differs only in ramdisk size and boot.img signature size; every file in the image equals the staged file.
+
+## header diff
+3c3
+< ramdisk size: 1886092
+---
+> ramdisk size: 1950169
+8c8
+< boot.img signature size: 4096
+---
+> boot.img signature size: 0

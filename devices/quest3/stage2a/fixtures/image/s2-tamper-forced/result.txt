@@ -1,0 +1,19 @@
+# s2-tamper-forced (stage2a) mods=['tamper-b2sum'] plan=full; image <repo>/build/stage2a/20261009T085209Z-93a1501f0b1fb692
+# mod: flipped one bit at offset 0x2000 of /valve/bin/b2sum (size unchanged)
+# reboots: 926.13 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=93a1501f0b1fb692 resp=fd8625e15d5359d389bf70d5783139138f577c2a14511e63bb94892ac2813487 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=93a1501f0b1fb692 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=6070f146143b55c0 END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=93a1501f0b1fb692 chal=484518525743a0d18b8a0fe70c439599 lines=89 rec_sha256=647d41e398a9aef27a3bd34decf5c1357c9f12ac26fddf191a31812ecf6cc3df]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=911 deadline=T0+260 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [926.13 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [926.13 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.1 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  an empty line immediately before FSB1 BEGIN
+SCENARIO s2-tamper-forced PASS

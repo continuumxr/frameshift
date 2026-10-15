@@ -1,0 +1,89 @@
+{
+ "ack": "f6b31447e2755756",
+ "challenges": {
+  "p0": "d122611ceb30c892f56ac4fe635b3249",
+  "r1": "64aeb4919191a37f6ac68bc0886f7699",
+  "r2": "404e552b9d77cedff6050dcfbebac47f",
+  "r3": "4df5530bfe5ffcffec688dbef1fdeb4f"
+ },
+ "checks": [
+  {
+   "detail": "DEADLINE armed t0=343 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "543 vs t0=343",
+   "label": "/run/fs.deadline = T0 + DEADLINE",
+   "ok": true
+  },
+  {
+   "detail": "403.90 final pid=1 arg=error-modules",
+   "label": "first reboot reason = error-modules",
+   "ok": true
+  },
+  {
+   "detail": "403.90 final pid=1 arg=error-modules",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "0 write-close event(s): ",
+   "label": "backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never named the decoy crtc nodes or debugfs",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_REFUSED ERROR_modules",
+   "label": "index mismatch: MODULES_REFUSED then ERROR_modules, no module attempted, no MODULE_INDEX line, no SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "T0+60.9",
+   "label": "index mismatch: reboot error-modules at T0 + ERR_DELAY 60 (..+4)",
+   "ok": true
+  }
+ ],
+ "mod_notes": [
+  "modules.dep differs from init.sh's pin by one line: init must refuse every module and reboot error-modules"
+ ],
+ "mods": [
+  "moddep-mismatch"
+ ],
+ "nonce": "13ed21be49c7b4ba",
+ "ok": true,
+ "phases": {},
+ "plan": [],
+ "reboot_at_T0_plus": 60.9,
+ "reboots": "403.90 final pid=1 arg=error-modules\n",
+ "scenario": "c-modules-refused",
+ "sim_args": "",
+ "t_total_s": 92.6,
+ "tail": "none",
+ "verify_challenge": "158a9a41a07ce65f451f315c7af0fe56",
+ "want_reboot": "error-modules"
+}

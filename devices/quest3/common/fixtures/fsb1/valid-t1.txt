@@ -1,0 +1,69 @@
+
+FSB1 BEGIN v=1 exp=t1demo nonce=5e1f0c3a9b7d2468 chal=c0ffee00112233445566778899aabbcc steps=7
+FSB1 STEP i=1 id=hash end=exited code=0 sig=0 errno=0 ms=97 term_ms=-1 kill_ms=-1 out_total=480 out_kept=480 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=480 out_sha256=df57cc3b9858d1ae94aa8d2ae107092d92ef4c51edb624b7d8aeda2c88c1591e err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=1 s=o n=0 MmRkYzU2YTAyZjQ3Njc2NWEyMWUzMWQ2OTE0NGU2OGJlZTkzMzk1MGZlNjEzNzQ3
+FSB1 DATA i=1 s=o n=1 ZDU0Yjg3YTIzNjlhMDM3ZSAgL2hvbWUvZW5kZXI5NDkyL3dvcmsvdDFwaW4vc3Rh
+FSB1 DATA i=1 s=o n=2 Z2UvdmFsdmUvbGliL2xkLWxpbnV4LWFhcmNoNjQuc28uMQpiZTdlZTM5MzQyOWQ0
+FSB1 DATA i=1 s=o n=3 OTNjNGQzYjk5NmVkMjVjYmIwMmZhYmIyODk2YTc3ZWZlNmQ1N2U1OTkzZWFkNWJi
+FSB1 DATA i=1 s=o n=4 YjNiICAvaG9tZS9lbmRlcjk0OTIvd29yay90MXBpbi9zdGFnZS92YWx2ZS9saWIv
+FSB1 DATA i=1 s=o n=5 bGliYy5zby42CjQyOTVmMDM0ZWRmN2Q2MmY3MjFjZmU5OTQyMzBiYTEzOTY0NmM3
+FSB1 DATA i=1 s=o n=6 ODcyZGMyYTY4OTlhYTY4MWY3NmZjYTMxZjEgIC9ob21lL2VuZGVyOTQ5Mi93b3Jr
+FSB1 DATA i=1 s=o n=7 L3QxcGluL3N0YWdlL3ZhbHZlL2Jpbi91bmFtZQo5MDE1NDY4MDA3MGNmY2IyYTMw
+FSB1 DATA i=1 s=o n=8 MjdiOGZhMjZhODA5MWQyNDMzMzMyOTI5NGEyZjRiZTdhMTJjN2YxMWY2NDAyICAv
+FSB1 DATA i=1 s=o n=9 aG9tZS9lbmRlcjk0OTIvd29yay90MXBpbi9zdGFnZS92YWx2ZS9iaW4vYjJzdW0K
+FSB1 STEP i=2 id=absent end=exited code=0 sig=0 errno=0 ms=36 term_ms=-1 kill_ms=-1 out_total=5 out_kept=5 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=5 out_sha256=c1b4ac7ed462cd01c076c33de7d01ddef7f39a4bed73b12b2d769babf57204e9 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=2 s=o n=0 L3Vzcgo=
+FSB1 STEP i=3 id=diag end=exited code=0 sig=0 errno=0 ms=15 term_ms=-1 kill_ms=-1 out_total=1665 out_kept=1665 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=1665 out_sha256=7dd95b11f25b5424a28682dc59d23d45def6075e071263adc6752d9d2bb8aa80 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=3 s=o n=0 ZGxfZHN0X2xpYj0ibGliIgpkbF9od2NhcD0weDEyZmZmZmZmYgpkbF9od2NhcF9p
+FSB1 DATA i=3 s=o n=1 bXBvcnRhbnQ9MHgxMDAKZGxfaHdjYXAyPTB4YmZmNDdmYzc3ZmZmCmRsX2h3Y2Fw
+FSB1 DATA i=3 s=o n=2 Mz0weDAKZGxfaHdjYXA0PTB4MApkbF9od2NhcHNfc3ViZGlycz0iIgpkbF9od2Nh
+FSB1 DATA i=3 s=o n=3 cHNfc3ViZGlyc19hY3RpdmU9MHgwCmRsX3BhZ2VzaXplPTB4MTAwMApkbF9wbGF0
+FSB1 DATA i=3 s=o n=4 Zm9ybT0iYWFyY2g2NCIKZGxfcHJvZmlsZV9vdXRwdXQ9Ii92YXIvdG1wIgpkbF9z
+FSB1 DATA i=3 s=o n=5 dHJpbmdfcGxhdGZvcm09MHhmZmZmZmZmZmZmZmZmZmZmCmRzby5sZD0ibGQtbGlu
+FSB1 DATA i=3 s=o n=6 dXgtYWFyY2g2NC5zby4xIgpkc28ubGliYz0ibGliYy5zby42IgpwYXRoLnByZWZp
+FSB1 DATA i=3 s=o n=7 eD0iL3VzciIKcGF0aC5ydGxkPSIvdXNyL2xpYi9sZC1saW51eC1hYXJjaDY0LnNv
+FSB1 DATA i=3 s=o n=8 LjEiCnBhdGguc3lzY29uZmRpcj0iL2V0YyIKcGF0aC5zeXN0ZW1fZGlyc1sweDBd
+FSB1 DATA i=3 s=o n=9 PSIvdXNyL2xpYi8iCnZlcnNpb24ucmVsZWFzZT0ic3RhYmxlIgp2ZXJzaW9uLnZl
+FSB1 DATA i=3 s=o n=10 cnNpb249IjIuMzkiCmF1eHZbMHgwXS5hX3R5cGU9MHgzCmF1eHZbMHgwXS5hX3Zh
+FSB1 DATA i=3 s=o n=11 bD0weDc2MzE3ZjcwMDA0MAphdXh2WzB4MV0uYV90eXBlPTB4NAphdXh2WzB4MV0u
+FSB1 DATA i=3 s=o n=12 YV92YWw9MHgzOAphdXh2WzB4Ml0uYV90eXBlPTB4NQphdXh2WzB4Ml0uYV92YWw9
+FSB1 DATA i=3 s=o n=13 MHg3CmF1eHZbMHgzXS5hX3R5cGU9MHg2CmF1eHZbMHgzXS5hX3ZhbD0weDEwMDAK
+FSB1 DATA i=3 s=o n=14 YXV4dlsweDRdLmFfdHlwZT0weDcKYXV4dlsweDRdLmFfdmFsPTB4MAphdXh2WzB4
+FSB1 DATA i=3 s=o n=15 NV0uYV90eXBlPTB4OAphdXh2WzB4NV0uYV92YWw9MHgwCmF1eHZbMHg2XS5hX3R5
+FSB1 DATA i=3 s=o n=16 cGU9MHg5CmF1eHZbMHg2XS5hX3ZhbD0weDc2MzE3ZjcxYTk4MAphdXh2WzB4N10u
+FSB1 DATA i=3 s=o n=17 YV90eXBlPTB4YgphdXh2WzB4N10uYV92YWw9MHgzZTgKYXV4dlsweDhdLmFfdHlw
+FSB1 DATA i=3 s=o n=18 ZT0weGMKYXV4dlsweDhdLmFfdmFsPTB4M2U4CmF1eHZbMHg5XS5hX3R5cGU9MHhk
+FSB1 DATA i=3 s=o n=19 CmF1eHZbMHg5XS5hX3ZhbD0weDNlOAphdXh2WzB4YV0uYV90eXBlPTB4ZQphdXh2
+FSB1 DATA i=3 s=o n=20 WzB4YV0uYV92YWw9MHgzZTgKYXV4dlsweGJdLmFfdHlwZT0weDEwCmF1eHZbMHhi
+FSB1 DATA i=3 s=o n=21 XS5hX3ZhbD0weDEyZmZmZmZmYgphdXh2WzB4Y10uYV90eXBlPTB4MTEKYXV4dlsw
+FSB1 DATA i=3 s=o n=22 eGNdLmFfdmFsPTB4NjQKYXV4dlsweGRdLmFfdHlwZT0weDE5CmF1eHZbMHhkXS5h
+FSB1 DATA i=3 s=o n=23 X3ZhbD0weDc2MzE3ZTc3ZGY0MAphdXh2WzB4ZV0uYV90eXBlPTB4MTcKYXV4dlsw
+FSB1 DATA i=3 s=o n=24 eGVdLmFfdmFsPTB4MAphdXh2WzB4Zl0uYV90eXBlPTB4MWYKYXV4dlsweGZdLmFf
+FSB1 DATA i=3 s=o n=25 dmFsX3N0cmluZz0iL2hvbWUvZW5kZXI5NDkyL3dvcmsvdDFwaW4vc3RhZ2UvdmFs
+FSB1 DATA i=3 s=o n=26 dmUvbGliL2xkLWxpbnV4LWFhcmNoNjQuc28uMSIKYXV4dlsweDEwXS5hX3R5cGU9
+FSB1 DATA i=3 s=o n=27 MHgxYQphdXh2WzB4MTBdLmFfdmFsPTB4YmZmNDdmYzc3ZmZmCmF1eHZbMHgxMV0u
+FSB1 DATA i=3 s=o n=28 YV90eXBlPTB4ZgphdXh2WzB4MTFdLmFfdmFsX3N0cmluZz0iYWFyY2g2NCIKYXV4
+FSB1 DATA i=3 s=o n=29 dlsweDEyXS5hX3R5cGU9MHgyMQphdXh2WzB4MTJdLmFfdmFsPTB4NzYzMTdmNzUw
+FSB1 DATA i=3 s=o n=30 MDAwCnVuYW1lLnN5c25hbWU9IkxpbnV4Igp1bmFtZS5ub2RlbmFtZT0iTVNJLUdT
+FSB1 DATA i=3 s=o n=31 NjYiCnVuYW1lLnJlbGVhc2U9IjYuMTguMzMuMi1taWNyb3NvZnQtc3RhbmRhcmQt
+FSB1 DATA i=3 s=o n=32 V1NMMiIKdW5hbWUudmVyc2lvbj0iIzEgU01QIFBSRUVNUFRfRFlOQU1JQyBUaHUg
+FSB1 DATA i=3 s=o n=33 SnVuIDE4IDIxOjU0OjQzIFVUQyAyMDI2Igp1bmFtZS5tYWNoaW5lPSJhYXJjaDY0
+FSB1 DATA i=3 s=o n=34 Igp1bmFtZS5kb21haW5uYW1lPSJsb2NhbGRvbWFpbiIK
+FSB1 STEP i=4 id=list end=exited code=0 sig=0 errno=0 ms=23 term_ms=-1 kill_ms=-1 out_total=243 out_kept=243 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=243 out_sha256=313c34e8e70cb5b68ecc4f93427e5371af7fb7eba412473c6d9b7fb34cb8f54e err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=4 s=o n=0 CWxpbnV4LXZkc28uc28uMSAoMHgwMDAwN2M5YTk3Zjg0MDAwKQoJbGliYy5zby42
+FSB1 DATA i=4 s=o n=1 ID0+IC9ob21lL2VuZGVyOTQ5Mi93b3JrL3QxcGluL3N0YWdlL3ZhbHZlL2xpYi9s
+FSB1 DATA i=4 s=o n=2 aWJjLnNvLjYgKDB4MDAwMDdjOWE5NjY1MDAwMCkKCS9saWIvbGQtbGludXgtYWFy
+FSB1 DATA i=4 s=o n=3 Y2g2NC5zby4xID0+IC9ob21lL2VuZGVyOTQ5Mi93b3JrL3QxcGluL3N0YWdlL3Zh
+FSB1 DATA i=4 s=o n=4 bHZlL2xpYi9sZC1saW51eC1hYXJjaDY0LnNvLjEgKDB4MDAwMDdjOWE5N2Y0MDAw
+FSB1 DATA i=4 s=o n=5 MCkK
+FSB1 STEP i=5 id=uname end=exited code=0 sig=0 errno=0 ms=65 term_ms=-1 kill_ms=-1 out_total=34 out_kept=34 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=34 out_sha256=600c01e56d5afd93f0ecd74ff4ebb5ef91623d779bbba04388a866c3b581fc92 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=5 s=o n=0 Ni4xOC4zMy4yLW1pY3Jvc29mdC1zdGFuZGFyZC1XU0wyCg==
+FSB1 STEP i=6 id=b2kat end=exited code=0 sig=0 errno=0 ms=76 term_ms=-1 kill_ms=-1 out_total=132 out_kept=132 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=132 out_sha256=92129b0999048443dd372f10c666200a702f2c1d0b02412386658c8b2a598837 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=6 s=o n=0 Nzg2YTAyZjc0MjAxNTkwM2M2YzZmZDg1MjU1MmQyNzI5MTJmNDc0MGUxNTg0NzYx
+FSB1 DATA i=6 s=o n=1 OGE4NmUyMTdmNzFmNTQxOWQyNWUxMDMxYWZlZTU4NTMxMzg5NjQ0NDkzNGViMDRi
+FSB1 DATA i=6 s=o n=2 OTAzYTY4NWIxNDQ4Yjc1NWQ1NmY3MDFhZmU5YmUyY2UgIC0K
+FSB1 STEP i=7 id=b2chal end=exited code=0 sig=0 errno=0 ms=64 term_ms=-1 kill_ms=-1 out_total=132 out_kept=132 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=132 out_sha256=0c07359f7658f96cc84b98c7772aa5776b02b0e5d8e456aa9cb1b9ee9fde412d err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=7 s=o n=0 YjM5YzU5YzU4OTkyODg0NmU5OTg3ZDdlZDllYjMxNDVkZTYwZGJjYzg2NTQyMDZi
+FSB1 DATA i=7 s=o n=1 Mjg1ZmY2NGRjOWVkNGYxOGEzZTQyNWUyNmE1ZjQ5MDNjZDIwNTQxOTZhMzYwMzM0
+FSB1 DATA i=7 s=o n=2 OTA1N2ZkYTc5MjgxMWM4NDNiZGFhMDBiOTNiMDhkY2EgIC0K
+FSB1 END v=1 nonce=5e1f0c3a9b7d2468 chal=c0ffee00112233445566778899aabbcc lines=67 rec_sha256=c92705ac7eda445d20df5c719098e1e8ce150681a1666ed7b9d98a30c8808ab4

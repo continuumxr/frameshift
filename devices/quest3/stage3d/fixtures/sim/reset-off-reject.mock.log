@@ -1,0 +1,3 @@
+MOCK scenario reset-off-reject kind=reset active=1 accept=8 noconv=0 variant=0 mp=0 cc=0 modes=0 n=24 cur=0
+MOCK pixels n=9114624 bg=0 white=0 red=0 other=0 black=9114624
+MOCK atomic test+modeset rc=-22 layout=reset_off same_as_last_accepted_test=0 set= 55:CRTC_ID=0 155:MODE_ID=0 155:ACTIVE=0 71:FB_ID=0 71:CRTC_ID=0 97:FB_ID=0 97:CRTC_ID=0 100:FB_ID=0 100:CRTC_ID=0 103:FB_ID=0 103:CRTC_ID=0

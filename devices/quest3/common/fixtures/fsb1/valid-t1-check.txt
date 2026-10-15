@@ -1,0 +1,6 @@
+hash: 4 lines, pinned SHA-256 values                    PASS
+b2kat = BLAKE2b-512('') + '  -'                         PASS
+b2chal = BLAKE2b-512(nonce:chal) by Python hashlib      PASS
+list: 3 lines, libc and ld.so resolved under the stage  PASS
+absent: only listed paths (WSL host: some exist; framing demo) PASS
+diag: no env[ line (empty environment)                  PASS

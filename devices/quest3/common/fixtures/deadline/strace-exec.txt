@@ -1,0 +1,431 @@
+# scenario strace-exec (sim.sh, action a_ack), deadline=8 ack_window=4 
+# T0=185 reboot records (fake syscall; first one counts):
+#   193 deadline pid=2135 via=final
+# PID 1 log:
+#   FS t=185s DEADLINE armed t0=185 deadline=T0+8 ack_window=4 backstop=T0+9 reboot-reasons-not-logged-at-reboot
+#   FS t=186s BACKSTOP armed pid=2320 in=9s
+#   FS t=188s STAGE=HOST_ACK ack=0123abcd deadline-unchanged=T0+8
+# sim stdout/stderr:
+#   2135 uname(0x72250a1ff9c8) = 0
+#   2135 brk(NULL) = 0x00000000005f9000
+#   2135 brk(0x00000000005f9b20) = 0x00000000005f9b20
+#   2135 set_tid_address(0x5f90f0) = 2135
+#   2135 set_robust_list(0x5f9100,24) = -1 errno=38 (Function not implemented)
+#   2135 rseq(0x5f97e0,32,0,0xd428bc00) = -1 errno=38 (Function not implemented)
+#   2135 prlimit64(0,RLIMIT_STACK,NULL,0x000072250a1ffb18) = 0 ({rlim_cur=8388608,rlim_max=-1})
+#   2135 getrandom(0x5f80f8,8,1) = 8
+#   2135 readlinkat(AT_FDCWD,"/proc/self/exe",0x000072250a1feaa0,4096) = 28
+#   2135 brk(NULL) = 0x00000000005f9b20
+#   2135 brk(0x000000000061ab20) = 0x000000000061ab20
+#   2135 brk(0x000000000061b000) = 0x000000000061b000
+#   2135 mprotect(0x00000000005e8000,32768,PROT_READ) = 0
+#   2135 prctl(16,125503409224184,0,0,0,864902234687668223) = 0
+#   2135 getuid() = 1000
+#   2135 newfstatat(AT_FDCWD,"/etc/busybox.conf",0x000072250a1ff808,0) = -1 errno=2 (No such file or directory)
+#   2135 getgid() = 1000
+#   2135 setgid(1000) = 0
+#   2135 setuid(1000,1,0,0,125503409225227,115) = 0
+#   2135 getpid() = 2135
+#   2135 rt_sigaction(SIGCHLD,0x000072250a1ff308,NULL) = 0
+#   2135 getppid() = 2118
+#   2135 uname(0x72250a1ff5b0) = 0
+#   2135 getcwd(0x5fb960,4096) = 2
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/sim.sh",O_RDONLY|O_CLOEXEC) = 3
+#   2135 fcntl(3,F_DUPFD_CLOEXEC,10) = 10
+#   2135 close(3) = 0
+#   2135 rt_sigaction(SIGINT,NULL,0x000072250a1ff5b0) = 0
+#   2135 rt_sigaction(SIGQUIT,NULL,0x000072250a1ff5b0) = 0
+#   2135 rt_sigaction(SIGTERM,NULL,0x000072250a1ff5b0) = 0
+#   2135 read(10,0x5fb280,1023) = 894
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc50,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc51,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc52,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc53,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc54,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc55,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc56,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc50,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc51,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc52,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc53,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc54,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc55,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc56,1) = 1
+#   2135 ppoll(0x72250a1fef20,1,(nil),(nil)) = 1
+#   2135 read(0,0x5fbc57,1) = 1
+#   2135 dup3(11,0,0) = 0
+#   2135 close(11) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec.rec.start",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(1,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,1,0) = 1
+#   2135 close(3) = 0
+#   2135 write(1,0x5fbe30,4) = 4
+#   2135 dup3(11,1,0) = 1
+#   2135 close(11) = 0
+#   2135 openat(AT_FDCWD,"<repo>/devices/quest3/common/target/pid1-hold.sh",O_RDONLY|O_CLOEXEC) = 3
+#   2135 fcntl(3,F_DUPFD_CLOEXEC,10) = 11
+#   2135 close(3) = 0
+#   2135 read(11,0x5fbf10,1023) = 1023
+#   2135 read(11,0x5fbf10,1023) = 1023
+#   2135 read(11,0x5fbf10,1023) = 1023
+#   2135 read(11,0x5fbf10,1023) = 1023
+#   2135 read(11,0x5fbf10,1023) = 1023
+#   2135 read(11,0x5fbf10,1023) = 1023
+#   2135 read(11,0x5fbf10,1023) = 1023
+#   2135 read(11,0x5fbf10,1023) = 395
+#   2135 read(11,0x5fbf10,1023) = 0
+#   2135 close(11) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd868,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,2,0) = 2
+#   2135 close(11) = 0
+#   2135 pipe2(0x72250a1fe778,0) = 0
+#   2135 rt_sigprocmask(SIG_BLOCK,[SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGIOT SIGBUS SIGFPE SIGKILL SIGUSR1 SIGSEGV SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGSTKFLT SIGCHLD SIGCONT SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGURG SIGXCPU SIGXFSZ SIGVTALRM SIGPROF SIGWINCH SIGIO SIGPWR SIGSYS 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64],0x000072250a1fe560,8) = 0 (oldset=[])
+#   2135 clone(CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|0x11,child_stack=0x0000000000000000,parent_tidptr=0x0000000000000000,tls=0x0000000000000000,child_tidptr=0x00000000005f90f0) = 2271
+#   2135 rt_sigprocmask(SIG_SETMASK,[],NULL,8) = 0
+#    = 0
+#   2271 set_robust_list(0x5f9100,24) = -1 errno=38 (Function not implemented)
+#   2271 rt_sigprocmask(SIG_SETMASK,[],NULL,8) = 0
+#   2271 close(10) = 0
+#   2135 close(4) = 0
+#   2135 read(3,0xa1fe778,128)2271 rt_sigaction(SIGQUIT,NULL,0x000072250a1fe4e0) = 0
+#   2271 close(3) = 0
+#   2271 dup3(4,1,0) = 1
+#   2271 close(4) = 0
+#   2271 prctl(15,6270120,0,0,0,0) = 0
+#   2271 getgid() = 1000
+#   2271 setgid(1000) = 0
+#   2271 setuid(1000,1,0,0,549755813888,5418196525157599488) = 0
+#   2271 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2271 fstat(3,0x000072250a1fe0a8) = 0
+#   2271 read(3,0x5fbf10,1024) = 15
+#   2271 fstat(1,0x000072250a1fde68) = 0
+#   2271 read(3,0x5fbf10,1024) = 0
+#   2271 close(3) = 0
+#   2271 write(1,0x6028e0,4) = 4
+#   2135 read(3,0xa1fe778,128) = 4
+#   2271 exit_group(0)
+#    = 0
+#   2135 close(3) = 0
+#   2135 wait4(-1,0x72250a1fe604,0,(nil)) = 
+#   --- SIGCHLD {si_signo=SIGCHLD, si_code=1, si_pid=2271, si_uid=1000, si_status=0, si_utime=6, si_stime=1} ---
+#   2135 rt_sigreturn(0x11) = -1 errno=513 (Successful exit from sigreturn)
+#   2135 wait4(-1,0x72250a1fe604,1,(nil)) = -1 errno=10 (No child processes)
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.log",O_WRONLY|O_APPEND|O_CREAT,0666) = 3
+#   2135 fcntl(1,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,1,0) = 1
+#   2135 close(3) = 0
+#   2135 write(1,0x5ffab0,109) = 109
+#   2135 dup3(11,1,0) = 1
+#   2135 close(11) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec.rec.t0",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(1,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,1,0) = 1
+#   2135 close(3) = 0
+#   2135 write(1,0x5ff930,4) = 4
+#   2135 dup3(11,1,0) = 1
+#   2135 close(11) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec.rec.pid",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(1,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,1,0) = 1
+#   2135 close(3) = 0
+#   2135 write(1,0x5ff930,5) = 5
+#   2135 dup3(11,1,0) = 1
+#   2135 close(11) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd868,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 rt_sigprocmask(SIG_BLOCK,[SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGIOT SIGBUS SIGFPE SIGKILL SIGUSR1 SIGSEGV SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGSTKFLT SIGCHLD SIGCONT SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGURG SIGXCPU SIGXFSZ SIGVTALRM SIGPROF SIGWINCH SIGIO SIGPWR SIGSYS 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64],0x000072250a1fe920,8) = 0 (oldset=[])
+#   2135 clone(CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|0x11,child_stack=0x0000000000000000,parent_tidptr=0x0000000000000000,tls=0x0000000000000000,child_tidptr=0x00000000005f90f0) = 0
+#   2320 set_robust_list(0x5f9100,24) = -1 errno=38 (Function not implemented)
+#    = 2320
+#   2135 rt_sigprocmask(SIG_SETMASK,[],NULL,8) = 0
+#   2135 pipe2(0x72250a1fe778,0) = 0
+#   2320 rt_sigprocmask(SIG_SETMASK,[],NULL,8) = 0
+#   2135 rt_sigprocmask(SIG_BLOCK,[SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGIOT SIGBUS SIGFPE SIGKILL SIGUSR1 SIGSEGV SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGSTKFLT SIGCHLD SIGCONT SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGURG SIGXCPU SIGXFSZ SIGVTALRM SIGPROF SIGWINCH SIGIO SIGPWR SIGSYS 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64],0x000072250a1fe560,8) = 0 (oldset=[])
+#   2135 clone(CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|0x11,child_stack=0x0000000000000000,parent_tidptr=0x0000000000000000,tls=0x0000000000000000,child_tidptr=0x00000000005f90f0)2320 close(10) = 0
+#   2320 rt_sigaction(SIGINT,0x000072250a1fe778,0x000072250a1fe810) = 0
+#    = 2342
+#   2320 rt_sigaction(SIGQUIT,0x000072250a1fe778,0x000072250a1fe810) = 0
+#   2135 rt_sigprocmask(SIG_SETMASK,[],NULL,8) = 0
+#   2320 2135 close(0)close(4) = 0 = 
+#   0
+#   2320 openat(AT_FDCWD,2135 read(3,0xa1fe778,128)"/dev/null",O_RDONLY) = 0
+#    = 0
+#   2342 set_robust_list(0x5f9100,24) = -1 errno=38 (Function not implemented)
+#   2342 rt_sigprocmask(SIG_SETMASK,[],NULL,8) = 0
+#   2320 rt_sigprocmask(SIG_BLOCK,[SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGIOT SIGBUS SIGFPE SIGKILL SIGUSR1 SIGSEGV SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGSTKFLT SIGCHLD SIGCONT SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGURG SIGXCPU SIGXFSZ SIGVTALRM SIGPROF SIGWINCH SIGIO SIGPWR SIGSYS 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64],0x000072250a1fe2e0,8) = 0 (oldset=[])
+#   2320 clone(CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|0x11,child_stack=0x0000000000000000,parent_tidptr=0x0000000000000000,tls=0x0000000000000000,child_tidptr=0x00000000005f90f0)2342 close(10) = 0
+#   2342 rt_sigaction(SIGQUIT,NULL,0x000072250a1fe4e0) = 0
+#   2342 close(3) = 0
+#   2342 dup3(4,1,0) = 1
+#   2342 close(4) = 0
+#    = 2358
+#   2320 rt_sigprocmask(SIG_SETMASK,[],NULL,8) = 0
+#   2320 wait4(-1,0x72250a1fe384,0,(nil)) = 0
+#   2358 set_robust_list(0x5f9100,24) = -1 errno=38 (Function not implemented)
+#   2358 rt_sigprocmask(SIG_SETMASK,[],NULL,8) = 0
+#   2342 prctl(15,6269920,0,0,0,0) = 0
+#   2342 getgid() = 1000
+#   2342 setgid(1000) = 0
+#   2342 setuid(1000,1,0,0,549755813888,8286746925219596544) = 0
+#   2358 execve("/proc/self/exe",{"sleep","9",NULL})2342 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2342 fstat(3,0x000072250a1fe0a8) = 0
+#   2342 read(3,0x5fbf10,1024) = 15
+#   2342 fstat(1,0x000072250a1fde68) = 0
+#   2342 read(3,0x5fbf10,1024) = 0
+#   2342 close(3) = 0
+#   2342 write(1,0x602ac0,4) = 4
+#    = 4
+#   2135 read(3,0xa1fe778,128)2342 exit_group(0)
+#    = 0
+#   2135 close(3) = 0
+#   2135 wait4(-1,0x72250a1fe604,0,(nil)) = 
+#   --- SIGCHLD {si_signo=SIGCHLD, si_code=1, si_pid=2342, si_uid=1000, si_status=0, si_utime=7, si_stime=1} ---
+#   2135 rt_sigreturn(0x11) = -1 errno=513 (Successful exit from sigreturn)
+#   2135 wait4(-1,0x72250a1fe604,1,(nil)) = 
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.log",O_WRONLY|O_APPEND|O_CREAT,0666) = 3
+#   2135 fcntl(1,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,1,0) = 1
+#   2135 close(3) = 0
+#   2135 write(1,0x5ffbd0,40) = 40
+#   2135 dup3(11,1,0) = 1
+#   2135 close(11) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/READY",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(1,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,1,0) = 1
+#   2135 close(3) = 0
+#   2135 write(1,0x5ffb90,6) = 6
+#   2135 dup3(11,1,0) = 1
+#   2135 close(11) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd508,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd328,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",0x000072250a1fd938,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdb98,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdac8,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",O_RDWR|O_CREAT,0666) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd328,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",0x000072250a1fd938,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdb98,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdac8,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",O_RDWR|O_CREAT,0666) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd328,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",0x000072250a1fd938,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",0x000072250a1fd868,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",O_RDWR|O_CREAT,0666) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.acked",0x000072250a1fcab8,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,2,0) = 2
+#   2135 close(11) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.stages",0x000072250a1fcc68,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,2,0) = 2
+#   2135 close(11) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.log",0x000072250a1fce18,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,2,0) = 2
+#   2135 close(11) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdb98,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdac8,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",O_RDWR|O_CREAT,0666) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd328,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdb98,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdac8,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",O_RDWR|O_CREAT,0666) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd328,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdb98,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdac8,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",O_RDWR|O_CREAT,0666) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd328,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdb98,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdac8,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",O_RDWR|O_CREAT,0666) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd328,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/fs.collected",0x000072250a1fde48,AT_SYMLINK_NOFOLLOW) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdb98,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",0x000072250a1fdac8,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/.fs-tick",O_RDWR|O_CREAT,0666) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/proc/uptime",0x000072250a1fd328,0) = 0
+#   2135 openat(AT_FDCWD,"/proc/uptime",O_RDONLY) = 3
+#   2135 fcntl(0,F_DUPFD_CLOEXEC,10) = 11
+#   2135 dup3(3,0,0) = 0
+#   2135 close(3) = 0
+#   2135 openat(AT_FDCWD,"/dev/null",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 fcntl(2,F_DUPFD_CLOEXEC,10) = 12
+#   2135 dup3(3,2,0) = 2
+#   2135 close(12) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/bin/fake-final",0x000072250a1fd178,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/bin/fake-final",0x000072250a1fd178,0) = 0
+#   2135 geteuid() = 1000
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/bin/fake-final",0x000072250a1fd258,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 rt_sigaction(SIGQUIT,NULL,0x000072250a1fd480) = 0
+#   2135 execve("/tmp/fsdl.fBy5r8/bin/fake-final",{"/tmp/fsdl.fBy5r8/bin/fake-final","deadline",NULL})

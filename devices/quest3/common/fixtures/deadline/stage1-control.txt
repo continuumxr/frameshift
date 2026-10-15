@@ -1,0 +1,4 @@
+# scenario stage1-control (sim-stage1.sh, action a_ack), deadline=8 ack_window=4 
+# T0=185 reboot records (fake syscall; first one counts):
+# PID 1 log:
+# sim stdout/stderr:

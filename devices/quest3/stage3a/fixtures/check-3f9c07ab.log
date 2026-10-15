@@ -1,0 +1,20 @@
+CHECK size PASS 4128x2208
+CHECK grey PASS R=G=B everywhere
+CHECK levels PASS levels=0x10,0x60,0x70,0x90
+CHECK no_white PASS max=0x90
+CHECK mostly_dark PASS lit=3.61% mean=19.63
+CHECK nonce_left PASS decoded=3f9c07ab expected=3f9c07ab
+CHECK underline_left PASS
+CHECK cross_left PASS
+CHECK border_left PASS
+CHECK orient_square_left PASS viewer top-left only
+CHECK link_bars_left PASS bars=1 expected=1
+CHECK nonce_right PASS decoded=3f9c07ab expected=3f9c07ab
+CHECK underline_right PASS
+CHECK cross_right PASS
+CHECK border_right PASS
+CHECK orient_square_right PASS viewer top-left only
+CHECK link_bars_right PASS bars=2 expected=2
+PREVIEW <repo>/devices/quest3/stage3a/fixtures/preview-3f9c07ab-scanout.png 1032x552
+PREVIEW <repo>/devices/quest3/stage3a/fixtures/preview-3f9c07ab-viewer.png 1032x552
+PREVIEW <repo>/devices/quest3/stage3a/fixtures/preview-3f9c07ab-digits.png 1071x252

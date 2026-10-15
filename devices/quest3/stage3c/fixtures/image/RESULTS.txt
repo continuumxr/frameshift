@@ -1,0 +1,30 @@
+# stage3c whole-image fixtures  2026-10-12T01:07:54Z
+# image <repo>/build/stage3c/20261012T010256Z-b7cf9a0bfb559dcb/boot-stage3c.img sha256=9d3ad98400ac94f42b291a66b0420576df5ad8ee447e831d971fcaba9bd914bd
+# harness sha256=8a17099f96401112980ddc5ad786596611f5994414765e5b7d7493adb3b4aeef  test-image.sh sha256=e815444918fbd07b55306f29ad4df33f2f124df416dc96d2d184c25f447efb15
+# host: Linux 6.18.33.2-microsoft-standard-WSL2; qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2); bwrap 0.11.1
+SCENARIO c-ack-no-done PASS
+SCENARIO c-no-ack PASS
+SCENARIO c-idle PASS
+SCENARIO c-idle-stuck PASS
+SCENARIO c-nodrm PASS
+SCENARIO c-sim-all PASS
+SCENARIO c-sim-r2-dma PASS
+SCENARIO c-sim-r2-reject PASS
+SCENARIO c-sim-active PASS
+SCENARIO c-sim-unclean PASS
+SCENARIO c-order PASS
+SCENARIO c-repeat PASS
+SCENARIO c-chain-bad PASS
+SCENARIO c-time PASS
+SCENARIO c-pause PASS
+SCENARIO c-pause-fault PASS
+SCENARIO c-done-early PASS
+SCENARIO c-markers PASS
+SCENARIO c-probe-hang PASS
+SCENARIO c-no-backlight PASS
+SCENARIO c-record-too-large PASS
+SCENARIO c-step-fail PASS
+SCENARIO c-sim-r3-hold PASS
+SCENARIO c-no-debugfs PASS
+SCENARIO c-usage-then-p0 PASS
+TOTAL: 25 scenarios, 0 failed

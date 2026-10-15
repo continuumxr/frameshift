@@ -1,0 +1,6 @@
+FSB1 BEGIN v=1 exp=fixture nonce=5e1f0c3a9b7d2468 chal=c0ffee00112233445566778899aabbcc steps=7
+FSB1 STEP i=1 id=text end=exited code=0 sig=0 errno=0 ms=23 term_ms=-1 kill_ms=-1 out_total=24 out_kept=24 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=24 out_sha256=6f66b3832caa04f0e1150cac9a0fdbbeac67ac7865a22dd108fe88e5ef170cd8 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=1 s=o n=0 bGluZSBvbmUKbGluZSB0d28NCgl0YWIK
+FSB1 STEP i=2 id=bytes end=exited code=0 sig=0 errno=0 ms=1777 term_ms=-1 kill_ms=-1 out_total=256 out_kept=256 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=256 out_sha256=40aff2e9d2d8922e47afd4648e6967497158785fbd1da870e7110266bf944880 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=2 s=o n=0 AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4v
+FSB1 DATA i=2 s=o n=1 MDEyMzQ1

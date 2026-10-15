@@ -1,0 +1,18 @@
+# c-no-ack mods=[] plan=[] tail=verify-only; image <repo>/build/stage3c/20261012T010256Z-b7cf9a0bfb559dcb
+# reboots: 3767.71 final pid=1 arg=no-host-ack
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=b7cf9a0bfb559dcb resp=3cee731e87c73a0d8b78c8b49ba7f8c5b57ed22bdd2883da5dcf4a86a0fd2d80 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=3606 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  idle limit started before SHELL_READY
+PASS  /run/fs.deadline = T0 + DEADLINE  [3806 vs t0=3606]
+PASS  first reboot reason = no-host-ack  [3767.71 final pid=1 arg=no-host-ack]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [3767.71 final pid=1 arg=no-host-ack]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  no-ack reboot at loop start + ACK_WINDOW..+3  [SHELL_READY+150.7]
+PASS  no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)
+PASS  backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)  [0 write-close event(s): ]
+PASS  tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)
+PASS  probes never named the decoy crtc nodes or debugfs
+PASS  modules attempted in order fake_a, fake_b, fake_c
+SCENARIO c-no-ack PASS

@@ -1,0 +1,30 @@
+H H1_noms_only_active_current.splash_typical PASS use_current=1 idx=-1 attempts=4 mode=4128x2208@90
+H H2_modeset_only_expected.splash_typical PASS use_current=1 idx=-1 attempts=4 mode=4128x2208@90
+H H3_current_in_list_progressive.splash_typical PASS use_current=1 idx=-1 attempts=4 mode=4128x2208@90
+H H5_still_attempts.splash_typical PASS use_current=1 idx=-1 attempts=4 mode=4128x2208@90
+H H1_noms_only_active_current.no_current_expected PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H2_modeset_only_expected.no_current_expected PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H3_current_in_list_progressive.no_current_expected PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H5_still_attempts.no_current_expected PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H1_noms_only_active_current.current_inactive PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H2_modeset_only_expected.current_inactive PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H3_current_in_list_progressive.current_inactive PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H5_still_attempts.current_inactive PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H1_noms_only_active_current.current_not_in_list PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H2_modeset_only_expected.current_not_in_list PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H3_current_in_list_progressive.current_not_in_list PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H5_still_attempts.current_not_in_list PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H1_noms_only_active_current.current_interlaced PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H2_modeset_only_expected.current_interlaced PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H3_current_in_list_progressive.current_interlaced PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H5_still_attempts.current_interlaced PASS use_current=0 idx=0 attempts=2 mode=4128x2208@90
+H H1_noms_only_active_current.current_72hz_in_list PASS use_current=1 idx=-1 attempts=2 mode=4128x2208@72
+H H2_modeset_only_expected.current_72hz_in_list PASS use_current=1 idx=-1 attempts=2 mode=4128x2208@72
+H H3_current_in_list_progressive.current_72hz_in_list PASS use_current=1 idx=-1 attempts=2 mode=4128x2208@72
+H H5_still_attempts.current_72hz_in_list PASS use_current=1 idx=-1 attempts=2 mode=4128x2208@72
+H H1_noms_only_active_current.current_72hz_no_expected PASS use_current=1 idx=-1 attempts=2 mode=4128x2208@72
+H H2_modeset_only_expected.current_72hz_no_expected PASS use_current=1 idx=-1 attempts=2 mode=4128x2208@72
+H H3_current_in_list_progressive.current_72hz_no_expected PASS use_current=1 idx=-1 attempts=2 mode=4128x2208@72
+H H5_still_attempts.current_72hz_no_expected PASS use_current=1 idx=-1 attempts=2 mode=4128x2208@72
+H H4_no_empty_value PASS zeroed mode name
+H_TOTAL failures=0

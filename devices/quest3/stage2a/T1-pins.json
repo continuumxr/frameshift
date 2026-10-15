@@ -1,0 +1,199 @@
+{
+ "schema": "frameshift.t1-pins.v1",
+ "ruling": "FS-R-006 \u00a75 A (experiment (i))",
+ "source": {
+  "image": "steamframe-oobe-repair-20260922.5153644-0.3.0.img",
+  "image_sha256": "081a38c051e99c09db6ae91be994b67ef3347ea71f330d803ab861f0ba8cc654",
+  "partition": {
+   "index": 2,
+   "label": "rootfs-A",
+   "first_lba": 655394,
+   "byte_offset": 335561728,
+   "size_mib": 5120,
+   "fs": "btrfs",
+   "unique_guid": "0ee15513-80cf-4627-813f-d05477340f0b"
+  },
+  "build_id": "20260922.6152327",
+  "version_id": "0.3.0",
+  "variant_id": "vr",
+  "channel": "rc",
+  "extraction": "kernel read-only loop mount of rootfs-A, cp -a to WSL ~/sfroot-full (FS-A-002 \u00a71)"
+ },
+ "staged_root": "/valve",
+ "loader": "lib/ld-linux-aarch64.so.1",
+ "executables": [
+  "bin/uname",
+  "bin/b2sum"
+ ],
+ "expected_pt_interp": "/lib/ld-linux-aarch64.so.1",
+ "expected_pt_interp_hex": "2f6c69622f6c642d6c696e75782d616172636836342e736f2e3100",
+ "invocation": "/valve/lib/ld-linux-aarch64.so.1 --inhibit-cache --library-path /valve/lib /valve/bin/<prog> [args]",
+ "total_bytes": 2062760,
+ "files": [
+  {
+   "path": "lib/ld-linux-aarch64.so.1",
+   "rootfs_link_path": "/lib/ld-linux-aarch64.so.1",
+   "rootfs_real_path": "/usr/lib/ld-linux-aarch64.so.1",
+   "symlink": "lib -> usr/lib",
+   "size": 204048,
+   "sha256": "2ddc56a02f476765a21e31d69144e68bee933950fe613747d54b87a2369a037e",
+   "blake2b512": "0bcbf291b183e56231710fa7c421885a4cf929999a9fa910b8d50559fb282adbf36ea1af3c0c5d6f14ab2d9f973c7e26fd8914ed9a8f11690519cfdde2b632be",
+   "elf_class": "ELF64",
+   "e_machine": "EM_AARCH64",
+   "e_type": "ET_DYN",
+   "pt_interp": null,
+   "dt_needed": [],
+   "dt_rpath": null,
+   "dt_runpath": null,
+   "dt_soname": "ld-linux-aarch64.so.1",
+   "dt_flags": [
+    "BIND_NOW"
+   ],
+   "dt_flags_1": [
+    "NOW"
+   ],
+   "aarch64_bti": false,
+   "aarch64_pac": false,
+   "gnu_property": [],
+   "pt_load_align": [
+    65536
+   ],
+   "abi_tag": null,
+   "verneed": null
+  },
+  {
+   "path": "lib/libc.so.6",
+   "rootfs_link_path": "/lib/libc.so.6",
+   "rootfs_real_path": "/usr/lib/libc.so.6",
+   "symlink": "lib -> usr/lib",
+   "size": 1722992,
+   "sha256": "be7ee393429d493c4d3b996ed25cbb02fabb2896a77efe6d57e5993ead5bbb3b",
+   "blake2b512": "24975814bcd7bc7ee4097c55849fbc2882002908018f607115521150d54c36449e8f371cde8c998e4124d0e02aed2496c725c17e1c7dc842d225853d0ce6879a",
+   "elf_class": "ELF64",
+   "e_machine": "EM_AARCH64",
+   "e_type": "ET_DYN",
+   "pt_interp": "/usr/lib/ld-linux-aarch64.so.1",
+   "dt_needed": [
+    "ld-linux-aarch64.so.1"
+   ],
+   "dt_rpath": null,
+   "dt_runpath": null,
+   "dt_soname": "libc.so.6",
+   "dt_flags": [
+    "BIND_NOW"
+   ],
+   "dt_flags_1": [
+    "NOW"
+   ],
+   "aarch64_bti": false,
+   "aarch64_pac": false,
+   "gnu_property": [],
+   "pt_load_align": [
+    65536
+   ],
+   "abi_tag": {
+    "os": "Linux",
+    "abi": "4.4.0"
+   },
+   "verneed": {
+    "ld-linux-aarch64.so.1": [
+     "GLIBC_2.17",
+     "GLIBC_PRIVATE"
+    ]
+   }
+  },
+  {
+   "path": "bin/uname",
+   "rootfs_link_path": "/bin/uname",
+   "rootfs_real_path": "/usr/bin/uname",
+   "symlink": "bin -> usr/bin",
+   "size": 67856,
+   "sha256": "4295f034edf7d62f721cfe994230ba139646c7872dc2a6899aa681f76fca31f1",
+   "blake2b512": "364bac68885d01639992245aca774e77fe1228848ee166ac7375b52cc9133739b905a37c8148727afb67b46a25a1cef02a109a21017bc808cf1219f1d1280168",
+   "elf_class": "ELF64",
+   "e_machine": "EM_AARCH64",
+   "e_type": "ET_DYN",
+   "pt_interp": "/lib/ld-linux-aarch64.so.1",
+   "dt_needed": [
+    "libc.so.6",
+    "ld-linux-aarch64.so.1"
+   ],
+   "dt_rpath": null,
+   "dt_runpath": null,
+   "dt_soname": null,
+   "dt_flags": [
+    "BIND_NOW"
+   ],
+   "dt_flags_1": [
+    "NOW",
+    "PIE"
+   ],
+   "aarch64_bti": false,
+   "aarch64_pac": false,
+   "gnu_property": [],
+   "pt_load_align": [
+    65536
+   ],
+   "abi_tag": {
+    "os": "Linux",
+    "abi": "4.4.0"
+   },
+   "verneed": {
+    "ld-linux-aarch64.so.1": [
+     "GLIBC_2.17"
+    ],
+    "libc.so.6": [
+     "GLIBC_2.17",
+     "GLIBC_2.34"
+    ]
+   }
+  },
+  {
+   "path": "bin/b2sum",
+   "rootfs_link_path": "/bin/b2sum",
+   "rootfs_real_path": "/usr/bin/b2sum",
+   "symlink": "bin -> usr/bin",
+   "size": 67864,
+   "sha256": "90154680070cfcb2a3027b8fa26a8091d24333329294a2f4be7a12c7f11f6402",
+   "blake2b512": "0db8c154887585f26130f207b01a4fbcb3d07a9cebac8f11cf0ff72215e26c4ac8189f7e4065125600b6a393aebe3385d58e936a0e89981798c03b219e1599fe",
+   "elf_class": "ELF64",
+   "e_machine": "EM_AARCH64",
+   "e_type": "ET_DYN",
+   "pt_interp": "/lib/ld-linux-aarch64.so.1",
+   "dt_needed": [
+    "libc.so.6",
+    "ld-linux-aarch64.so.1"
+   ],
+   "dt_rpath": null,
+   "dt_runpath": null,
+   "dt_soname": null,
+   "dt_flags": [
+    "BIND_NOW"
+   ],
+   "dt_flags_1": [
+    "NOW",
+    "PIE"
+   ],
+   "aarch64_bti": false,
+   "aarch64_pac": false,
+   "gnu_property": [],
+   "pt_load_align": [
+    65536
+   ],
+   "abi_tag": {
+    "os": "Linux",
+    "abi": "4.4.0"
+   },
+   "verneed": {
+    "ld-linux-aarch64.so.1": [
+     "GLIBC_2.17"
+    ],
+    "libc.so.6": [
+     "GLIBC_2.17",
+     "GLIBC_2.34",
+     "GLIBC_2.38"
+    ]
+   }
+  }
+ ]
+}

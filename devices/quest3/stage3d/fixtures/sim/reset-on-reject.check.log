@@ -1,0 +1,21 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 124 records, 30930 bytes
+CHECK eos_last_after_exit PASS {'records': '124', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '17712', 'opt_skipped': '0'}
+CHECK start_mode_ver PASS reset
+CHECK stream_within_the_step_cap PASS 30930 <= 57344 bytes
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=17712 measured=17712 budget=38912
+INFO essential_bytes=13218 opt_bytes=17712 total=30930 cap=57344 (essential + budget = 52130)
+CHECK set_properties_subset_of_v05_set_plus_zpos PASS ['ACTIVE', 'CRTC_H', 'CRTC_ID', 'CRTC_W', 'CRTC_X', 'CRTC_Y', 'FB_ID', 'MODE_ID', 'SRC_H', 'SRC_W', 'SRC_X', 'SRC_Y']
+CHECK zpos_only_in_quad_attempts_on_the_four_planes_values_0011_by_slot PASS
+CHECK reset: at most two real commits (A reset_off, B the re-enable), each equal to the last accepted test PASS [('reset_off', True)]
+CHECK reset: precondition active PASS
+CHECK reset: the re-enable mode is the handed-over expected mode PASS
+CHECK reset: the buffer is black (buffer black=1; every pixel 0x00000000) PASS (9114624, 0, 0, 0, 0, 9114624)
+CHECK reset_plan: 6 objects, 11 properties, 4 planes off, 2 re-enable attempts PASS {'conn': '55', 'crtc': '155', 'objs': '6', 'props': '11', 'planes_off': '4', 'overflow': '0', 'reenable_attempts': '2', 'helper': '1'}
+CHECK reset A: the first request (TEST_ONLY, ALLOW_MODESET) sets exactly the connector CRTC_ID, MODE_ID, ACTIVE and the 4 bound planes' FB_ID/CRTC_ID, every value 0 PASS [(55, 'CRTC_ID', 0), (155, 'MODE_ID', 0), (155, 'ACTIVE', 0), (71, 'FB_ID', 0), (71, 'CRTC_ID', 0), (97, 'FB_ID', 0), (97, 'CRTC_ID', 0), (100, 'FB_ID', 0), (100, 'CRTC_ID', 0), (103, 'FB_ID', 0), (103, 'CRTC_ID', 0)]
+CHECK reset: never sets zpos PASS
+CHECK reset A committed once (= its test), post_state inactive without a mode, the 4 planes without CRTC and FB PASS
+CHECK reset B: the v0.5 modeset attempts on the black buffer: single (rejected -7 as on v66) then split PASS [('0', 'reset_off', 0), ('1', 'reset_on_single', -7), ('2', 'reset_on_split', -22)]
+CHECK reset B: every re-enable request sets the connector CRTC_ID 155, a mode blob and ACTIVE 1 (ALLOW_MODESET) PASS
+CHECK reset_on rejected: exit 50 reset_on_rejected after the one disable commit PASS {'code': '50', 'reason': 'reset_on_rejected', 'shown': '0', 'closed_at_exit': '1', 'elapsed_ms': '996'}
+CHECK mode_properties_blob_roundtrip PASS 185 bytes in 1 parts

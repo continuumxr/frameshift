@@ -1,0 +1,36 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 125 records, 31137 bytes
+CHECK eos_last_after_exit PASS {'records': '125', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '14168', 'opt_skipped': '0'}
+CHECK start_mode_ver PASS show-off-quad
+CHECK stream_within_the_step_cap PASS 31137 <= 57344 bytes
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=14168 measured=14168 budget=38912
+INFO essential_bytes=16969 opt_bytes=14168 total=31137 cap=57344 (essential + budget = 55881)
+CHECK set_properties_subset_of_v05_set_plus_zpos PASS ['ACTIVE', 'CRTC_H', 'CRTC_ID', 'CRTC_W', 'CRTC_X', 'CRTC_Y', 'FB_ID', 'MODE_ID', 'SRC_H', 'SRC_W', 'SRC_X', 'SRC_Y', 'zpos']
+CHECK zpos_only_in_quad_attempts_on_the_four_planes_values_0011_by_slot PASS
+CHECK at_most_one_real_commit_and_it_equals_the_last_accepted_test PASS [('quad_dma', True)]
+CHECK precondition_inactive_proven PASS
+CHECK plan_quad_vig_unavailable-missing PASS unavailable-missing
+CHECK plan_quad_dma_115.134.112.131 PASS 115.134.112.131
+CHECK plan_values_need_no_percent_encoding (a digit-splitting reader gets the right numbers) PASS
+CHECK plan_pipe_types_from_max_upscale PASS - / dma-3.dma-3.dma-2.dma-2
+CHECK plan_zpos_before_and_zpos_set PASS
+CHECK plan_splash_set PASS differs
+CHECK plan_attempts_and_split_probe PASS
+CHECK attempt_order_split_probe_quad_vig_quad_dma (unavailable: no TEST_ONLY) PASS [('0', '1', 'split_probe', 0), ('2', '1', 'quad_dma', 0)]
+CHECK mock_saw_the_same_test_only_layouts PASS ['split+modeset', 'quad_dma']
+CHECK split_probe_never_committed PASS
+CHECK committed_quad_dma PASS {'attempt': '2', 'modeset': '1', 'layout': 'quad_dma', 'commit_ms': '88'}
+CHECK commit_geometry_4x1032_global_x_no_scaling PASS [(115, 0, 0, 1032, 1032, 2208, 2208, 0, 0, 0), (134, 1032, 1032, 1032, 1032, 2208, 2208, 0, 0, 0), (112, 2064, 2064, 1032, 1032, 2208, 2208, 0, 0, 1), (131, 3096, 3096, 1032, 1032, 2208, 2208, 0, 0, 1)]
+CHECK E15_stage_slots: {0,0,1,1} fills stage 1 and stage 2 with 2 pipes each PASS {1: 2, 2: 2}
+CHECK E15_negative_control: {0,0,0,0} overflows stage 1 (2 pipes alias into the next stage) PASS {1: 4}
+CHECK E11_atomic_check_model_passes_both (why the {0,0,0,0} bug survives TEST_ONLY) PASS
+CHECK post_state_after_the_commit (active, mode, topology, votes as GET) PASS {'conn': '55', 'topology_val': '14', 'topology_name': 'sde_quadpipe_dsc4hsmerge', 'dsc_mode_val': '0', 'control_val': '0', 'crtc': '155', 'active': '1', 'mode_id': '208', 'core_clk': '155011', 'core_ab': '155012', 'core_ib': '155013', 'llcc_ab': '155014', 'llcc_ib': '155015', 'dram_ab': '155016', 'dram_ib': '155017', 'getcrtc_rc': '0', 'mode_valid': '1', 'fb': '207'}
+CHECK post_plane_slots_planes PASS
+CHECK post_plane_matches_the_plan_after_the_right_half_conversion (SRC_X 0/1032/2064/3096, CRTC_X 0/1032/0/1032, zpos 0/0/1/1) PASS match [('0', '0', '0'), ('1032', '1032', '0'), ('2064', '0', '1'), ('3096', '1032', '1')]
+CHECK post_records_between_commit_and_hold_start PASS ['commit', 'post_state', 'post_plane', 'post_plane', 'post_plane', 'post_plane', 'hold_start']
+CHECK mode_properties_blob_roundtrip PASS 185 bytes in 1 parts
+CHECK conn_capabilities_blob_roundtrip PASS 120 bytes in 1 parts
+CHECK plane_caps_every_plane_in_order PASS 20 records
+CHECK plane_caps_values_rederived_from_the_mock_blobs (pipe_idx, max_upscale, primary_smart_plane_id, zpos, nv12) PASS
+CHECK plane_caps_essential_in_quad_modes (never cut by the opt budget) PASS
+CHECK pattern_buffer_two_levels_white_ppm_within_37618 PASS white_ppm=27982

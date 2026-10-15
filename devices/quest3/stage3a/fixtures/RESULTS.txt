@@ -1,0 +1,90 @@
+binary sha256=c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a
+unittest sha256=cb05c17ac11ab61211b5a6cff7d451e998f932f3b1ce597bc2316657036b8696
+qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2)
+unittest PASS 28 unit tests
+render-3f9c07ab PASS exit=0
+check-3f9c07ab PASS 17 checks
+render-01234567 PASS exit=0
+check-01234567 PASS 17 checks
+render-89abcdef PASS exit=0
+check-89abcdef PASS 17 checks
+render-deterministic PASS identical bytes
+render-nonce-differs PASS 
+render 3f9c07ab ppm sha256=ed8e82dff6c22a5dd48ba41f848629f7dc9a124499b3de53c4c38f670594dab3
+render-odd-size PASS exit=0
+nodev-default PASS exit=10
+nodev-default-record PASS open rc=-2 ENOENT
+nodev-default-exit PASS 
+nodev-path PASS exit=10
+notdrm-regular PASS exit=11
+notdrm-devnull PASS exit=11
+notdrm-devnull-record PASS 
+usage-noargs PASS exit=2
+usage-upper-nonce PASS exit=2
+usage-short-nonce PASS exit=2
+usage-hold-zero PASS exit=2
+usage-hold-nondigit PASS exit=2
+usage-hold-7digits PASS exit=2
+usage-extra-arg PASS exit=2
+usage-path-201 PASS exit=2
+stdout-tty-refused PASS exit=3, nothing written
+stdout-devnull-accepted PASS exit=0
+stdout-pipe-accepted PASS out=pipe
+blocked-stdout-hold PASS exit=0 wall_ms=3040 (hold 3 s; records dropped, not waited for)
+blocked-stdout-term PASS exit=70 term_to_exit_ms=15
+hold-3s PASS exit=0
+hold-3s-duration PASS held_ms=3000 wall_ms=3110
+strace-close-before-write PASS deadline: close(3) precedes write(1)
+strace-close-before-write-term PASS SIGTERM: close(3) precedes write(1)
+strace-show-stat-not-open PASS exit=11; stat only, never opened
+strace-holdtest-stat-then-open PASS stat precedes open; O_NOCTTY
+sigxfsz-ignored PASS exit=0 under ulimit -f 0 (records dropped)
+empty-value-token PASS name=- drv=- dash=%2D
+hold-alarm-rearmed PASS alarm_s=8 (hold 3 + 5)
+alarm-rearm-fires PASS SIGALRM at hold+5
+sigterm-clamp-reported PASS 999 -> 10
+sigterm PASS exit=70 sig=15 signal_to_exit_ms=15
+sigint-clamp-reported PASS 999 -> 10
+sigint PASS exit=70 sig=2 signal_to_exit_ms=19
+sighup-clamp-reported PASS 999 -> 10
+sighup PASS exit=70 sig=1 signal_to_exit_ms=36
+sigint-parent-ignored-clamp-reported PASS 999 -> 10
+sigint-parent-ignored PASS exit=70 sig=2 signal_to_exit_ms=15
+hold-clamp-full-start PASS 
+hold-clamp-full PASS exit=0 held_ms=10000 (999 requested; alarm at 15 s not reached)
+backstop PASS SIGALRM (142), no hold_end; alarm due at 15 s, kill landed 18 ms after SIGCONT at 18 s (a stopped process can only die on SIGCONT)
+stream_alarm-rearm PASS INCOMPLETE no eos after 3 records
+stream_backstop PASS INCOMPLETE no eos after 3 records
+stream_hold-3s PASS COMPLETE 6 records
+stream_hold-clamp-full PASS COMPLETE 6 records
+stream_nodev-default PASS COMPLETE 4 records
+stream_nodev-path PASS COMPLETE 4 records
+stream_notdrm-devnull PASS COMPLETE 4 records
+stream_notdrm-regular PASS COMPLETE 4 records
+stream_render-01234567 PASS COMPLETE 4 records
+stream_render-3f9c07ab PASS COMPLETE 4 records
+stream_render-89abcdef PASS COMPLETE 4 records
+stream_render-odd-size PASS COMPLETE 4 records
+stream_sighup PASS COMPLETE 6 records
+stream_sigint-parent-ignored PASS COMPLETE 6 records
+stream_sigint PASS COMPLETE 6 records
+stream_sigterm PASS COMPLETE 6 records
+stream_stdout-pipe PASS COMPLETE 6 records
+stream_stdout-tty PASS EMPTY no records
+stream_strace-hold PASS COMPLETE 6 records
+stream_strace-notdrm PASS COMPLETE 4 records
+stream_strace-term PASS COMPLETE 6 records
+stream_stream-sample PASS COMPLETE 5 records
+stream_usage-extra-arg PASS COMPLETE 3 records
+stream_usage-hold-7digits PASS COMPLETE 3 records
+stream_usage-hold-nondigit PASS COMPLETE 3 records
+stream_usage-hold-zero PASS COMPLETE 3 records
+stream_usage-noargs PASS COMPLETE 3 records
+stream_usage-path-201 PASS COMPLETE 3 records
+stream_usage-short-nonce PASS COMPLETE 3 records
+stream_usage-upper-nonce PASS COMPLETE 3 records
+stream-neg-gap PASS seq gap -> INVALID
+stream-neg-noeos PASS no eos -> INCOMPLETE
+stream-neg-crc PASS changed byte -> INVALID (crc)
+stream-neg-emptyval-v0.3 PASS v0.3 empty value (name=) -> INVALID; v0.4 writes name=- (stream_stream-sample)
+TOTAL failures=0

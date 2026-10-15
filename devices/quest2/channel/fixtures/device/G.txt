@@ -1,0 +1,79 @@
+# G g1
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=not attached
+#   LOG GADGET serial=FS-0123456789abcdef udc=a600000.dwc3 if=usb0 dev=02:01:23:45:67:89 host=06:01:23:45:67:89
+#   LOG ROLE fallback write-rc=0 mode=peripheral
+#   LOG ROLE udc-state=not attached
+#   DONE if=usb0 udc=a600000.dwc3
+# G g3
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=configured
+#   LOG GADGET serial=FS-0123456789abcdef udc=a600000.dwc3 if=usb0 dev=02:01:23:45:67:89 host=06:01:23:45:67:89
+#   LOG ROLE udc-state=configured
+#   DONE if=usb0 udc=a600000.dwc3
+# G g4
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=not attached
+#   LOG GADGET serial=FS-0123456789abcdef udc=a600000.dwc3 if=usb0 dev=02:01:23:45:67:89 host=06:01:23:45:67:89
+#   LOG ROLE fallback write-rc=0 mode=peripheral
+#   LOG ROLE udc-state=not attached
+#   DONE if=usb0 udc=a600000.dwc3
+# G G5-udc-expect-mismatch
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   FAIL udc UDC 'a600000.dwc3' is not 'a800000.dwc3'
+# G G6-no-udc
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   FAIL udc no UDC after 1s
+# G G7-two-udcs
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   FAIL udc expected one UDC, found: a600000.dwc3 b000000.dwc3 
+# G G8-unsafe-udc-name
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   FAIL udc unsafe UDC name
+# G G9-gadget-exists
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=not attached
+#   FAIL ncm gadget already exists
+# G G10-netdev-mac-mismatch
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=not attached
+#   FAIL net usb0 does not carry 02:01:23:45:67:89
+# G G11-bad-ifname
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=not attached
+#   FAIL net bad ifname 'usb0;x'
+# G G12-bad-nonce
+#   FAIL ncm bad nonce
+# G G13-short-nonce
+#   FAIL ncm bad nonce length
+# G G14-no-configfs
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=not attached
+#   FAIL ncm no configfs usb_gadget
+# G G15-write-fails
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=not attached
+#   FAIL ncm write /usb_gadget/fs/functions/ncm.fs/dev_addr=02:01:23:45:67:89
+# G G16-link-readback
+#   IDS 02:01:23:45:67:89 06:01:23:45:67:89 fe80::0123:4567:89ab:cdef fe800000000000000123456789abcdef FS-0123456789abcdef
+#   LOG UDC name=a600000.dwc3 state=not attached
+#   FAIL ncm readback link
+# G G17-bad-numeric-setting
+#   FAIL ncm bad numeric setting 'abc'
+# G G18-rpc-exits-before-listening (responder alive after the run: no)
+#   LOG RPC stopped pid=661168
+#   FAIL rpc responder exited before listening
+# G G19-rpc-never-listens-killed (responder alive after the run: no)
+#   LOG RPC stopped pid=661258
+#   FAIL rpc responder not listening after 2s
+# G G20-rpc-other-port-killed (responder alive after the run: no)
+#   LOG RPC stopped pid=661355
+#   FAIL rpc responder not listening after 2s
+# G G21-rpc-listening-ok (responder alive after the run: yes)
+#   LOG RPC pid=661452 addr=[fe80::0123:4567:89ab:cdef%usb0]:47101 runner=none listening
+#   DONE pid=661452
+# G G22-stale-rpc-log (responder alive after the run: no)
+#   FAIL rpc stale fs.rpc.log
+# G G23-late-listener-killed-before-err-delay (responder alive after the run: no)
+#   LOG RPC stopped pid=661613
+#   FAIL rpc responder not listening after 2s

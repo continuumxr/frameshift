@@ -1,0 +1,9 @@
+== round-7 probes, code under test: <repo>\devices\quest3\host
+PASS  SF1  a build folder copied outside <repo>\build\stage2a is refused even at -Preflight (exit 2)
+PASS  NIT4 the observer exposes a conservative handoff basis (HandoffBasisUtc)
+PASS  NIT3 runner budget: with 100 s to give-up the runner (127 + 5 s) is not sent; gated fs-done
+PASS  NIT7 foreign ack at the end of the ack window: fs-done still sent
+=== LOOK INTO THE LENSES NOW: the test pattern appears in 3 seconds and lasts up to 10 seconds ===
+PM: the panels should now be DARK (fs-pattern has closed the display). fs-done follows in 3000 ms; note what you see.
+PASS  NEW  stage 3a display cue: an N display-cue line precedes the fs-display write by >= 3 s
+TOTAL: 5 passed, 0 failed

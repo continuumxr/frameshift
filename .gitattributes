@@ -1,0 +1,40 @@
+# Default: normalise text to LF in the repository and check it out as LF on every platform,
+# so hash-pinned text files match their pins on any clone. The -text rules below override this.
+* text=auto eol=lf
+# Scripts and sources that run on Linux must keep LF line endings;
+# a CRLF /init would break the shebang on the headset.
+*.sh      text eol=lf
+*.c       text eol=lf
+*.py      text eol=lf
+*.sha256  text eol=lf
+devices/*/*/target/** text eol=lf
+# Relay evidence must stay byte-exact on every checkout (hashes are pinned).
+captures/** -text
+devices/*/evidence/** -text
+# Stage-3b fixtures carry raw tty captures and emitted FSB1 bytes compared by hash.
+devices/quest3/stage3b/fixtures/** -text
+# FSB1 decoder fixtures: CR bytes are significant (the CRLF, CRCRLF, pty and echo cases).
+# Never convert. (Four of them lost their CRs at commit under autocrlf before this rule; J-98.)
+devices/quest3/common/fixtures/fsb1/** -text
+# Generated LF outputs: check out as LF, so the working copy equals the committed blob.
+devices/*/*/*.output.txt text eol=lf
+devices/quest2/channel/fixtures/** text eol=lf
+# Host tools are pinned by hash: LF in the blob and in the working copy.
+devices/quest3/host/*.ps1 text eol=lf
+# Hash-pinned analysis outputs (SHA256SUMS) must check out byte-identical to their blobs.
+devices/quest2/analysis/v27-dt/** -text
+# Stage-3c fixtures (device and host replays, scripted keys) carry raw bytes compared by hash.
+devices/quest3/stage3c/fixtures/** -text
+devices/quest3/host/fixtures/stage3c/** -text
+# Stage-3d host fixtures (replays, scripted keys, the generator): raw bytes compared by hash (2026-10-13).
+devices/quest3/host/fixtures/stage3d/** -text
+# The user-build capture rows are pinned in SIGNOFF-3d: LF in the blob and in every working copy.
+# Pinned shared host helpers: LF in the blob and in every working copy.
+devices/quest3/stage1/*.ps1 text eol=lf
+devices/quest3/common/host/*.ps1 text eol=lf
+docs/research/steamos-stable-0.4-metadata/** -text
+# Stage-3d fixtures and provenance reports carry raw bytes compared by hash.
+devices/quest3/stage3d/fixtures/** -text
+devices/quest3/stage3d/provenance/** -text
+# The stage-3d module list is pinned by hash and read by the device: LF in the blob and in every working copy.
+devices/quest3/stage3d/modules.load.v66 text eol=lf

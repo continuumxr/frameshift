@@ -1,0 +1,128 @@
+# test-host.ps1  2026-10-09T09:13:03  dir=<repo>\build\stage3a-harness
+# fsb1.ps1 1f84c633e8cf358fce3e006cef996bae9b372ee2914a97a0c5ab864312f0a703  fs-classify.ps1 762579e0f928535fb026ffe8302d325fc03acb8f95966c5ee36d92e43734d57b  fs-collect.ps1 19b230d9469b50e9f58ebfed295053e39736c95a9ba4b3a028d2b3785315eb0c
+
+## s3-ack-no-done (stage3a, plan full-no-done, mods: )
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=91 term_ms=-1 kill_ms=-1 out=82B err=0B why=none
+     step 2 pattern end=exited code=10 sig=0 errno=0 ms=155 term_ms=-1 kill_ms=-1 out=546B err=0B why=none
+     OUTCOME NO-DISPLAY (rule 8) fs-pattern exit 10 (no device): no real commit was made
+       1 hash    MEASURED    fs-pattern digest equals the pin
+       2 pattern end=exited  code=10 sig=0 errno=0
+PASS  classifier (stage 3a) outcome = expected 'NO-DISPLAY'
+
+## s3-done-early (stage3a, plan verify-done, mods: )
+     (no runner request in this scenario: nothing to decode; the harness checked the reboot)
+
+## s3-hung-pattern (stage3a, plan full, mods: hang-pattern)
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=43 term_ms=-1 kill_ms=-1 out=82B err=0B why=none
+     step 2 pattern end=timer-kill code=-1 sig=9 errno=0 ms=19002 term_ms=16000 kill_ms=19001 out=0B err=0B why=none
+     OUTCOME INTEGRITY FAULT (rule 3) hash: fs-pattern digest 7296bc1d79f250d4d18446579b9e05791c5a61191257910bcd24602c3e44f7e1 != pin c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a
+       1 hash    MEASURED    fs-pattern digest 7296bc1d79f250d4d18446579b9e05791c5a61191257910bcd24602c3e44f7e1 != pin c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a
+       2 pattern end=timer-kill code=-1 sig=9 errno=0
+PASS  classifier (stage 3a) outcome = expected 'INTEGRITY FAULT'
+     | === LOOK INTO THE LENSES NOW: the test pattern appears in 3 seconds and lasts up to 10 seconds ===
+     | BEEP 1: KEEP LOOKING INTO THE LENSES. The panels should now be DARK. fs-done follows the second (low) beep in 10 s.
+     | BEEP 2: end of the pause; fs-done follows now if the shell state is unchanged (send gate). Note whether the panels were dark during the pause.
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 1424376585ae1a110ef0eaed53622d67 | fs-ack 6ffc9f24fe2d41ed | fs-status | fs-display 6c8d3e5a0ac8b5772820acf5241ae48b | fs-done
+     | CAPTURE: <repo>\build\stage3a-harness\s3-hung-pattern\replay-collect\capture.raw bytes=1824 sha256=1330e14286326e22a0abad570dd72ca03687704fbddefc5981aeafbbda005a19 consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 3a -Replay: status COLLECTED-VALID, stage 3a, runner fs-display (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (1824/1832 bytes)
+     | OUTCOME: INTEGRITY FAULT   (OUTCOMES \xa78 rule 3) hash: fs-pattern digest 7296bc1d79f250d4d18446579b9e05791c5a61191257910bcd24602c3e44f7e1 != pin c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a
+     |   step 1 hash    MEASURED    fs-pattern digest 7296bc1d79f250d4d18446579b9e05791c5a61191257910bcd24602c3e44f7e1 != pin c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a
+     |   step 2 pattern end=timer-kill code=-1 sig=9 errno=0
+     | A stage-3a PASS is the machine side only: the result is the PM reading the 8 characters through the lenses (OUTCOMES \xa78).
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 3a -CollectDir on the replay: OUTCOME INTEGRITY FAULT (exit 12); expected INTEGRITY FAULT
+
+## s3-missing-pattern (stage3a, plan full, mods: missing-pattern)
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=1 sig=0 errno=0 ms=30 term_ms=-1 kill_ms=-1 out=0B err=67B why=none
+     step 2 pattern end=exec-failed code=127 sig=0 errno=2 ms=5 term_ms=-1 kill_ms=-1 out=0B err=0B why=none
+     OUTCOME INTEGRITY FAULT (rule 3) hash: fs-pattern cannot be read: sha256sum: can't open '/bin/fs-pattern': No such file or directory
+       1 hash    MEASURED    fs-pattern cannot be read: sha256sum: can't open '/bin/fs-pattern': No such file or directory
+       2 pattern TOOL FAULT  exec-failed errno=2 (not ENOEXEC/ELIBBAD)
+PASS  classifier (stage 3a) outcome = expected 'INTEGRITY FAULT'
+     | === LOOK INTO THE LENSES NOW: the test pattern appears in 3 seconds and lasts up to 10 seconds ===
+     | BEEP 1: KEEP LOOKING INTO THE LENSES. The panels should now be DARK. fs-done follows the second (low) beep in 10 s.
+     | BEEP 2: end of the pause; fs-done follows now if the shell state is unchanged (send gate). Note whether the panels were dark during the pause.
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 6879a54be931208d2c57105caa90e2fe | fs-ack 124745c1829838b7 | fs-status | fs-display 2418121342ce6cb45ccbfd5677b670fe | fs-done
+     | CAPTURE: <repo>\build\stage3a-harness\s3-missing-pattern\replay-collect\capture.raw bytes=1796 sha256=da352b79d498b69b1874231afc6e0731982d22a9bb63d45c11a65fdb505a1e18 consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 3a -Replay: status COLLECTED-VALID, stage 3a, runner fs-display (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (1796/1804 bytes)
+     | OUTCOME: INTEGRITY FAULT   (OUTCOMES \xa78 rule 3) hash: fs-pattern cannot be read: sha256sum: can't open '/bin/fs-pattern': No such file or directory
+     |   step 1 hash    MEASURED    fs-pattern cannot be read: sha256sum: can't open '/bin/fs-pattern': No such file or directory
+     |   step 2 pattern TOOL FAULT  exec-failed errno=2 (not ENOEXEC/ELIBBAD)
+     | A stage-3a PASS is the machine side only: the result is the PM reading the 8 characters through the lenses (OUTCOMES \xa78).
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 3a -CollectDir on the replay: OUTCOME INTEGRITY FAULT (exit 12); expected INTEGRITY FAULT
+
+## s3-no-ack (stage3a, plan verify-only, mods: )
+     (no runner request in this scenario: nothing to decode; the harness checked the reboot)
+
+## s3-nodrm (stage3a, plan full, mods: )
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=95 term_ms=-1 kill_ms=-1 out=82B err=0B why=none
+     step 2 pattern end=exited code=10 sig=0 errno=0 ms=56 term_ms=-1 kill_ms=-1 out=546B err=0B why=none
+     OUTCOME NO-DISPLAY (rule 8) fs-pattern exit 10 (no device): no real commit was made
+       1 hash    MEASURED    fs-pattern digest equals the pin
+       2 pattern end=exited  code=10 sig=0 errno=0
+PASS  classifier (stage 3a) outcome = expected 'NO-DISPLAY'
+     | === LOOK INTO THE LENSES NOW: the test pattern appears in 3 seconds and lasts up to 10 seconds ===
+     | BEEP 1: KEEP LOOKING INTO THE LENSES. The panels should now be DARK. fs-done follows the second (low) beep in 10 s.
+     | BEEP 2: end of the pause; fs-done follows now if the shell state is unchanged (send gate). Note whether the panels were dark during the pause.
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 95fe0d1d32f537fab654d3f503ffba28 | fs-ack 72f32a120628d079 | fs-status | fs-display bd29a5ef4606feb16cfab35cc31f49a0 | fs-done
+     | CAPTURE: <repo>\build\stage3a-harness\s3-nodrm\replay-collect\capture.raw bytes=2824 sha256=2e78224f2b6d02b9bb3ee7677865147b739161d9db62eed088c58d7c710e23df consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 3a -Replay: status COLLECTED-VALID, stage 3a, runner fs-display (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (2824/2832 bytes)
+     | OUTCOME: NO-DISPLAY   (OUTCOMES \xa78 rule 8) fs-pattern exit 10 (no device): no real commit was made
+     |   step 1 hash    MEASURED    fs-pattern digest equals the pin
+     |   step 2 pattern end=exited  code=10 sig=0 errno=0
+     |   FSP1 stream: COMPLETE (4 records)
+     | A stage-3a PASS is the machine side only: the result is the PM reading the 8 characters through the lenses (OUTCOMES \xa78).
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 3a -CollectDir on the replay: OUTCOME NO-DISPLAY (exit 15); expected NO-DISPLAY
+
+## s3-no-udc (stage3a, plan none, mods: no-udc)
+     (no runner request in this scenario: nothing to decode; the harness checked the reboot)
+
+## s3-pattern-stopped (stage3a, plan full, mods: stop-pattern)
+PASS  fsb1.ps1 Test-Fsb1Record over the whole capture: VALID
+PASS  agrees with the Python decoder (VALID)
+     step 1 hash    end=exited code=0 sig=0 errno=0 ms=46 term_ms=-1 kill_ms=-1 out=82B err=0B why=none
+     step 2 pattern end=timer-kill code=-1 sig=9 errno=0 ms=19001 term_ms=16000 kill_ms=19000 out=0B err=0B why=none
+     OUTCOME DISPLAY FAIL (rule 6) pattern hung: timer-kill term_ms=16000 kill_ms=19000
+       1 hash    MEASURED    fs-pattern digest equals the pin
+       2 pattern end=timer-kill code=-1 sig=9 errno=0
+PASS  classifier (stage 3a) outcome = expected 'DISPLAY FAIL'
+     | === LOOK INTO THE LENSES NOW: the test pattern appears in 3 seconds and lasts up to 10 seconds ===
+     | BEEP 1: KEEP LOOKING INTO THE LENSES. The panels should now be DARK. fs-done follows the second (low) beep in 10 s.
+     | BEEP 2: end of the pause; fs-done follows now if the shell state is unchanged (send gate). Note whether the panels were dark during the pause.
+     | STATUS: COLLECTED-VALID
+     | SENT:   fs-verify 677b98593a8bc786bf54f38aba2e8a52 | fs-ack 1a42a5dce9dd69ae | fs-status | fs-display 88b234aa43d5e59698a4e7aa2c0294d8 | fs-done
+     | CAPTURE: <repo>\build\stage3a-harness\s3-pattern-stopped\replay-collect\capture.raw bytes=1824 sha256=df2fa955e8b164b1203f5228115289c53f4f4c4a644171c296fd5e04964250cc consistent=True
+     | FSB1:   VALID
+     | RECOVERY: fs-done sent; reply: FSD1 queued END
+PASS  fs-collect.ps1 -Stage 3a -Replay: status COLLECTED-VALID, stage 3a, runner fs-display (exit 10)
+PASS  replay: no divergence, every recorded write made, re-capture is a byte-exact prefix (1824/1832 bytes)
+     | OUTCOME: DISPLAY FAIL   (OUTCOMES \xa78 rule 6) pattern hung: timer-kill term_ms=16000 kill_ms=19000
+     |   step 1 hash    MEASURED    fs-pattern digest equals the pin
+     |   step 2 pattern end=timer-kill code=-1 sig=9 errno=0
+     | A stage-3a PASS is the machine side only: the result is the PM reading the 8 characters through the lenses (OUTCOMES \xa78).
+     | Separate gates, not part of this outcome: misc rule (fs-miscrule.ps1), partition/slot/devinfo checks (<withheld document>), recovery.
+PASS  fs-classify.ps1 -Stage 3a -CollectDir on the replay: OUTCOME DISPLAY FAIL (exit 16); expected DISPLAY FAIL
+
+TOTAL: all host checks PASS

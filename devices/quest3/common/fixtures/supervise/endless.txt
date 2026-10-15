@@ -1,0 +1,7 @@
+# cmd: fs-supervise -t 2 -c 4096 -e PATH=$W/bin -o $W/cap/endless.out -r $W/cap/endless.err -- $W/bin/busybox yes
+# report: FSUP1 end=timer-term code=-1 sig=15 errno=0 ms=2003 term_ms=2001 kill_ms=-1 out_total=2056192 out_kept=4096 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+# exit=3 wall_ms=2200
+# stdout capture: 4096 bytes, first 64 as hex:
+#      y  \n   y  \n   y  \n   y  \n   y  \n   y  \n   y  \n   y  \n
+#   *
+# stderr capture: 0 bytes, first 64 as hex:

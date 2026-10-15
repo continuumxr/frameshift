@@ -1,0 +1,21 @@
+== FS-R-007 B1 timing regressions, code under test: $HOME\AppData\Local\Temp\q3head-fbca\devices\quest3\host
+   (device side simulated: fake fastboot, fake gadget, simulated shell on COM999; no device, no port)
+FAIL  T1 stage 3a, Chair counterexample (start 0, T0 2, return 60, collector 80): the runner is refused (INCONCLUSIVE, no fs-display, gated fs-done)
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-status,fs-display,fs-done stop='' giveUpMs=134416 ackGiveUpMs=114416 args=HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:56:50.4656159Z (device deadline no earlier than 2026-10-09T16:57:05.4651411Z)'
+FAIL  T2 stage 2a, the same timeline: the runner is refused (INCONCLUSIVE, no fs-valve, gated fs-done)
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-status,fs-valve,fs-done stop='' giveUpMs=224833 ackGiveUpMs=114833 args=HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:58:22.7974633Z (device deadline no earlier than 2026-10-09T16:58:37.7970738Z)'
+FAIL  T3 stage 2a, 20 s gadget discovery: host give-up and ack give-up on the transport clock are both <= (absolute deadline - collector start - 20 s); collection still VALID
+        bound giveUp<=216427 ack<=106427; exit=10 writes=fs-verify,fs-ack,fs-status,fs-valve,fs-done stop='' giveUpMs=234845 ackGiveUpMs=124845 args=HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:58:33.5171640Z (device deadline no earlier than 2026-10-09T16:58:48.5173636Z)'
+FAIL  T4 stage 3a, 20 s preparation pushes the remaining budget below the 60 s start minimum: refused after preparation, nothing sent (exit 20)
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-display,fs-done stop='' giveUpMs=69886 ackGiveUpMs=49886 args=HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:56:09.0672430Z (device deadline no earlier than 2026-10-09T16:56:24.0669461Z)'
+FAIL  T5 acknowledged handoff: the collector command passes -BootStartUtc (origin) and -HandoffUtc (evidence); collect.json Timing records origin BootStartUtc and the absolute give-up
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-valve,fs-done stop='' giveUpMs=225821 ackGiveUpMs=115821 args=HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:59:05.3803591Z (device deadline no earlier than 2026-10-09T16:59:20.3803978Z)'
+PASS  T6 preserved: stage 3a normal collection through the live path (handoff 11 s, collector +15 s): fs-display sent, COLLECTED-VALID, beeps, fs-done
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-display,fs-done stop='' giveUpMs=150806 ackGiveUpMs=130806 args=HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:57:50.7791287Z (device deadline no earlier than 2026-10-09T16:58:05.7793674Z)'
+PASS  T7 preserved: stage 2a normal collection through the live path: fs-valve sent, COLLECTED-VALID, fs-done
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-valve,fs-done stop='' giveUpMs=240885 ackGiveUpMs=130885 args=HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:59:21.2298874Z (device deadline no earlier than 2026-10-09T16:59:36.2293940Z)'
+PASS  T8 preserved: uncertain handoff (fastboot boot timed out after 120 s): origin = boot START, the ack window is spent, refused at start, nothing sent (exit 20)
+        exit=20 writes= stop='' giveUpMs= ackGiveUpMs= args=HandoffUtc/Nonce/OutDir/Port/Stage out='REFUSED/ERROR: refused: only 10 s of the ack window left (PID 1 reboots without an ack by SHELL_READY + 150 s); let the device recover'
+FAIL  T9 a -BootStartUtc 3 s in the future is refused before any preparation (no gadget query, nothing sent, exit 20)
+        exit=10 writes=fs-verify,fs-ack,fs-status,fs-valve,fs-done stop='' giveUpMs=247902 ackGiveUpMs=137902 args=HandoffUtc/Nonce/OutDir/Port/Stage out='HOST GIVE-UP: 2026-10-09T16:59:29.0590689Z (device deadline no earlier than 2026-10-09T16:59:44.0593273Z)'
+TOTAL: 3 passed, 6 failed

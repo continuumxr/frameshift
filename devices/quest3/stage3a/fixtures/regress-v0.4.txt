@@ -1,0 +1,13 @@
+REG v0.4 R1b-blocked-stdout-term PASS exit=70 term_to_exit_ms=18
+REG v0.4 R1-blocked-stdout-hold PASS exit=0 ms=3053
+REG v0.4 R2-alarm-rearmed PASS exit=142
+REG v0.4 R3-tty-stdout-refused PASS exit=3 records=0
+REG v0.4 R4-framing PASS COMPLETE 6 records
+REG v0.4 R5-close-before-hold_end-write PASS strace: close(3) precedes write(1)
+REG v0.4 R6-no-legacy-setcrtc PASS 
+REG v0.4 R7-real-commit-no-retry PASS 
+REG v0.4 R8-policy-harness PASS 29 checks
+REG v0.4 R9-stat-before-open PASS exit=11, /dev/null never opened
+REG v0.4 R10-sigxfsz-ignored PASS exit=0 under ulimit -f 0
+REG v0.4 R11-close-before-write-on-term PASS strace order after SIGTERM
+REG v0.4 R12-hold-max-10s PASS 999 -> 10

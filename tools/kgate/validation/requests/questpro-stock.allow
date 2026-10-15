@@ -1,0 +1,11 @@
+# Explicit allowlist of unrequested .config differences for kgate check (exact values).
+
+# --- build-environment differences (NOT request fallout; present in the stock-config build too) ---
+# COMPAT_VDSO / GENERIC_COMPAT_VDSO: absent from the stock v2.7 config, enabled by the public
+# tree with our make environment (CROSS_COMPILE_COMPAT=arm-linux-gnueabi- is set, per
+# Meta README MAKE_ENV) [C]. This adds a 32-bit compat vDSO the stock kernel did not have:
+# a REAL difference from stock, recorded here for review. It changes no vmlinux CRC, but it
+# CHANGES RUNTIME BEHAVIOUR for 32-bit (compat) userspace (vDSO gettimeofday/clock_gettime).
+# Action: force CONFIG_COMPAT_VDSO off in the image config before any device use.
+CONFIG_COMPAT_VDSO=y
+CONFIG_GENERIC_COMPAT_VDSO=y

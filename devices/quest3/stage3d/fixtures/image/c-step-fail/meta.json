@@ -1,0 +1,193 @@
+{
+ "ack": "17e3a33fad6c4bab",
+ "challenges": {
+  "p0": "d1ae3db2fb418bf4f10054a1ba2428d2",
+  "r1": "aa608103280c1bf82e72851c7834f0fa",
+  "r2": "007cd8054fddef963d3f53d759548bb0",
+  "r3": "ae5c879f6974164d1d092984e539f18b"
+ },
+ "checks": [
+  {
+   "detail": "FSV1 nonce=13ed21be49c7b4ba resp=3b02bd96bc6164f623c44ce7f68932d671442093e0902c0234bf9f34c85b7dbb kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=13ed21be49c7b4ba stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=17e3a33fad6c4bab END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=308 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "idle limit started before SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "508 vs t0=308",
+   "label": "/run/fs.deadline = T0 + DEADLINE",
+   "ok": true
+  },
+  {
+   "detail": "337.09 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "337.09 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "0.0 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase p0 FSB1 VALID (exp s3d_p0, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('hash', 'exited', 0), 2: ('probe0', 'exited', 0)}",
+   "label": "p0 steps in order hash,probe0",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=13ed21be49c7b4ba p=p0 e=begin t=325700 END | FSPM1 n=13ed21be49c7b4ba p=p0 e=rec t=331170 END",
+   "label": "p0 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,rec",
+   "label": "p0 markers in order begin,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "write_rc=0 readback=127",
+   "label": "p0: exactly one backlight write line (value 127), read-back 127",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0: hash step exited 0 (sha256sum of /bin/fs-pattern)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0: irq0 sample, mods snapshot with cmdline, dmesg and the fan",
+   "ok": true
+  },
+  {
+   "detail": "FSXE1 p=r1 ran=1 error=step1 END",
+   "label": "phase r1 refused: FSXE1 ran=1 error=step1...",
+   "ok": true
+  },
+  {
+   "detail": "[b'FSPM1 n=13ed21be49c7b4ba p=r1 e=begin t=333360 END', b'FSPM1 n=13ed21be49c7b4ba p=r1 e=go t=334690 END', b'FSPM1 n=13ed21be49c7b4ba p=r1 e=end t=335600 END']",
+   "label": "phase r1 ran=1: markers begin/go/end precede the refusal, no rec marker, no END",
+   "ok": true
+  },
+  {
+   "detail": "9e6d6c0b2881e4d6 / 9e6d6c0b2881e4d6",
+   "label": "chain p0: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "1 write-close event(s): wd=1 mask=0x8 ",
+   "label": "backlight node written exactly 1 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never named the decoy crtc nodes or debugfs",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order (nautilus,cmd-db,gh_msgq); the vendor list (decoy) never used",
+   "ok": true
+  }
+ ],
+ "mod_notes": [
+  "replaced /bin/fs-pattern by a replay of pre-generated v0.6 FSP1 streams (sim-stepfail); the hash step measures the replacement"
+ ],
+ "mods": [
+  "sim-stepfail"
+ ],
+ "nonce": "13ed21be49c7b4ba",
+ "ok": true,
+ "phases": {
+  "p0": {
+   "end": "FSB1 END v=1 nonce=13ed21be49c7b4ba chal=d1ae3db2fb418bf4f10054a1ba2428d2 lines=40 rec_sha256=9e6d6c0b2881e4d699c84003c8d30c9987c29237c18b90706f5d01d855d8d59e",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=13ed21be49c7b4ba p=p0 e=begin t=325700 END",
+    "FSPM1 n=13ed21be49c7b4ba p=p0 e=rec t=331170 END"
+   ],
+   "refusal": null,
+   "settled": true
+  },
+  "r1": {
+   "end": null,
+   "refusal": "FSXE1 p=r1 ran=1 error=step1 END",
+   "settled": true
+  }
+ },
+ "plan": [
+  "p0",
+  "r1"
+ ],
+ "reboot_at_T0_plus": 29.1,
+ "reboots": "337.09 final pid=1 arg=collected\n",
+ "scenario": "c-step-fail",
+ "sim_args": "reset aa608103\n",
+ "t_total_s": 31.0,
+ "tail": "done",
+ "verify_challenge": "43290abef68720d82c2548a6bf11e2e5",
+ "want_reboot": "collected"
+}

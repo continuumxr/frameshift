@@ -1,0 +1,2 @@
+WHOLE180 roll=0 eyes=swap: draw_pattern == whole-frame 180 of [left eye | right eye]: IDENTICAL
+WHOLE180 C render (/tmp/tmp.IfrAOVi3Yw/r0-swap-3f9c07ab.ppm) == whole-frame 180: IDENTICAL

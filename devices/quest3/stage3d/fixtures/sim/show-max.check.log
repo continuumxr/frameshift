@@ -1,0 +1,23 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 137 records, 51660 bytes
+CHECK eos_last_after_exit PASS {'records': '137', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '38503', 'opt_skipped': '56'}
+CHECK start_mode_ver PASS show
+CHECK start_picture_options_roll_21_eyes_swap PASS {'mode': 'show', 'ver': '0.7.1', 'hold_req': '1', 'hold': '1', 'hold_max': '10', 'clamped': '0', 'setup_alarm_s': '30', 'close_margin_s': '5', 'dev': '/mock/card0', 'out': 'file', 'rot': '180', 'roll': '21', 'eyes': 'swap', 't0_ms': '208607'}
+CHECK stream_within_the_step_cap PASS 51660 <= 57344 bytes
+CHECK opt_budget_record_once_at_the_kind_budget PASS {'max': '38912', 'used': '38503', 'first_skipped': 'blob'}
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=38503 measured=38503 budget=38912
+INFO essential_bytes=13157 opt_bytes=38503 total=51660 cap=57344 (essential + budget = 52069)
+CHECK max_stream_hits_the_opt_budget PASS
+CHECK max_bound: essential + the full budget <= the cap PASS 13157 + 38912 = 52069 <= 57344
+CHECK set_properties_subset_of_v05_set_plus_zpos PASS ['ACTIVE', 'CRTC_H', 'CRTC_ID', 'CRTC_W', 'CRTC_X', 'CRTC_Y', 'FB_ID', 'MODE_ID', 'SRC_H', 'SRC_W', 'SRC_X', 'SRC_Y']
+CHECK zpos_only_in_quad_attempts_on_the_four_planes_values_0011_by_slot PASS
+CHECK at_most_one_real_commit_and_it_equals_the_last_accepted_test PASS [('split+modeset', True)]
+CHECK show_plan_record_byte_identical_to_v05 PASS FSP1 nonce=3c3c0a0b seq=124 step=plan rc=0 attempts=4 use_current=1 modeset_allowed=1 helper=1
+CHECK show_test_commits_as_trial_iiib_run1 (attempt, modeset, layout, objs, props, planes_off, rc) PASS [('0', '0', 'single', 4, 16, 3, -22), ('1', '0', 'split', 4, 24, 2, -22), ('2', '1', 'single', 6, 19, 3, -7), ('3', '1', 'split', 6, 27, 2, 0)]
+CHECK show_commit_split_modeset_attempt3 PASS
+CHECK show_post_plane_pri_and_helper (helper CRTC_X 2064 converted to 0, E17) PASS [{'slot': '0', 'plane': '71', 'crtc_id': '155', 'fb_id': '207', 'crtc_x': '0', 'crtc_y': '0', 'crtc_w': '2064', 'crtc_h': '2208', 'src_x': '0', 'src_y': '0', 'src_w': '2064', 'src_h': '2208', 'src_frac': '0', 'zpos': '0'}, {'slot': '1', 'plane': '97', 'crtc_id': '155', 'fb_id': '207', 'crtc_x': '0', 'crtc_y': '0', 'crtc_w': '2064', 'crtc_h': '2208', 'src_x': '2064', 'src_y': '0', 'src_w': '2064', 'src_h': '2208', 'src_frac': '0', 'zpos': '0'}]
+CHECK show_no_zpos_set PASS
+CHECK mode_properties_blob_8192_roundtrip PASS 8192 bytes in 35 parts
+CHECK plane_caps_every_plane_in_order PASS 20 records
+CHECK plane_caps_values_rederived_from_the_mock_blobs (pipe_idx, max_upscale, primary_smart_plane_id, zpos, nv12) PASS
+CHECK pattern_buffer_two_levels_white_ppm_within_37618 PASS white_ppm=27982

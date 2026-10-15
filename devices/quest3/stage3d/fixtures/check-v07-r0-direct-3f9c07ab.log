@@ -1,0 +1,35 @@
+CHECK size PASS 4128x2208
+CHECK grey PASS R=G=B everywhere
+CHECK two_levels_only PASS 0x80 field, 0xFF marks
+CHECK white_ppm_within_v05_envelope PASS white_ppm=27402 <= 37618 (2.74 %)
+CHECK mean_within_v05_envelope PASS mean_x1000=131480 <= 132777
+STATS white_ppm=27402 mean_x1000=131480 roll=0 eyes=direct
+CHECK nonce_left_eye (buffer half 0) PASS decoded=3f9c07ab expected=3f9c07ab
+CHECK underline_left PASS
+CHECK centre_line_left_spans_M_X_to_ew-M_X PASS span True ends True sides True
+CHECK vertical_arm_left_on_the_seam PASS
+CHECK no_frame_no_corner_square_left PASS
+CHECK marks_inside_recovery_margins_left (design frame, 2 px tolerance) PASS 0 white pixels outside [480,1584)x[456,1752)
+CHECK roll_left_measured_on_the_centre_line (expected +0 deg, + = counter-clockwise as seen) PASS measured -0.000 deg over 8192 px
+CHECK F_upright_left_viewer_left PASS rows=1f,10,10,1e,10,10,10
+CHECK bars_left_viewer_left_1 PASS runs=1
+CHECK F_upright_left_viewer_right PASS rows=1f,10,10,1e,10,10,10
+CHECK bars_left_viewer_right_2 PASS runs=2
+CHECK nonce_right_eye (buffer half 1) PASS decoded=3f9c07ab expected=3f9c07ab
+CHECK underline_right PASS
+CHECK centre_line_right_spans_M_X_to_ew-M_X PASS span True ends True sides True
+CHECK vertical_arm_right_on_the_seam PASS
+CHECK no_frame_no_corner_square_right PASS
+CHECK marks_inside_recovery_margins_right (design frame, 2 px tolerance) PASS 0 white pixels outside [480,1584)x[456,1752)
+CHECK roll_right_measured_on_the_centre_line (expected +0 deg, + = counter-clockwise as seen) PASS measured -0.000 deg over 8192 px
+CHECK F_upright_right_viewer_left PASS rows=1f,10,10,1e,10,10,10
+CHECK bars_right_viewer_left_3 PASS runs=3
+CHECK F_upright_right_viewer_right PASS rows=1f,10,10,1e,10,10,10
+CHECK bars_right_viewer_right_4 PASS runs=4
+CHECK LM0_buffer_cols_0-1031_carries_the_2-bar_group_wholly_inside PASS left/viewer_right/k2 cols 692-818
+CHECK LM1_buffer_cols_1032-2063_carries_the_1-bar_group_wholly_inside PASS left/viewer_left/k1 cols 1254-1359
+CHECK LM2_buffer_cols_2064-3095_carries_the_4-bar_group_wholly_inside PASS right/viewer_right/k4 cols 2672-2966
+CHECK LM3_buffer_cols_3096-4127_carries_the_3-bar_group_wholly_inside PASS right/viewer_left/k3 cols 3266-3476
+PREVIEW /tmp/tmp.IfrAOVi3Yw/chk-r0-direct-3f9c07ab-scanout.png 1032x552
+PREVIEW /tmp/tmp.IfrAOVi3Yw/chk-r0-direct-3f9c07ab-viewer.png 1032x552 (left eye | right eye, viewer orientation, pre-rotation visible)
+PREVIEW /tmp/tmp.IfrAOVi3Yw/chk-r0-direct-3f9c07ab-digits.png 1071x252 (left eye, design orientation)

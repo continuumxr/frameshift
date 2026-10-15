@@ -1,0 +1,2 @@
+# Fixtures are hashed in data/MANIFEST.sha256: never convert line endings.
+data/** -text

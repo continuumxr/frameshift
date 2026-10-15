@@ -1,0 +1,13 @@
+REG v0.3 R1b-blocked-stdout-term PASS exit=70 term_to_exit_ms=12
+REG v0.3 R1-blocked-stdout-hold PASS exit=0 ms=3069
+REG v0.3 R2-alarm-rearmed PASS exit=142
+REG v0.3 R3-tty-stdout-refused PASS exit=3 records=0
+REG v0.3 R4-framing PASS COMPLETE 6 records
+REG v0.3 R5-close-before-hold_end-write PASS strace: close(3) precedes write(1)
+REG v0.3 R6-no-legacy-setcrtc PASS 
+REG v0.3 R7-real-commit-no-retry PASS 
+REG v0.3 R8-policy-harness FAIL 10 failed: H1_noms_only_active_current.current_inactive H1_noms_only_active_current.current_not_in_list H2_modeset_only_expected.current_not_in_list H3_current_in_list_progressive.current_not_in_list H1_noms_only_active_current.current_interlaced H2_modeset_only_expected.current_interlaced H3_current_in_list_progressive.current_interlaced H2_modeset_only_expected.current_72hz_in_list H2_modeset_only_expected.current_72hz_no_expected H4_no_empty_value 
+REG v0.3 R9-stat-before-open FAIL exit=11; openat(AT_FDCWD,"/dev/null",O_RDWR|O_CLOEXEC)
+REG v0.3 R10-sigxfsz-ignored FAIL exit=153 (153 = SIGXFSZ)
+REG v0.3 R11-close-before-write-on-term PASS strace order after SIGTERM
+REG v0.3 R12-hold-max-10s FAIL hold=45 hold_max=45

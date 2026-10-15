@@ -1,0 +1,7 @@
+CHECK v0.7.1 change present exactly once: #define FSP_VERSION        "0.7.1" PASS 1 occurrence(s)
+CHECK v0.7.1 change present exactly once: #define FSP_LOG_MODES      48    /* v0.7.1: mode records logged (optio PASS 1 occurrence(s)
+CHECK v0.7.1 change present exactly once: #define MAXMODES 512    /* v0.7.1 (was 128): v2.7 lists 305 (338 befor PASS 1 occurrence(s)
+CHECK v0.7.1 change present exactly once: #if MAXMODES < 480 PASS 1 occurrence(s)
+CHECK v0.7.1 change present exactly once: if (i >= FSP_LOG_MODES && !is_expected_mode(&modes[i])) {   /* v0.7.1: PASS 1 occurrence(s)
+CHECK device build: v0.7.1 with exactly these changes undone == v0.7, byte for byte (nothing else changed) PASS
+CHECK v0.7 had MAXMODES 128 (the J-141 limit) PASS

@@ -1,0 +1,11 @@
+# stage 3c encode timing  2026-10-11T22:45:02Z; fsb1-enc.sh 11e44d2fa386d06c; busybox c2f279d1d5640a0f (reviewed); qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2)
+ENCODE r2 rep=1 step1(probe 16384 B) .54 s  step2(pattern 57344 B) .63 s  end .16 s  record_lines=1541
+ENCODE r2 rep=2 step1(probe 16384 B) .67 s  step2(pattern 57344 B) .67 s  end .14 s  record_lines=1541
+ENCODE r2 rep=3 step1(probe 16384 B) .58 s  step2(pattern 57344 B) .61 s  end .13 s  record_lines=1541
+ENCODE r3 rep=1 step1(probe 16384 B) .50 s  step2(pattern 28672 B) .50 s  end .15 s  record_lines=944
+ENCODE r3 rep=2 step1(probe 16384 B) .51 s  step2(pattern 28672 B) .54 s  end .16 s  record_lines=944
+ENCODE r3 rep=3 step1(probe 16384 B) .50 s  step2(pattern 28672 B) .58 s  end .12 s  record_lines=944
+ENCODE_MAX_STEP_S .67
+# recorded by hand (build review MINOR-2): the cold repetition of an earlier run of this tool in the integration pass (its first
+# repetition on a cold host; the other values of that run were not kept). check-timing-3c.py counts it like a repetition.
+ENCODE_COLD r2 step2(pattern 57344 B) .75 s

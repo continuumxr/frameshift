@@ -1,0 +1,212 @@
+{
+ "ack": "f4b2a8f73eaf444c",
+ "challenge": "41bd733079f41225602cec8a7dd0d5fb",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=6cf0f15867f14edc resp=abc955b5fdd7d6f597c0d3355c31c7df9689639c94c4f9992041c1b3e2ceba89 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=6cf0f15867f14edc stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=f4b2a8f73eaf444c END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSB1 END v=1 nonce=6cf0f15867f14edc chal=41bd733079f41225602cec8a7dd0d5fb lines=136 rec_sha256=6a7ce9001ae7220d80e9f384a46c884ee133bdecf18a45914fc992c2be19b067",
+   "label": "FSB1 END line received",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=59 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "259.70 final pid=1 arg=deadline",
+   "label": "first reboot reason = deadline",
+   "ok": true
+  },
+  {
+   "detail": "259.70 final pid=1 arg=deadline",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "260.39 fork pid=1080 arg=backstop",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "T0+200.7",
+   "label": "deadline reboot at T0+DEADLINE..+3 (HOST_ACK did not cancel it)",
+   "ok": true
+  },
+  {
+   "detail": "fake_a fake_b fake_c",
+   "label": "modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "FSB1 VALID (common/tools/fsb1.py)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "an empty line immediately before FSB1 BEGIN",
+   "ok": true
+  },
+  {
+   "detail": "['hash', 'probe1', 'pattern1', 'probe2', 'pattern2']",
+   "label": "5 steps in order hash,probe1,pattern1,probe2,pattern2",
+   "ok": true
+  },
+  {
+   "detail": "('pattern1', 'exited', 10, 0)",
+   "label": "step 3 pattern1 exited code 10",
+   "ok": true
+  },
+  {
+   "detail": "STREAM <repo>/build/stage3b-harness/b-ack-no-done/fsp1-run1.txt COMPLETE 4 records",
+   "label": "run 1 FSP1 stream COMPLETE",
+   "ok": true
+  },
+  {
+   "detail": "{b'41bd7330'}",
+   "label": "run 1 every FSP1 nonce = chal[0:8]",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "run 1 is fs-pattern show",
+   "ok": true
+  },
+  {
+   "detail": "b'FSK1 run=2 skipped reason=run1-supervisor END\\n'",
+   "label": "step 5 replaced by the skip record (run1-supervisor)",
+   "ok": true
+  },
+  {
+   "detail": "1",
+   "label": "probe1: exactly one backlight write line (value 127)",
+   "ok": true
+  },
+  {
+   "detail": "readback=127",
+   "label": "probe1: read-back 127",
+   "ok": true
+  },
+  {
+   "detail": "[(b'mods', b'71.66'), (b'pre1', b'71.94'), (b'post1', b'72.25')]",
+   "label": "probe1 points mods,pre1,post1",
+   "ok": true
+  },
+  {
+   "detail": "[(b'pre2', b'74.71'), (b'post2', b'75.03')]",
+   "label": "probe2 points pre2,post2",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never read the forbidden crtc nodes (blu_default_duty, fifo_trim, blu_max_overlap_us)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probe1 carries init's irq0 sample and the fake te-edge-isr/blu-pwm-isr lines",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probe1 mods snapshot has the cmdline and the fan (pwmfan, pwm-tach-fan0)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "paced: the record (137 lines) took 0.7 s on the tty (>= 0.4 s for 6 chunks of 20 lines at 0.1 s)",
+   "ok": true
+  }
+ ],
+ "exp": "stage3b",
+ "expect": {
+  "bl": "127",
+  "p1": [
+   "exited",
+   10
+  ],
+  "p2": "skip:run1-supervisor"
+ },
+ "fsb1_steps": {
+  "1": [
+   "hash",
+   "exited",
+   0,
+   0
+  ],
+  "2": [
+   "probe1",
+   "exited",
+   0,
+   0
+  ],
+  "3": [
+   "pattern1",
+   "exited",
+   10,
+   0
+  ],
+  "4": [
+   "probe2",
+   "exited",
+   0,
+   0
+  ],
+  "5": [
+   "pattern2",
+   "exited",
+   0,
+   0
+  ]
+ },
+ "image_dir": "<repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc",
+ "kernel": "6.18.33.2-microsoft-standard-WSL2",
+ "mod_notes": [],
+ "mods": [],
+ "nonce": "6cf0f15867f14edc",
+ "ok": true,
+ "pid1": "/usr/bin/qemu-aarch64,/bin/busybox,/bin/busybox,sh,/init",
+ "plan": "full-no-done",
+ "reboot_at_T0_plus": 200.7,
+ "reboots": "259.70 final pid=1 arg=deadline\n260.39 fork pid=1080 arg=backstop\n",
+ "record_lines": 137,
+ "record_span_s": 0.66,
+ "runner_ms": 6940,
+ "scenario": "b-ack-no-done",
+ "stage": "stage3b",
+ "steps": [
+  "hash",
+  "probe1",
+  "pattern1",
+  "probe2",
+  "pattern2"
+ ],
+ "t_total_s": 203.0,
+ "verify_challenge": "fb850bd2ca2d70d47ec4759c4d8647ee",
+ "want_reboot": "deadline"
+}

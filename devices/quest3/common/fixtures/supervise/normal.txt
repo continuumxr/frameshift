@@ -1,0 +1,7 @@
+# cmd: fs-supervise -t 5 -e PATH=$W/bin -o $W/cap/normal.out -r $W/cap/normal.err -- $W/bin/busybox sh -c echo hello; echo err >&2
+# report: FSUP1 end=exited code=0 sig=0 errno=0 ms=192 term_ms=-1 kill_ms=-1 out_total=6 out_kept=6 err_total=4 err_kept=4 strays=0 pipes=eof why=none END
+# exit=0 wall_ms=540
+# stdout capture: 6 bytes, first 64 as hex:
+#      h   e   l   l   o  \n
+# stderr capture: 4 bytes, first 64 as hex:
+#      e   r   r  \n

@@ -1,0 +1,52 @@
+# c-sim-unclean mods=['sim-unclean'] plan=['p0', 'r1', 'r2'] tail=done; image <repo>/build/stage3c/20261012T010256Z-b7cf9a0bfb559dcb
+# mod: replaced /bin/fs-pattern by a replay of pre-generated v0.6 FSP1 streams (sim-unclean); the hash step measures the replacement
+# reboots: 3718.33 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=b7cf9a0bfb559dcb resp=e38451d881ecfb3daaf72585de4dcd814a70f7fc2ac380578615be19b01f8504 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=b7cf9a0bfb559dcb stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=7c26c7c571650810 END]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=3692 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  idle limit started before SHELL_READY
+PASS  /run/fs.deadline = T0 + DEADLINE  [3892 vs t0=3692]
+PASS  first reboot reason = collected  [3718.33 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [3718.33 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [-0.2 s]
+PASS  phase p0 FSB1 VALID (exp s3c_p0, 2 steps, its own challenge)  [VALID]
+PASS  p0 steps in order hash,probe0  [{1: ('hash', 'exited', 0), 2: ('probe0', 'exited', 0)}]
+PASS  p0 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=b7cf9a0bfb559dcb p=p0 e=begin t=3704460 END | FSPM1 n=b7cf9a0bfb559dcb p=p0 e=rec t=3706090 END]
+PASS  p0 markers in order begin,rec, t non-decreasing  [begin,rec]
+PASS  p0 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  p0: exactly one backlight write line (value 127), read-back 127  [write_rc=0 readback=127]
+PASS  p0: hash step exited 0 (sha256sum of /bin/fs-pattern)
+PASS  p0: irq0 sample, mods snapshot with cmdline, dmesg and the fan
+PASS  phase r1 FSB1 VALID (exp s3c_r1, 2 steps, its own challenge)  [VALID]
+PASS  r1 steps in order probe1,pattern1  [{1: ('probe1', 'exited', 0), 2: ('pattern1', 'exited', 0)}]
+PASS  r1 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=b7cf9a0bfb559dcb p=r1 e=begin t=3707070 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=go t=3707510 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=end t=3710870 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=rec t=3712670 END]
+PASS  r1 markers in order begin,go,end,rec, t non-decreasing  [begin,go,end,rec]
+PASS  r1 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  r1 step 2 pattern1 exited code 0  [('pattern1', 'exited', 0)]
+PASS  r1 FSP1 stream COMPLETE, nonce = chal[0:8], mode show  [STREAM <repo>/build/stage3c-harness/c-sim-unclean/fsp1-r1.txt COMPLETE 28 records]
+PASS  r1 probe: read-back only (no write line), readback=127
+PASS  r1 probe points pre,go+1,mid,end,post  [pre,go+1,mid,end,post]
+PASS  r1 probe: no dmesg at pre
+PASS  phase r2 FSB1 VALID (exp s3c_r2, 2 steps, its own challenge)  [VALID]
+PASS  r2 steps in order probe2,pattern2  [{1: ('probe2', 'exited', 0), 2: ('pattern2', 'exited', 0)}]
+PASS  r2 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=b7cf9a0bfb559dcb p=r2 e=begin t=3714350 END | FSPM1 n=b7cf9a0bfb559dcb p=r2 e=skip t=3714990 END | FSPM1 n=b7cf9a0bfb559dcb p=r2 e=rec t=3717260 END]
+PASS  r2 markers in order begin,skip,rec, t non-decreasing  [begin,skip,rec]
+PASS  r2 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  r2 step 2 replaced by the skip record (run1-close-not-clean)  [b'FSK1 run=2 skipped reason=run1-close-not-clean END\n']
+PASS  r2 probe: read-back only (no write line), readback=127
+PASS  r2 probe points pre,post  [pre,post]
+PASS  r2 probe: no dmesg at pre
+PASS  chain p0: device sha16 (from its END line) = host decode  [2b5febb302fe9379 / 2b5febb302fe9379]
+PASS  chain r1: device sha16 (from its END line) = host decode  [edc2b011cf3a1cce / edc2b011cf3a1cce]
+PASS  chain r2: device sha16 (from its END line) = host decode  [052557cbf77663a9 / 052557cbf77663a9]
+PASS  no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)
+PASS  backlight node written exactly 1 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)  [1 write-close event(s): wd=1 mask=0x8 ]
+PASS  tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)
+PASS  probes never named the decoy crtc nodes or debugfs
+PASS  modules attempted in order fake_a, fake_b, fake_c
+SCENARIO c-sim-unclean PASS

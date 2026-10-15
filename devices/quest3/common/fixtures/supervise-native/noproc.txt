@@ -1,0 +1,3 @@
+# fs-supervise in a mount namespace with an empty tmpfs over /proc
+# report: FSUP1 end=exited code=0 sig=0 errno=0 ms=14 term_ms=-1 kill_ms=-1 out_total=30 out_kept=30 err_total=0 err_kept=0 strays=0 pipes=open why=no-proc END
+# exit=7 escapees alive afterwards: 1

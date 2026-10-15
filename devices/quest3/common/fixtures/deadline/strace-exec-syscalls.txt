@@ -1,0 +1,8 @@
+# qemu -strace of the simulated PID 1 (pid 2135), from the READY write on (clone/execve/READY/host_ack lines):
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/READY",O_WRONLY|O_CREAT|O_TRUNC,0666) = 3
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",0x000072250a1fd938,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",0x000072250a1fd938,0) = -1 errno=2 (No such file or directory)
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",0x000072250a1fd938,0) = 0
+#   2135 newfstatat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",0x000072250a1fd868,AT_SYMLINK_NOFOLLOW) = 0
+#   2135 openat(AT_FDCWD,"/tmp/fsdl.fBy5r8/strace-exec/host_ack",O_RDWR|O_CREAT,0666) = 3
+#   2135 execve("/tmp/fsdl.fBy5r8/bin/fake-final",{"/tmp/fsdl.fBy5r8/bin/fake-final","deadline",NULL})

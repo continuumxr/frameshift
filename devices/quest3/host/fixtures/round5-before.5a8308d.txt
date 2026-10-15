@@ -1,0 +1,8 @@
+== round-5 probes, code under test: $HOME\AppData\Local\Temp\q3head-5a8308d\devices\quest3\host
+FAIL  P1 stage 2a: a correct 8-step record (step 8 inv, informational) classifies PASS 
+FAIL  P2 stage 2a: an inv tool fault does not change PASS 
+FAIL  P3 the collector accepts the fs-display verb refused: verb 'fs-display' is not in the command table
+FAIL  P4 the classifier has a stage-3a function and classifies a committed run as PASS (machine side) The term 'Get-FsStage3aOutcome' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+FAIL  P5 the stage-3a replay capture collects COLLECTED-VALID through fs-display unknown setting Stage
+FAIL  P6 the default host give-up follows the image deadline (stage 2a 260 s: 245 000 ms) 
+TOTAL: 0 passed, 6 failed

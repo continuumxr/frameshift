@@ -1,0 +1,5 @@
+# cmd: fs-supervise -t 5 -e POSIXLY_CORRECT=1 -o $W/cap/env-POSIXLY_CORRECT.out -r $W/cap/env-POSIXLY_CORRECT.err -- $W/bin/busybox env
+# report: FSUP1 end=refused code=-1 sig=0 errno=0 ms=-1 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=none why=env-refused END
+# exit=64 wall_ms=162
+# stdout capture: (no file)
+# stderr capture: (no file)

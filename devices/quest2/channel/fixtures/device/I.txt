@@ -1,0 +1,65 @@
+# I I1: reboot records (first counts), t0=39190
+#   39193 collected pid=661975 via=final
+# rpc log:
+#   FSRPC listening port=47801 fam=inet if=-
+#   FSRPC seq=1 verb=fs-verify result=ok
+#   FSRPC seq=2 verb=fs-ack result=ok
+#   FSRPC seq=3 verb=fs-status result=ok
+#   FSRPC seq=4 verb=fs-done result=ok
+# pid1 log:
+#   FS t=39190s DEADLINE armed t0=39190 deadline=T0+40 ack_window=30 backstop=T0+41 reboot-reasons-not-logged-at-reboot
+#   FS t=39190s BACKSTOP armed pid=661984 in=41s
+#   FS t=39190s STAGE=INIT_STARTED 
+#   FS t=39190s STAGE=SHELL_READY 
+#   FS t=39191s STAGE=HOST_ACK ack=a1a2a3a4a5a6a7a8 deadline-unchanged=T0+40
+# I I2: reboot records (first counts), t0=39194
+#   39200 no-host-ack pid=662032 via=final
+# rpc log:
+#   FSRPC listening port=47802 fam=inet if=-
+# pid1 log:
+#   FS t=39194s DEADLINE armed t0=39194 deadline=T0+20 ack_window=6 backstop=T0+21 reboot-reasons-not-logged-at-reboot
+#   FS t=39194s BACKSTOP armed pid=662041 in=21s
+#   FS t=39194s STAGE=INIT_STARTED 
+#   FS t=39194s STAGE=SHELL_READY 
+# I I3: reboot records (first counts), t0=39200
+#   39214 deadline pid=662177 via=final
+# rpc log:
+#   FSRPC listening port=47803 fam=inet if=-
+#   FSRPC seq=1 verb=fs-ack result=ok
+#   FSRPC seq=2 verb=- result=timeout
+#   FSRPC seq=3 verb=- result=empty
+#   FSRPC seq=4 verb=- result=empty
+#   FSRPC seq=5 verb=- result=empty
+#   FSRPC seq=6 verb=- result=empty
+#   FSRPC seq=7 verb=- result=empty
+#   FSRPC seq=8 verb=- result=empty
+#   FSRPC seq=9 verb=- result=empty
+#   FSRPC seq=10 verb=- result=empty
+#   FSRPC seq=11 verb=- result=empty
+# pid1 log:
+#   FS t=39200s DEADLINE armed t0=39200 deadline=T0+14 ack_window=10 backstop=T0+15 reboot-reasons-not-logged-at-reboot
+#   FS t=39200s BACKSTOP armed pid=662186 in=15s
+#   FS t=39200s STAGE=INIT_STARTED 
+#   FS t=39200s STAGE=SHELL_READY 
+#   FS t=39201s STAGE=HOST_ACK ack=b1b2b3b4b5b6b7b8 deadline-unchanged=T0+14
+# I I4: reboot records (first counts), t0=39215
+#   39227 deadline pid=662471 via=final
+# rpc log:
+#   FSRPC listening port=47804 fam=inet if=-
+#   FSRPC seq=1 verb=fs-ack result=ok
+# pid1 log:
+#   FS t=39215s DEADLINE armed t0=39215 deadline=T0+12 ack_window=10 backstop=T0+13 reboot-reasons-not-logged-at-reboot
+#   FS t=39215s BACKSTOP armed pid=662480 in=13s
+#   FS t=39215s STAGE=INIT_STARTED 
+#   FS t=39215s STAGE=SHELL_READY 
+#   FS t=39216s STAGE=HOST_ACK ack=c1c2c3c4c5c6c7c8 deadline-unchanged=T0+12
+# I I5: reboot records (first counts), t0=39227
+#   39233 no-host-ack pid=662662 via=final
+# rpc log:
+#   FSRPC listening port=47805 fam=inet if=-
+#   FSRPC seq=1 verb=fs-ack result=nonce
+# pid1 log:
+#   FS t=39227s DEADLINE armed t0=39227 deadline=T0+20 ack_window=6 backstop=T0+21 reboot-reasons-not-logged-at-reboot
+#   FS t=39227s BACKSTOP armed pid=662671 in=21s
+#   FS t=39227s STAGE=INIT_STARTED 
+#   FS t=39227s STAGE=SHELL_READY 

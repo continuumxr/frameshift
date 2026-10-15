@@ -1,0 +1,60 @@
+
+
+BusyBox v1.37.0 (Ubuntu 1:1.37.0-7ubuntu1) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+~ $ [6nfs-verify 0f1d9d30ce1184057fbdf3be28a3a022
+FSV1 nonce=6cf0f15867f14edc resp=189aed3c189d7f65118c3a4d13e84cfbaa8ec35911ab7f541f9df063475061ae kernel=6.18.33.2-microsoft-standard-WSL2 pid1=/usr/bin/qemu-aarch64,/bin/busybox,/bin/busybox,sh,/init stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY END
+~ $ [6nfs-ack 3a84dfd3124fd9fe
+FSA1 queued END
+~ $ [6nfs-status
+FSS1 nonce=6cf0f15867f14edc stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=3a84dfd3124fd9fe END
+~ $ [6nfs-display 64f11235c1311477aab9ff7258f30759
+
+FSB1 BEGIN v=1 exp=stage3b nonce=6cf0f15867f14edc chal=64f11235c1311477aab9ff7258f30759 steps=5
+FSB1 STEP i=1 id=hash end=exited code=0 sig=0 errno=0 ms=62 term_ms=-1 kill_ms=-1 out_total=82 out_kept=82 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=82 out_sha256=5e4bd793badc672401626f25240700e2554af9ac43a8f498cac6a2a204b87b49 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=1 s=o n=0 NGMzNmU0ZDk3YjdhMDRiMGU4Njk1YzM3MzFhN2Y2NzliMzAzNDU5OGQ1MGUzYjUy
+FSB1 DATA i=1 s=o n=1 ZjUyM2IxOWI0YzZiMDJhNiAgL2Jpbi9mcy1wYXR0ZXJuCg==
+FSB1 STEP i=2 id=probe1 end=nosup code=-1 sig=0 errno=0 ms=-1 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=none why=no-report out_len=896 out_sha256=f7f687522d4dbb4d634f711e5cbfc6632514cd92d450d62e8623c224a0fa50e0 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=2 s=o n=0 RlNQUjEgaGVscGVyPXJ1bjEgc3RhcnQgdXA9MTU3LjAxCj09IGlycTAgKGluaXQs
+FSB1 DATA i=2 s=o n=1 IGFmdGVyIE1PRFVMRVNfUkVBRFkpCjQ3MTogICAgICAzMzIzNiAgICAgICAgICAw
+FSB1 DATA i=2 s=o n=2 ICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgIDAgICAg
+FSB1 DATA i=2 s=o n=3 ICAgICAgMCAgICAgICAgICAwICAgbXNtZ3BpbyAxMTAgRWRnZSAgICAgIHRlLWVk
+FSB1 DATA i=2 s=o n=4 Z2UtaXNyCjQ3MjogICAgICAzMzI1NSAgICAgICAgICAwICAgICAgICAgIDAgICAg
+FSB1 DATA i=2 s=o n=5 ICAgICAgMCAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAg
+FSB1 DATA i=2 s=o n=6 ICAwICAgbXNtZ3BpbyAxMDkgRWRnZSAgICAgIGJsdS1wd20taXNyCi0tIGF0IDE1
+FSB1 DATA i=2 s=o n=7 MS4wOCAoaW5pdCwgYWZ0ZXIgTU9EVUxFU19SRUFEWSkKPT0gcG9pbnQgbW9kcyBy
+FSB1 DATA i=2 s=o n=8 dW49cnVuMSB1cD0xNTcuMDMKLS0gaXJxCjQ3MTogICAgICAzMzIzNiAgICAgICAg
+FSB1 DATA i=2 s=o n=9 ICAwICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgIDAg
+FSB1 DATA i=2 s=o n=10 ICAgICAgICAgMCAgICAgICAgICAwICAgbXNtZ3BpbyAxMTAgRWRnZSAgICAgIHRl
+FSB1 DATA i=2 s=o n=11 LWVkZ2UtaXNyCjQ3MjogICAgICAzMzI1NSAgICAgICAgICAwICAgICAgICAgIDAg
+FSB1 DATA i=2 s=o n=12 ICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgMCAgICAg
+FSB1 DATA i=2 s=o n=13 ICAgICAwICAgbXNtZ3BpbyAxMDkgRWRnZSAgICAgIGJsdS1wd20taXNyCi0tIGF0
+FSB1 DATA i=2 s=o n=14 IDE1Ny4wNQotLSBkcm0gY29ubmVjdG9ycwpjYXJkMC1EU0ktMSBzdGF0dXM9Y29u
+FSB1 DATA i=2 s=o n=15 bmVjdGVkIGVuYWJsZWQ9ZW5hYmxlZCBkcG1zPU9uCi0tIGNydGMtMApiYWNrbGln
+FSB1 DATA i=2 s=o n=16 aHRfdGltaW5nPTU1LDQ4MjgsNDgyOApiYWNrbGlnaHRfZXZlbnQ9QkFDS0xJR0hU
+FSB1 DATA i=2 s=o n=17 PTcxOTc5NjksNDk3MjYxNDY5MjUyOCw5MDk1ODMKYWN0aXZlX2V2ZW50PUFDVElW
+FSB1 DATA i=2 s=o n=18 RT0xODY4NTQzLDQ5NzI1OTMwNjYwMTgsMzMxNTU3Mwo=
+FSB1 STEP i=3 id=pattern1 end=exited code=0 sig=0 errno=0 ms=23 term_ms=-1 kill_ms=-1 out_total=42 out_kept=42 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=42 out_sha256=cbed23581f4dd0353b4836fbdd6ab6c6969dda608991d028dafd01abe68e140b err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=3 s=o n=0 RlNLMSBydW49MSBza2lwcGVkIHJlYXNvbj1wcm9iZTEtbGF0ZSBFTkQK
+FSB1 STEP i=4 id=probe2 end=nosup code=-1 sig=0 errno=0 ms=-1 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=none why=no-report out_len=670 out_sha256=dc9c9c85e05a90f0acf749bc2f4b4db48a2fc3db80f450572bb304e555af64be err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=4 s=o n=0 RlNQUjEgaGVscGVyPXJ1bjIgc3RhcnQgdXA9MTY0LjI4Cj09IGJhY2tsaWdodC12
+FSB1 DATA i=4 s=o n=1 ZXJpZnkgbm9kZT0vc3lzL2NsYXNzL2JhY2tsaWdodC9wYW5lbDAtYmFja2xpZ2h0
+FSB1 DATA i=4 s=o n=2 L2JyaWdodG5lc3MgKHJlYWQgb25seSkgdXA9MTY0LjMwCnJlYWRiYWNrPTI1NQo9
+FSB1 DATA i=4 s=o n=3 PSBwb2ludCBwcmUyIHJ1bj1ydW4yIHVwPTE2NC4zMQotLSBpcnEKNDcxOiAgICAg
+FSB1 DATA i=4 s=o n=4 IDMzMjM2ICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAg
+FSB1 DATA i=4 s=o n=5 IDAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgIDAgICBtc21ncGlvIDEx
+FSB1 DATA i=4 s=o n=6 MCBFZGdlICAgICAgdGUtZWRnZS1pc3IKNDcyOiAgICAgIDMzMjU1ICAgICAgICAg
+FSB1 DATA i=4 s=o n=7 IDAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgMCAg
+FSB1 DATA i=4 s=o n=8 ICAgICAgICAwICAgICAgICAgIDAgICBtc21ncGlvIDEwOSBFZGdlICAgICAgYmx1
+FSB1 DATA i=4 s=o n=9 LXB3bS1pc3IKLS0gYXQgMTY0LjMyCi0tIGRybSBjb25uZWN0b3JzCmNhcmQwLURT
+FSB1 DATA i=4 s=o n=10 SS0xIHN0YXR1cz1jb25uZWN0ZWQgZW5hYmxlZD1lbmFibGVkIGRwbXM9T24KLS0g
+FSB1 DATA i=4 s=o n=11 Y3J0Yy0wCmJhY2tsaWdodF90aW1pbmc9NTUsNDgyOCw0ODI4CmJhY2tsaWdodF9l
+FSB1 DATA i=4 s=o n=12 dmVudD1CQUNLTElHSFQ9NzE5Nzk2OSw0OTcyNjE0NjkyNTI4LDkwOTU4MwphY3Rp
+FSB1 DATA i=4 s=o n=13 dmVfZXZlbnQ9QUNUSVZFPTE4Njg1NDMsNDk3MjU5MzA2NjAxOCwzMzE1NTczCg==
+FSB1 STEP i=5 id=pattern2 end=exited code=0 sig=0 errno=0 ms=27 term_ms=-1 kill_ms=-1 out_total=43 out_kept=43 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=43 out_sha256=35a9fbcab365c7ade3fb15dcd066a92ec1a584c123e2c99b3130aaa05d4345f2 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=5 s=o n=0 RlNLMSBydW49MiBza2lwcGVkIHJlYXNvbj1ydW4xLW5vdC1ydW4gRU5ECg==
+FSB1 END v=1 nonce=6cf0f15867f14edc chal=64f11235c1311477aab9ff7258f30759 lines=43 rec_sha256=f610d312f2b892cead633238c6716c6dd442dbafb634dc585934f036a4f6da2e
+~ $ [6nfs-done
+FSD1 queued END
+~ $ [6n

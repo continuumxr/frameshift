@@ -1,0 +1,30 @@
+# stage 3b paced-emission evidence  2026-10-10T19:49:19Z
+# busybox c2f279d1d5640a0f (reviewed); fs-supervise 77f7a70a7904a709; fsb1-enc.sh 11e44d2fa386d06c; fsb1-pace.sh 71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c
+PASS  record-representative-lines  876 lines, 78747 bytes
+PASS  record-at-caps-lines  2069 lines, 184824 bytes
+PASS  record-maximum-lines  2070 lines, 184913 bytes
+PASS  record-maximum-plus-1-lines  2071 lines, 185000 bytes
+PASS  a-representative-bytes-identical  78748 bytes; sha256 7342311595dadc04 (paced) = 7342311595dadc04 (unpaced) = '\n' + the record file
+PASS  a-representative-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 4bc2f24143b5a17764da9b5a6a2167dc8ca837de0da20ea65f7f4a516842f0a2 (independent recomputation equal); lines=875
+PASS  d-representative-emission-time  876 lines: paced 4.90 s under qemu (unpaced 0.11 s); analytic bound EMIT = 1 + ceil(876/20) x 0.11 = 5.8 s (check-timing-3b.py uses MAXLINES: 12.4 s)
+PASS  d-representative-chunk-burst  largest 20-line write: 2234 bytes (well under the 12289-byte first-read boundary of trial (iii))
+PASS  a-at-caps-bytes-identical  184825 bytes; sha256 30d19ffe7177e1e6 (paced) = 30d19ffe7177e1e6 (unpaced) = '\n' + the record file
+PASS  a-at-caps-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 84ac9eb4a1ff91c2708fe4abc88562a1035ff832bf14d85f84d957dd84b309a1 (independent recomputation equal); lines=2068
+PASS  d-at-caps-emission-time  2069 lines: paced 11.48 s under qemu (unpaced 0.09 s); analytic bound EMIT = 1 + ceil(2069/20) x 0.11 = 12.4 s (check-timing-3b.py uses MAXLINES: 12.4 s)
+PASS  d-at-caps-chunk-burst  largest 20-line write: 2178 bytes (well under the 12289-byte first-read boundary of trial (iii))
+PASS  a-maximum-bytes-identical  184914 bytes; sha256 e2cc333ddbd3b588 (paced) = e2cc333ddbd3b588 (unpaced) = '\n' + the record file
+PASS  a-maximum-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 9cfdfaa9925ba272c21f1b65f9fc8a2ace4f5284cc18a4461b2d1279de5e8191 (independent recomputation equal); lines=2069
+PASS  d-maximum-emission-time  2070 lines: paced 11.44 s under qemu (unpaced 0.12 s); analytic bound EMIT = 1 + ceil(2070/20) x 0.11 = 12.4 s (check-timing-3b.py uses MAXLINES: 12.4 s)
+PASS  d-maximum-chunk-burst  largest 20-line write: 2180 bytes (well under the 12289-byte first-read boundary of trial (iii))
+PASS  c-maximum-through-pty-onlcr  186985 bytes via a pty with ONLCR (CRLF); stripped of CR = the paced bytes; fsb1.py VALID
+PASS  d-maximum-pty-pacing  263 reads; 103 gaps >= 80 ms (104 chunks -> 103 pauses expected); first->last byte 11.11 s; max read 2001 bytes
+PASS  c-maximum-split-everywhere-rejoined  421 pieces (every chunk boundary, +1/+37/+64 bytes mid-line, 4 cuts inside END); rejoined bytes identical; VALID
+PASS  c-every-prefix-before-the-end-is-not-a-record  a prefix cut at a chunk boundary or mid-line is never VALID (no-end/bad-end)
+PASS  refuse-maxlines-plus-1  rc=3, 0 bytes written
+PASS  refuse-cr  rc=4, nothing written
+PASS  refuse-tab  rc=4, nothing written
+PASS  refuse-del  rc=4, nothing written
+PASS  refuse-high  rc=4, nothing written
+PASS  refuse-no-final-newline  rc=4, nothing written
+PASS  b-trial-iii-capture-still-rejected  REJECT line-count END lines=255, counted 243
+TOTAL: 27 checks, 0 failed

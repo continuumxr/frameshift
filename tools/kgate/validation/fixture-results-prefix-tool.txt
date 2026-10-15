@@ -1,0 +1,718 @@
+fixtures: committed fixtures/data matches make_fixtures.py output
+
+case                                                                                 want  got  result
+reference: positive with profile (declared sources, pinned counts)                      0    0  MISMATCH (no profile/PASS containing 'pinned counts'; have [])
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source vendor (ext4): 0 modules; ext4 /lib/modules: symlink -> /vendor_dlkm/lib/modules
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO source-redirect: vendor: /lib/modules -> /vendor_dlkm/lib/modules (covered by source 'vendor_dlkm')
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 3 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 3 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: positive, bootstrap (no profile) is never 0                                  3    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 3 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 3 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: profile missing without --bootstrap                                          2    0  MISMATCH
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source vendor (ext4): 0 modules; ext4 /lib/modules: symlink -> /vendor_dlkm/lib/modules
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO source-redirect: vendor: /lib/modules -> /vendor_dlkm/lib/modules (covered by source 'vendor_dlkm')
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 3 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 3 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: partial sources vs profile (vendor_boot only)                                2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 1 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 1 module copies, 1 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: counts differ from profile pins                                              2    0  MISMATCH
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source vendor (ext4): 0 modules; ext4 /lib/modules: symlink -> /vendor_dlkm/lib/modules
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO source-redirect: vendor: /lib/modules -> /vendor_dlkm/lib/modules (covered by source 'vendor_dlkm')
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 3 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 3 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: device differs from profile                                                  2    0  MISMATCH
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source vendor (ext4): 0 modules; ext4 /lib/modules: symlink -> /vendor_dlkm/lib/modules
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO source-redirect: vendor: /lib/modules -> /vendor_dlkm/lib/modules (covered by source 'vendor_dlkm')
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 3 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 3 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: empty (vendor_boot without modules)                                          2    2  ok
+reference: empty (only a module-less boot ramdisk)                                      2    2  ok
+reference: failed extraction (not an ext4 image)                                        2    2  ok
+reference: Android sparse image                                                         2    2  ok
+reference: EROFS image                                                                  2    2  ok
+reference: ext4 without /lib/modules                                                    2    2  ok
+reference: redirect to a partition not supplied                                         2    2  ok
+reference: redirect target path not covered                                             2    0  MISMATCH
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source vendor (ext4): 0 modules; ext4 /lib/modules: symlink -> /vendor_dlkm/other/modules
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO source-redirect: vendor: /lib/modules -> /vendor_dlkm/other/modules (covered by source 'vendor_dlkm')
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 3 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 3 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: bad vendor_boot magic                                                        2    2  ok
+reference: truncated gzip ramdisk                                                       2    2  ok
+reference: truncated cpio                                                               2    2  ok
+reference: ramdisk table does not cover section                                         2    2  ok
+reference: missing source file                                                          2    2  ok
+reference: unparseable module (corrupt ELF)                                             2    2  ok
+reference: garbled vermagic                                                             2    2  ok
+reference: module without __versions                                                    2    2  ok
+reference: same-name modules with differing content                                     2    2  ok
+reference: same-name differing, --allow-same-name-differing                             3    0  MISMATCH
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | WARN same-name-differing: 1 module name(s) with differing content; ALL copies used (--allow-same-name-differing)
+      |    warn same-name-differing: modA.ko: 71e8e46d523d3e32=vendor_boot:ramdisk00(type1):/lib/modules/modA.ko | 8f1477b25026b6d8=vendor_dlkm:/lib/modules/modA.ko
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 4 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 4 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: same .modinfo name, different files                                          2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 2 modules; vendor_boot v4; ramdisk00(type1): gzip, 3 files, 2 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 2 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 2 module copies, 2 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: same path twice in concatenated cpio archives                                2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 1 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 1 module copies, 1 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: conflicting import CRCs for one symbol                                       2    2  ok
+reference: mixed ELF machines                                                           2    2  ok
+reference: modules disagree on vermagic flags                                           2    2  ok
+reference: .ko symlink in ramdisk                                                       2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 1 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 1 module copies, 1 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: symlinked directory in ramdisk module tree                                   2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 2 modules; vendor_boot v4; ramdisk00(type1): gzip, 3 files, 2 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 2 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 2 module copies, 2 unique; 5 unique (symbol,CRC) imports; 5 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: symlinked directory in ext4 module tree                                      2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source vendor_dlkm (ext4): 2 modules; ext4 /lib/modules: 2 files listed
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 2 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 3 module copies, 2 unique; 6 unique (symbol,CRC) imports; 5 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: symlinked directory in --dir source                                          2    0  MISMATCH
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source vendor_dlkm (dir): 2 modules; pre-extracted directory (no image hash available)
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 2 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 2 module copies, 2 unique; 6 unique (symbol,CRC) imports; 5 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: compressed .ko                                                               2    2  ok
+reference: modules.load names a module not extracted                                    2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 3 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 1 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 1 module copies, 1 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: modules.dep names a module not extracted                                     2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 4 files listed
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 3 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 3 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: export only via ___ksymtab+sym section                                       3    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 3 modules; vendor_boot v4; ramdisk00(type1): gzip, 4 files, 3 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 5 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 6 module copies, 5 unique; 8 unique (symbol,CRC) imports; 7 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: __ksymtab_strings name not recovered                                         2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 2 modules; vendor_boot v4; ramdisk00(type1): gzip, 3 files, 2 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 2 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 2 module copies, 2 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: export table without recoverable names                                       2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 2 modules; vendor_boot v4; ramdisk00(type1): gzip, 3 files, 2 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 2 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 2 module copies, 2 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: stock kernel without BTF                                                     2    2  ok
+reference: --stock-kernel is not a supplied boot image                                  2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 1 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: DECL_TAG, FUNC, FUNC_PROTO, INT, PTR, STRUCT (6 types)
+      | PASS reference: 1 module copies, 1 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: no --stock-kernel                                                            2    2  ok
+reference: debugfs writes to stderr                                                     2    2  ok
+reference: debugfs dump shorter than listed size                                        2    2  ok
+reference: modprobe disagrees with __versions parse                                     2    2  ok
+reference: internal exception -> exit 2, stale JSON replaced                            2    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 0 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 1 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 1 module copies, 1 unique; 4 unique (symbol,CRC) imports; 4 required from vmlinux; 0 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+reference: other-device reference (for a later check)                                   3    0  MISMATCH
+      | INFO source vendor_boot (vendor_boot): 1 modules; vendor_boot v4; ramdisk00(type1): gzip, 2 files, 1 .ko
+      | INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 1 files, 0 .ko
+      | INFO source vendor_dlkm (ext4): 3 modules; ext4 /lib/modules: 5 files listed
+      | INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+      | INFO same-name-identical: 1 module name(s) present in several sources with identical content (deduplicated, all paths kept in inventory)
+      | PASS modprobe-crosscheck: __versions of 3 unique modules agree with modprobe --dump-modversions
+      | PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+      | PASS stock-btf: stock kernel kinds: FUNC, FUNC_PROTO, INT, PTR, STRUCT (5 types)
+      | PASS reference: 4 module copies, 3 unique; 7 unique (symbol,CRC) imports; 6 required from vmlinux; 1 unversioned imports; module_layout 0x11111111; vermagic flags 'SMP preempt mod_unload modversions aarch64'
+      | RESULT: PASS (exit 0) -- reference complete
+check: positive (all inputs, pinned profile)                                            0    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: positive, --set-val with '#' in the value                                        0    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: positive, Image.gz                                                               0    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: positive, explicit --none request list                                           0    2  MISMATCH
+      | PASS symvers-duplicates: no duplicate rows (10 rows, 9 vmlinux)
+      | PASS crc: 6/6 vendor-required (symbol, CRC) pairs match vmlinux
+      | PASS module-layout: module_layout 0x11111111 matches
+      | PASS unversioned-imports: 1 unversioned vendor import(s) present in vmlinux
+      | PASS export-collision: none of the 1 vendor-exported symbols is exported by vmlinux
+      | PASS namespace: no vendor import needs a symbol namespace it does not declare
+      | PASS gpl-only: no GPL-only export is used by a non-GPL-compatible vendor module
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | ERROR input: requested options: unsupported token '--none' (supported: --enable/-e --disable/-d --module/-m --undefine/-u --set-val --set-str --*-after)
+      | RESULT: ERROR (exit 2) -- gate could not conclude -- build NOT accepted
+check: positive, baseline waived with a reason                                          0    1  MISMATCH
+      | SKIP baseline: no --baseline-symvers given
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: positive, allowlisted select fallout (XOR_BLOCKS for BTRFS)                      0    0  MISMATCH (no requested-config-allowlisted/WARN containing 'XOR_BLOCKS'; have [])
+      | PASS gpl-only: no GPL-only export is used by a non-GPL-compatible vendor module
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | PASS requested-options: all 4 requested option(s) satisfied
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: PASS (exit 0) -- build ACCEPTED -- matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open
+check: positive, no IKCONFIG with explicit waiver                                       0    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: report-only never exits 0                                                        3    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: wrong module_layout                                                              1    1  ok
+check: missing required symbol                                                          1    1  ok
+check: required symbol only in an in-tree module                                        1    1  ok
+check: CRC mismatch                                                                     1    1  ok
+check: changed baseline export                                                          1    1  ok
+check: removed baseline export                                                          1    1  ok
+check: removed baseline export (baseline has extra)                                     1    1  ok
+check: vmlinux exports a vendor-module symbol                                           1    1  ok
+check: duplicate Module.symvers rows                                                    1    1  ok
+check: namespace not imported by vendor module                                          1    1  ok
+check: GPL-only export to proprietary module                                            1    1  ok
+check: unversioned vendor import missing                                                1    1  ok
+check: requested option dropped                                                         1    1  ok
+check: requested option wrong value                                                     1    1  ok
+check: --undefine request but symbol present                                            1    1  ok
+check: typo in a --disable request                                                      2    0  MISMATCH
+      | WARN requested-options-absent: 1 disabled request(s) for symbols absent from .config
+      |    warn requested-options-absent: CONFIG_DEVTMPFS_MOUNTT: requested disabled; symbol absent from resulting .config (unknown to this tree?)
+      | PASS requested-options: all 1 requested option(s) satisfied
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: PASS (exit 0) -- build ACCEPTED -- matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open
+check: base config entry dropped                                                        1    1  ok
+check: compiler version changed (not WARN)                                              1    1  MISMATCH (no requested-config/FAIL containing 'CC_VERSION_TEXT'; have [('requested-config', 'PASS', 'all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted,')])
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 3 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_CC_VERSION_TEXT: requested "Android (8508608, based on r450784e) clang version 14.0.7", resulting .config has "Android (8508608, based on r450784e) clang version 17.0.0"
+      |    warn requested-config-toolchain: CONFIG_CLANG_VERSION: requested 140007, resulting .config has 170000
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: unrequested USER_NS/PID_NS                                                       1    1  MISMATCH (no requested-config/FAIL containing 'USER_NS'; have [('requested-config', 'PASS', 'all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted,')])
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: unrequested CFI_CLANG off                                                        1    1  ok
+check: select fallout without allowlist                                                 1    0  MISMATCH
+      | PASS gpl-only: no GPL-only export is used by a non-GPL-compatible vendor module
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | PASS requested-options: all 4 requested option(s) satisfied
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: PASS (exit 0) -- build ACCEPTED -- matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open
+check: malformed 'is not set' line in base config                                       2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: vermagic flags differ (MODVERSIONS off)                                          1    1  ok
+check: BTF kinds beyond stock                                                           1    1  ok
+check: no BTF                                                                           2    2  ok
+check: no BTF, --allow-no-btf                                                           0    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | WARN btf-kinds: no BTF in build kernel (no BTF header found); allowed by --allow-no-btf
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: malformed BTF (section out of bounds)                                            2    2  ok
+check: malformed BTF (record overruns types)                                            2    2  ok
+check: ambiguous BTF (two blobs)                                                        2    2  ok
+check: decoy BTF header with implausible hdr_len                                        2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: corrupted hdr_len is malformed, not 'no BTF' (--allow-no-btf)                    2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | WARN btf-kinds: no BTF in build kernel (no BTF header found); allowed by --allow-no-btf
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: Image.gz with trailing junk                                                      2    2  ok
+check: unparseable Module.symvers                                                       2    2  ok
+check: CRLF Module.symvers                                                              2    2  ok
+check: empty Module.symvers                                                             2    2  ok
+check: Module.symvers without vmlinux rows                                              2    2  ok
+check: missing Module.symvers file                                                      2    2  ok
+check: unparseable .config                                                              2    2  ok
+check: unsupported request syntax                                                       2    2  ok
+check: empty request list without --none                                                2    2  MISMATCH (no input/ERROR containing '--none'; have [('input', 'ERROR', 'requested options: <repo>/tools/kgate/fixtures/data/reque')])
+      | PASS symvers-duplicates: no duplicate rows (10 rows, 9 vmlinux)
+      | PASS crc: 6/6 vendor-required (symbol, CRC) pairs match vmlinux
+      | PASS module-layout: module_layout 0x11111111 matches
+      | PASS unversioned-imports: 1 unversioned vendor import(s) present in vmlinux
+      | PASS export-collision: none of the 1 vendor-exported symbols is exported by vmlinux
+      | PASS namespace: no vendor import needs a symbol namespace it does not declare
+      | PASS gpl-only: no GPL-only export is used by a non-GPL-compatible vendor module
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | ERROR input: requested options: <repo>/tools/kgate/fixtures/data/requests/empty.txt: no requests
+      | RESULT: ERROR (exit 2) -- gate could not conclude -- build NOT accepted
+check: .config not the one embedded in the image                                        2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: no IKCONFIG and no waiver                                                        2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: vmlinux __crc_ disagrees with Module.symvers                                     2    2  ok
+check: vmlinux from another build (banner)                                              2    2  ok
+check: image bytes differ from vmlinux segments (same banner/BTF)                       2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: stock kernel passed as the build image                                           2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: truncated vmlinux                                                                2    2  MISMATCH (no usable JSON: [Errno 2] No such file or directory: '/tmp/kgate-test-htle0537/out_101.json')
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | ERROR internal: error: unpack_from requires a buffer of at least 48 bytes for unpacking 8 bytes at offset 40 (actual buffer size is 15)
+      | RESULT: ERROR (exit 2) -- gate could not conclude -- build NOT accepted
+check: gate mode without --profile                                                      2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: gate mode without --vmlinux                                                      2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | SKIP input-binding: no --vmlinux given (Module.symvers/image provenance not cross-checked)
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: gate mode without --requested                                                    2    0  MISMATCH
+      | PASS gpl-only: no GPL-only export is used by a non-GPL-compatible vendor module
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | SKIP requested-options: no --requested list given
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: PASS (exit 0) -- build ACCEPTED -- matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open
+check: gate mode without --requested-config                                             2    1  MISMATCH
+      | PASS export-collision: none of the 1 vendor-exported symbols is exported by vmlinux
+      | PASS namespace: no vendor import needs a symbol namespace it does not declare
+      | PASS gpl-only: no GPL-only export is used by a non-GPL-compatible vendor module
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: gate mode without --baseline-symvers                                             2    1  MISMATCH
+      | SKIP baseline: no --baseline-symvers given
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: waiver without a real reason                                                     2    1  MISMATCH
+      | SKIP baseline: no --baseline-symvers given
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: --device differs from profile                                                    2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: reference of another device (report-only)                                        2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: reference not matching the pinned sha256                                         2    2  MISMATCH (no input/ERROR containing "does not match the profile's pinned"; have [('input', 'ERROR', 'reference: /tmp/kgate-test-htle0537/ref_tampered.json: body_sha256 mismatch (file edited o')])
+      | ERROR input: reference: /tmp/kgate-test-htle0537/ref_tampered.json: body_sha256 mismatch (file edited or truncated)
+      | RESULT: ERROR (exit 2) -- gate could not conclude -- build NOT accepted
+check: hand-edited reference (body hash, report-only)                                   2    2  ok
+check: re-hashed reference with altered vendor_exports                                  2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: re-hashed reference with altered stock BTF kinds                                 2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: re-hashed structurally invalid reference                                         2    2  MISMATCH (no usable JSON: [Errno 2] No such file or directory: '/tmp/kgate-test-htle0537/out_114.json')
+      | ERROR internal: KeyError: 'versions'
+      | RESULT: ERROR (exit 2) -- gate could not conclude -- build NOT accepted
+check: re-hashed reference with no modules                                              2    2  ok
+check: ___ksymtab+ export is not required from vmlinux (report-only)                    3    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: ___ksymtab+ export collides with vmlinux (report-only)                           1    1  MISMATCH (no export-collision/FAIL containing 'vend_s'; have [('export-collision', 'PASS', 'none of the 1 vendor-exported symbols is exported by vmlinux')])
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 1 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 10 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: usage error (no --device) leaves no stale PASS JSON                              2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+check: internal exception -> exit 2, stale JSON replaced                                2    1  MISMATCH
+      | PASS baseline: 0 of 9 baseline vmlinux exports changed or removed; 0 added
+      | FAIL requested-options: 1 of 5 requested option(s) not satisfied by the resulting .config
+      |    fail requested-options: CONFIG_FIXTURE_VAL: requested a, resulting .config has a#b
+      | WARN requested-config-toolchain: 1 toolchain-probed symbol(s) differ (no prompt; recomputed from the toolchain by Kconfig)
+      |    warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: requested 0, resulting .config has 131
+      | PASS requested-config: all 16 entries of the requested full config reproduced (toolchain-probed symbols excepted, see WARN)
+      | PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+      | PASS btf-kinds: 5 types; no kinds beyond stock (FUNC, FUNC_PROTO, INT, PTR, STRUCT) -- kind scan only, not BTF validation
+      | PASS input-binding: Module.symvers vmlinux rows equal the 9 __crc_* symbols of vmlinux; image banner and BTF blob match vmlinux
+      | RESULT: FAIL (exit 1) -- build REJECTED
+btf_kind_scan: positive vs stock kinds                                                  0    0  ok
+btf_kind_scan: kinds beyond stock                                                       1    1  ok
+btf_kind_scan: no allowed set and no --scan-only                                        2    0  MISMATCH
+      | <repo>/tools/kgate/fixtures/data/Image_extrakind: BTF at 0x1161 (raw scan (single well-formed candidate); raw), 6 types; kinds: INT=1, PTR=1, STRUCT=1, FUNC=1, FUNC_PROTO=1, DECL_TAG=1
+btf_kind_scan: --scan-only is never 0                                                   3    0  MISMATCH
+      | <repo>/tools/kgate/fixtures/data/Image_extrakind: BTF at 0x1161 (raw scan (single well-formed candidate); raw), 6 types; kinds: INT=1, PTR=1, STRUCT=1, FUNC=1, FUNC_PROTO=1, DECL_TAG=1
+btf_kind_scan: no BTF                                                                   2    2  ok
+btf_kind_scan: no BTF, --allow-missing                                                  0    0  ok
+btf_kind_scan: malformed (bounds)                                                       2    2  ok
+btf_kind_scan: malformed (record)                                                       2    2  ok
+btf_kind_scan: ambiguous                                                                2    2  ok
+btf_kind_scan: decoy hdr_len                                                            2    0  MISMATCH
+      | <repo>/tools/kgate/fixtures/data/Image_decoy_hdrlen: BTF at 0x1161 (raw scan (single well-formed candidate); raw), 5 types; kinds: INT=1, PTR=1, STRUCT=1, FUNC=1, FUNC_PROTO=1
+btf_kind_scan: corrupted hdr_len with --allow-missing                                   2    0  MISMATCH
+      | WARN btf: <repo>/tools/kgate/fixtures/data/Image_hdrlen_corrupt: no BTF header found (allowed by --allow-missing)
+btf_kind_scan: ELF magic but < 64 bytes                                                 2    2  MISMATCH (output lacks 'truncated ELF header')
+      | ERROR internal: error: unpack_from requires a buffer of at least 48 bytes for unpacking 8 bytes at offset 40 (actual buffer size is 15)
+btf_kind_scan: unreadable input                                                         2    2  ok
+btf_kind_scan: internal exception -> exit 2, stale JSON replaced                        2    0  MISMATCH
+      | <repo>/tools/kgate/fixtures/data/Image_cfg_good: BTF at 0x1161 (raw scan (single well-formed candidate); raw), 5 types; kinds: INT=1, PTR=1, STRUCT=1, FUNC=1, FUNC_PROTO=1
+
+68/134 cases behaved as expected (exit code and reason)

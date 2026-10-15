@@ -1,0 +1,250 @@
+{
+ "ack": "5f546b2a0b861e58",
+ "challenge": "ea8e38e1e56929e8b62cdd898e4fab28",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=6cf0f15867f14edc resp=34c9eba23ec74ea433841f25dfbbef7771412c67506b05c85fc6335cc7810243 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=6cf0f15867f14edc stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=5f546b2a0b861e58 END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSB1 END v=1 nonce=6cf0f15867f14edc chal=ea8e38e1e56929e8b62cdd898e4fab28 lines=343 rec_sha256=cbd74d7473d76e6628e03b212454f9c176810d9d8aeeebe75934d3c1a41e46f4",
+   "label": "FSB1 END line received",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=82 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "113.19 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "113.19 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "0.4 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "fake_a fake_b fake_c",
+   "label": "modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "FSB1 VALID (common/tools/fsb1.py)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "an empty line immediately before FSB1 BEGIN",
+   "ok": true
+  },
+  {
+   "detail": "['hash', 'probe1', 'pattern1', 'probe2', 'pattern2']",
+   "label": "5 steps in order hash,probe1,pattern1,probe2,pattern2",
+   "ok": true
+  },
+  {
+   "detail": "('pattern1', 'exited', 0, 0)",
+   "label": "step 3 pattern1 exited code 0",
+   "ok": true
+  },
+  {
+   "detail": "STREAM <repo>/build/stage3b-harness/b-sim-go/fsp1-run1.txt COMPLETE 27 records",
+   "label": "run 1 FSP1 stream COMPLETE",
+   "ok": true
+  },
+  {
+   "detail": "{b'ea8e38e1'}",
+   "label": "run 1 every FSP1 nonce = chal[0:8]",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "run 1 is fs-pattern show",
+   "ok": true
+  },
+  {
+   "detail": "('pattern2', 'exited', 0, 0)",
+   "label": "step 5 pattern2 exited code 0",
+   "ok": true
+  },
+  {
+   "detail": "STREAM <repo>/build/stage3b-harness/b-sim-go/fsp1-run2.txt COMPLETE 26 records",
+   "label": "run 2 FSP1 stream COMPLETE",
+   "ok": true
+  },
+  {
+   "detail": "{b'ea8e38e1'}",
+   "label": "run 2 every FSP1 nonce = chal[0:8]",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "run 2 is fs-pattern show-off",
+   "ok": true
+  },
+  {
+   "detail": "1",
+   "label": "probe1: exactly one backlight write line (value 127)",
+   "ok": true
+  },
+  {
+   "detail": "readback=127",
+   "label": "probe1: read-back 127",
+   "ok": true
+  },
+  {
+   "detail": "[(b'mods', b'92.00'), (b'pre1', b'92.18'), (b'mid1', b'94.01'), (b'post1', b'95.73')]",
+   "label": "probe1 points mods,pre1,mid1,post1",
+   "ok": true
+  },
+  {
+   "detail": "[(b'pre2', b'98.37'), (b'mid2', b'103.63'), (b'post2', b'108.81')]",
+   "label": "probe2 points pre2,mid2,post2",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never read the forbidden crtc nodes (blu_default_duty, fifo_trim, blu_max_overlap_us)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probe1 carries init's irq0 sample and the fake te-edge-isr/blu-pwm-isr lines",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probe1 mods snapshot has the cmdline and the fan (pwmfan, pwm-tach-fan0)",
+   "ok": true
+  },
+  {
+   "detail": "2.64 s",
+   "label": "pause: probe2's pre2 starts >= 2 s after probe1's post1 (fork-free pause)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "paced: the record (344 lines) took 2.1 s on the tty (>= 1.4 s for 17 chunks of 20 lines at 0.1 s)",
+   "ok": true
+  }
+ ],
+ "exp": "stage3b",
+ "expect": {
+  "bl": "127",
+  "mid": [
+   1,
+   2
+  ],
+  "p1": [
+   "exited",
+   0
+  ],
+  "p2": [
+   "exited",
+   0
+  ],
+  "pause": true
+ },
+ "fsb1_steps": {
+  "1": [
+   "hash",
+   "exited",
+   0,
+   0
+  ],
+  "2": [
+   "probe1",
+   "exited",
+   0,
+   0
+  ],
+  "3": [
+   "pattern1",
+   "exited",
+   0,
+   0
+  ],
+  "4": [
+   "probe2",
+   "exited",
+   0,
+   0
+  ],
+  "5": [
+   "pattern2",
+   "exited",
+   0,
+   0
+  ]
+ },
+ "image_dir": "<repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc",
+ "kernel": "6.18.33.2-microsoft-standard-WSL2",
+ "mod_notes": [
+  "replaced /bin/fs-pattern by a replay of pre-generated FSP1 streams (sim-go); the hash step measures the replacement"
+ ],
+ "mods": [
+  "sim-go"
+ ],
+ "nonce": "6cf0f15867f14edc",
+ "ok": true,
+ "pause_s": 2.64,
+ "pid1": "/usr/bin/qemu-aarch64,/bin/busybox,/bin/busybox,sh,/init",
+ "plan": "full",
+ "reboot_at_T0_plus": 31.2,
+ "reboots": "113.19 final pid=1 arg=collected\n",
+ "record_lines": 344,
+ "record_span_s": 2.07,
+ "runner_ms": 20817,
+ "scenario": "b-sim-go",
+ "stage": "stage3b",
+ "steps": [
+  "hash",
+  "probe1",
+  "pattern1",
+  "probe2",
+  "pattern2"
+ ],
+ "t_total_s": 33.2,
+ "verify_challenge": "9354aa4f164c161f8f0c03f658a48fbb",
+ "want_reboot": "collected"
+}
