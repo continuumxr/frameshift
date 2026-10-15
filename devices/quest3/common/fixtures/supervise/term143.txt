@@ -1,0 +1,5 @@
+# cmd: fs-supervise -t 2 -g 3 -e PATH=$W/bin -o $W/cap/term143.out -r $W/cap/term143.err -- $W/bin/busybox sh -c trap "exit 143" TERM; sleep 30 & wait
+# report: FSUP1 end=timer-term code=143 sig=0 errno=0 ms=2015 term_ms=2007 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+# exit=3 wall_ms=2350
+# stdout capture: 0 bytes, first 64 as hex:
+# stderr capture: 0 bytes, first 64 as hex:

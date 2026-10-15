@@ -1,0 +1,2 @@
+cat /proc/cmdline; echo __FS''_END_1__
+> [6n

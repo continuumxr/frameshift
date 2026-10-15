@@ -1,0 +1,39 @@
+# c-idle mods=[] plan=['p0', 'r1'] tail=idle; image <repo>/build/stage3c/20261012T010256Z-b7cf9a0bfb559dcb
+# reboots: 3751.62 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=b7cf9a0bfb559dcb resp=2254e113ab6ab9f619cdcc0cbd23447c262a7be0f76af75307b9ba1f8d735cfd kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=b7cf9a0bfb559dcb stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=73f08dd3470dad88 END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=3606 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  idle limit started before SHELL_READY
+PASS  /run/fs.deadline = T0 + DEADLINE  [3806 vs t0=3606]
+PASS  first reboot reason = collected  [3751.62 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [3751.62 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  idle limit fired: fs.collected = idle, reboot collected at activity + 120 s (+0..2)  [token=idle reboot at activity+121.6]
+PASS  phase p0 FSB1 VALID (exp s3c_p0, 2 steps, its own challenge)  [VALID]
+PASS  p0 steps in order hash,probe0  [{1: ('hash', 'exited', 0), 2: ('probe0', 'exited', 0)}]
+PASS  p0 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=b7cf9a0bfb559dcb p=p0 e=begin t=3623090 END | FSPM1 n=b7cf9a0bfb559dcb p=p0 e=rec t=3625970 END]
+PASS  p0 markers in order begin,rec, t non-decreasing  [begin,rec]
+PASS  p0 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  p0: exactly one backlight write line (value 127), read-back 127  [write_rc=0 readback=127]
+PASS  p0: hash step exited 0 (sha256sum of /bin/fs-pattern)
+PASS  p0: irq0 sample, mods snapshot with cmdline, dmesg and the fan
+PASS  phase r1 FSB1 VALID (exp s3c_r1, 2 steps, its own challenge)  [VALID]
+PASS  r1 steps in order probe1,pattern1  [{1: ('probe1', 'exited', 0), 2: ('pattern1', 'exited', 10)}]
+PASS  r1 markers: grammar, <= 64 bytes, nonce, no FSB1 text  [FSPM1 n=b7cf9a0bfb559dcb p=r1 e=begin t=3627250 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=go t=3627580 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=end t=3627720 END | FSPM1 n=b7cf9a0bfb559dcb p=r1 e=rec t=3629580 END]
+PASS  r1 markers in order begin,go,end,rec, t non-decreasing  [begin,go,end,rec]
+PASS  r1 rec marker immediately before the record's empty line; no marker inside or after the record
+PASS  r1 step 2 pattern1 exited code 10  [('pattern1', 'exited', 10)]
+PASS  r1 probe: read-back only (no write line), readback=127
+PASS  r1 probe points pre,end,post  [pre,end,post]
+PASS  r1 probe: no dmesg at pre
+PASS  chain p0: device sha16 (from its END line) = host decode  [b6a1ac0ced8e6950 / b6a1ac0ced8e6950]
+PASS  chain r1: device sha16 (from its END line) = host decode  [2871d8a861d84354 / 2871d8a861d84354]
+PASS  no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)
+PASS  backlight node written exactly 1 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)  [1 write-close event(s): wd=1 mask=0x8 ]
+PASS  tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)
+PASS  probes never named the decoy crtc nodes or debugfs
+PASS  modules attempted in order fake_a, fake_b, fake_c
+SCENARIO c-idle PASS

@@ -1,0 +1,10 @@
+# revision-4 device cases run against the 58817ec source (git show 58817ec:devices/quest2/channel/src/fs-rpcd.c,
+# sha256=5bd7d10d7fb2e6a92d8485013d37df393b4bf56c2072ac1affae71b3376c290b), native gcc build, LD_PRELOAD shim for X5. FAIL lines below are
+# the behaviours revision 4 changes; compare fixtures/device/D-native.txt (same cases, current source).
+V11-long-stages-cut-with-plus FAIL len=199 tail='18,STAGE_019'
+V12-plus-in-data-becomes-question-mark FAIL 'INIT_STARTED,A+B,RPC_READY'
+V14-file-beyond-read-limit-marked FAIL 'INIT_STARTED'
+V17-201-cut FAIL len=200
+case_usage FAIL harness exception TimeoutExpired(['/tmp/fsq2bef.cwL4SD/old', '-n', '0123456789abcdef', '-a', '127.0.0.1', '-p', '47999', '-r', '/tmp/fsq2bef.cwL4SD/w/usage-run', '-c', '/bin/true', '-T', '105'], 20)
+TOTAL 99/104 PASS
+# note: case_usage's harness exception is the old binary ACCEPTING '-T 105' (old cap 240) and listening until the 20 s harness timeout (final re-review R3); later usage cases were therefore not reached on the old source

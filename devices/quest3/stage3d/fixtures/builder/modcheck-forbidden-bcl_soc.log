@@ -1,0 +1,7 @@
+CHECK entries_present_as_files PASS 96 entries; bad []
+CHECK list_closed_under_modules_dep_and_softdeps PASS []
+CHECK roots_closure_inside_the_list (13 roots -> 44 modules) PASS outside []; roots absent []
+INFO vendor modules.load.recovery 131 entries; list 96; never loaded (35): ak09973.ko as5510.ko charging_dock.ko external_battery.ko industrialio-triggered-buffer.ko kfifo_buf.ko usbvdm.ko usbvdm-cypd.ko usbvdm-glink.ko adsp_loader_dlkm.ko bcl_pmic5.ko frpc-adsprpc.ko gpr_dlkm.ko mdt_loader.ko q6_dlkm.ko q6_notifier_dlkm.ko q6_pdr_dlkm.ko qcom_lpm.ko qcom_pil_info.ko qcom_q6v5.ko qcom_q6v5_pas.ko qcom_ramdump.ko qcom-spmi-adc5-gen3.ko qcom-spmi-temp-alarm.ko qcom_sysmon.ko qcom_tsens.ko qcom-vadc-common.ko qti_battery_charger_main.ko qti-ocp-notifier.ko qti_qmi_sensor_v2.ko smp2p.ko smp2p_sleepstate.ko snd_event_dlkm.ko spf_core_dlkm.ko userspace-consumer.ko
+CHECK no_excluded_vendor_module_reachable_from_the_list PASS []
+CHECK no_forbidden_module_in_or_reachable_from_the_list (38 forbidden) FAIL ['bcl_soc.ko']
+MODULE-LIST-CHECK FAIL

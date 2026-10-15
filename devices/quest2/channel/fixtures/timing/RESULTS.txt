@@ -1,0 +1,18 @@
+Quest 2 channel timing check (offline; source text only)
+inputs read: fs-ncm.sh UDC_WAIT=10 ROLE_WAIT=5 net-wait=10 RPC_WAIT=12 -> boot_to_ready=37 s (success path)
+             fs-rpcd.c REQ_MS=3000 TRAIL_MS=75 REAP_MS=2000 REAP_KILL_MS=2000 SWEEP_MS=2000 WRITE_MS=30000 COLLECT_S_MAX=104
+             transport ConnectTimeoutMs=3000 PreSendQuietMs=100 TimeoutMs=10000 FsTcpDev={'ReqMs': 3000, 'TrailMs': 75, 'ReapMs': 2000, 'ReapKillMs': 2000, 'SweepMs': 2000, 'WriteMs': 30000, 'MarginMs': 5000, 'CollectSMax': 104}
+             reference loop: status tries=3 settle=2500 ms; pid1-hold FS_DEADLINE_MAX=299
+assumptions: pre_t0=20.0 s adapter=5.0 s margin=15.0 s
+R1 transport copies == fs-rpcd.c: OK
+pre-runner worst (verify + ack + 3 x (settle + status)), one request = connect + quiet + timeout = 13.100 s: 73.000 s
+runner_worst(T) = T + 44.075 s;  host time before the runner, from BootStartUtc: 135.000 s
+
+| DEADLINE | give-up (D - margin) | before runner | runner_worst(T)-T | T_max |
+|---|---|---|---|---|
+| 299 | 284.0 | 135.000 | 44.075 | 104 |
+| 260 | 245.0 | 135.000 | 44.075 | 65 |
+| 200 | 185.0 | 135.000 | 44.075 | 5 |
+R3 COLLECT_S_MAX=104 <= T_max(FS_DEADLINE_MAX=299)=104: OK
+R5 minimum ACK_WINDOW for this pre-runner phase: 150.000 s
+RESULT CONSISTENT

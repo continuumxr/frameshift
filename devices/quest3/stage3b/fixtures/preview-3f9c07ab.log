@@ -1,0 +1,6 @@
+PORT 3f9c07ab 4128x2208 grey-pixels sha256=674f966ba906251fa23051f6ded29eba400f88ce6881c999a59bcebc6eaba8f2
+VALIDATE port == C render (/tmp/tmp.aUk3lFhIQ5/b-3f9c07ab.ppm): IDENTICAL
+STATS lit_ppm=36070 max=0xff mean_x1000=132580 levels=0x80,0xff
+PNG scanout sha256=c729bf5eb0d304abf1c49e74fabb548a0a5fdf4b51eb0d2482df567594c08d92
+PNG viewer sha256=99a21ab2f89ce224df70fcb03e72e386e86ffd5001254fcfc0bf68cc51fbaaa0
+PNG digits sha256=a86699ca9c0f9c7b3bfd72a5fab94d2604d8788f8b0b6f9be0ba84c1fc3fd18d

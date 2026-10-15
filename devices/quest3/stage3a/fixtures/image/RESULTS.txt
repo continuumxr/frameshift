@@ -1,0 +1,13 @@
+# stage3a whole-image fixtures  2026-10-09T08:56:04Z
+# image <repo>/build/stage3a/20261009T085209Z-17449af173f0633a/boot-stage3a.img sha256=d2bb28f742db12385287568808326d55b459f82af69ab0fc41192363fecccc23
+# harness sha256=8249077c64908408f97f1fb46877c39eb70ee7015fd7db2c8c6c704fe777519f  test-image.sh sha256=276cfc208814ba904646cc6baba386bf2411edb0067e99f3de2d17df210e7b64
+# host: Linux 6.18.33.2-microsoft-standard-WSL2; qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2); bwrap 0.11.1
+SCENARIO s3-ack-no-done PASS
+SCENARIO s3-no-ack PASS
+SCENARIO s3-no-udc PASS
+SCENARIO s3-nodrm PASS
+SCENARIO s3-pattern-stopped PASS
+SCENARIO s3-hung-pattern PASS
+SCENARIO s3-missing-pattern PASS
+SCENARIO s3-done-early PASS
+TOTAL: 8 scenarios, 0 failed

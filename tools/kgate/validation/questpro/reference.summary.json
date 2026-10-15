@@ -1,0 +1,88 @@
+{
+ "body_sha256": "df6d7333a1848987fd5931d1890b9dc2bca6737956d59210cd5886c93eff9a33",
+ "checks": [
+  {
+   "id": "source-empty",
+   "message": "boot: generic boot ramdisk has no modules (allowed for boot sources)",
+   "status": "INFO"
+  },
+  {
+   "id": "module-lists",
+   "message": "all 100 module references in 2 modules.load*/modules.dep file(s) are present in the inventory",
+   "status": "PASS"
+  },
+  {
+   "id": "modprobe-crosscheck",
+   "message": "__versions of 29 unique modules agree with modprobe --dump-modversions",
+   "status": "PASS"
+  },
+  {
+   "id": "same-name-identical",
+   "message": "0 module name(s) present more than once with identical content (deduplicated, all paths kept in inventory)",
+   "status": "INFO"
+  },
+  {
+   "id": "import-crc-conflict",
+   "message": "no symbol is imported with conflicting CRCs",
+   "status": "PASS"
+  },
+  {
+   "id": "stock-btf",
+   "message": "stock kernel kinds: ARRAY, CONST, DATASEC, ENUM, ENUM64, FUNC, FUNC_PROTO, FWD, INT, PTR, RESTRICT, STRUCT, TYPEDEF, UNION, VAR, VOLATILE (120536 types)",
+   "status": "PASS"
+  },
+  {
+   "id": "profile",
+   "message": "device questpro: declared sources and pinned counts (module_copies=29, required_from_vmlinux=776, unique_modules=29) match; reference sha256 matches pin",
+   "status": "PASS"
+  },
+  {
+   "id": "reference",
+   "message": "29 module copies, 29 unique; 1093 unique (symbol,CRC) imports; 776 required from vmlinux; 0 unversioned imports; module_layout 0x74b4ebeb; vermagic flags 'SMP preempt mod_unload modversions aarch64'; reference.json sha256 0b75e7571653c094dff8d688c8760b5915e6a5be9524c9f9a84927349f003386 (pin this for check --reference-sha256)",
+   "status": "PASS"
+  }
+ ],
+ "counts": {
+  "imported_pairs": 2096,
+  "module_copies": 29,
+  "presence_required_unversioned": 0,
+  "required_from_vmlinux": 776,
+  "unique_imported_pairs": 1093,
+  "unique_modules": 29,
+  "vendor_exported_symbols": 518
+ },
+ "exit_code": 0,
+ "module_layout": "0x74b4ebeb",
+ "reference_dir": "$HOME/work/kgate-refs/questpro",
+ "reference_sha256": "0b75e7571653c094dff8d688c8760b5915e6a5be9524c9f9a84927349f003386",
+ "result": "PASS",
+ "schema": "kgate-reference/3-summary",
+ "sources": [
+  {
+   "detail": "boot v2; ramdisk gzip, 9 files, 0 .ko",
+   "file": "boot.img",
+   "kind": "boot",
+   "label": "boot",
+   "module_lists": [],
+   "modules": 0,
+   "sha256": "8db4bf9be77a6c355d421d6a83542914d600cc72c7e0e2a41b366ec18a2b82a7",
+   "size": 83886080
+  },
+  {
+   "detail": "ext4 /lib/modules: 34 files listed",
+   "file": "vendor.img",
+   "kind": "ext4",
+   "label": "vendor",
+   "module_lists": [
+    "/lib/modules/modules.dep",
+    "/lib/modules/modules.load"
+   ],
+   "modules": 29,
+   "modules_root": "/lib/modules",
+   "sha256": "7771a769751e6929cc070b27314266be69c136f7768b612ff59cf4506e07bb3c",
+   "size": 317415424
+  }
+ ],
+ "tool_version": "2.3",
+ "vermagic": "4.19.325-cip128-st12-g49638c7a8637 SMP preempt mod_unload modversions aarch64"
+}

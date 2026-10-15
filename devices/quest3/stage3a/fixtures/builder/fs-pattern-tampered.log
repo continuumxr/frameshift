@@ -1,0 +1,1 @@
+BUILD REFUSED: fs-pattern hash differs from the pin ($HOME/work/fsbuild-neg/stage3a/fs-pattern: 952ab9ee2337f618ac4a1fe575dadc0b7049be77621c4d6cadba0ba82ac98989 != c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a)

@@ -1,0 +1,12 @@
+PORT 3f9c07ab 4128x2208 grey-pixels sha256=08f23bfb739a7467d7cc86012719b5ac817c61906cbd1f4d221d2b3195b4e419
+VALIDATE port == C render (/tmp/tmp.p6doBfZ1WV/v6-3f9c07ab.ppm): IDENTICAL
+STATS white_ppm=27402 max=0xff mean_x1000=131480 levels=0x80,0xff
+PNG scanout sha256=2134b4342550906757896231f5307460f3f77894119f92e51f43ee399381a902
+PNG viewer sha256=f3aa4cfdd4d028e238d0d030d69b75425f46f4e21c778e57b84f700007b0cac3
+PNG mixermap sha256=6bd3d6fca12f5b63298a087b6ef6d4094252e94095de3c29e5fcb5317e6768fe
+PNG digits sha256=a86699ca9c0f9c7b3bfd72a5fab94d2604d8788f8b0b6f9be0ba84c1fc3fd18d
+FREF keys u (upright), i (half-turn), m (mirrored left-right), v (flipped top-bottom)
+PNG fref sha256=4c97b8d6be682a26b3a558207bada394bdeeffef2643b8183e9612650b59b989
+PORT solid 4128x2208 rgb sha256=164bb117db20886236fad1a51841e32539db0023846b95e812a888be18cf38d6
+VALIDATE port == C render-solid (/tmp/tmp.p6doBfZ1WV/solid.ppm): IDENTICAL
+PNG viewer sha256=ecd8dcdd80c4786b4848645a5e3473db65b9bf7ec99bfa454603d08d31328c15

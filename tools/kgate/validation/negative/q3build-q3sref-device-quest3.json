@@ -1,0 +1,17 @@
+{
+ "checks": [
+  {
+   "id": "input",
+   "message": "profile <repo>/tools/kgate/validation/requests/quest3s.profile.json is for device 'quest3s', not --device 'quest3'",
+   "status": "ERROR"
+  }
+ ],
+ "exit_code": 2,
+ "label": null,
+ "mode": "gate",
+ "result": "ERROR",
+ "schema": "kgate-check/3",
+ "statement": null,
+ "tool_version": "2.3",
+ "waivers": {}
+}

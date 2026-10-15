@@ -1,0 +1,24 @@
+# s2-hung-step (stage2a) mods=['hang-loader'] plan=full; image <repo>/build/stage2a/20261009T085209Z-93a1501f0b1fb692
+# mod: replaced /valve/lib/ld-linux-aarch64.so.1 by a TERM-ignoring endless script
+# reboots: 999.70 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=93a1501f0b1fb692 resp=869432831c298eba010c3e845b23333dcca22483bc3eb515e923e81557420e5d kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=93a1501f0b1fb692 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=c83d07266f9953ed END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=93a1501f0b1fb692 chal=ef687f8664bcbc6e2eb9a365f84e115a lines=45 rec_sha256=b69c10b29298a6a0f0cddef5c639176c2d28178464860649dfcab70b754ad30a]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=949 deadline=T0+260 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [999.70 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [999.70 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.4 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  step 3 ended timer-kill sig=9  [('diag', 'timer-kill', -1, 9)]
+PASS  step 4 ended timer-kill sig=9  [('list', 'timer-kill', -1, 9)]
+PASS  step 5 ended timer-kill sig=9  [('uname', 'timer-kill', -1, 9)]
+PASS  step 6 ended timer-kill sig=9  [('b2kat', 'timer-kill', -1, 9)]
+PASS  step 7 ended timer-kill sig=9  [('b2chal', 'timer-kill', -1, 9)]
+PASS  an empty line immediately before FSB1 BEGIN
+SCENARIO s2-hung-step PASS

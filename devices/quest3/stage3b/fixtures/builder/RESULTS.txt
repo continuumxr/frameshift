@@ -1,0 +1,12 @@
+# stage3b builder negatives  2026-10-10T19:50:12Z; build-image.sh sha256=49b2a8f14492703467278be2a69029c51098ed796a0ca229e2fc2ea3727af11e
+PASS  fs-pattern-tampered  rc=1  BUILD REFUSED: fs-pattern hash differs from the pin ($HOME/work/fsbuild-neg/stage3b/fs-pattern: b1254a4a4818a35814bec7157e8719bcb1d455a6909440e6ae1f33286457d7c7 != 4c36e4d97b7a04b0e8695c3731a7f679b3034598d50e3b52f523b19b4c6b02a6)
+PASS  fs-pattern-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-pattern
+PASS  busybox-tampered  rc=1  BUILD REFUSED: busybox hash differs from the pin ($HOME/work/fsbuild-neg/stage3b/busybox: 05cb73694524f673df60bff68a5bb4ef98af6e884eb2a3559b41b51b3d7c9dd2 != c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02)
+PASS  fs-supervise-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-supervise
+PASS  fs-reboot-final-tampered  rc=1  BUILD REFUSED: fs-reboot-final hash differs from the pin ($HOME/work/fsbuild-neg/stage3b/fs-reboot-final: af0f01157cb252b877afc0c97ea4d19fa54966d2be5d259750cd6c9c1f3cea81 != ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e)
+PASS  fs-reboot-tampered  rc=1  BUILD REFUSED: fs-reboot hash differs from the pin ($HOME/work/fsbuild-neg/stage3b/fs-reboot: 9c07d261923702124f8b6e256658afc5fa2d277991ffda8b4f86f926dc038747 != c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29)
+PASS  fsb1-pace-tampered  rc=1  BUILD REFUSED: common fsb1-pace.sh hash differs from the pin ($HOME/work/fsbuild-neg/stage3b/fsb1-pace.sh: c4eec3279a0e5c68a69ce34a55a59d2e73c35a87356b4c95806551d233f5b938 != 71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c)
+PASS  stock-boot-wrong  rc=1  BUILD REFUSED: stock boot hash differs from the pin (<repo>/firmware/quest3/v66_unit1_slotA/vendor_boot.img: 1e3b3762724478a7f592a11a7872cb8f7c55f0f882d7bb283ecbeffd691dbbcf != 49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50)
+PASS  inject-extra-file  rc=1  BUILD REFUSED: ramdisk contents differ from the expected list
+PASS  repro-same-nonce  two builds, nonce 0123456789abcdef: image 9bc40a4284ea7268fd57370d0c0c3ec65373042a0e266e103d421aca88babb2f both times; ramdisk.cpio      165e39a7d92c47d857fe0f1a7aa337557a0eca0c7ea63300a0a114a13c7b66e7  size=3354112
+TOTAL: 10 cases, 0 failed

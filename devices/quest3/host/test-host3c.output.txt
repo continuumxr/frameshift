@@ -1,0 +1,384 @@
+== test-host3c  2026-10-13T19:50:52.8658401-07:00  PowerShell 5.1.26100.9549  scratch=$HOME\AppData\Local\Temp\fs-host3c-48c4b9e3
+== A. nominal sessions, canonical replay fixtures, the CLI replay
+PASS  A0 canonical fixture replay\nominal-read (capture.raw, .idx, keys.txt) is byte-identical to the generator's output
+PASS  A0 canonical fixture replay\garbled-r3 (capture.raw, .idx, keys.txt) is byte-identical to the generator's output
+PASS  A0 canonical fixture replay\r2-ran1-emit (capture.raw, .idx, keys.txt) is byte-identical to the generator's output
+PASS  A1 nominal (r2 read in both eyes): p0, r1, r2 sent once each with the chained <prev>; no r3 (rule 2); fs-done; COLLECTED-VALID; no replay divergence
+PASS  A2 nominal readings: r1 DARK/DARK/DARK_NOW; r2 READ <chal8> in each eye, DARK_NOW, bars 12 u l / 34 u r
+PASS  A3 garbled path: r2 garbled in both eyes -> run 3 requested (rules 1-5 hold), r3 sent once with r2's sha16, r3 SAME_AS_R2, fs-done
+PASS  A3b Q7 fallback (PM rehearsal 2026-10-12): on the run-3 path the bar counts are not asked: bars_left/right NOT_ASKED (answer_ms -1), no BARS prompt shown, events bars-not-asked (Q7 fallback), r2 phase Q7Fallback "not asked (Q7 fallback)"; session.json carries it
+PASS  A4 canonical r2-ran1-emit: FSXE1 ran=1 emit-1 after a partial record -> r2 readings and dark check, no r3, fs-done, COLLECTED-REJECTED
+PASS  A5 r2 dark in both eyes: no run 3 (rule 2), fs-done
+PASS  A6 fs-collect3c.ps1 -S3cReplay ... -S3cKeyScript (CLI): exit 10, STATUS COLLECTED-VALID, four phases FSB1 VALID, run-3 rule held, fs-done sent; session.json, readings3c.txt, phase-p0..r3.raw written
+PASS  A7 the paced replay (rehearsal transport) runs a short session on the real clock (5761 ms) through the same code: no divergence, p0 refused ran=0, fs-done
+PASS  A8 the rehearsal summary gives the run-1 and run-2 answer times and the go/no-go against 40 s (SIGNOFF-3c A, Q7); r2 = first prompt to the last ANSWER (the dark check; the Q7 NOT_ASKED bars lines carry no answer and add no time); the summary names the Q7 fallback
+PASS  A8b the rehearsal go/no-go still sums the run-1 and run-2 ANSWER times: the PM rehearsal's answer stamps (r1 16.4 s) with run 2 as on the Q7 path (bars NOT_ASKED) -> r2 18.0 s, 34.4 s, GO
+PASS  A8c the same measure on the first rehearsal's shape (two bar questions answered, r2 50.2 s): 66.6 s, NO-GO, "stop and report (the Q7 fallback is already applied)"
+== B. a timeout at every prompt type -> TIMEOUT, NOT_ASKED for the rest, fs-done
+PASS  B b1-left: r1 left TIMEOUT after 30 s, NOT_ASKED for the rest (left=TIMEOUT,right=NOT_ASKED,dark=NOT_ASKED), safe finish, fs-done, no further phase
+PASS  B b2-right: r1 right TIMEOUT after 30 s, NOT_ASKED for the rest (left=DARK,right=TIMEOUT,dark=NOT_ASKED), safe finish, fs-done, no further phase
+PASS  B b3-chars: r1 chars_left TIMEOUT after 30 s, NOT_ASKED for the rest (left=READ,chars_left=TIMEOUT,right=NOT_ASKED,dark=NOT_ASKED), safe finish, fs-done, no further phase
+PASS  B b4-dark: r1 dark TIMEOUT after 30 s, NOT_ASKED for the rest (left=DARK,right=DARK,dark=TIMEOUT), safe finish, fs-done, no further phase
+PASS  B b5-bars: r2 bars_left TIMEOUT after 30 s, NOT_ASKED for the rest (left=GARBLED,right=READ,dark=DARK_NOW,bars_left=TIMEOUT,bars_right=NOT_ASKED,orient_right=NOT_ASKED,tilt_right=NOT_ASKED), safe finish, fs-done, no further phase
+PASS  B b6-orient: r2 orient_left TIMEOUT after 30 s, NOT_ASKED for the rest (left=READ,right=DARK,dark=DARK_NOW,bars_left=BARS,orient_left=TIMEOUT,tilt_left=NOT_ASKED), safe finish, fs-done, no further phase
+PASS  B b7-tilt: r2 tilt_left TIMEOUT after 30 s, NOT_ASKED for the rest (left=READ,right=DARK,dark=DARK_NOW,bars_left=BARS,orient_left=UPRIGHT,tilt_left=TIMEOUT), safe finish, fs-done, no further phase
+PASS  B b8-r3-left: r3 left TIMEOUT after 30 s, NOT_ASKED for the rest (left=TIMEOUT,right=NOT_ASKED,dark=NOT_ASKED), safe finish, fs-done, no further phase
+PASS  B b9-r3-dark: r3 dark TIMEOUT after 30 s, NOT_ASKED for the rest (left=UNIFORM_RED,right=UNIFORM_RED,dark=TIMEOUT), safe finish, fs-done, no further phase
+== C. x at every prompt and during each phase
+PASS  C c1-left: x records ABORT (left=ABORT,right=NOT_ASKED,dark=NOT_ASKED), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c2-right: x records ABORT (left=DARK,right=ABORT,dark=NOT_ASKED), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c3-chars: x records ABORT (left=READ,chars_left=ABORT,right=NOT_ASKED,dark=NOT_ASKED), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c4-dark: x records ABORT (left=DARK,right=DARK,dark=ABORT), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c5-bars: x records ABORT (left=GARBLED,right=READ,dark=DARK_NOW,bars_left=ABORT,bars_right=NOT_ASKED,orient_right=NOT_ASKED,tilt_right=NOT_ASKED), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c6-orient: x records ABORT (left=READ,right=DARK,dark=DARK_NOW,bars_left=BARS,orient_left=ABORT,tilt_left=NOT_ASKED), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c7-tilt: x records ABORT (left=READ,right=DARK,dark=DARK_NOW,bars_left=BARS,orient_left=UPRIGHT,tilt_left=ABORT), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c8-r3-left: x records ABORT (left=ABORT,right=NOT_ASKED,dark=NOT_ASKED), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c9-r3-dark: x records ABORT (left=UNIFORM_RED,right=UNIFORM_RED,dark=ABORT), NOT_ASKED for the rest, safe finish, fs-done, no further phase
+PASS  C c10-during-r1: x during the lit phase is noted at once (banner ABORT NOTED, ALARM), no command mid-phase; after the record only the dark check is asked (readings ABORT, no layout items), then fs-done
+PASS  C c11-during-r2: x during the lit phase is noted at once (banner ABORT NOTED, ALARM), no command mid-phase; after the record only the dark check is asked (readings ABORT, no layout items), then fs-done
+PASS  C c12-during-r3: x during the lit phase is noted at once (banner ABORT NOTED, ALARM), no command mid-phase; after the record only the dark check is asked (readings ABORT, no layout items), then fs-done
+PASS  C c13: x during p0 (nothing lit): no prompts, run 1 not sent, fs-done
+PASS  C c14: x during the 3 s LOOK cue: run 1 not sent, fs-done
+== D. n (light still visible now): a key of the DARK CHECK only (PM rehearsal feedback); x aborts at every prompt
+PASS  D1 n at an eye reading is not a key there (ignored, logged; no LIGHT_NOW); x then aborts: ABORT, safe finish, fs-done
+PASS  D2 n at a layout item (bars) is ignored (logged); x aborts: bars_left ABORT, no LIGHT_NOW, safe finish, no run 3
+PASS  D4 n in the character entry is ignored (logged); x ends it: READ, characters not recorded (chars_left ABORT), safe finish
+PASS  D5 n at a run-3 eye reading is ignored (logged); the next valid key answers
+PASS  D6 the per-eye prompt lines are short and offer no n (runs 1-3; "a = light, no pattern ... d = I can read the characters ... x = abort"); n = light visible is offered only by the dark check
+PASS  D3 n at the dark check: LIGHT_NOW, safe finish, no run 2
+== E. ignored keys, keys during a phase, buffered keys
+PASS  E1 keys outside the prompt's set are ignored (logged), the timeout keeps running, the answer is the next valid key
+PASS  E2 a key pressed during the lit phase is discarded and logged (never an answer); a key still buffered when the prompt appears is drained, logged and counted (discarded=1)
+== F. characters and bars entry; echoes
+PASS  F1 characters: valid keys upper-cased, an invalid key ignored, an early Enter refused (logged), Backspace removes a ?, a 9th key ignored; READ <8 chars> echoed
+PASS  F2 Esc in character entry discards the characters and returns to the reading prompt, whose own 30 s timeout keeps running (TIMEOUT 30 s after the reading prompt)
+PASS  F3 a mistaken d is changed with Esc: the reading becomes GARBLED (no chars_left line)
+PASS  F4 bars (off the run-3 path, here rule 3): two keys 0-4, Backspace allowed, no Enter: bars_left 21, bars_right 34; echoed; the prompt explains itself (the F letters, 1 to 4 short bars, LEFT F then RIGHT F, 0 = none visible) and shows no bar order
+PASS  F5 every answer is echoed in words (LEFT EYE: GARBLED, RIGHT EYE: READ <8>, DARK CHECK: DARK, RIGHT EYE: STRIPES/GARBLE THE SAME AS RUN 2, ... BARS: 1 2)
+== G. layout items
+PASS  G1 r2 readings a/b: no layout item is asked; run 3 is requested (rule 2 holds through a)
+PASS  G2 bars after c or d; orient and tilt only after d; run 3 not requested when an eye read the characters correctly (rule 3)
+PASS  G3 a layout item with < 10 s to the prompt cut-off is NOT_ASKED (no safe-finish trigger; also orient/tilt); RUN 3 NO LONGER POSSIBLE shown at the countdown; r3 not requested (rule 3); fs-done
+PASS  G4 layout items are never asked in r1 or r3
+PASS  G5 Q7 fallback with a d eye whose characters are wrong (still the run-3 path): no bars for either eye (NOT_ASKED), orient/tilt still asked for the d eye, run 3 requested; the classifier: no LAYOUT line for the c eye, the d eye's F/line with "bars not asked (Q7 fallback)", one READINGS NOTE, no INCONCLUSIVE (code 10)
+== H. the run-3 rule (DESIGN 5.8)
+PASS  H quad clean, c/c, dark y -> run 3 requested
+PASS  H a/b, dark y (rule 2 holds through a) -> run 3 requested
+PASS  H quad_dma committed, c/a -> run 3 requested
+PASS  H b/b (no a or c) -> not requested (rule 2)
+PASS  H d/d correct (no a or c) -> not requested (rule 2)
+PASS  H c + d correct -> not requested (rule 3)
+PASS  H c + d wrong characters -> run 3 requested
+PASS  H c/c, dark check TIMEOUT -> not requested (rule 4)
+PASS  H c/c, dark check LIGHT_NOW -> not requested (rule 4)
+PASS  H record not VALID -> not requested (rule 1)
+PASS  H r2 NO-DISPLAY (exit 50) -> not requested (rule 1)
+PASS  H a split_probe commit (never allowed) -> not requested (rule 1)
+PASS  H unclean close -> not requested (rule 1)
+PASS  H no run facts -> not requested (rule 1)
+PASS  H layout items never affect the rule (bars 00 recorded, still requested)
+PASS  H session: r2 NO-DISPLAY (no quad accepted) with garbled readings -> not the run-3 path: the bars are asked (no Q7 fallback); no run 3 (rule 1), fs-done; the reason printed only after the readings
+== I. guards (G = PHASE_WORST + 5 + PostMin + DoneReserve 3)
+PASS  I1 guards p0 34, r1 68, r2 82, r3 64 s; PHASE_WORST 23/38/47/39 (build review); DoneReserve 3 in every guard; give-up = 200 - 15 = 185 s
+PASS  I2 p0: admitted at its limit (send at 151 s, left = G), refused 1 s later (left = G - 1 s)
+PASS  I2 r1: admitted at its limit (send at 117 s, left = G), refused 1 s later (left = G - 1 s)
+PASS  I2 r2: admitted at its limit (send at 103 s, left = G), refused 1 s later (left = G - 1 s)
+PASS  I2 r3: admitted at its limit (send at 121 s, left = G), refused 1 s later (left = G - 1 s)
+PASS  I3 the 3b counterexample: r1 sent at 144 s after BootStart is refused
+PASS  I3 the 3b counterexample: r2 sent at 144 s after BootStart is refused
+PASS  I3 the 3b counterexample: r3 sent at 144 s after BootStart is refused
+PASS  I3b p0 at 144 s (41 s left >= 34) would be admitted (the lit phases carry the larger guards)
+PASS  I4 the base session sends p0, r1, r2, r3 (guards with the default give-up)
+PASS  I5 session: r1 with 68 s left at its send -> sent
+PASS  I5 session: r1 with 67 s left at its send -> not sent (guard), fs-done
+PASS  I5 session: r2 with 82 s left at its send -> sent
+PASS  I5 session: r2 with 81 s left at its send -> not sent (guard), fs-done
+PASS  I5 session: r3 with 64 s left at its send -> sent
+PASS  I5 session: r3 with 63 s left at its send -> not sent (guard), fs-done
+PASS  I6 countdown: each r1 prompt shows "N s left to keep RUN 2 possible", each r2 prompt "... RUN 3 possible" (3: no bars on the run-3 path, Q7), each r3 prompt the safe-finish cut-off
+== J. the 110 s gap cap
+PASS  J1 prompts close at last_phase_end + 110 s at the latest: the right-eye character entry is cut at the gap cap (TIMEOUT), then fs-done
+PASS  J2 IDLE_S 120 s >= the host gap cap 110 s + 10 s
+== K. lost record / idle path: nothing is sent
+PASS  K1 r1 record cut (no completion by send + PHASE_WORST + 5 s = 43 s): no prompts, nothing more sent (no fs-done), INCONCLUSIVE; the PM is told to look away; the summary names the idle limit
+PASS  K2 a complete record without a settled prompt: no prompts, no fs-done (state unknown)
+== L. FSB1-rejected slices
+PASS  L1 r1 record rejected (line-count): readings and dark check (light may have happened), no run 2, fs-done, COLLECTED-REJECTED
+PASS  L2 r2 record rejected: per-eye readings and dark check only (no layout items), no run 3, fs-done
+PASS  L3 p0 record rejected: no prompts (nothing lit), no run 1, fs-done
+== M. FSXE1 refusals
+PASS  M1 r2 FSXE1 ran=0 (nothing ran): no prompts for r2, fs-done, COLLECTED-REJECTED
+PASS  M2 r1 FSXE1 ran=1 after begin/go/end markers: START/END fired, readings and dark check, no run 2, fs-done
+PASS  M4 p0 FSXE1 ran=1 record-too-large lines=400 max=360: no prompts, no run 1, fs-done
+PASS  M5 an FSXE1 without a readable ran= is treated as ran=1 (light may have happened): readings and dark check, fs-done
+PASS  M6 Get-Fs3cRefusalInfo: p=- ran=0 usage; ran=1 record-too-large lines=N max=M; not an FSXE1 record -> $null
+== N. stray bytes during the prompts
+PASS  N1 bytes after the settled prompt during the prompts: the prompt in progress is finished, no new prompt (dark NOT_ASKED), no run 2; fs-done refused by the send gate (bytes after the settled prompt)
+== O. FSPM1 markers
+PASS  O1 sounds at the right events: START (LOOK cue after p0), START at r1 go, END at r1 end, ANSWER, START/END for r2, ANSWER, FINISH at fs-done
+PASS  O2 banners at go/end (RUN n STARTING - LOOK, black on yellow; RUN n ENDED, black on green); begin/rec log only
+PASS  O3 a wrong-nonce, malformed or other-phase marker is logged and ignored (no banner, no sound); the record is still VALID and the session continues
+PASS  O4 markers split across reads are reassembled (begin, go, end, rec; START and END fired)
+PASS  O5 a skip marker shows RUN n SKIPPED (neutral, no reason before the readings); no START/END for that run
+PASS  O6 FSPM1 grammar: valid go -> accepted
+PASS  O6 FSPM1 grammar: t with 13 digits -> ignored
+PASS  O6 FSPM1 grammar: unknown event -> ignored
+PASS  O6 FSPM1 grammar: upper-case nonce -> ignored
+PASS  O6 FSPM1 grammar: trailing space -> ignored
+PASS  O6 FSPM1 grammar: phase r4 -> ignored
+PASS  O6 FSPM1 grammar: no END -> ignored
+PASS  O6 FSPM1 grammar: negative t -> ignored
+PASS  O6 FSPM1 grammar: a CR inside -> ignored
+PASS  O7 the longest marker the grammar allows is 57 bytes with its newline (<= 64), never contains FSB1; a 65-byte line is refused
+== P. sounds, the fallback, the sound check
+PASS  P1 five in-memory WAVs (no files): RIFF/WAVE, PCM 16-bit, 44.1 kHz, mono; START 0.4 s, END 0.6 s, ANSWER 0.5 s, FINISH 1.0 s, ALARM 0.9 s; SHA-256 recorded
+PASS  P2 session.json carries each WAV's SHA-256 (equal to a fresh generation: deterministic)
+PASS  P3 SoundPlayer.Play throws: the fallback (SystemSounds.Exclamation + bell) runs for every sound, each failure is logged in session.json, the session is unaffected
+PASS  P4 a live sink with a failing player records the failure and calls the fallback (asynchronous Play, never PlaySync: static)
+PASS  P5 -SoundCheck pass: each sound named and heard (y), three unnamed sounds identified (s/e/a/f/l), the key-reach test a b c d x y n r p u s g i m v l 0 1 2 3 4 Esc e f 5 6 7 8 9 ? Enter Backspace (build review MINOR-6); WAV hashes recorded
+PASS  P6 -SoundCheck fail: a sound not heard
+PASS  P7 -SoundCheck fail: an unnamed sound misidentified
+PASS  P8 -SoundCheck key reach: a wrong key is a recorded miss, the same key is asked again; still a pass
+PASS  P9 -SoundCheck key reach: a key not pressed in time fails the check (nothing is booted)
+== Q. classifier: re-slicing, CLI
+PASS  Q1 nominal-read: the classifier's slices (W offset .. phase-end N line) equal the collector's; phase-<ph>.raw files carry them
+PASS  Q1 garbled-r3: the classifier's slices (W offset .. phase-end N line) equal the collector's; phase-<ph>.raw files carry them
+PASS  Q2 nominal: P0 OK, R1 SHOWN, R2 SHOWN-QUAD [quad_vig], r3 NOT RUN; OUTCOME PASS (machine side); REGISTERED STAGE PASS; code 10
+PASS  Q3 garbled path: R3 SHOWN-QUAD-SOLID with the run-3 rule held; interpretation T2 [C]; REGISTERED not a stage PASS ... R2 optical LIT BUT GARBLED; R3 ... -> interpretation T2 [C]
+PASS  Q3b Q7 fallback: the classifier treats the bars not asked on the run-3 path as expected: no LAYOUT line, one READINGS NOTE, no INCONCLUSIVE, optical and outcome unchanged
+PASS  Q4 a session.json whose slices differ from the re-derived ones: refused, INCONCLUSIVE (code 14)
+PASS  Q5 fs-classify3c.ps1 CLI with -C3cObserveDir: STAGE-1 CLASS PASS (derived), OUTCOME PASS (machine side), exit 10
+PASS  Q6 ...without -C3cPatternPin: the built-in v0.6 pin (066bdc3e...27bc, the build-review rebuild) is used; the fixture digest differs -> p0 INTEGRITY FAULT, exit 12
+PASS  Q7 n at the dark check -> LABEL RETAINED-FRAME OBSERVATION (safety-relevant finding)
+PASS  Q8 an FSB1-rejected r1: r1 INCONCLUSIVE (FSB1 rejected: line-count), r1 optical LIT BUT GARBLED, session INCONCLUSIVE
+PASS  Q9 the skip session: r1 SKIPPED, session INCONCLUSIVE; markers begin,skip,rec reported
+== R. FSR2 records, timestamps, no machine facts before the readings
+PASS  R1 every FSR2 line (29) matches the DESIGN 8.5 grammar and parses; readings3c.txt equals session.json Readings
+PASS  R2 prompt_ms monotonic on the transport clock, answer_ms >= prompt_ms (or -1), UTC stamps ISO 8601
+PASS  R3 before the readings are complete the console shows no machine fact (no commit/rc/layout/topology/verdict, no record status, no expected bar order, no rule)
+== S. classifier outcomes (synthetic records)
+PASS  S01 p0, r1, r2 good (quad_vig) -> session PASS (machine side); r2 R2 SHOWN-QUAD
+PASS  S02 quad_vig rejected, quad_dma committed (115/134/112/131) -> session PASS (machine side); r2 R2 SHOWN-QUAD
+PASS  S03 p0 hash is not the v0.6 pin -> session INTEGRITY FAULT; p0 INTEGRITY FAULT
+PASS  S03b p0 hash not the pin AND two write lines: INTEGRITY FAULT first (build review MINOR-1, the 3b order) -> session INTEGRITY FAULT; p0 INTEGRITY FAULT
+PASS  S04 p0 two write lines (runner inconsistency) -> session INCONCLUSIVE; p0 INCONCLUSIVE
+PASS  S05 p0 read-back 255 -> session INCONCLUSIVE; p0 BRIGHTNESS NOT VERIFIED
+PASS  S06 r1 skipped -> session INCONCLUSIVE; r1 SKIPPED
+PASS  S07 r1 unclean close, r2 skipped -> session RUN 1 ONLY; r2 SKIPPED, r1 R1 SHOWN, UNCLEAN CLOSE
+PASS  S08 r1 unclean close but r2 executed (runner inconsistency) -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S09 r2 exit 50: no quad attempt accepted (split probe accepted, never committed) -> session RUN 1 ONLY; r2 NO-DISPLAY
+PASS  S10 r2 exit 31: CRTC still active -> session RUN 1 ONLY; r2 PRECONDITION UNMET: CRTC ACTIVE
+PASS  S11 r2 real commit with layout split_probe (runner inconsistency) -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S12 r2 post_plane zpos 0/0/1/0 (runner inconsistency) -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S13 r2 quad_vig on max_upscale 1 planes (type mismatch: runner inconsistency) -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S14 r2 CRTC_X unconverted 2064/3096 (a finding, not an inconsistency) -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S14r3 r2 CRTC_X unconverted (the finding) and r3 run under the rule: r3 classified on the gate facts (R3 SHOWN-QUAD-SOLID), not a runner inconsistency (build review MAJOR-3) -> session INCONCLUSIVE; r2 INCONCLUSIVE, r3 R3 SHOWN-QUAD-SOLID
+PASS  S15 r2 pause 1466 ms (< 2000) -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S16 r1 plan carries zpos_set (zpos outside a quad attempt) -> session INCONCLUSIVE; r1 INCONCLUSIVE
+PASS  S17 a backlight write line in probe2 -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S18 r2 chain mismatch -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S19 r3 run under the rule -> session PASS (machine side); r3 R3 SHOWN-QUAD-SOLID
+PASS  S20 r3 run although the rule did not hold -> session INCONCLUSIVE; r3 INCONCLUSIVE
+PASS  S21 r3 mode show-off-quad (not show-off-solid) -> session PASS (machine side); r3 INCONCLUSIVE
+PASS  S22 r3 after an r2 that did not commit (runner inconsistency) -> session INCONCLUSIVE; r3 INCONCLUSIVE
+PASS  S23 r2 refused ran=0 -> session INCONCLUSIVE; r2 REFUSED
+PASS  S24 r1 timer-kill (hang), r2 skipped -> session DISPLAY FAIL; r2 SKIPPED, r1 DISPLAY FAIL
+PASS  S25 r2 FSB1 rejected -> session INCONCLUSIVE; r2 INCONCLUSIVE
+PASS  S26 r2 not run (guard) -> session RUN 1 ONLY; r2 NOT RUN
+PASS  S27 an empty -Pin falls back to the built-in v0.6 pin (3b convention): the fixture digest differs -> session INTEGRITY FAULT; p0 INTEGRITY FAULT
+PASS  S30 r2 READ correct in both eyes -> r2 optical OPTICAL PASS; STAGE PASS
+PASS  S31 one eye correct -> r2 optical ONE-EYE ONLY; not a stage PASS
+PASS  S32 garbled / lit -> r2 optical LIT BUT GARBLED; not a stage PASS
+PASS  S33 both dark -> r2 optical DARK; not a stage PASS
+PASS  S34 timeout -> r2 optical NOT RECORDED; not a stage PASS
+PASS  S35 correct in both eyes in an r2 that committed nothing: contradicts -> r2 optical INCONCLUSIVE; not a stage PASS
+PASS  S36 correct in both eyes with r2's record rejected: cannot be confirmed -> r2 optical INCONCLUSIVE; not a stage PASS
+PASS  S37 r1 correct in both eyes, r2 NO-DISPLAY (RUN 1 ONLY): stage PASS from run 1 -> r1 optical OPTICAL PASS; STAGE PASS
+PASS  S38 malformed readings line -> r2 optical INCONCLUSIVE; not a stage PASS
+PASS  S39 lower-case characters are not the challenge text -> r2 optical INCONCLUSIVE; not a stage PASS
+PASS  S40 dark check LIGHT_NOW -> RETAINED-FRAME OBSERVATION label
+PASS  S41 readings3c.txt different from session.json readings: optical INCONCLUSIVE
+PASS  S42 stage 1 not PASS: that class, never a verdict from record text
+PASS  S43 layout bars 12 F UPRIGHT -> 'all four planes staged as planned; this eye shows buffer half 0' [D]
+PASS  S43 layout bars 34 F UPRIGHT -> 'buffer half 1' [D]
+PASS  S43 layout bars 21 F HALF_TURN -> 'in-buffer 180 degrees does not match the mounting' [C]
+PASS  S43 layout bars 43 F MIRRORED -> 'left-right mirror' [C]
+PASS  S43 layout bars 12 F VFLIP -> 'vertical flip' [C]
+PASS  S43 layout bars 12 F HALF_TURN -> 'contradictory' -
+PASS  S43 layout bars 34 F MIRRORED -> 'contradictory' -
+PASS  S43 layout bars 21 F UPRIGHT -> 'exchanged position: layout fault' [D]
+PASS  S43 layout bars 10 F UPRIGHT -> 'not scanned or not readable: layout fault' [C]
+PASS  S43 layout bars 13 F UNKNOWN -> 'unexpected bar pair' [C]
+PASS  S43 layout bars 12 F NOT_ASKED -> 'bars as planned for buffer half 0 (F not read)' [D]
+PASS  S44 correct characters and a 0 side: noted as an inconsistency
+PASS  S45 both eyes show the same buffer half -> half mapping fault label
+PASS  S46 run-3 interpretation: r2 GARBLED/GARBLED, r3 UNIFORM_RED/UNIFORM_RED, same tag True -> T1
+PASS  S46 run-3 interpretation: r2 LIT/DARK, r3 UNIFORM_RED/UNIFORM_RED, same tag True -> T1
+PASS  S46 run-3 interpretation: r2 GARBLED/DARK, r3 SAME_AS_R2/SAME_AS_R2, same tag True -> T2
+PASS  S46 run-3 interpretation: r2 GARBLED/GARBLED, r3 DIFFERENT/DIFFERENT, same tag True -> T3
+PASS  S46 run-3 interpretation: r2 LIT/LIT, r3 PARTIAL_RED/PARTIAL_RED, same tag True -> T4
+PASS  S46 run-3 interpretation: r2 DARK/GARBLED, r3 UNIFORM_OTHER/UNIFORM_OTHER, same tag True -> T5
+PASS  S46 run-3 interpretation: r2 GARBLED/GARBLED, r3 DARK/DARK, same tag True -> T6
+PASS  S46 run-3 interpretation: r2 GARBLED/GARBLED, r3 UNIFORM_RED/SAME_AS_R2, same tag True -> -
+PASS  S46 run-3 interpretation: r2 GARBLED/GARBLED, r3 UNIFORM_RED/UNIFORM_RED, same tag False -> -
+PASS  S47 r2 quad_vig and r3 quad_dma: LAYOUT DIFFERS, no comparison
+PASS  S48 scan-out signature: TE/BLU rates from the go+1 s -> end interrupt samples (181/s), dmesg flags (underrun) [informational]
+PASS  S49 marker cross-check: an out-of-order sequence and a marker inside the record are noted (informational, never a verdict)
+== T. M4: the dot-source parameter scope
+PASS  T1 fs-collect3c.ps1 run with EVERY S3c parameter at a non-default value: each survives the dot-source of fs-collect.ps1 unchanged (snapshot and live), no ValidateSet exception, exit 0; the fs-phase verb is added at run time
+PASS  T2 the static list of fs-collect.ps1 param() names used by T3 equals the pinned file's param block (27 names)
+PASS  T3 static: no 3c host file reads or assigns $Stage or any other name of fs-collect.ps1's (or fs-classify.ps1's) param() block; fs-observe3c.ps1 has no $Stage
+PASS  T4 the arguments and the invocation name are snapshotted BEFORE the dot-source; no -Stage is passed to any fs-collect.ps1 function
+PASS  T5 the hazard is real (control): a script whose own -Port is COM5 loses it to fs-collect.ps1's param block when it dot-sources the pinned file, and its $Stage then carries ValidateSet 2a/3a/3b (assigning 3c throws)
+== U. replay tokens
+PASS  U1 Get-Fs3cReplayTokens: one challenge per fs-phase write (p0..r3), validated by the command regex; the recorded <prev> kept only for the comparison
+PASS  U2 the replayed session recomputes every <prev> from its own decode and it equals the recorded one (PrevCheck)
+PASS  U3 a capture whose recorded <prev> does not match the replayed record: divergence (never trusted), PrevCheck r2 differs, nothing further delivered
+== V. per-slice FSB1 validation
+PASS  V1 a 4-record capture: VALID x4, each slice validated on its own (Test-Fsb1Record per slice, one BEGIN each)
+PASS  V2 the last slice rejected: that phase INCONCLUSIVE, the earlier phases unaffected (P0 OK, R1 SHOWN, R2 SHOWN-QUAD); COLLECTED-REJECTED
+== W. the fs-phase command line
+PASS  W1 the longest fs-phase line is 61 characters and matches ^[a-z0-9 -]{1,64}\z (and the verb regex of DESIGN 5.1)
+PASS  W2 New-FsCommand refuses every malformed fs-phase argument (phase r4, upper-case hex, short prev, double space, missing prev, extra word, non-hex)
+PASS  W3 every command sent in the sessions matches ^[a-z0-9 -]{1,64}\z; the pinned fs-collect.ps1 has no fs-phase verb (added at run time only)
+== X. fs-observe3c.ps1
+PASS  X1 dwell 240 s: registered in build\stage3c\attempted, one fastboot boot; observe.json Stage 3c with DwellSec; NEXT is fs-collect3c.ps1 with -S3cPort/-S3cNonce/-S3cBootStartUtc/-S3cHandoffUtc/-S3cOutDir
+PASS  X2 dwell 301 s: refused before the boot (unconditional gate), not registered, abandoned-cycle record (stage 3c)
+PASS  X3 no BA/BF summaries: refused (the gate is unconditional for 3c)
+PASS  X4 a MANIFEST whose fs-idle.sh hash is not the repository's: refused (3c sources: init.sh, fs-phase.sh, fs-probe.sh, fs-idle.sh)
+PASS  X5 TEST OVERRIDES in the MANIFEST: refused, even for -Preflight
+PASS  X6 -Preflight: preflight OK, no device action
+PASS  X7 static: the -ThenCollect launch is fs-collect3c.ps1 with the S3c names; no fs-collect.ps1 launch remains; the file is ASCII
+== CL. the console checklist (fs-checklist3c.ps1, J-118) and the fs-observe3c.ps1 gate
+PASS  CL1 all y: phases A, B, E pass (exit 0 each); checklist3c.json holds three PASS entries, A with the five automatic checks OK and the nonce, the questions A1-A3 and E1-E2 with their exact text, the answer y and UTC asked/answered times; B the single temperature reading (J-125: 312, status 5 full, 519 s old, ok, recorded as typed text with the unit QUEST3UNIT1 Unit 1; checks reading-input, range-100-349, not-charging, known-unit, not-in-future, at-most-15-min-old); schema v3; checklist3c.txt the same, readable
+PASS  CL1b LOW 10: each entry records every printed block (title, line count, SHA-256 of the unwrapped lines) and each question its timeout; checklist3c.txt lists the blocks
+PASS  CL2 phase A prints the six preview pictures (absolute paths, one per line, each with what it shows), the keys and points D1-D14 (every line) before the matching question; phase E prints presence and the after-session temperatures; the rehearsal check quotes the GO line
+PASS  CL3 fs-observe3c Test-FsObsChecklist accepts it 10 s after E (pinned tool, the temperature reading 120 s before BA on this unit, BA10 300 status 3, presence after BF; checklist3c.txt hashed)
+PASS  CL4 an n, a timeout and "no console" at each of A1, A2, A3, E1, E2: "STOPPED. Nothing was sent to the headset. Tell the Arbiter: phase <X> - <reason>" printed last, exit 1, the later questions not asked, the STOP entry (with the answer and the question) recorded in both files; fs-observe3c refuses that checklist (15 cases)
+PASS  CL5 phase A automatic checks (11 cases: host-hashes missing / a hash differs / another checkout / a pinned file changed afterwards; preflight; soundcheck missing / not passed; rehearsal missing / NO-GO / no Q7 fallback; a preview missing): STOP, exit 1, no question asked, exactly that check failed; on a pin mismatch the preflight is not even run
+PASS  CL6 phase B, the single temperature reading (J-125; review MAJOR-1/2, MINOR; 30 cases, every value as typed text): 349 not charging passes (status 3, 4, 5), 100 passes, Unit 2 passes, exactly 900 s old and exactly 60 s ahead pass; 350, 099, charging (status 2), unknown (1), 901 s old, 900.04 s old (exact age), 61 s ahead fail, each naming its check; 36.2, 0, 35, 312.0, 1000, a status 2.6 / 3.0 / 6, a missing status/time/reading/serial are malformed (reading-input); a serial of no Quest 3 unit (or in the wrong case) fails known-unit; B before A STOPs; nothing is asked
+PASS  CL7 phase E needs A and B passed (the LAST entry of each): without B, or after a later failed A, it STOPs before asking; an unreadable checklist3c.json is never overwritten (STOP, nothing written)
+PASS  CL8 Test-FsObsChecklist (52 cases): E at 300 s accepted, at 301 s, in the future, missing/unreadable file, a missing phase A/B/E, a later STOP, a missing y, a reading not passed refused; review MAJOR-1: the file's reading and status re-checked as typed text (350, 099, 36.2, the number 349, status 2, 2.6, the number 3 refused; 349 / status 3 accepted), a v1/v2 file refused, and BA's own BA10 dumpsys battery (349/4 accepted; 350, status 2, status 1, no or two status lines, a BA10.txt changed after the capture or missing, no BA10 row, a BA10 row that failed: each refused); review MAJOR-2: the reading taken on another unit or without one, no -Serial, a -Serial of no unit, BA/BF summaries of another unit refused, everything on Unit 2 accepted; phases out of order, another nonce; no pin / an entry not by the pinned tool (LOW 9); the reading 900 s before BA or at BA's start accepted, 901 s or after BA refused (J-125), presence from BF's start accepted, before it refused, BA/BF summary missing or of another nonce (MEDIUM 5): each with the reason
+PASS  CL9 fs-observe3c refuses the attempt without a valid console checklist (none at <cycle>\checklist3c.json, presence 301 s old, phase B missing; after an abandoned cycle the old temperature reading with a new BA): exit 2, NO fastboot call (not even devices), not registered, no abandoned-cycle record; the default path is found for <cycle>\BA\SUMMARY.txt (X1) and <dir>\<nonce>\BA\SUMMARY.txt; the dwell retry (<cycle>\retry-1) needs -ChecklistFile and then passes; X1 records the checklist, checklist3c.txt (SHA-256), the tool pin and the reading to BA in observe.json and observe.log
+PASS  CL9b review MAJOR-2: an attempt without -Serial, with a serial of no Quest 3 unit, or with a wrongly cased serial is refused (exit 2) before any device query or registration; -Preflight needs no serial; a cycle wholly on Unit 2 with Unit 1 attached is refused at the one read-only fastboot devices query (nothing booted, not registered)
+PASS  CL10 static: fs-checklist3c.ps1 is ASCII with LF endings; its only native call is powershell.exe ... fs-observe3c.ps1 -Preflight; no Invoke-FsNative, adb/fastboot executable, Start-Process, serial port or network call
+PASS  CL11 CLI: no arguments -> usage, exit 64; -Phase A on an empty cycle -> STOP (host-hashes.txt missing, checked first), exit 1, recorded; -Phase B (the Arbiter's single reading) with -R1Status 2 (charging) -> STOP, exit 1; review MAJOR-1: -R1 36.2, -R1Status 2.6 and -R1 0 (an [int] parameter rounded them) -> STOP reading-input, exit 1; review MAJOR-2: no -R1Serial -> STOP reading-input; then with -R1Status 5 -R1Serial -> exit 0, PASS appended, the values recorded as the typed text; -Phase E with -TimeoutSec 1 and no key -> STOP (timeout or no console), exit 1, recorded
+PASS  CL18 second review (MINOR-1..5): -R1Utc T24:00:00Z, :60Z, an Arabic-Indic or fullwidth digit, 31 September, eight fraction digits -> phase B STOP reading-input (in process and through the CLI: exit 1, never 70); well-formed times with 0, 1 or 7 fraction digits pass; Test-FsObsChecklist (called without a try) refuses a forged R1Utc/EndUtc/StartUtc (T24, :60, non-ASCII digits) and a BA SUMMARY header at T24 instead of accepting or throwing; Reading.Ok "true" or 1 refused; BA10 temperature 099/50 refused, 100 accepted; BA10 level 50 or none refused, 51 accepted; the reading tied to the first BA after it: an earlier BA of the cycle (or this nonce's abandoned-cycle record) at or after the reading refuses, one before it does not, another nonce's record is ignored, an unreadable one refuses; end to end the WALKTHROUGH retry with the old reading is refused before any device action
+PASS  CL12 the real SIGNOFF-3c pin table: it pins fs-checklist3c.ps1 and fs-observe3c.ps1; the literal Get-FileHash command (SIGNOFF-3c and WALKTHROUGH, identical file lists = the table) run from the repository root gives a host-hashes.txt that the checklist's host-pin check accepts (every working file equals its pin)
+PASS  CL13 SIGNOFF-3c.md (now the reference of what the console asks and records) carries every line the checklist prints, verbatim (44 lines: the five questions, the preview list with <repository> for the checkout's path, keys, points D1-D14, presence, after)
+PASS  CL14 WALKTHROUGH: the checklist commands at the right points (A after the rehearsal and before the reading and BA; B (the single temperature reading, J-125: -R1 -R1Utc -R1Status, run by the Arbiter) after the reading, before BA; E after BF, right before the attempt command); no settled-pair step, -R2 or 10-minute wait remains in the WALKTHROUGH or SIGNOFF-3c; no "tick"/"Sign section" step remains; SIGNOFF-3c has no tick boxes
+PASS  CL14b paths (MUST 3, MUST 4): <cycle> = captures\<nonce> (<withheld capture tool>'s default root writes <cycle>\<phase>); BA, BF and AF without -CapturesRoot, each with -Serial <serial> and the user-build commands file (second review MINOR-4), fastboot -s <serial> reboot (no Unit-1 serial written in); the attempt (WALKTHROUGH and SIGNOFF-3c) with -BaSummary <cycle>\BA\SUMMARY.txt -BfSummary <cycle>\BF\SUMMARY.txt; -CapturesRoot only as <cycle>\retry-1 with -ChecklistFile; step 1 says to re-run it for the 15 files
+FAIL  CL15 the checklist's real preflight (fs-observe3c.ps1 -Preflight in a child process, no device action) on the newest candidate 20261013T015056Z-55f521af22ce3e10: OK with its nonce exit 2; ABORT: nonce 55f521af22ce3e10 was already attempted (ledger <repo>\build\stage3c\attempted) or the image directory is locked
+PASS  CL16 LOW 8: Ctrl+C during phase E (PipelineStoppedException at E2, in a child process): the entry is written as STOP (interrupted), E1 y and E2 "interrupted" recorded with the question text, checklist3c.txt has the STOP, the console shows the STOPPED line; the run does not continue; fs-observe3c refuses that checklist
+PASS  CL17 MEDIUM 6 / wording: the default time per question is 900 s in phase A and 300 s in phase E; the prompt reads "Press y for yes or n for no (15 minutes)." / "(5 minutes)."; every console line is at most 90 characters unless it holds a word longer than 80 characters (a path); a wrapped D item continues under its text; A3 is the D1-D14 consent
+== Z. interface cross-check against the device side (stage3c/fixtures/sim, fs-pattern v0.6 mock streams; skipped if absent)
+PASS  Z0 FSP1 plan lists: ONE encoding (DESIGN 6.2: dot-separated, no %XX): 0.0.1.1 -> 0,0,1,1, 71.97.100.103; a %XX-encoded, comma-separated, unavailable-missing, dash or 00.1 value reads as no list
+PASS  Z quad-vig.txt (run 2) read by the host classifier: quad_vig committed; post_plane matches after the conversion; zpos_set 0,0,1,1
+PASS  Z quad-dma.txt (run 2) read by the host classifier: quad_dma committed (115/134/112/131); post_plane matches
+PASS  Z quad-noconv.txt (run 2) read by the host classifier: CRTC_X read back unconverted: the finding, not an inconsistency
+PASS  Z quad-reject.txt (run 2) read by the host classifier: every quad attempt rejected: exit 50, nothing committed
+PASS  Z quad-active.txt (run 2) read by the host classifier: CRTC active: exit 31 with the precondition record
+PASS  Z solid.txt (run 3) read by the host classifier: show-off-solid committed a quad layout, post_plane matches
+PASS  Z show-run1.txt (run 1) read by the host classifier: run 1 (show): committed, no zpos
+PASS  Z9 stage3c/fs-phase.sh prints the FSPM1 and FSXE1 lines in the grammar this host parses (printf formats)
+== Z2. end to end: the device whole-image captures through fs-collect3c replay + fs-classify3c (skipped if absent)
+PASS  Z2.0 every device whole-image scenario has an end-to-end expectation here and vice versa (25 captures)
+PASS  Z2 c-nodrm: collector sent p0,r1,r2,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (built-in pin) -> NO-DISPLAY (exit 15); p0 P0 OK, r1 NO-DISPLAY, r2 SKIPPED, r3 NOT RUN
+PASS  Z2 c-sim-all (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-sim-all: collector sent p0,r1,r2,r3,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> PASS (machine side) (exit 10); p0 P0 OK, r1 R1 SHOWN, r2 R2 SHOWN-QUAD, r3 R3 SHOWN-QUAD-SOLID
+PASS  Z2 c-sim-r2-dma (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-sim-r2-dma: collector sent p0,r1,r2,r3,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> PASS (machine side) (exit 10); p0 P0 OK, r1 R1 SHOWN, r2 R2 SHOWN-QUAD, r3 R3 SHOWN-QUAD-SOLID
+PASS  Z2 c-sim-r2-reject (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-sim-r2-reject: collector sent p0,r1,r2,fs-done; the replay diverges exactly where the harness host deviated; classified (the replacement digest as the pin) -> RUN 1 ONLY (exit 18); p0 P0 OK, r1 R1 SHOWN, r2 NO-DISPLAY, r3 NOT RUN
+PASS  Z2 c-sim-active (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-sim-active: collector sent p0,r1,r2,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> RUN 1 ONLY (exit 18); p0 P0 OK, r1 R1 SHOWN, r2 PRECONDITION UNMET: CRTC ACTIVE, r3 NOT RUN
+PASS  Z2 c-sim-unclean (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-sim-unclean: collector sent p0,r1,r2,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> RUN 1 ONLY (exit 18); p0 P0 OK, r1 R1 SHOWN, UNCLEAN CLOSE, r2 SKIPPED, r3 NOT RUN
+PASS  Z2 c-pause (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-pause: collector sent p0,r1,r2,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> PASS (machine side) (exit 10); p0 P0 OK, r1 R1 SHOWN, r2 R2 SHOWN-QUAD, r3 NOT RUN
+PASS  Z2 c-pause-fault (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-pause-fault: collector sent p0,r1,r2,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> RUN 1 ONLY (exit 18); p0 P0 OK, r1 R1 SHOWN, r2 SKIPPED, r3 NOT RUN
+PASS  Z2 c-markers (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-markers: collector sent p0,r1,r2,r3,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> PASS (machine side) (exit 10); p0 P0 OK, r1 R1 SHOWN, r2 R2 SHOWN-QUAD, r3 R3 SHOWN-QUAD-SOLID
+PASS  Z2 c-sim-r3-hold (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-sim-r3-hold: collector sent p0,r1,r2,r3,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> PASS (machine side) (exit 10); p0 P0 OK, r1 R1 SHOWN, r2 R2 SHOWN-QUAD, r3 R3 SHOWN-QUAD-SOLID
+PASS  Z2 c-no-debugfs (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-no-debugfs: collector sent p0,r1,r2,r3,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> PASS (machine side) (exit 10); p0 P0 OK, r1 R1 SHOWN, r2 R2 SHOWN-QUAD, r3 R3 SHOWN-QUAD-SOLID
+PASS  Z2 c-probe-hang: collector sent p0,r1,r2,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 P0 OK, r1 SKIPPED, r2 SKIPPED, r3 NOT RUN
+PASS  Z2 c-no-backlight: collector sent p0,r1,r2,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 BRIGHTNESS NOT VERIFIED, r1 SKIPPED, r2 SKIPPED, r3 NOT RUN
+PASS  Z2 c-record-too-large (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-record-too-large: collector sent p0,r1,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> INCONCLUSIVE (exit 14); p0 P0 OK, r1 REFUSED, r2 NOT RUN, r3 NOT RUN
+PASS  Z2 c-step-fail (sim) with the built-in pin: p0 INTEGRITY FAULT naming the replacement's digest (the harness mod note: the hash step measures the replacement), exit 12
+PASS  Z2 c-step-fail: collector sent p0,r1,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (the replacement digest as the pin) -> INCONCLUSIVE (exit 14); p0 P0 OK, r1 REFUSED, r2 NOT RUN, r3 NOT RUN
+PASS  Z2 c-time: collector sent p0,fs-done; no divergence, every recorded write performed, <prev> = recorded; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 REFUSED, r1 NOT RUN, r2 NOT RUN, r3 NOT RUN
+PASS  Z2 c-idle: collector sent p0,r1,r2; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> NO-DISPLAY (exit 15); p0 P0 OK, r1 NO-DISPLAY, r2 INCONCLUSIVE, r3 NOT RUN
+PASS  Z2 c-idle-stuck: collector sent p0,r1; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 P0 OK, r1 INCONCLUSIVE, r2 NOT RUN, r3 NOT RUN
+PASS  Z2 c-order: collector sent p0,r1; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 P0 OK, r1 INCONCLUSIVE
+PASS  Z2 c-usage-then-p0: collector sent p0; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 INCONCLUSIVE, r1 NOT RUN
+PASS  Z2 c-repeat: collector sent p0,r1; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 P0 OK, r1 INCONCLUSIVE
+PASS  Z2 c-chain-bad: collector sent p0,r1; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 P0 OK, r1 INCONCLUSIVE
+PASS  Z2 c-done-early: collector sent fs-verify,fs-ack; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 NOT RUN
+PASS  Z2 c-no-ack: collector sent fs-verify,fs-ack; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 NOT RUN
+PASS  Z2 c-ack-no-done: collector sent p0; the replay diverges exactly where the harness host deviated; classified (built-in pin) -> INCONCLUSIVE (exit 14); p0 INCONCLUSIVE
+PASS  Z2.1 the device records of c-sim-all, c-sim-r2-dma, c-nodrm and c-markers (15 phases) are FSB1 VALID per slice on the host, and the sha16 chain the collector derives is the one the device accepted
+PASS  Z2.3 MAJOR-1 end to end: c-sim-all with the built-in pin: p0 VALID but its digest is the replacement's -> RUN 1 NOT POSSIBLE (integrity), fs-done sent, r1 never sent (the replay diverges at the r1 write)
+      e2e  c-nodrm             exit 15  NO-DISPLAY           p0=P0 OK | r1=NO-DISPLAY | r2=SKIPPED | r3=NOT RUN
+      e2e  c-sim-all           exit 10  PASS (machine side)  p0=P0 OK | r1=R1 SHOWN | r2=R2 SHOWN-QUAD | r3=R3 SHOWN-QUAD-SOLID
+      e2e  c-sim-r2-dma        exit 10  PASS (machine side)  p0=P0 OK | r1=R1 SHOWN | r2=R2 SHOWN-QUAD | r3=R3 SHOWN-QUAD-SOLID
+      e2e  c-sim-r2-reject     exit 18  RUN 1 ONLY           p0=P0 OK | r1=R1 SHOWN | r2=NO-DISPLAY | r3=NOT RUN
+      e2e  c-sim-active        exit 18  RUN 1 ONLY           p0=P0 OK | r1=R1 SHOWN | r2=PRECONDITION UNMET: CRTC ACTIVE | r3=NOT RUN
+      e2e  c-sim-unclean       exit 18  RUN 1 ONLY           p0=P0 OK | r1=R1 SHOWN, UNCLEAN CLOSE | r2=SKIPPED | r3=NOT RUN
+      e2e  c-pause             exit 10  PASS (machine side)  p0=P0 OK | r1=R1 SHOWN | r2=R2 SHOWN-QUAD | r3=NOT RUN
+      e2e  c-pause-fault       exit 18  RUN 1 ONLY           p0=P0 OK | r1=R1 SHOWN | r2=SKIPPED | r3=NOT RUN
+      e2e  c-markers           exit 10  PASS (machine side)  p0=P0 OK | r1=R1 SHOWN | r2=R2 SHOWN-QUAD | r3=R3 SHOWN-QUAD-SOLID
+      e2e  c-sim-r3-hold       exit 10  PASS (machine side)  p0=P0 OK | r1=R1 SHOWN | r2=R2 SHOWN-QUAD | r3=R3 SHOWN-QUAD-SOLID
+      e2e  c-no-debugfs        exit 10  PASS (machine side)  p0=P0 OK | r1=R1 SHOWN | r2=R2 SHOWN-QUAD | r3=R3 SHOWN-QUAD-SOLID
+      e2e  c-probe-hang        exit 14  INCONCLUSIVE         p0=P0 OK | r1=SKIPPED | r2=SKIPPED | r3=NOT RUN
+      e2e  c-no-backlight      exit 14  INCONCLUSIVE         p0=BRIGHTNESS NOT VERIFIED | r1=SKIPPED | r2=SKIPPED | r3=NOT RUN
+      e2e  c-record-too-large  exit 14  INCONCLUSIVE         p0=P0 OK | r1=REFUSED | r2=NOT RUN | r3=NOT RUN
+      e2e  c-step-fail         exit 14  INCONCLUSIVE         p0=P0 OK | r1=REFUSED | r2=NOT RUN | r3=NOT RUN
+      e2e  c-time              exit 14  INCONCLUSIVE         p0=REFUSED | r1=NOT RUN | r2=NOT RUN | r3=NOT RUN
+      e2e  c-idle              exit 15  NO-DISPLAY           p0=P0 OK | r1=NO-DISPLAY | r2=INCONCLUSIVE | r3=NOT RUN
+      e2e  c-idle-stuck        exit 14  INCONCLUSIVE         p0=P0 OK | r1=INCONCLUSIVE | r2=NOT RUN | r3=NOT RUN
+      e2e  c-order             exit 14  INCONCLUSIVE         p0=P0 OK | r1=INCONCLUSIVE | r2=NOT RUN | r3=NOT RUN
+      e2e  c-usage-then-p0     exit 14  INCONCLUSIVE         p0=INCONCLUSIVE | r1=NOT RUN | r2=NOT RUN | r3=NOT RUN
+      e2e  c-repeat            exit 14  INCONCLUSIVE         p0=P0 OK | r1=INCONCLUSIVE | r2=NOT RUN | r3=NOT RUN
+      e2e  c-chain-bad         exit 14  INCONCLUSIVE         p0=P0 OK | r1=INCONCLUSIVE | r2=NOT RUN | r3=NOT RUN
+      e2e  c-done-early        exit 14  INCONCLUSIVE         p0=NOT RUN | r1=NOT RUN | r2=NOT RUN | r3=NOT RUN
+      e2e  c-no-ack            exit 14  INCONCLUSIVE         p0=NOT RUN | r1=NOT RUN | r2=NOT RUN | r3=NOT RUN
+      e2e  c-ack-no-done       exit 14  INCONCLUSIVE         p0=INCONCLUSIVE | r1=NOT RUN | r2=NOT RUN | r3=NOT RUN
+PASS  Z2.2 the newest candidate 20261013T015056Z-55f521af22ce3e10: Test-FsObsManifest OK against the repository's init.sh/fs-phase.sh/fs-probe.sh/fs-idle.sh; its /bin/fs-pattern is the classifier's built-in v0.6 pin
+== BR. the build-review fixes (2026-10-12)
+PASS  BR1 MAJOR-1: p0 VALID but its hash is not the pin -> RUN 1 NOT POSSIBLE (integrity) (red banner), no lit phase, fs-done
+PASS  BR1b MAJOR-1: a hash step that is not the exact sha256sum form (UNPARSEABLE) -> not MEASURED -> RUN 1 NOT POSSIBLE (integrity), fs-done
+PASS  BR1c MAJOR-1: the pinned digest MEASURED -> the LOOK cue and run 1 follow
+PASS  BR1d Get-Fs3cP0Integrity: no pin -> NO PIN (not Ok); the fixture pin -> MEASURED
+PASS  BR2 MAJOR-2: Ctrl+C (read as input) is the key x; an ordinary c is c
+PASS  BR3 MAJOR-2: Ctrl+C during run 1 (console key source) acts as x: ABORT NOTED at once, after the record the one dark-check question (here a timeout), then the safe finish with fs-done; the Ctrl+C is logged
+PASS  BR4 MAJOR-2 / MINOR-9: Enter-Fs3cConsoleMode (Ctrl+C as input, QuickEdit off via SetConsoleMode) and Exit-Fs3cConsoleMode run without a failure, with or without a console, and say what they did
+PASS  BR5 MAJOR-2: every answer is on disk at once: readings3c.txt grows by one FSR2 line per reading; session.json holds a checkpoint (schema partial) with the readings so far
+PASS  BR6 MAJOR-2: the classifier on a directory whose session.json is still the checkpoint (the collector did not finish): INCONCLUSIVE, code 14, no classification
+PASS  BR7 MINOR-2: the previous answer's key within 600 ms of the next prompt is ignored (logged); the next key answers it (right GARBLED, not DARK)
+PASS  BR8 MINOR-2: a repeated d right after the d answer is not taken as the character D; the 8 characters read correctly
+PASS  BR9 MINOR-3: d, then x/timeout in the character entry: echoed "READ, characters not recorded"; the classifier reports READ, CHARACTERS NOT RECORDED (not LIT BUT GARBLED)
+PASS  BR10 MINOR-4: n during the lit phase is taken as x: ABORT NOTED (n taken as x), the one dark-check question after the record, fs-done
+PASS  BR11 NIT d: after x the first banner is "RUN 1 ENDED - ONE SAFETY QUESTION"; in a normal gap the dark check has its own banner
+PASS  BR12 NIT a: a safe finish shows a red SAFE FINISH banner
+PASS  BR13 NIT c: a run 3 that was not machine-shown has no interpretation (never "LAYOUT DIFFERS")
+PASS  BR14 MINOR-7: the machine summary is written to summary.txt; on the console it appears only after the s key (x leaves it in the file); nothing machine-side is printed before the key
+PASS  BR15 MINOR-10: the CLI error path says "fs-done NOT sent" only when fs-done was not sent
+PASS  BR16 NIT f: a failing key source is logged (key-source-failure) and shown once; the prompt then times out (the safe direction)
+PASS  BR17 NIT g / MINOR-6: "Heard it? y = yes, n = no" (no "any other key"); the key reach covers Enter, Backspace and every hex character of the entry
+PASS  BR18 MINOR-8 / MINOR-5: SIGNOFF-3c A and the WALKTHROUGH check the host pins FIRST (before the sound check and the rehearsal) with the literal Get-FileHash command (upper-case hex noted); SIGNOFF A says the sound check is the only protection against a silent audio failure; console-closed row present
+== UB. stage-3d user-build capture rows (<withheld rows file>, both units) and <withheld capture tool> revision 9
+PASS  UB1 <withheld rows file>: 58 rows of 5 columns, ids of their phase, unique; the unit only as {serial} (no serial written in), no su / fs-binpull / persist / root row; every row accepted by <withheld capture tool>'s allowlist for Unit 1 AND Unit 2 after the substitution, every -s row refused for one unit when it names the other; BA/BF/AF/AA rows 19/10/10/19; BA24/AA24 shell id; the root-only ids BA11-15/AA11-15 are #NOT-CAPTURED lines, never rows
+PASS  UB2 <withheld capture tool> revision 9 refuses every listed read for both units (20 forms: cat/ls/sha256sum or blockdev without su; anything naming persist (a partition, a path, a property, a getvar, a pull; J-132), even inside an allowlisted su sha256sum; adb root/unroot/remount/disable-verity; su id; a ';' chain) and still accepts shell id and every legacy <withheld rows file> row (Unit 1, revision 8 behaviour); <withheld document> lists the refused reads and says the root-only rows are not captured and our tools never run adb root or su
+PASS  UB3 review MAJOR-2/3: <withheld capture tool> (child process, no device, adb/fastboot paths absent) with -CommandsFile <withheld rows file> and -Serial of Unit 1 or of Unit 2: each phase passes the allowlist for every row and stops only at "REFUSED: adb/fastboot not found" (exit 20, nothing written); WITHOUT -Serial each phase is REFUSED (revision 10: -Serial is required, no default unit), nothing written
+PASS  UB4 review MAJOR-1/3 end to end (fake adb, Unit 2): <withheld capture tool> -Phase BA with <withheld rows file> -Serial QUEST3UNIT2 -> PHASE BA OK (19 rows); SUMMARY.txt names serial QUEST3UNIT2, lists BA11-BA15 as "not captured", BA24 holds the shell id output; the fake saw only allowlisted reads (no root, su, exec-out, reboot or persist); the observer's BA10 check reads 250 / status 5 / level 99 from this capture; the summary is accepted for Unit 2 and refused for Unit 1
+PASS  UB5 review MAJOR-1 negative control (fake adb, Unit 1 on AC at 410, status 2, as its 2026-10-13 baseline read): the capture itself is OK (data), but the observer's BA10 check refuses it, naming the temperature
+PASS  UB6 J-132 / our tools never run adb root: a rows file with one injected row naming persist (getprop persist.*), or one injected `adb root`, is REFUSED as a whole (exit 20) before anything runs: the fake adb is never started, no capture directory
+== Y. stage-3b behaviour unchanged
+PASS  Y1 the pinned stage-3b host files (<withheld capture tool> excepted: revision 9, test-host2 P), the common/stage-1 helpers and stage3b/** are unchanged against HEAD (git status and git diff empty)
+PASS  Y2 test-host3b.ps1: exit 0, 116/116 passed, 0 failed, 0 skipped
+PASS  Y2 test-host2.ps1: exit 0, 461/461 passed, 0 failed, 0 skipped
+TOTAL: 326 passed, 1 failed, 0 skipped

@@ -1,0 +1,45 @@
+# name	status	stop-substring	sent	fsb1	classify	overrides	description
+good-lf	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	PASS	-	full exchange; device newlines lf (tty ONLCR modelled)
+good-crlf	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	PASS	-	full exchange; device newlines crlf (tty ONLCR modelled)
+good-crcrlf	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	PASS	-	full exchange; device newlines crcrlf (tty ONLCR modelled)
+no-echo-record-joins-prompt	COLLECTED-REJECTED	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	no-begin	INCONCLUSIVE	-	FINDING: without an echo, FSB1 BEGIN follows the prompt on the same line; the whole-capture decode rejects it (no-begin)
+no-echo-leading-newline	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	PASS	-	target does not echo; the runner prints a newline before BEGIN (proposed encoder change)
+good-split-reads	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	PASS	-	1-byte reads for every exchange, 13-byte reads for the record
+binary-noise-pre	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	PASS	-	all 256 byte values before the first command; re-capture must be byte-exact
+noise-outside-records	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	PASS	-	noise and binary junk lines between records (never inside one)
+noise-inside-record	COLLECTED-REJECTED	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	line-count	INCONCLUSIVE	-	a foreign line between two record lines
+noise-mid-line	COLLECTED-REJECTED	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	rec-hash	INCONCLUSIVE	-	two bytes injected inside a DATA line
+truncated-record	INCONCLUSIVE	fs-valve: partial	fs-verify,fs-ack,fs-status,fs-valve	no-end	INCONCLUSIVE	-	record stops at 60% (device silent afterwards); fs-done is not sent
+truncated-verify	INCONCLUSIVE	fs-verify: partial	fs-verify	-	-	-	FSV1 line cut mid-line, never terminated
+echo-only	INCONCLUSIVE	fs-verify: echo-only	fs-verify	-	-	-	the command is echoed; no record follows
+silent	INCONCLUSIVE	fs-verify: silent	fs-verify	-	-	-	nothing at all after the command
+continuation-after-verify	INCONCLUSIVE	fs-verify: continuation	fs-verify	-	-	-	D1 pass-1 state: echo then PS2; the index also holds the 3 writes a blind collector would have made
+pre-continuation	INCONCLUSIVE	pre-continuation	none	-	-	-	D1 pass-2 state: the shell is already in a continuation before anything is sent; nothing is sent
+verify-unterminated-then-prompt	INCONCLUSIVE	fs-verify: partial	fs-verify	-	-	-	a complete-looking FSV1 without its newline, then a prompt on the same line
+ack-echo-only	INCONCLUSIVE	fs-ack: echo-only	fs-verify,fs-ack	-	-	-	fs-ack echoed, no FSA1
+status-partial	INCONCLUSIVE	fs-status: partial	fs-verify,fs-ack,fs-status	-	-	-	FSS1 cut mid-line
+verify-no-prompt	INCONCLUSIVE	prompt missing	fs-verify	-	-	-	FSV1 complete but no prompt follows: state unknown, nothing more sent (no fs-done)
+record-not-at-line-start	INCONCLUSIVE	fs-verify: no-completion	fs-verify	-	-	-	a correct FSV1 that does not start its line is not a completion
+verify-echoed-challenge	INCONCLUSIVE	does not verify (bad response)	fs-verify	-	-	-	FSV1 whose resp is the challenge itself: complete but not verified; no fs-done
+verify-wrong-nonce	INCONCLUSIVE	does not verify (nonce mismatch)	fs-verify	-	-	-	another image answers
+ack-not-recorded	INCONCLUSIVE	ack not recorded	fs-verify,fs-ack,fs-status,fs-status,fs-status,fs-done	-	-	-	PID 1 never records the token: bounded retries, then stop (known state: fs-done)
+spliced-old-record-before-send	COLLECTED-REJECTED	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	multiple-begin	INCONCLUSIVE	-	a previous attempt's record arrives before anything is sent; the real record follows
+spliced-other-attempt-response	COLLECTED-REJECTED	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	nonce-mismatch	INCONCLUSIVE	-	the response record belongs to another attempt (nonce and challenge)
+spliced-two-records	COLLECTED-REJECTED	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	multiple-begin	INCONCLUSIVE	-	two attempts' records back to back before the prompt
+late-record	INCONCLUSIVE	fs-valve: echo-only	fs-verify,fs-ack,fs-status,fs-valve	no-begin	INCONCLUSIVE	RecordTimeoutMs=20000	the record starts 30 s after fs-valve; the collection deadline is 20 s
+no-prompt-after-record	COLLECTED-VALID	prompt missing: fs-done not sent	fs-verify,fs-ack,fs-status,fs-valve	valid	PASS	-	valid record but the shell never returns: no fs-done (deadline recovers)
+continuation-after-record	COLLECTED-VALID	prompt continuation	fs-verify,fs-ack,fs-status,fs-valve	valid	PASS	-	valid record followed by PS2: no fs-done
+real-encoder-valid	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	-	Exp=fixture;Steps=text|bytes|empty|both|slow|kat|chal	common/fixtures/fsb1/valid.txt as the response (real encoder, busybox under qemu)
+real-encoder-valid-pty	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	-	Exp=fixture;Steps=text|bytes|empty|both|slow|kat|chal	common/fixtures/fsb1/valid-pty.txt as the response (real encoder, busybox under qemu)
+e2e-integrity-fault	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	INTEGRITY FAULT	-	libc digest differs from its pin
+e2e-compat-fail	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-valve,fs-done	valid	COMPATIBILITY FAIL	-	b2chal digests the challenge with a trailing newline
+3a-committed	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-display,fs-done	valid	PASS (machine side)	Stage=3a	stage 3a: committed and held; machine-side PASS (the PM reading decides)
+3a-no-device	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-display,fs-done	valid	NO-DISPLAY	Stage=3a	stage 3a: fs-pattern exit 10 (no device), as in the offline image harness
+3a-no-echo	COLLECTED-VALID	-	fs-verify,fs-ack,fs-status,fs-display,fs-done	valid	PASS (machine side)	Stage=3a	stage 3a without echo: fsb1_emit's empty line keeps BEGIN at a line start
+already-acked	INCONCLUSIVE	foreign ack	fs-verify,fs-ack,fs-status,fs-done	-	-	-	PID 1 shows an earlier (foreign) ack: stop at once, no fs-valve, gated fs-done
+runner-refused-2a	INCONCLUSIVE	the runner refused	fs-verify,fs-ack,fs-status,fs-valve,fs-done	no-begin	-	-	fs-valve prints FSVE1 error=already-run END: no record, fs-done at once
+runner-refused-3a	INCONCLUSIVE	the runner refused	fs-verify,fs-ack,fs-status,fs-display,fs-done	no-begin	-	Stage=3a	fs-display prints FSDE1 error=bad-nonce END: no record, fs-done at once
+ack-window-reached	INCONCLUSIVE	ack window reached	fs-verify,fs-ack	-	-	AckGiveUpMs=3000	the ack window ends before fs-status: nothing more is sent
+runner-budget	INCONCLUSIVE	runner budget	fs-verify,fs-ack,fs-status,fs-done	-	-	GiveUpMs=100000	host give-up 100 s after start: less than the runner worst case 127 s + 5 s is left; no fs-valve, gated fs-done
+b1-late-2a	INCONCLUSIVE	runner budget	fs-verify,fs-ack,fs-status,fs-status,fs-done	-	-	GiveUpMs=165000;AckGiveUpMs=55000	FS-R-007 B1, stage 2a: origin BootStartUtc, collector start +80 s, slow shell: ~122 s left at the runner < 127 + 5 s: no fs-valve, gated fs-done
+b1-late-3a	INCONCLUSIVE	runner budget	fs-verify,fs-ack,fs-status,fs-status,fs-done	-	-	Stage=3a;GiveUpMs=75000;AckGiveUpMs=55000	FS-R-007 B1, stage 3a (the Chair counterexample): origin BootStartUtc, collector start +80 s, slow shell, 3 s cue: ~29 s left < 42 + 5 + 11 s: no fs-display, gated fs-done

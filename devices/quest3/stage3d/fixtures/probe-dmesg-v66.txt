@@ -1,0 +1,30 @@
+[   23.903139] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x30vid
+[   23.903212] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 28 pclk 0
+[   23.903285] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x29vid
+[   23.903358] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 27 pclk 0
+[   23.903431] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x28vid
+[   23.903504] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 26 pclk 0
+[   23.903577] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x27vid
+[   23.903650] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 25 pclk 0
+[   23.903723] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x26vid
+[   23.903796] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 24 pclk 0
+[   23.903869] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x25vid
+[   23.903942] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 23 pclk 0
+[   23.904015] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x24vid
+[   23.904088] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 22 pclk 0
+[   23.904161] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x23vid
+[   23.904234] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 21 pclk 0
+[   23.904307] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x22vid
+[   23.904380] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 20 pclk 0
+[   23.904453] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x21vid
+[   23.904526] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 19 pclk 0
+[   23.904599] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x20vid
+[   23.904672] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 18 pclk 0
+[   23.904745] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x19vid
+[   23.904818] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 17 pclk 0
+[   23.904891] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x18vid
+[   23.904964] [drm:dsi_display_find_mode [msm_drm]] *ERROR* [msm-dsi-error]: [meta,eureka_panel_sharp] failed to find mode for v_active 2208 h_active 4128 fps 17 pclk 0
+[   23.905037] [drm:dsi_conn_mode_valid [msm_drm]] *ERROR* [msm-dsi-error]: could not find mode 4128x2208x17vid
+[   23.905110] [drm:dsi_panel_set_backlight [msm_drm]] REAL-4 backlight level 127
+[   23.905183] [drm:sde_kms_underrun [msm_drm]] *ERROR* REAL-5 underrun on intf 1
+-- dmesg: 71 new matching line(s), 29 shown

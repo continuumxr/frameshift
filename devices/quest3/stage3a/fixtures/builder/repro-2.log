@@ -1,0 +1,50 @@
+FrameShift Quest 3 stage-3a image (display test, fs-pattern v0.4) — ONE ATTEMPT ONLY, never reuse
+No Valve file. Display hold <= 10 s (fs-pattern compiled cap); PID 1 deadline T0+170 s, backstop T0+171 s (init.sh DEADLINE)
+built:            20260101T000000Z
+nonce:            0123456789abcdef   (USB serial FS-0123456789abcdef)
+TEST OVERRIDES:   FS_TEST_NONCE=0123456789abcdef FS_TEST_OUTBASE=$HOME/work/fsbuild-neg/stage3a/repro2 FS_TEST_STAMP=20260101T000000Z (negative fixtures only; NOT a candidate image)
+OUTPUT IMAGE:     boot-stage3a.img  size=43130880  sha256=f01ebbb04473c25726bb4cfd8bbf1c59bddcb2023230979b8065e27d21eab4e4
+
+## inputs (sha256 enforced unless noted)
+stock boot        49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50  <repo>/firmware/quest3/v66_unit1_slotA/boot.img
+stock vendor_boot 1e3b3762724478a7f592a11a7872cb8f7c55f0f882d7bb283ecbeffd691dbbcf  <repo>/firmware/quest3/v66_unit1_slotA/vendor_boot.img
+stock kernel      f34165b35a826052ce5b520d9313387c96970b498733f1a7b141dcf4afc94e7b  (byte-identical in the output: AOSP re-unpack)
+vendor modules    1ec0253fa9b80e7121722259ab9d6de0f1c4e5015846fea4737cd14af80a6745  lib/modules/modules.load.recovery (97 modules)
+vendor file list  403e891e9eb71e638afe1fceb715f87d6da02cfe4b12df2253c33efddae1c040  (111 entries)
+AOSP mkbootimg    d2bb0af5ba6d3198a3e99529c97eda1be0b5a093  (E1 fs_gitcheck CLEAN; helper adbe27e92be16da5d2d8a2bc8f3ea35bd2040cd41ed38068c1360030433487e8)
+E1 notes          NOTE: mode bits not checkable here: skip (drvfs without metadata: no exec bits) 
+t1-ramdisk-scan   73e969caf90418c6dd0ab9c06f10570ba6656f7472db6e337a3f24af3d28c524  (recorded; output in ramdisk-scan.txt)
+init.sh source    2594c410ce5e1dd797bf29fc34dfd5f20d8165ecb8d3acc1a347d5d55061a35c  (recorded)
+fs-display.sh     008c79cdff01c142cd390398b1bfc47814abcf85de1c78637eb7d959186408fe  (recorded)
+build-image.sh    da789a3008329f526cfef2472d30d21dc6cdad7bde7e8cc82c200b1ed3c9d73d  (recorded)
+ramdisk.cpio      3adcc90e9cd6946b6f638084431b2c23bd8dbe501627deeca78bf77f1a156997  size=3306496
+ramdisk.lz4       e5936c62d4e71d34d018207430b8181b2e50fc18edad3d3a397cd10075f624ad  size=1915907
+
+## ramdisk files (sha256  size  path  source); directories: bin config dev lib lib/fs proc run sys tmp 
+c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02  1981032  /bin/busybox  <repo>/build/third_party/busybox/busybox
+008c79cdff01c142cd390398b1bfc47814abcf85de1c78637eb7d959186408fe  2687  /bin/fs-display  stage3a/fs-display.sh
+7ad5f1106acd828fa3e9d6da9cfa0e50d66431b4b2d3a951ce39f12375064959  705  /bin/fs-done  common/target/fs-done
+c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a  615528  /bin/fs-pattern  <repo>/devices/quest3/stage3a/build/fs-pattern
+c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29  1400  /bin/fs-reboot  <repo>/build/stage1-tools/fs-reboot
+ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e  808  /bin/fs-reboot-final  <repo>/devices/quest3/common/build/fs-reboot-final
+77f7a70a7904a7091db8e132b6c8f0ee68e6187f94d4690ec2a42a26f5206a74  676952  /bin/fs-supervise  <repo>/devices/quest3/common/build/fs-supervise
+a51f8015f56ca3c480bffeaaff8a54e5bfd73ddee8050d8938edf026b97cad13  12416  /init  stage3a/init.sh (2594c410ce5e1dd797bf29fc34dfd5f20d8165ecb8d3acc1a347d5d55061a35c) with nonce
+11e44d2fa386d06c596c03ff54ecfb5aeeea4790a560c8e65bf26e76733bf1a7  4943  /lib/fs/fsb1-enc.sh  common/target/fsb1-enc.sh
+4294c9d57f3a94eba9847596aa614f557e7b4278cfeb5a22e38955fdd5b81dc4  7556  /lib/fs/pid1-hold.sh  common/target/pid1-hold.sh
+
+## checks passed
+E1 git check; every pin above; static ELF (aarch64, ET_EXEC, no INTERP/NEEDED) for busybox, fs-reboot, fs-reboot-final, fs-supervise, fs-pattern;
+applets present: sh mount mknod mkdir cut cat echo printf sync reboot sleep insmod mdev ls tr sed grep basename setsid kill ln uname sha256sum stty mv rm chmod base64 awk wc head mkfifo; no BLAKE2 applet;
+exact ramdisk list; no symlinks; no vendor collision (only shared directories); union lacks /etc/ld.so.preload /etc/ld.so.cache /usr /lib/libc.so.6 /lib/ld-linux-aarch64.so.1 /valve;
+only the 5 expected ELF files in the union; BLAKE2 scan of the final image: no hit; kernel AF_ALG hash off;
+kernel bytes unchanged; header differs only in ramdisk size and boot.img signature size; every file in the image equals the staged file.
+
+## header diff
+3c3
+< ramdisk size: 1886092
+---
+> ramdisk size: 1915907
+8c8
+< boot.img signature size: 4096
+---
+> boot.img signature size: 0

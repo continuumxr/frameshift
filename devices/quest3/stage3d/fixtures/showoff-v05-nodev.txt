@@ -1,0 +1,5 @@
+FSP1 nonce=3f9c07ab seq=0 step=start rc=0 mode=show-off ver=0.7.1 hold_req=10 hold=10 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/dev/dri/card0 out=file rot=180 roll=21 eyes=swap t0_ms=165297 len=208 crc=b0a3459e END
+FSP1 nonce=3f9c07ab seq=1 step=open rc=-2 errno=2 dev=/dev/dri/card0 at=stat len=76 crc=362ad7b6 END
+FSP1 nonce=3f9c07ab seq=2 step=exit rc=0 code=10 reason=no_device shown=0 closed_at_exit=0 elapsed_ms=22 len=104 crc=6e845f93 END
+FSP1 nonce=3f9c07ab seq=3 step=eos rc=0 records=4 dropped=0 overflows=0 out=file opt_bytes=0 opt_skipped=0 len=106 crc=a38c850e END
+# exit=10

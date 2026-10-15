@@ -1,0 +1,8 @@
+== round-6 probes, code under test: $HOME\AppData\Local\Temp\q3head-cf251bb\devices\quest3\host
+FAIL  B1  already-acked: stop at the first FSS1 with a foreign ack, no fs-valve, gated fs-done 
+FAIL  S2  runner refusal (FSVE1): terminal at once, INCONCLUSIVE, gated fs-done 
+FAIL  S1  the ack window caps the phases before the runner unknown setting AckGiveUpMs
+FAIL  B1  fs-observe.ps1 exists and defines Invoke-FsObserve (no session) 
+FAIL  B1  the classifier derives the stage-1 class from observe.json + the verified FSV1 (Get-FsStage1Class) The term 'Get-FsStage1Class' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+FAIL  nit stage-3a own-SIGALRM reason is one string (argument-mode concatenation fixed) 
+TOTAL: 0 passed, 6 failed

@@ -1,0 +1,5 @@
+# cmd: fs-supervise -t 5 -o $W/cap/enoent.out -r $W/cap/enoent.err -- /nonexistent/prog
+# report: FSUP1 end=exec-failed code=127 sig=0 errno=2 ms=30 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+# exit=5 wall_ms=240
+# stdout capture: 0 bytes, first 64 as hex:
+# stderr capture: 0 bytes, first 64 as hex:

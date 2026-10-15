@@ -1,0 +1,72 @@
+{
+ "build_sections": [
+  "\".mmuoff.data.read\"",
+  ".BTF",
+  ".altinstr_replacement",
+  ".altinstructions",
+  ".bss",
+  ".builtin_fw",
+  ".data",
+  ".data..percpu",
+  ".exit.text",
+  ".head.text",
+  ".init.data",
+  ".init.text",
+  ".mmuoff.data.read",
+  ".mmuoff.data.write",
+  ".notes",
+  ".pci_fixup",
+  ".rela.dyn",
+  ".relr.dyn",
+  ".rodata",
+  ".rodata1",
+  ".sbss",
+  ".text",
+  "__bug_table",
+  "__ex_table",
+  "__init_rodata",
+  "__kcrctab",
+  "__kcrctab_gpl",
+  "__kcrctab_gpl_future",
+  "__kcrctab_unused",
+  "__kcrctab_unused_gpl",
+  "__ksymtab",
+  "__ksymtab_gpl",
+  "__ksymtab_gpl_future",
+  "__ksymtab_strings",
+  "__ksymtab_unused",
+  "__ksymtab_unused_gpl",
+  "__modver",
+  "__param"
+ ],
+ "builds": {
+  "a2": {
+   "allow_sha256": "4d512de07d3b46fdb3996b55c0a6b22b1cb6029e1bd579a03b59c0442547770c",
+   "baseline": "stock-build",
+   "requested_sha256": "cd4d41200a16fc479f024d9f497756ccaabd507c1a5632dab9f6f613664fefac"
+  },
+  "stock": {
+   "allow_sha256": "69550599be67906042917a9cde3ed5625df3a0f263812010a300a0eb7cb7397d",
+   "baseline": "waived",
+   "requested_sha256": "e1a84f89f3c569c84e638278fb41841aac869fdb1042497c3aca03f6e9ff99d6"
+  }
+ },
+ "counts": {
+  "module_copies": 29,
+  "required_from_vmlinux": 776,
+  "unique_modules": 29
+ },
+ "device": "questpro",
+ "note": "counts pinned from FS-A-006 (776 required; 29 modules); reference_sha256 pinned from this project's own deterministic kgate reference build (self-referential; see README 'Pins')",
+ "pins": {
+  "independently_anchored": "required_from_vmlinux (verified by the Chair in FS-R-006 s2: 2601/838/2583/776)",
+  "self_referential": "module_copies, unique_modules, reference_sha256, stock_build_symvers_sha256 and the per-build request/allowlist hashes and build_sections (allocated section names of the stock-config build) were pinned from this project's own outputs/files on 2026-10-09"
+ },
+ "reference_sha256": "0b75e7571653c094dff8d688c8760b5915e6a5be9524c9f9a84927349f003386",
+ "sources": {
+  "boot": "boot",
+  "vendor": "ext4"
+ },
+ "stock_build_symvers_sha256": "19d3ac39efd57aa0286a37172cfc5c77f9ea1a1f8dc02d6b2c98f675778f8115",
+ "stock_kernel": "../../../../firmware/questpro/v2.7-user_ota/boot.img"
+}

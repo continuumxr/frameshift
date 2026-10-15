@@ -1,0 +1,13 @@
+fs-pattern build record
+date_utc:   2026-10-09T04:29:42Z
+compiler:   Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+command: $HOME/toolchains/clang-r450784e/bin/clang --target=aarch64-linux-gnu -static -O2 -std=c11 -D_GNU_SOURCE -D__user= -Wall -Wextra -Werror -Wno-missing-field-initializers -fno-ident -I$HOME/work/kgate27/src/include/uapi/drm -fuse-ld=lld -Wl,--build-id=none -s -o build/fs-pattern src/fs-pattern.c
+source:     src/fs-pattern.c sha256=237ea6f26f20698f08b473701096ac42282b53d30a8eb87dec03ecff47d94305
+uapi:       $HOME/work/kgate27/src/include/uapi/drm/drm.h sha256=db489b5479c079c1e4b7c75d758c2d5bf010400bfcaa02d44d979ddb0d1df297
+uapi:       $HOME/work/kgate27/src/include/uapi/drm/drm_mode.h sha256=113ba3bd08e941ec1ce4047e2b3cdd57471ef284c483d468d3b4ba600543901f
+libc:       libc6-dev-arm64-cross 2.43-2ubuntu2cross1 (static glibc)
+libc.a:     /usr/aarch64-linux-gnu/lib/libc.a sha256=76a89dad8c7ecb9ccd4efdfa190315c04f8172c08d3fac1623d98dd07002bac7
+binary:     build/fs-pattern sha256=c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a size=615528
+elf:        ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, for GNU/Linux 3.7.0, stripped
+checks:     aarch64, ET_EXEC, no INTERP, no NEEDED, bit-identical rebuild
+unittest:   build/fs-pattern-unittest sha256=cb05c17ac11ab61211b5a6cff7d451e998f932f3b1ce597bc2316657036b8696 (-DFSP_UNIT_TEST; offline only, never in an image)

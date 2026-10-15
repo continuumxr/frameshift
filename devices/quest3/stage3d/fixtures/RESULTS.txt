@@ -1,0 +1,204 @@
+binary sha256=bfafad97c7ca11ef4e41a6be8aae4fde5ca529d8955d9b77d6fc603495049a9a
+unittest sha256=81c4826f4f12e09ead96e1cac17e0549db715752c4035c4717eaa74ce88aad0b
+qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2)
+unittest PASS 88 unit tests
+render-3f9c07ab PASS exit=0
+check-3f9c07ab PASS 31 checks
+render-01234567 PASS exit=0
+check-01234567 PASS 31 checks
+render-89abcdef PASS exit=0
+check-89abcdef PASS 31 checks
+render-deterministic PASS identical bytes
+render-nonce-differs PASS 
+render 3f9c07ab ppm sha256=58586fc2c438ce452bb2af49ed299fb79692aaee97003dcb739c2763b498dc9b
+render-odd-size PASS exit=0
+nodev-default PASS exit=10
+nodev-default-record PASS open rc=-2 ENOENT
+nodev-default-exit PASS 
+nodev-path PASS exit=10
+notdrm-regular PASS exit=11
+notdrm-devnull PASS exit=11
+notdrm-devnull-record PASS 
+usage-noargs PASS exit=2
+usage-upper-nonce PASS exit=2
+usage-short-nonce PASS exit=2
+usage-hold-zero PASS exit=2
+usage-hold-nondigit PASS exit=2
+usage-hold-7digits PASS exit=2
+usage-extra-arg PASS exit=2
+usage-path-201 PASS exit=2
+stdout-tty-refused PASS exit=3, nothing written
+stdout-devnull-accepted PASS exit=0
+stdout-pipe-accepted PASS out=pipe
+blocked-stdout-hold PASS exit=0 wall_ms=3215 (hold 3 s; records dropped, not waited for)
+blocked-stdout-term PASS exit=70 term_to_exit_ms=24
+hold-3s PASS exit=0
+hold-3s-duration PASS held_ms=3000 wall_ms=3191
+strace-close-before-write PASS deadline: close(3) precedes write(1)
+strace-close-before-write-term PASS SIGTERM: close(3) precedes write(1)
+strace-show-stat-not-open PASS exit=11; stat only, never opened
+strace-holdtest-stat-then-open PASS stat precedes open; O_NOCTTY
+sigxfsz-ignored PASS exit=0 under ulimit -f 0 (records dropped)
+empty-value-token PASS name=- drv=- dash=%2D
+hold-alarm-rearmed PASS alarm_s=8 (hold 3 + 5)
+alarm-rearm-fires PASS SIGALRM at hold+5
+sigterm-clamp-reported PASS 999 -> 10
+sigterm PASS exit=70 sig=15 signal_to_exit_ms=23
+sigint-clamp-reported PASS 999 -> 10
+sigint PASS exit=70 sig=2 signal_to_exit_ms=27
+sighup-clamp-reported PASS 999 -> 10
+sighup PASS exit=70 sig=1 signal_to_exit_ms=62
+sigint-parent-ignored-clamp-reported PASS 999 -> 10
+sigint-parent-ignored PASS exit=70 sig=2 signal_to_exit_ms=53
+hold-clamp-full-start PASS 
+hold-clamp-full PASS exit=0 held_ms=10001 (999 requested; alarm at 15 s not reached)
+backstop PASS SIGALRM (142), no hold_end; alarm due at 15 s, kill landed 28 ms after SIGCONT at 18 s (a stopped process can only die on SIGCONT)
+stream_alarm-rearm PASS INCOMPLETE no eos after 3 records
+stream_backstop PASS INCOMPLETE no eos after 3 records
+stream_hold-3s PASS COMPLETE 6 records
+stream_hold-clamp-full PASS COMPLETE 6 records
+stream_nodev-default PASS COMPLETE 4 records
+stream_nodev-path PASS COMPLETE 4 records
+stream_notdrm-devnull PASS COMPLETE 4 records
+stream_notdrm-regular PASS COMPLETE 4 records
+stream_render-01234567 PASS COMPLETE 4 records
+stream_render-3f9c07ab PASS COMPLETE 4 records
+stream_render-89abcdef PASS COMPLETE 4 records
+stream_render-odd-size PASS COMPLETE 4 records
+stream_sighup PASS COMPLETE 6 records
+stream_sigint-parent-ignored PASS COMPLETE 6 records
+stream_sigint PASS COMPLETE 6 records
+stream_sigterm PASS COMPLETE 6 records
+stream_stdout-pipe PASS COMPLETE 6 records
+stream_stdout-tty PASS EMPTY no records
+stream_strace-hold PASS COMPLETE 6 records
+stream_strace-notdrm PASS COMPLETE 4 records
+stream_strace-term PASS COMPLETE 6 records
+stream_stream-sample PASS COMPLETE 5 records
+stream_usage-extra-arg PASS COMPLETE 3 records
+stream_usage-hold-7digits PASS COMPLETE 3 records
+stream_usage-hold-nondigit PASS COMPLETE 3 records
+stream_usage-hold-zero PASS COMPLETE 3 records
+stream_usage-noargs PASS COMPLETE 3 records
+stream_usage-path-201 PASS COMPLETE 3 records
+stream_usage-short-nonce PASS COMPLETE 3 records
+stream_usage-upper-nonce PASS COMPLETE 3 records
+stream-neg-gap PASS seq gap -> INVALID
+stream-neg-noeos PASS no eos -> INCOMPLETE
+stream-neg-crc PASS changed byte -> INVALID (crc)
+stream-neg-emptyval-v0.3 PASS v0.3 empty value (name=) -> INVALID; v0.6 writes name=- (stream_stream-sample)
+showquad-nodev PASS exit=10
+showquad-nodev-records PASS mode=show-off-quad ver=0.7.1 roll=21 eyes=swap; exit 10
+showsolid-nodev PASS exit=10
+showsolid-nodev-records PASS mode=show-off-solid; exit 10
+showquad-notdrm PASS exit=11
+showsolid-notdrm PASS exit=11
+showoff-v05-nodev PASS exit=10
+usage-quad-extra PASS exit=2
+usage-solid-hold-zero PASS exit=2
+usage-show-other PASS exit=2
+usage-render-solid-args PASS exit=2
+propsim-full PASS 14 checks; 18282 bytes
+propsim-off PASS 8 checks; 968 bytes
+propsim-quad PASS 15 checks; 18282 bytes
+propsim-solid PASS 11 checks; 4500 bytes
+propsim-repeat PASS 4 checks; 39976 bytes
+sim-show-run1 PASS exit=0; 20 checks; 30752 bytes; essential_bytes=13041 opt_bytes=17711
+sim-off-v05 PASS exit=0; 12 checks; 13163 bytes; essential_bytes=12787 opt_bytes=376
+sim-quad-vig PASS exit=0; 36 checks; 31175 bytes; essential_bytes=17007 opt_bytes=14168
+sim-quad-dma PASS exit=0; 36 checks; 31346 bytes; essential_bytes=17178 opt_bytes=14168
+sim-quad-reject PASS exit=50; 22 checks; 29758 bytes; essential_bytes=15590 opt_bytes=14168
+sim-quad-active PASS exit=31; 11 checks; 7844 bytes; essential_bytes=7844 opt_bytes=0
+sim-quad-vig2dup PASS exit=0; 36 checks; 31152 bytes; essential_bytes=16984 opt_bytes=14168
+sim-quad-vig2up3 PASS exit=0; 36 checks; 31147 bytes; essential_bytes=16979 opt_bytes=14168
+sim-quad-vig2upnone PASS exit=0; 36 checks; 31150 bytes; essential_bytes=16982 opt_bytes=14168
+sim-quad-dmadup PASS exit=50; 22 checks; 29561 bytes; essential_bytes=15393 opt_bytes=14168
+sim-quad-vig1other PASS exit=0; 36 checks; 31154 bytes; essential_bytes=16984 opt_bytes=14170
+sim-quad-capsmissing PASS exit=0; 36 checks; 31155 bytes; essential_bytes=16987 opt_bytes=14168
+sim-quad-noconv PASS exit=0; 36 checks; 31178 bytes; essential_bytes=17010 opt_bytes=14168
+sim-quad-max PASS exit=0; 38 checks; 55534 bytes; essential_bytes=17139 opt_bytes=38395
+sim-show-max PASS exit=0; 22 checks; 51660 bytes; essential_bytes=13157 opt_bytes=38503
+sim-solid PASS exit=0; 35 checks; 17383 bytes; essential_bytes=17007 opt_bytes=376
+sim-solid-max PASS exit=0; 38 checks; 26557 bytes; essential_bytes=17129 opt_bytes=9428
+sim-blob-8193 PASS exit=0; 36 checks; 55577 bytes; essential_bytes=17129 opt_bytes=38448
+sim-reset PASS exit=0; 21 checks; 31900 bytes; essential_bytes=14188 opt_bytes=17712
+sim-reset-inactive PASS exit=0; 10 checks; 7770 bytes; essential_bytes=7770 opt_bytes=0
+sim-reset-off-reject PASS exit=50; 17 checks; 29273 bytes; essential_bytes=11561 opt_bytes=17712
+sim-reset-on-reject PASS exit=50; 20 checks; 30930 bytes; essential_bytes=13218 opt_bytes=17712
+sim-reset-max PASS exit=0; 24 checks; 52807 bytes; essential_bytes=14303 opt_bytes=38504
+sim-quad-vig-roll0-direct PASS exit=0; 36 checks; 31177 bytes; essential_bytes=17009 opt_bytes=14168
+sim-reset-v27 PASS exit=0; 29 checks; 37535 bytes; essential_bytes=14215 opt_bytes=23320
+sim-quad-v27 PASS exit=0; 44 checks; 36812 bytes; essential_bytes=17041 opt_bytes=19771
+sim-solid-v27 PASS exit=0; 43 checks; 23016 bytes; essential_bytes=17056 opt_bytes=5960
+sim-reset-v27-late PASS exit=0; 29 checks; 38022 bytes; essential_bytes=14217 opt_bytes=23805
+sim-quad-v27-late PASS exit=0; 44 checks; 37300 bytes; essential_bytes=17046 opt_bytes=20254
+sim-reset-toomany PASS exit=30; 5 checks; 1393 bytes; 
+static-v07 PASS 79 checks (request builder, hold, loggers, quad branch identical to v0.6; no new ioctl; a_prop set = v0.6's; reset A only zero values, B the v0.5 modeset attempts, black only; sine table; eye mapping; no sysfs/debugfs path; no new exit code)
+check-v07-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+preview-port-3f9c07ab PASS Python port == C render, byte for byte
+check-v07-01234567 PASS 31 checks; white_ppm=26431 mean_x1000=131356
+preview-port-01234567 PASS Python port == C render, byte for byte
+check-v07-89abcdef PASS 31 checks; white_ppm=28273 mean_x1000=131590
+preview-port-89abcdef PASS Python port == C render, byte for byte
+check-v07-4e0addd8 PASS 31 checks; white_ppm=28951 mean_x1000=131676
+preview-port-4e0addd8 PASS Python port == C render, byte for byte
+check-v07-bbbbbbbb PASS 31 checks; white_ppm=30884 mean_x1000=131922
+preview-port-bbbbbbbb PASS Python port == C render, byte for byte
+render-worst-case-envelope PASS bbbbbbbb (most white of any nonce): white_ppm=30884 <= 37618, mean_x1000=131922 <= 132777 (v0.5 4e0addd8: 37618 / 132777)
+render-solid PASS every pixel R=255 G=0 B=0; every word 0x00FF0000 (solid_words=9114624)
+preview-port-solid PASS port == C render-solid
+render-v06-deterministic PASS identical bytes
+previews PASS fixtures/preview/: pattern-v0.7-3f9c07ab-{scanout,panels,asseen,mixermap,digits-left}, F-reference-u-i-m-v, solid-red-v0.7-viewer
+v07-is-the-render-checked-above PASS section (a) renders are the same default v0.7 picture
+reset-nodev PASS exit=10
+reset-nodev-records PASS mode=reset ver=0.7.1; exit 10
+reset-notdrm PASS exit=11
+usage-reset-extra PASS exit=2
+usage-reset-option PASS exit=2
+usage-reset-hold PASS exit=2
+strace-reset-stat-not-open PASS exit=11; stat only, never opened
+options-quad-nodev PASS exit=10
+options-quad-records PASS roll=-5 eyes=direct in the start record
+options-quad-order PASS exit=10
+usage-roll-26 PASS exit=2
+usage-roll-minus26 PASS exit=2
+usage-roll-twice PASS exit=2
+usage-roll-leading-zero PASS exit=2
+usage-eyes-bad PASS exit=2
+usage-dev-after-option PASS exit=2
+usage-solid-option PASS exit=2
+usage-render-solid-option PASS exit=2
+check-v07-r21-swap-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+check-v07-r21-swap-bbbbbbbb PASS 31 checks; white_ppm=30884 mean_x1000=131922
+check-v07-r0-swap-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+check-v07-r0-swap-bbbbbbbb PASS 31 checks; white_ppm=30885 mean_x1000=131922
+check-v07-r0-direct-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+check-v07-r0-direct-bbbbbbbb PASS 31 checks; white_ppm=30885 mean_x1000=131922
+check-v07-r-21-swap-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+check-v07-r-21-swap-bbbbbbbb PASS 31 checks; white_ppm=30883 mean_x1000=131922
+check-v07-r25-swap-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+check-v07-r25-swap-bbbbbbbb PASS 31 checks; white_ppm=30885 mean_x1000=131922
+check-v07-r-25-direct-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+check-v07-r-25-direct-bbbbbbbb PASS 31 checks; white_ppm=30885 mean_x1000=131922
+check-v07-r25-direct-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+check-v07-r25-direct-bbbbbbbb PASS 31 checks; white_ppm=30885 mean_x1000=131922
+check-v07-r-25-swap-3f9c07ab PASS 31 checks; white_ppm=27402 mean_x1000=131480
+check-v07-r-25-swap-bbbbbbbb PASS 31 checks; white_ppm=30885 mean_x1000=131922
+check-v07-negative-control (--roll -21 --eyes swap) PASS 17 checks fail, as they must
+check-v07-negative-control (--roll 21 --eyes direct) PASS 18 checks fail, as they must
+check-v07-negative-control (--roll 0 --eyes swap) PASS 20 checks fail, as they must
+check-v07-negative-control (--roll 25 --eyes swap) PASS 14 checks fail, as they must
+legacy-roll0-direct-equals-v06-3f9c07ab PASS byte-identical to stage3c/build/fs-pattern (066bdc3ee01e5974) render
+legacy-roll0-direct-equals-v06-01234567 PASS byte-identical to stage3c/build/fs-pattern (066bdc3ee01e5974) render
+legacy-roll0-direct-equals-v06-bbbbbbbb PASS byte-identical to stage3c/build/fs-pattern (066bdc3ee01e5974) render
+whole-frame-180-equivalence PASS roll=0 eyes=swap render == whole-frame 180 of [left-eye design | right-eye design] (C render and port)
+preview-port-r0-direct PASS Python port == C render, byte for byte
+preview-port-r-25-swap PASS Python port == C render, byte for byte
+v27-modes-model PASS 7 checks: 305 modes from the v2.7 DT (Unit 2: 305), one 4128x2208@90 (index 0, the v66 timing); the same model gives v66's 24 logged modes exactly; n=305 digest=c996c9f4
+v27-modes-mock-equals-model PASS the C mock's list == tools/v27-modes.py's, line for line (n=305 digest=c996c9f4)
+control-maxmodes128-reset-v27 PASS exit=30 too_many_modes, nothing set: v0.7's limit FAILS the v2.7 scenario exactly as Unit 2's r1 did (records 4-9 equal)
+control-maxmodes128-quad-v27 PASS exit=30 too_many_modes, nothing set: v0.7's limit FAILS the v2.7 scenario exactly as Unit 2's r1 did (records 4-9 equal)
+control-maxmodes128-solid-v27 PASS exit=30 too_many_modes, nothing set: v0.7's limit FAILS the v2.7 scenario exactly as Unit 2's r1 did (records 4-9 equal)
+delta-v071-vs-v07 PASS 7 checks: the device build is v0.7 (source 354ad53dbf107f7f) plus only the fix (version, MAXMODES 512, FSP_LOG_MODES, the mode-record cap)
+probe-dmesg-v27-noise PASS 6 checks: 66 mode-validation lines not kept (one count line), the 5 real display lines kept; stage 3c's probe loses 3 of them (negative control)
+TOTAL failures=0

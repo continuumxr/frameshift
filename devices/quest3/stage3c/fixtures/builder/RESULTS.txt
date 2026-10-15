@@ -1,0 +1,18 @@
+# stage3c builder negatives  2026-10-12T01:08:52Z; build-image.sh sha256=25b4a0094805d0e11279ea64a3f0ced1e39297b40647461b0c343816441688da
+PASS  fs-pattern-tampered  rc=1  BUILD REFUSED: fs-pattern hash differs from the pin ($HOME/work/fsbuild-neg/stage3c/fs-pattern: 8a9cd0c36e6cb769810cb2fb97142689d496b84dc3548d584e18054e6510e6a9 != 066bdc3ee01e5974518f96e8311c071c8f3aed302cadefa42c1273d5196b27bc)
+PASS  fs-pattern-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-pattern
+PASS  busybox-tampered  rc=1  BUILD REFUSED: busybox hash differs from the pin ($HOME/work/fsbuild-neg/stage3c/busybox: 05cb73694524f673df60bff68a5bb4ef98af6e884eb2a3559b41b51b3d7c9dd2 != c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02)
+PASS  fs-supervise-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-supervise
+PASS  fs-reboot-final-tampered  rc=1  BUILD REFUSED: fs-reboot-final hash differs from the pin ($HOME/work/fsbuild-neg/stage3c/fs-reboot-final: af0f01157cb252b877afc0c97ea4d19fa54966d2be5d259750cd6c9c1f3cea81 != ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e)
+PASS  fs-reboot-tampered  rc=1  BUILD REFUSED: fs-reboot hash differs from the pin ($HOME/work/fsbuild-neg/stage3c/fs-reboot: 9c07d261923702124f8b6e256658afc5fa2d277991ffda8b4f86f926dc038747 != c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29)
+PASS  fsb1-pace-tampered  rc=1  BUILD REFUSED: common fsb1-pace.sh hash differs from the pin ($HOME/work/fsbuild-neg/stage3c/fsb1-pace.sh: c4eec3279a0e5c68a69ce34a55a59d2e73c35a87356b4c95806551d233f5b938 != 71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c)
+PASS  stock-boot-wrong  rc=1  BUILD REFUSED: stock boot hash differs from the pin (<repo>/firmware/quest3/v66_unit1_slotA/vendor_boot.img: 1e3b3762724478a7f592a11a7872cb8f7c55f0f882d7bb283ecbeffd691dbbcf != 49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50)
+PASS  fs-idle-debugfs-mount  rc=1  BUILD REFUSED: debugfs in a non-comment line of $HOME/work/fsbuild-neg/stage3c/fs-idle.sh
+PASS  fs-idle-debugfs-quoted  rc=1  BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/stage3c/fs-idle-q.sh: $BB mount -t debug''fs none /sys/kernel/debu''g
+PASS  fs-idle-debugfs-variables  rc=1  BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/stage3c/fs-idle-v.sh: K=/sys/kernel; F=fs; $BB mount -t debug$F none $K/debug
+PASS  fs-idle-debugfs-octal  rc=1  BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/stage3c/fs-idle-o.sh: $BB mount -t "$(printf "\144ebugfs")" none /sys/./kernel/debug
+PASS  fs-idle-tty-write  rc=1  BUILD REFUSED: fs-idle.sh names a tty or the console in a non-comment line
+PASS  inject-extra-file  rc=1  BUILD REFUSED: ramdisk contents differ from the expected list
+PASS  repro-same-nonce  two builds, nonce 0123456789abcdef: image 6f759239fc59c46f31c67768760961859d135b3fba73110c3083b59c25573b3c both times; ramdisk.cpio      ab9e81cdedcd71f0d1d8b2f0e5eff870b2fd5d9fa3fec776f39af7656e773008  size=3384320
+PASS  candidate-rebuild  nonce b7cf9a0bfb559dcb stamp 20261012T010256Z: image 9d3ad98400ac94f42b291a66b0420576df5ad8ee447e831d971fcaba9bd914bd again; identical cpio
+TOTAL: 16 cases, 0 failed

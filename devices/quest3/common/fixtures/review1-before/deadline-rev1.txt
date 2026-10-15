@@ -1,0 +1,24 @@
+pid1-hold.sh sha256=102ec87a79222437ee581dd35c024416eeaad9057aef6cc99a07cbb4d064f79d
+busybox      sha256=c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02 (runs the logic, under qemu-aarch64)
+static-no-kill PASS no kill/pkill/killall in pid1-hold.sh (outside comments)
+static-assign-once PASS FS_DEADLINE/T0 assigned only in fs_hold_init (3 assignments)
+static-reboot-first FAIL first='' backstop-lines=0
+static-clamp PASS deadline clamped to <= 299 s, ack window <= deadline, garbage -> max
+clock-unreadable PASS first reboot: 'backstop' at T0+1s (window 0..2)
+backstop-sleep-killed PASS first reboot: 'backstop' at T0+4s (window 2..5)
+done-no-ack PASS first reboot: 'collected' at T0+4s (window 2..5)
+ack-collected PASS first reboot: 'collected' at T0+5s (window 3..6)
+malformed-ack PASS first reboot: 'no-host-ack' at T0+5s (window 4..6)
+fifo-collected FAIL first reboot: '1458 no-host-ack' rel=5 want 'collected' in 2..5
+no-ack PASS first reboot: 'no-host-ack' at T0+6s (window 4..6)
+fifo-ack PASS first reboot: 'no-host-ack' at T0+6s (window 4..7)
+ack-holds PASS first reboot: 'deadline' at T0+8s (window 8..9)
+fork-count PASS first reboot: 'deadline' at T0+8s (window 8..9)
+ack-late PASS first reboot: 'deadline' at T0+8s (window 8..9)
+cancel-attempt PASS first reboot: 'deadline' at T0+9s (window 8..9)
+stalled-pid1 PASS first reboot: 'backstop' at T0+9s (window 9..10)
+fifo-logs FAIL first reboot: 'none' rel=-1453 want 'deadline' in 8..9
+fifo-stalled FAIL first reboot: 'none' rel=-1453 want 'backstop' in 9..10
+stage1-control PASS no reboot within 11s (as required for this control)
+fork-free-loop FAIL children seen in 3 s: 4 ( 17634 17917 18311 18923 )
+TOTAL pass=16 fail=5

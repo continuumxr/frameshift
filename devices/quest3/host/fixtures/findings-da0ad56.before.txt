@@ -1,0 +1,79 @@
+== test-host2  2026-10-09T07:14:11.5525522Z  PowerShell 5.1.26100.9549  code=<temp>\before-da0ad56\devices\quest3\host  scratch=<temp>\r2before  python=python
+== F. review findings of da0ad56 (each fails on da0ad56, passes after)
+FAIL  F1a [B1] continuation arriving during the ack settle: fs-status NOT sent 
+FAIL  F1b [B1] "Password: " arriving during the ack settle: fs-status NOT sent 
+FAIL  F1c [B1] a second, identical prompt arriving during the settle: still bytes after the settled prompt, NOT sent 
+FAIL  F1d [B1] "login: root / Password: " before the first command: nothing sent 
+FAIL  F1e [B1] pager "--More-- (42%)" before the first command: nothing sent 
+FAIL  F1f [B1] output ending in a newline (no prompt) before the first command: nothing sent 
+FAIL  F1g [B1] the prompt changes between commands (/ # instead of ~ #): fs-status NOT sent 
+PASS  F1h [B1] positive control: a quiet settle still sends fs-status
+FAIL  F1i [B1] COLLECTOR.md states the send gate (rule 3) 
+FAIL  F2a [S2] git replace <pin> <evil> (HEAD == pin, status clean): refused for the replace ref 
+FAIL  F2b [S2] objects/info/alternates present: refused 
+FAIL  F2c [S2] info/grafts present: refused 
+FAIL  F2d [S2] modification hidden from status by assume-unchanged AND a matching size/mtime: found by --no-filters content compare 
+FAIL  F2e [S2] a nested repository / file outside the pinned tree is found by the file-system walk 
+FAIL  F2f [S2] mode bits: Windows check states it cannot see exec bits (Evidence.mode_bits) 
+   [dash] FAIL  G17 git replace <pin> <evil>: refused (replace ref) (rc=0 out=)
+   [dash] FAIL  G17b git replace: content compared without replacement (rc=0 out=)
+   [dash] FAIL  G18 clean filter: content compared with --no-filters (rc=0 out=)
+   [dash] FAIL  G19 mode bits read from the file system, not core.fileMode (rc=0 out=)
+   [dash] FAIL  G20 GIT_CONFIG_GLOBAL from the caller is ignored
+   [dash] FAIL  G21 HOME/.gitconfig from the caller is ignored
+   [dash] FAIL  G22 objects/info/alternates present (rc=0 out=)
+   [dash] FAIL  G23 info/grafts present (rc=0 out=hint: Support for <GIT_DIR>/info/grafts is deprecated
+   [dash] FAIL  G24 nested repository with a planted file (rc=1 out=REFUSED: working tree is modified (ignored and untracked files included): ?? gki/;)
+   [dash] FAIL  G25 tracked symlink retargeted (rc=1 out=REFUSED: working tree is modified (ignored and untracked files included):  M link.py;)
+   [dash] TOTAL: 29 passed, 10 failed
+FAIL  F2g [S2] fs-gitcheck.sh under WSL dash: all E1 fixtures incl. replace/filter/fileMode/env/alternates/grafts/nested/symlink 
+   [bash --posix] FAIL  G17 git replace <pin> <evil>: refused (replace ref) (rc=0 out=)
+   [bash --posix] FAIL  G17b git replace: content compared without replacement (rc=0 out=)
+   [bash --posix] FAIL  G18 clean filter: content compared with --no-filters (rc=0 out=)
+   [bash --posix] FAIL  G19 mode bits read from the file system, not core.fileMode (rc=0 out=)
+   [bash --posix] FAIL  G20 GIT_CONFIG_GLOBAL from the caller is ignored
+   [bash --posix] FAIL  G21 HOME/.gitconfig from the caller is ignored
+   [bash --posix] FAIL  G22 objects/info/alternates present (rc=0 out=)
+   [bash --posix] FAIL  G23 info/grafts present (rc=0 out=hint: Support for <GIT_DIR>/info/grafts is deprecated
+   [bash --posix] FAIL  G24 nested repository with a planted file (rc=1 out=REFUSED: working tree is modified (ignored and untracked files included): ?? gki/;)
+   [bash --posix] FAIL  G25 tracked symlink retargeted (rc=1 out=REFUSED: working tree is modified (ignored and untracked files included):  M link.py;)
+   [bash --posix] TOTAL: 29 passed, 10 failed
+FAIL  F2g [S2] fs-gitcheck.sh under WSL bash --posix: all E1 fixtures incl. replace/filter/fileMode/env/alternates/grafts/nested/symlink 
+   [git-bash] FAIL  G1 clean checkout accepted
+   [git-bash] FAIL  G1b trailing slash accepted
+   [git-bash] FAIL  G8b positive despite a bogus GIT_DIR
+   [git-bash] INFO  G14 ln -s made a copy, not a link, on this platform (MSYS): skipped
+   [git-bash] FAIL  G17 git replace <pin> <evil>: refused (replace ref) (rc=1 out=REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/rep', not /tmp/tmp.G3Bpyo1uYl/rep
+   [git-bash] FAIL  G17b git replace: content compared without replacement (rc=1 out=REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/rep', not /tmp/tmp.G3Bpyo1uYl/rep
+   [git-bash] FAIL  G18 clean filter: content compared with --no-filters (rc=1 out=REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/flt', not /tmp/tmp.G3Bpyo1uYl/flt
+   [git-bash] FAIL  G19 mode bits read from the file system, not core.fileMode (rc=1 out=REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/fm', not /tmp/tmp.G3Bpyo1uYl/fm
+   [git-bash] INFO  G20c not blinded on this git
+   [git-bash] FAIL  G20 (REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/envg', not /tmp/tmp.G3Bpyo1uYl/envg
+   [git-bash] FAIL  G21 (REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/envg', not /tmp/tmp.G3Bpyo1uYl/envg
+   [git-bash] FAIL  G22 objects/info/alternates present (rc=1 out=REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/alt', not /tmp/tmp.G3Bpyo1uYl/alt
+   [git-bash] FAIL  G23 info/grafts present (rc=1 out=REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/grf', not /tmp/tmp.G3Bpyo1uYl/grf
+   [git-bash] FAIL  G24 nested repository with a planted file (rc=1 out=REFUSED: work tree is '$HOME/AppData/Local/Temp/tmp.G3Bpyo1uYl/nest', not /tmp/tmp.G3Bpyo1uYl/nest
+   [git-bash] INFO  G25 symlinks not created on this platform (skipped)
+   [git-bash] TOTAL: 23 passed, 12 failed
+FAIL  F2h [S2] fs-gitcheck.sh under Git Bash (MSYS): all applicable E1 fixtures 
+[removed for publication]
+FAIL  F4a [S4] FSA1 value with ESC/OSC/BEL: the collector CLI output is printable ASCII only 
+FAIL  F4b [S4] classifier notes quoting device output (ESC, OSC 52, BEL in the hash step): CLI output printable only 
+FAIL  F5a [S5] exec-failed with errno=4294967309 is a TOOL FAULT (INCONCLUSIVE, rule 5), not a compatibility FAIL (threw: Cannot convert value "4294967309" to type "System.Int32". Error: "Value was either too large or too small for an Int32.")
+FAIL  F5b [S5] signaled with sig=999999999999999 stays FAILED (not an outside signal), and code=999999999999999 on hash is UNPARSEABLE (threw: Cannot convert value "999999999999999" to type "System.Int32". Error: "Value was either too large or too small for an Int32.")
+FAIL  F5c [S5] an internal classifier error (malformed pins) is INCONCLUSIVE rule 8 "classifier error", never a verdict or a skipped check (threw: The property 'Path' cannot be found on this object. Verify that the property exists.)
+FAIL  F5d [S5] verdict exit codes never 0/1/2: classifier PASS exits 10, collector valid exits 10 
+FAIL  F6a [nit] disk full during capture: no throw, INCONCLUSIVE, capture error stated, fs-done not sent (threw: A parameter cannot be found that matches parameter name 'TestCaptureFailAfterBytes'.)
+FAIL  F6b [nit] disk full, CLI: collect.json written, RECOVERY line printed, exit 14 
+FAIL  F6c [nit] capture close fails: still a RECOVERY line, CAPTURE ERROR, exit 14 (not 2) 
+FAIL  F6d [nit] a failing write is not logged as a W line and stops everything 
+FAIL  F6e [nit] live Flush/Close run under a bounded timeout (a 5 s blocking call is abandoned at 100 ms) (threw: Method invocation failed because [FsHostNative] does not contain a method named 'SelfTestTimeout'.)
+FAIL  F6f [nit] host deadline derived from the device deadline: with 3 s left the collector stops itself, says so, sends nothing more (threw: unknown setting GiveUpMs)
+FAIL  F6g [nit] default host give-up is DeviceDeadline 300 s - margin 15 s, and COLLECTOR.md has the timing table (threw: The property 'GiveUpMs' cannot be found on this object. Verify that the property exists.)
+FAIL  F6h [nit] live mode refuses to start without -HandoffUtc (nothing opened) 
+FAIL  F6i [nit] misc CLI, empty first argument: same exit status and VERDICT/usage line as misc_rule.py 
+FAIL  F6i [nit] misc CLI, three arguments: same exit status and VERDICT/usage line as misc_rule.py 
+PASS  F6i [nit] misc CLI, one argument: same exit status and VERDICT/usage line as misc_rule.py
+FAIL  F6j [nit] test-host2.ps1 takes -OutFile 
+PASS  F6k [nit] C4 is a strict check (the only write is of New-FsCommand output + LF; one $cmd assignment)
+TOTAL: 3 passed, 39 failed, 0 skipped

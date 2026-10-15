@@ -1,0 +1,4 @@
+FSP1 nonce=dd48c303 seq=0 step=start rc=0 mode=show ver=0.4 hold_req=10 hold=10 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/dev/dri/card0 out=pipe rot=180 t0_ms=880035 len=184 crc=3eae7a55 END
+FSP1 nonce=dd48c303 seq=1 step=open rc=-2 errno=2 dev=/dev/dri/card0 at=stat len=76 crc=a5053009 END
+FSP1 nonce=dd48c303 seq=2 step=exit rc=0 code=10 reason=no_device shown=0 closed_at_exit=0 elapsed_ms=37 len=104 crc=690bd0e1 END
+FSP1 nonce=dd48c303 seq=3 step=eos rc=0 records=4 dropped=0 overflows=0 out=pipe len=80 crc=af3c4037 END

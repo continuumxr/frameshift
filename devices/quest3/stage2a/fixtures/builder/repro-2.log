@@ -1,0 +1,57 @@
+FrameShift Quest 3 stage-2a image (experiment (i)) — ONE ATTEMPT ONLY, never reuse
+CONTAINS VALVE BINARIES (glibc LGPL, coreutils GPL-3): PM and Chair only, never published
+built:            20260101T000000Z
+nonce:            0123456789abcdef   (USB serial FS-0123456789abcdef)
+TEST OVERRIDES:   FS_TEST_NONCE=0123456789abcdef FS_TEST_OUTBASE=$HOME/work/fsbuild-neg/stage2a/repro2 FS_TEST_STAMP=20260101T000000Z (negative fixtures only; NOT a candidate image)
+OUTPUT IMAGE:     boot-stage2a.img  size=43823104  sha256=1ad79de02132884c163fc563e3e20523ecb6fdd50ecfed601f35a3f773f4ddde
+
+## inputs (sha256 enforced unless noted)
+stock boot        49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50  <repo>/firmware/quest3/v66_unit1_slotA/boot.img
+stock vendor_boot 1e3b3762724478a7f592a11a7872cb8f7c55f0f882d7bb283ecbeffd691dbbcf  <repo>/firmware/quest3/v66_unit1_slotA/vendor_boot.img
+stock kernel      f34165b35a826052ce5b520d9313387c96970b498733f1a7b141dcf4afc94e7b  (byte-identical in the output: AOSP re-unpack)
+vendor modules    1ec0253fa9b80e7121722259ab9d6de0f1c4e5015846fea4737cd14af80a6745  lib/modules/modules.load.recovery (97 modules)
+vendor file list  403e891e9eb71e638afe1fceb715f87d6da02cfe4b12df2253c33efddae1c040  (111 entries)
+T1-pins.json      0cb7de7575dc473c9213b0fa6a7f833980c2f27f6e6d53f8b828559f718645d8
+AOSP mkbootimg    d2bb0af5ba6d3198a3e99529c97eda1be0b5a093  (E1 fs_gitcheck CLEAN; helper adbe27e92be16da5d2d8a2bc8f3ea35bd2040cd41ed38068c1360030433487e8)
+E1 notes          NOTE: mode bits not checkable here: skip (drvfs without metadata: no exec bits) 
+elfpin.py         51787b5d7bab7f7ed337729a74081fd89ac3f18dc5a3279f7a71c23246dd6cbe  (recorded; check output in elfpin-check.txt)
+t1-ramdisk-scan   73e969caf90418c6dd0ab9c06f10570ba6656f7472db6e337a3f24af3d28c524  (recorded; output in ramdisk-scan.txt)
+init.sh source    357490c771a5e732135e9ad9f290da42ee8f693461dd95881d2f15cdc9210963  (recorded)
+fs-valve.sh       2334c0aaf461feea9d7209392b6163892d86cbb92752321619402491dd82130d  (recorded)
+fs-inv.sh         367f311dad21311a11d1f317d6b98a72e049b9af4e2e7ab0d01f2b6a174b4aed  (recorded)
+build-image.sh    e5ce736603263ef8697dfa2ea95dbb2dde657e9d9d1a235d18260a32fbaeb456  (recorded)
+ramdisk.cpio      015f3ae9451188ed35eb26a13e600e3649407aae28e0b5df5f2e58c36e3ae646  size=4756992
+ramdisk.lz4       bbd1fa744867368fd42436f0722411e3ad63c37f05b9d9057ec5a84198e60497  size=2607468
+
+## ramdisk files (sha256  size  path  source); directories: bin config dev lib lib/fs proc run sys tmp valve valve/bin valve/lib 
+c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02  1981032  /bin/busybox  <repo>/build/third_party/busybox/busybox
+7ad5f1106acd828fa3e9d6da9cfa0e50d66431b4b2d3a951ce39f12375064959  705  /bin/fs-done  common/target/fs-done
+367f311dad21311a11d1f317d6b98a72e049b9af4e2e7ab0d01f2b6a174b4aed  1750  /bin/fs-inv  stage2a/fs-inv.sh
+c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29  1400  /bin/fs-reboot  <repo>/build/stage1-tools/fs-reboot
+ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e  808  /bin/fs-reboot-final  <repo>/devices/quest3/common/build/fs-reboot-final
+77f7a70a7904a7091db8e132b6c8f0ee68e6187f94d4690ec2a42a26f5206a74  676952  /bin/fs-supervise  <repo>/devices/quest3/common/build/fs-supervise
+2334c0aaf461feea9d7209392b6163892d86cbb92752321619402491dd82130d  4405  /bin/fs-valve  stage2a/fs-valve.sh
+ddfeb2d1ed1a7c31e4c01eba988da75dd1e0f7c54dcce8c6baa1d5597957736f  11221  /init  stage2a/init.sh (357490c771a5e732135e9ad9f290da42ee8f693461dd95881d2f15cdc9210963) with nonce
+11e44d2fa386d06c596c03ff54ecfb5aeeea4790a560c8e65bf26e76733bf1a7  4943  /lib/fs/fsb1-enc.sh  common/target/fsb1-enc.sh
+4294c9d57f3a94eba9847596aa614f557e7b4278cfeb5a22e38955fdd5b81dc4  7556  /lib/fs/pid1-hold.sh  common/target/pid1-hold.sh
+90154680070cfcb2a3027b8fa26a8091d24333329294a2f4be7a12c7f11f6402  67864  /valve/bin/b2sum  Valve rootfs-A /usr/bin/b2sum (T1-pins.json)
+4295f034edf7d62f721cfe994230ba139646c7872dc2a6899aa681f76fca31f1  67856  /valve/bin/uname  Valve rootfs-A /usr/bin/uname (T1-pins.json)
+2ddc56a02f476765a21e31d69144e68bee933950fe613747d54b87a2369a037e  204048  /valve/lib/ld-linux-aarch64.so.1  Valve rootfs-A /usr/lib/ld-linux-aarch64.so.1 (T1-pins.json)
+be7ee393429d493c4d3b996ed25cbb02fabb2896a77efe6d57e5993ead5bbb3b  1722992  /valve/lib/libc.so.6  Valve rootfs-A /usr/lib/libc.so.6 (T1-pins.json)
+
+## checks passed
+E1 git check; every pin above; elfpin.py check; static ELF (aarch64, ET_EXEC, no INTERP/NEEDED) for busybox, fs-reboot, fs-reboot-final, fs-supervise;
+applets present: sh mount mknod mkdir cut cat echo printf sync reboot sleep insmod mdev ls tr sed grep basename setsid kill ln uname sha256sum stty mv rm chmod base64 awk wc head mkfifo; no BLAKE2 applet;
+exact ramdisk list; no symlinks; no vendor collision (only shared directories); union lacks /etc/ld.so.preload /etc/ld.so.cache /usr /lib/libc.so.6 /lib/ld-linux-aarch64.so.1;
+only the 8 expected ELF files in the union; BLAKE2 scan of the final image: only /valve/bin/b2sum hits (plus the b2sum path string in the /bin/fs-valve script); kernel AF_ALG hash off;
+kernel bytes unchanged; header differs only in ramdisk size and boot.img signature size; every file in the image equals the staged file.
+
+## header diff
+3c3
+< ramdisk size: 1886092
+---
+> ramdisk size: 2607468
+8c8
+< boot.img signature size: 4096
+---
+> boot.img signature size: 0

@@ -1,0 +1,5 @@
+FSP1 nonce=3f9c07ab seq=0 step=start rc=0 mode=render ver=0.4 out=file len=70 crc=8d1b4331 END
+FSP1 nonce=3f9c07ab seq=1 step=render rc=0 w=1552 h=1664 out=/tmp/tmp.60BScpC7RV/odd.ppm lit_ppm=22993 max=0x90 mean_x1000=18243 rot=180 len=136 crc=fc2cc1dd END
+FSP1 nonce=3f9c07ab seq=2 step=exit rc=0 code=0 reason=rendered shown=0 closed_at_exit=0 elapsed_ms=106 len=103 crc=e862a65f END
+FSP1 nonce=3f9c07ab seq=3 step=eos rc=0 records=4 dropped=0 overflows=0 out=file len=80 crc=ae9f7753 END
+# exit=0

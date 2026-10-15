@@ -1,0 +1,15 @@
+INFO source vendor_boot (vendor_boot): 128 modules; vendor_boot v4; ramdisk00(type1): lz4, 155 files, 128 .ko
+INFO source boot (boot): 0 modules; boot v4; ramdisk lz4, 230 files, 0 .ko
+INFO source vendor_dlkm (ext4): 248 modules; ext4 /lib/modules: 253 files listed
+INFO source odm_dlkm (ext4): 20 modules; ext4 /lib/modules: 25 files listed
+INFO source vendor (ext4): 0 modules; ext4 /lib/modules: symlink -> /vendor_dlkm/lib/modules
+INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+INFO source-redirect: vendor: /lib/modules -> /vendor_dlkm/lib/modules (covered by source 'vendor_dlkm' at /lib/modules)
+PASS module-lists: all 2053 module references in 7 modules.load*/modules.dep file(s) are present in the inventory
+PASS modprobe-crosscheck: __versions of 268 unique modules agree with modprobe --dump-modversions
+INFO same-name-identical: 128 module name(s) present more than once with identical content (deduplicated, all paths kept in inventory)
+PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+PASS stock-btf: stock kernel kinds: ARRAY, CONST, DATASEC, ENUM, FUNC, FUNC_PROTO, FWD, INT, PTR, RESTRICT, STRUCT, TYPEDEF, UNION, VAR, VOLATILE (111551 types)
+PASS profile: device quest3s: declared sources and pinned counts (module_copies=396, required_from_vmlinux=2583, unique_modules=268) match; reference sha256 matches pin
+PASS reference: 396 module copies, 268 unique; 3514 unique (symbol,CRC) imports; 2583 required from vmlinux; 0 unversioned imports; module_layout 0xb1f01218; vermagic flags 'SMP preempt mod_unload modversions aarch64'; reference.json sha256 89407ffa0c241932e88fa74b1ca110e58eee7d6d25650e1a648a0df8a4bc3457 (pin this for check --reference-sha256)
+RESULT: PASS (exit 0) -- reference complete

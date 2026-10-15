@@ -1,0 +1,5038 @@
+# FrameShift — Journal
+
+*Edited for publication: names and links removed or paraphrased.*
+
+**What this is.** A running record of how FrameShift got from "a SteamOS image
+exists for ARM" to a working port on standalone VR headsets: what we tried,
+what we found, what worked, what didn't, and what is dangerous. It is written
+so someone new can read it top to bottom and retrace the path — or skip
+straight to **[Do not go here](#do-not-go-here)**.
+
+It is kept current as work happens. When an earlier entry turns out wrong it is
+**corrected visibly** — see [Corrections](#corrections) — not silently rewritten.
+
+**How to read the tags.** Ruling `FS-R-001`:
+
+- **[M]** measured on hardware, with output.
+- **[M-static]** read from a named file, image or dump.
+- **[D]** derived from something measured.
+- **[C]** inferred, unconfirmed.
+- **[O]** open.
+
+**Where things are.**
+
+| what | where |
+|---|---|
+| the plan | `docs/PROJECT_SETUP.md` |
+| deferred questions | `docs/RESEARCH_NOTES.md` |
+| arguments to the reviewer ("Chair") and the rulings | `relays/` |
+| per-device work | `devices/<device>/` |
+| firmware and images (gitignored) | `firmware/` |
+| third-party binaries (gitignored) | `build/` |
+
+---
+
+## Where we are now
+
+| | |
+|---|---|
+| **Goal** | Valve's SteamOS (the Steam Frame's ARM build) on Meta headsets in the order adopted by FS-R-006: **Quest 3 → Quest 2 → Quest Pro → Quest 3S → Quest 1 → XR Elite** (Pro and 3S offline/build only; changes applied in lockstep). |
+| **As of** | 2026-10-13 (UTC), through J-174. Latest ruling **FS-R-011**. **FS-A-011** was sent early as an incomplete draft (J-94; kept as FS-A-011 (private review record)); the PM told the Chair, and the **consolidated FS-A-011** is FS-A-011 (private review record) (review findings applied, J-97; re-review fixes, J-99; evidence blobs restored, J-100; verification passed and relay finalised, J-101); bundles built and checked (J-102); **sent by the PM 2026-10-11** (J-103); ruled **FS-R-011** (J-104): CONCUR EXECUTE trial (iii-b). Entry point: the root `README.md`. Public repo `continuumxr/frameshift` **public** since 2026-10-12 (single commit `2158d06`, J-118); `continuumxr/continuum` archived (J-93). |
+| **Stage** | **M1 first shell** passed (Stage 1, FS-R-005). **M2 correct image** passed: stage 3c on Unit 1 (v66, J-125), then **stage 3d on both Quest 3 units at v2.7** (J-144, J-146). Earlier trials: (i) COMPATIBILITY FAIL at step 4, a listing-rule defect (FS-R-009); (iii) INCONCLUSIVE (FS-R-010); (iii-b) machine PASS, run 2 lit but garbled (J-107). |
+| **Next device action** | **K1a**: a FrameShift-built kernel by temporary boot on Unit 2 (package FS-A-013, in review); then K1g (boot-chain guard), the full thermal service, K1i and **R-1 "SteamOS boots"** (J-172). |
+| **Units** | Quest 3 Unit 1 `QUEST3UNIT1`: v2.7 (J-131), `fastboot boot` only; faulty proximity sensor. Quest 3 Unit 2 `QUEST3UNIT2`: v2.7, slot `_a`; faulty IPD slider and proximity sensor (J-133). Quest 2 `QUEST2UNIT`: v2.7, slot b (J-75). |
+| **Biggest known risk** | Valve's update machinery writes Qualcomm boot firmware. It is isolated by ruling `FS-R-001`. |
+| **Biggest unknown** | Head tracking on non-Valve hardware. Parked until boot and display work — not dropped. Nearer term: whether the Quest 3 panels light at all on our `fastboot boot` path (H1 vs H2, `docs/research/display-handoff-dark.md`) [O]. |
+
+---
+
+## Do not go here
+
+Paths that are dangerous, or that looked promising and don't pan out. Each one
+cost us something to learn.
+
+1. **Never let Valve's update or firmware machinery run on a non-Valve
+   headset.** After every update, Valve's `/boot/kernelsetup.sh` writes Steam
+   Frame's U-Boot **and the entire Qualcomm boot chain** (`xbl`, `xblconfig`,
+   `tz`, `hyp`, `aop`, `uefi` and more) to partitions found by name. It also
+   edits the partition table of `/dev/sdb`, which on a Quest 3 holds `xbl_a`
+   [M]. At every boot, `steamos-boot.service` runs `splctl`, which writes a
+   `bootenv` partition. What stops this on other hardware is coincidence — a
+   text match on the device-tree `model` string, plus partition names that
+   happen to differ — not design. (`FS-A-001` §5, `FS-A-002` §2, `FS-R-001`.)
+2. **Never install an unmodified Valve RAUC update bundle on a Quest.** It
+   brings Valve's SM8650 kernel and DTBs and re-arms item 1. Updates must go
+   through a port-controlled fetch → verify → diff → transform → install step.
+   (`FS-R-001` R3.)
+3. **Never write boot-chain partitions on any headset**: `xbl*`, `tz`, `hyp`,
+   `aop*`, `uefi*`, `abl`, `devcfg`, `cpucp`, `shrm`, `qupfw`, `keymaster`,
+   `multiimg*`. On the Quest 3 `androidboot.secure_fused = "1"` [M], so the
+   **ROCKNIX-ABL route the handheld ports use — replacing `abl_a`/`abl_b` —
+   will not work and risks a brick.** The ABL stays Meta's.
+4. **Don't keep a Quest device-tree `model` string that contains `POC-F`,
+   `POC-E`, `EV1`, `EV2`, `EV3`, `DV1`, `DV2`, `MP` or `mte`** (case-sensitive
+   substring). That is the gate on Valve's firmware writer. Checked: none of
+   the Quest 3's 15 model strings match, and the running one is
+   `Eureka (PVT1.1)` [M]. Note this is a build check, not a safety boundary
+   (`FS-R-001`).
+5. **Don't inspect Valve's btrfs rootfs with `btrfs restore`.** It silently
+   wrote **115,344 of 185,073 files as empty** — the small, zstd-compressed
+   inline ones — and printed only a buried error. Use a read-only kernel
+   mount with `ro,nologreplay` and copy out. (`FS-A-002` §1.)
+6. **Don't read "ships a DTB for SoC X" as "supports SoC X".** Valve's 6.18
+   kernel ships DTBs for SM8250 phones but has only the SM8250 clock driver
+   enabled. Check the kernel config.
+7. **Don't treat `github.com/ValveSoftware/steamos_kernel` as the Steam Frame
+   kernel source.** It is the old SteamOS 2 x86 archive, newest branch 4.19
+   from 2019. The Frame kernel's commit is not in it [M-static]. As of
+   2026-10-07 the Frame kernel source has not been located.
+8. **Don't ship from Valve's dev branches.** Valve's image server carries
+   `rc`, `beta`, `bc`, `main` and more. Only `stable` is a release branch by
+   Valve's own config, and only stable bundles are signed with the key a
+   default install trusts. FrameShift releases from `stable` only.
+   (`FS-A-003` §5a.)
+9. **Think before `fastboot set_active` on a Quest.** Switching to a slot
+   holding a different Android version boots that Android against the shared
+   `userdata`, which can migrate data one way **[C]**. Prefer experiments on
+   the already-active slot. (`FS-A-004`.)
+10. **Don't expect Valve's tracking firmware to load on a Quest.** SteamVR's
+    `cv` driver on the Frame depends on SM8650 DSP images. Those are signed
+    per SoC and OEM **[C]**.
+11. **Strings in a binary are not control flow.** U-Boot conclusions drawn
+    from string tables are hypotheses (`FS-R-001` §4).
+12. **Don't count on ramoops/pstore surviving a reboot on the Quest 3.** It is
+    configured, reserved and live [M]. But a marker written to `/dev/pmsg0`
+    was gone after a warm `adb reboot` (twice) and after a reboot through
+    the bootloader. Even the previous kernel's console log was gone, and the
+    records were absent from the first moment adb came up — before Meta's
+    `panicreporter` runs [M]. Find another way to prove a test kernel ran.
+13. **Don't create partitions to satisfy Valve's expectations.** Nothing in
+    Meta's boot chain reads `bootenv` or `uboot_*`. Worse, Valve's firmware
+    writer checks that its target partitions *exist* before writing.
+    Creating names like `xblconfig_a` would *arm* it to overwrite the
+    Quest's `xbl` with Steam Frame's. Partitions we genuinely need for
+    SteamOS (esp/efi/rootfs/var/home) belong inside the `userdata` area
+    (`sda`), never on the boot-chain LUNs (`sdb`/`sdc`/`sde`).
+14. **Don't assume Quest 3 is "SM8550 plus a new device tree".** Its platform
+    is `anorak` [M]. Its main clock controller and UFS layout match SM8450
+    far more than SM8550, and mainline Linux has **no** `anorak` support
+    [M-static, research pass]. A mainline Quest 3 kernel is a new-SoC port.
+    For now the published Meta kernel is the base.
+15. **Don't "fix" Valve's broken `steamos-firmware-update` to make an image
+    work.** Its syntax error happens to block its firmware-update path.
+    Repairing it would re-arm that path (FS-R-002 rev. §5).
+16. **Don't write diagnostics to the Quest's persistent partitions as a
+    shortcut.**
+    - `userdata` is encrypted; Android holds the keys.
+    - `persist`, `metadata`, `misc` and `devinfo` hold calibration,
+      encryption metadata and boot-control state.
+    - The 2 MiB `pstore` partition is unused (all zeros) and the stock kernel
+      can't write to it (`PSTORE_BLK` off).
+
+    Any persistent logging is a separately reviewed, scoped write.
+17. [removed for publication]
+18. **Don't patch sources through inline heredocs or `python -c` strings in
+    this environment.** Backslashes get rewritten on the way through: a
+    `\`-newline continuation became a literal `\n` (the J-20 blocker), a
+    `sed` once deleted every `$`, and `\\f` became a form feed. Write the
+    patch as a script file, run `scan_escapes.py`, and **execute** the
+    changed code: `sh -n` passes valid-but-wrong lines.
+19. **Don't trust a negative test that only checks "it failed".** A harness
+    that ran the wrong command (`neg label env …` without `shift`) reported
+    every negative as refused. Each negative must assert its expected
+    refusal reason; each new fixture gets a control run against the old code
+    that must fail.
+20. **Don't use a script-level PowerShell `trap { continue }` as a
+    "log and carry on".** It resumes after the enclosing top-level statement,
+    so inside a loop it leaves the loop. Use `try/catch` at the granularity
+    you want to survive.
+21. **[O] means OPEN, not "observed".** I used [O] for "observed" throughout
+    FS-A-004 rev 3 and FS-A-005, and the Chair corrected it (FS-R-005 §5).
+    Hardware output is [M]; a named static artifact is [M-static]; a
+    derivation is [D]; a hypothesis is [C]; an unresolved question is [O].
+22. **Don't send characters blindly into the target shell.** The collector
+    must tell command echo apart from completion, handle continuation and
+    partial output, and stop on a missing completion marker, reporting
+    INCONCLUSIVE rather than sending more (FS-R-005 §5, D1). Prove this
+    offline before the next collection.
+23. **Don't run a headset under our own image at high load without
+    thermal protection.** The skin and battery *shutdown* thresholds live
+    in Android userspace; the kernel DT mitigates only partly, and the GPU's
+    kernel cooling path is not shown to act autonomously (FS-R-006 §4).
+    Our image must provide and verify its own thermal control (fan policy
+    with tach/failure handling, temperature-based throttle/shutdown), or
+    keep the hold short and bounded (`PROJECT_SETUP.md` §6A).
+24. **Don't trust the stock kernel's default CPU governor.** The Quest 1/2
+    stock kernels default to `performance`, so every cluster sits at
+    maximum without Android's power HAL.
+25. **Never force a CPU beyond the OEM frequency table.** Community reports
+    say this has permanently damaged a headset (2026-10-08). [paraphrased for publication] The CPU
+    table is firmware-owned. GPU overclocking through a kernel module is
+    possible but beyond-spec; it is outside the envelope unless separately
+    decided (J-30).
+
+---
+
+## Building on others
+
+We don't reinvent what others have solved; we build on it and finish what
+they haven't. This index is per device. Details: `docs/RESEARCH_NOTES.md`.
+
+| repo | relevant to | what we take from it |
+|---|---|---|
+| `hashtagbasit/SteamOS-ARM-Port` (GPL-2.0) | **Quest 3 now**; all | initramfs with a USB ACM+NCM debug shell; Valve rootfs ingest from `.raucb` + casync; service mask lists; a signed updater with rollback; stock-ABL boot recipes (REDMAGIC 6, Lenovo) |
+| `MaSieS4Fun/SteamOS-ARM-SM8550` | Quest 3 (bring-up material) | Armbian SM8550 kernel patch set |
+| `iddqdExe` fork (commits `d08846a5`, `971ecc56`) | any stock Qualcomm ABL | appended-DTB alignment quirk in gzip v0 boot images |
+| `justjoseorg` fork (commit `5557ac0d`) | Quest 3 | the list of Frame VR components — what a headset port must **keep** |
+| `gryoza/reverie` | Quest 3 | rootfs extraction from Valve's casync store, plus its own updater |
+| Valve `frame-public/lepton` | later (tracking) | an Android container built on Waydroid, Halium and libhybris |
+| `pmaports` `device-lynx-r1` / `linux-lynx-r1` (an XR2 headset) | **Quest 2, XR Elite** | mainline 6.13 on an XR2: USB, Wi-Fi and UFS working; dual-DSC panel work stuck — the closest XR prior art |
+| postmarketOS `soc/qualcomm-sm8250/linux` | **Quest 2, XR Elite** | active SM8250 community kernel (7.2) |
+| `msm8916-mainline/linux-mdss-dsi-panel-driver-generator` | all (display) | turns downstream panel DT into a mainline `drm_panel` skeleton |
+| `Block-Flock/pmaports-oculus-monterey`, `cstahly/quest1-bootloader-to-VR` | **Quest 1** | Quest 1 Linux on Meta's 4.4 kernel: USB networking, Wi-Fi, Monado, controllers. The UFS is 4Kn |
+| Valve `initrd_shell` initramfs hook | Quest 3 | FunctionFS/adbd setup — prior art for an ADB fallback |
+| `seilent` fork, branch `pocket-micro-2` | **Quest 2, XR Elite** (SM8250) | SM8250 kernel 7.2.6 via `seilent/armada`, Adreno 650 firmware |
+| `nicolas-riera/Quest1-SteamOS` | **Quest 1** | SteamOS via `fastboot boot` of Meta's kernel; Monado; custom SteamVR driver; 3DoF; a map of the Frame stack |
+| `facebookincubator/oculus-linux-kernel` | all Quests | Meta's per-build kernel source, device trees included |
+
+What we **don't** take: the ROCKNIX-ABL boot route (see Do-not item 3), and the
+port's handheld-specific stripping of VR components.
+
+---
+
+## Log
+
+### Before 2026-10-07 — inherited from an earlier, shelved device programme
+
+- Work from that earlier programme is not published *[removed for publication]*. A claim
+  from that work that "any bad kernel is recoverable" was **rejected** as
+  overreach: two recoveries are not a guarantee (`ERRATA-001`).
+- The XR Elite is SM8250 [M], read from its own `dtbo`.
+
+### 2026-10-07
+
+**J-01 · Premise fixed: this is a port of SteamOS, not a lookalike.** Valve
+published an ARM SteamOS image for the Steam Frame:
+`steamframe-oobe-repair-20260922.5153644-0.3.0.img.bz2`, 4.07 GB. The work is
+the kernel, device tree, display and sensors — not building a distribution.
+
+**J-02 · First read of the Steam Frame image** [M-static] (`FS-A-001`).
+
+- **Partition layout:** GPT with `esp`, `efi-A`, `rootfs-A`, `var-A`, `home`.
+  The rootfs is **btrfs**, unlike Steam Deck's ext4.
+- **U-Boot:** `2025.07-rc3` for board `deckard`. Its FIT embeds an
+  `sm8650-deckard` device tree. **Steam Frame is SM8650 (Snapdragon 8 Gen 3).**
+- **Display:** two DSI controllers, one panel each, with a Valve
+  `drm_panel` driver on upstream `drm/msm`. No panel timings anywhere in the
+  device tree.
+- **Partition lookup:** the rootfs finds partitions by GUID, via
+  `/SteamOS/PARTSETS`.
+
+**J-03 · Plan reordered: Quest 3 first.** The Chair's continuity directive and
+the evidence agree. The Quest 3 can `fastboot boot` a kernel without writing
+anything; this requires an unlocked headset (assumed). The Quest 3 (XR2 Gen 2) is also the nearest neighbour to the
+Frame's SM8650. The XR Elite is shelved and Quest Pro dropped.
+
+**J-04 · The Frame's rootfs** [M-static].
+
+- **Kernel:** `6.18.0-gfbdbca41fd45`. Mainline-style, with `msm` and Valve's
+  `panel-deckard` built in, and the full config embedded.
+- **SoC coverage:** SM8550 support is a near-miss — no SM8550 interconnect.
+  SM8250 support is effectively absent.
+- **Userspace:** SteamVR native ARM64 is the VR runtime, and FEX is the x86
+  translation layer.
+- **Tracking:** the tracking driver (`cv`) loads SM8650 DSP firmware.
+
+**J-05 · Safety finding: Valve's updater writes boot firmware** (Do-not item 1).
+Reported in `FS-A-001`. Ruling `FS-R-001` accepted it:
+
+- isolate Valve's update machinery;
+- no unmodified bundles;
+- Stage 1 uses the **Quest's own stock kernel** plus a minimal initramfs, with
+  mainline as a parallel track;
+- pre-declared console outcomes: PASS / TRANSPORT FAILURE / INCONCLUSIVE;
+- U-Boot and tracking deferred.
+
+**J-06 · Clean extraction; the full writer inventory** (`FS-A-002`).
+
+- **Clean extraction:** a read-only kernel mount recovered the files
+  `btrfs restore` had zeroed (Do-not item 5). The image's hash is unchanged,
+  and there was no btrfs tree log to replay.
+- **Caller chain traced:** RAUC install → `post-install.sh` →
+  `steamos-finalize-install` → `kernelsetup.sh`.
+- **Second writer:** `splctl` writes a `bootenv` partition at every boot.
+- **Not a threat:** `steamos-firmware-update` doesn't even parse in this build.
+
+**J-07 · Valve's update server, and the release policy.**
+
+- **Server:** `steamdeck-images.steamos.cloud/vr/` holds every Frame build as
+  a small signed RAUC bundle plus a casync chunk store.
+- **Signing:** only `stable` builds are signed with the key a default install
+  trusts. 0.4.4 "Beta" — the publicly announced one — is signed with Valve's
+  dev key [M-static, verified with `openssl cms`].
+- **Policy (PM):** release from `stable` only, which is currently 0.3.0.
+  `beta` may become an opt-in channel once the team grows. (`FS-A-003` §5a.)
+
+**J-08 · Kernel source.** Valve's `steamos_kernel` repo turned out not to be
+the Frame kernel (Do-not item 7). **Meta does publish per-build Quest 3
+kernel source**, device trees included:
+`facebookincubator/oculus-linux-kernel`, branch
+`oculus-quest3-kernel-master`, one commit per firmware build [M-static,
+two commits checked directly].
+
+**J-09 · Community work surveyed.** Five narrow research agents covered the
+port's boot path, its update handling, the forks, Meta's source, and Valve's
+builds. Key lessons:
+
+- **Valve updates:** the leading port avoids Valve's updater by design rather
+  than defusing it, and ships its **own** signed updates.
+- **Boot route:** it boots through a replacement ABL, which can't apply to a
+  fused Quest.
+- **Reusable:** its initramfs USB shell and its stock-ABL recipes.
+- **Precedent:** `Quest1-SteamOS` already boots SteamOS on a Quest 1 with
+  `fastboot boot`.
+
+**J-10 · Quest 3 static baseline** (`FS-A-003` §1) [M-static], covering ten
+firmware sets from v66 to Horizon OS 2.7, with OTA payloads extracted and
+hash-verified.
+
+- **Kernel line:** every build is **Linux 5.10**.
+- **Built in on every stock kernel:** a USB ACM serial gadget and ramoops.
+- **Ramoops region:** reserved in the stock device tree at `0xbfa00000`.
+- **`DEVTMPFS` is off**, so our initramfs must create `/dev` itself.
+- **Platform codename** in the drivers is `anorak`.
+
+**J-11 · First hardware contact: read-only probe of the PM's Quest 3** [M].
+Quest 3 Unit 1 (`QUEST3UNIT1`). [paraphrased for publication]
+
+- **Active slot is `_a` (v66)**, not B as assumed.
+- `secure_fused=1`.
+- DT model `Eureka (PVT1.1)`, compatible `qcom,anorak oculus,eureka …`.
+- Panel `meta,eureka_panel_sharp`.
+- ramoops live at `0xBFA00000` (576 KiB) and pstore mounted.
+- USB controller `a600000.dwc3`.
+- Full UFS map:
+  - `sdb` = `xbl_a` and friends;
+  - `sdc` = `xbl_b`;
+  - `sde` = most slotted firmware, plus `boot`/`vendor_boot`/`dtbo`;
+  - `sda` = `userdata`/`super`/`persist`.
+- No `bootenv` or `uboot*` partitions.
+
+**J-12 · Tooling.** busybox-static 1.37.0 arm64 fetched from the Ubuntu
+archive. The chain was verified end to end: archive signature → package
+index → `.deb` hash. WSL now has `lz4`, `cpio`, `dtc`, `zstd`, `erofs-utils`,
+`simg2img`, `bwrap` and `casync`. The Android boot-image, OTA-payload, LZ4,
+cpio and DTB parsers are our own, validated against OTA hashes.
+
+**J-13 · Chair ruling `FS-R-003`.**
+- Stay with the stock-kernel experiment and keep preparing it offline.
+- No OTA or kernel rebuild is justified yet.
+- Don't switch slots just to get a source match.
+- Use AOSP tooling to cross-check our parsers.
+- Rewrite the initramfs sequence with staged markers. PID 1 must never exit.
+- Use a fresh nonce for every attempt.
+- PM process rule: the next relay is finalised only after the Chair's
+  response to the previous one has been reviewed.
+
+**J-14 · Retention tests and the bootloader's own report** [M]. Raw logs:
+FS-A-004 (private review record).
+- **pstore retention failed in every path tried:**
+  - T1, warm reboot;
+  - T1b, warm reboot with polling from the first moment adb was up, which
+    rules out Meta's `panicreporter` cleaning the records;
+  - T2, reboot through the bootloader.
+- **T3 (forced power reset) not run.** It needs the PM's hands, and retention
+  is even less likely there.
+- **`fastboot getvar`:** `current-slot:a`;
+  **both slots `successful:yes`, `unbootable:no`, retry count 6**;
+  `max-download-size` 768 MiB; `is-userspace:no`; `kernel:uefi`.
+- **Slot policy (PM):** the active slot (A) is known-good and stays untouched.
+  Anything that writes goes to slot B. `fastboot boot` writes nothing, so it
+  is slot-agnostic.
+
+**J-15 · Chair rulings `FS-R-002` (original, then revised after the bundle)
+and the PM's relay-timing rule.**
+- **Verified:** the Chair checked all 52 bundle files against their hashes,
+  and confirmed from Valve's own source that the update hook edits the GPT
+  before its firmware checks.
+- **Narrowed:**
+  - the firmware-slot check covers the *current* slot, but the writes go to
+    the *other* slot;
+  - `--no-kernel` / `--no-bootloaders` don't stop `kernelsetup.sh` — only
+    `--no-boot-install` does;
+  - `set -e` doesn't protect code called under `if !`.
+- **Added to the inventory:** the `steamos-efi` delegate, the `deckard_fw`
+  initramfs hook, `vrconfig_write` (a `/persist` writer), and the chroot and
+  `/etc`-overlay effects.
+- **PROJECT_SETUP:** corrected per FS-R-002 rev. §7. That included a tag
+  sentence my own earlier search-and-replace had mangled.
+
+**J-16 · Stage-1 image built offline** (`devices/quest3/stage1/`).
+- **Parsers cross-checked:** Google's AOSP `mkbootimg`/`unpack_bootimg`
+  (commit `d2bb0af5`) agree with our hand parsers, with byte-identical kernel
+  and DTB.
+- **Ramdisks:** one vendor fragment holds the modules, the boot ramdisk is
+  Android's generic one, and the two share no paths.
+- **Modules:** Meta's **recovery** list (97) is a superset of the normal
+  first-stage list (76). It adds LEDs, reboot-mode and display.
+- **USB:** the controller is `dr_mode=otg` with a role switch, and the role
+  can be forced to `peripheral` through sysfs [M on Android].
+- **LEDs:** red, green and blue LEDs exist [M], usable as a visual stage
+  signal.
+- **Builder result:** the stock kernel is **byte-identical** in the new image;
+  the only header differences are the ramdisk size and the dropped 4096-byte
+  boot signature.
+- **Still to come:** the reboot-to-fastboot helper needs an aarch64
+  cross-compiler.
+
+**J-17 · Kernel landscape for our targets** (two research passes,
+[M-static], not yet re-checked by the Arbiter).
+
+| finding | status |
+|---|---|
+| Quest 3's `anorak` in mainline | **zero support**: no SoC ID (549), no clock/pin/interconnect drivers, GPU chip ID `0x43050b00` absent from mainline's catalog |
+| `anorak` vs SM8550 / SM8450 | clock-controller offsets match SM8450 (95/119) far better than SM8550 (0/97); the GIC address matches Qualcomm's XR part SAR2130P |
+| postmarketOS (now **"Nura"**) Quest ports | none for any Quest |
+| Lynx R1 (an XR2 / SM8250 headset) | in pmaports on mainline 6.13: USB, Wi-Fi and UFS work; its dual-DSC panels do not |
+| Quest 3 panel | Sharp/Novatek, dual-DSI, DSC, C-PHY, 2064×2208 per eye, 72–240 Hz |
+| postmarketOS panel-driver generator | gives a skeleton only for this panel (no dual-DSI; ignores Meta's extra init sequences) |
+| Quest 1 | active community ports exist on Meta's 4.4 kernel |
+
+**J-18 · Stage-1 package finished** (FS-A-004 (private review record) and its bundle).
+- **A real design bug, caught by measurement before any device use.**
+  Android's own boot log on the headset [M] shows modules loading in
+  *dependency* order, not `modules.load` order. My earlier `modules.dep`
+  lookup had used bare names against a file that uses absolute paths, so it
+  reported "no dependencies". Loading in list order would have started the
+  USB controller before its PHYs.
+- **The fix, and its proof:** `init.sh` now resolves `modules.dep` plus
+  softdeps the way modprobe does. A `bwrap`-sandboxed test against Meta's real
+  module files reproduces **all 35 loads the boot log captured, in exactly
+  Android's order**, with zero dependency violations.
+- **Reboot helper:** `fs-reboot` was cross-compiled (1,400 bytes; it can only
+  request `bootloader`) and its disassembly checked. It is never run off the
+  device.
+- **Host side:** `host-observe.ps1` does the one `fastboot boot`, watches for
+  our USB gadget, fastboot and adb, talks to our shell on PASS, and classifies
+  against timing bands declared in advance.
+- **Display:** the stock kernel has **no framebuffer console** (`CONFIG_FB`,
+  `DRM_FBDEV_EMULATION` and `VT` all off) [M-static]. Our test init draws
+  nothing on the panels. The LEDs are the visual channel.
+- **Valve follow-ups:**
+  - `deckard_fw` is install-only: it adds firmware files to Valve's initramfs
+    and does nothing at runtime.
+  - `steamos-efi/steamos-bootconf` is a static binary, still to analyse.
+  - The activation links for `steamos-boot` and `setubootenv` exist.
+
+**J-19 · Chair ruling `FS-R-004`, and FS-A-004 revision 2.**
+
+The Chair kept the strategy but found real flaws in the measurement and
+recovery design. All are now fixed and covered by fixtures.
+
+| flaw | fix |
+|---|---|
+| **PASS could be faked by terminal echo**: the observer looked for the token it had sent | a challenge whose answer, `sha256(nonce:challenge)`, is computed on the headset and never sent; complete-record parsing; required kernel and PID 1; echo off; ack confirmed separately by PID 1 |
+| **The observer could hang or crash** | a bounded process wrapper; serial timeouts and cleanup; a monotonic clock; exactly one device; gadget-to-COM association by nonce, with a mismatch meaning no contact |
+| **Recovery depended on USB** — logging wrote to the USB tty before rebooting | RAM-first logging, a dead-man timer that touches nothing but RAM and the reboot helper, and the helper now required |
+| **Outcome classes too generous** | `DEVICE_REJECTED` / `HANDOFF_ACKNOWLEDGED` / `INCONCLUSIVE`; timing alone never upgrades a result |
+| **Inputs not enforced** | the builder enforces every reviewed hash, static-ELF rules, the exact ramdisk list and the exact header diff, and reads busybox's real applet table. The observer refuses mismatched or already-used images, and images built from a different `init.sh` |
+
+Results:
+- **44/44 host fixtures pass** under Windows PowerShell 5.1 — the runtime the
+  Chair could not test. One initial failure was a bad fixture, not the
+  observer.
+- Builder negatives refused; preflight accepts the attempt image and rejects
+  stale builds.
+- **Lesson:** the Chair's echo counterexample is exactly the "PASS
+  indistinguishable from not running" failure the project's conventions warn
+  about.
+
+**J-20 · FS-R-004 concurrence, pre-trial review, and FS-A-004 revision 3.**
+
+- The Chair concurred (consolidated FS-R-004) with one trial of the
+  revision-2 image. Before running it, two adversarial agent reviews (target
+  `init`; host side and relay claims) found a likely blocker — the gadget's
+  class bytes 0/0/0 would leave Windows without a COM port — plus a 60 s
+  firmware-fallback stall, an uncertain handoff that ended observation, and a
+  per-directory-only attempt guard. **PM: fix first, re-review.** The
+  revision-2 image was retired unrun.
+- The first revision-3 draft (commit `6802d66`) went through the same two
+  reviews. They found:
+  - **a blocker introduced by the fix**: `init.sh:198` had a literal `\n`
+    instead of a line continuation, so `fail acm` would have run on every
+    healthy boot (inline-patch damage; do-not 18);
+  - the observer's hash checks **failed open** under StrictMode: a failed
+    `Get-FileHash` made the guard `if` throw, which skipped the abort;
+  - a pre-boot abort (e.g. headset not yet in fastboot) consumed the image
+    directory for good.
+- Fixes: gadget section rewritten with checked writes and exact string
+  readbacks of all identity values; a new **execution** fixture
+  (`test-gadget.sh`, bwrap + fake configfs) whose control run against the
+  buggy init fails 6/6; fail-closed hashing plus a pre-registration `trap`;
+  `precheck-*.log` until registration; case-sensitive records; `--ignored`
+  clean-tree check and `PYTHONPYCACHEPREFIX`; five builder negatives
+  including a late one (corrupted packed init) that proves nothing is
+  published.
+- Results: host fixtures **67/67** (control against the old observer: 4
+  fail); gadget fixture 6/6 under dash and `bash --posix`; module order
+  97/97; builder negatives 5/5 with the expected reasons.
+- Rebuilt: `20261008T020221Z-f6977d6318f95802`, image `e91815bb…26e0`. The
+  first revision-3 image (`5c03f6f6…`) is retired unrun.
+- **Third round** (one combined final pass): no blocker, but one MAJOR. My
+  F1 fix added a script-level `trap { …; continue }`. In PowerShell that
+  `continue` resumes after the whole enclosing *top-level* statement, which in
+  the watch loop is the `while` itself, so one stray exception after the boot
+  would have ended observation of the only attempt. Fixed with a `try/catch`
+  per watch iteration and around the boot call, and `Invoke-FsNative` never
+  throws after `Start()`. New fixtures (I0–I6) run a full replica attempt
+  against a **fake `fastboot.exe`** compiled by the fixture, with injected
+  faults. The control (previous observer) fails I1 and I4. Also: G7 (a real
+  `write()` error via `/dev/full`, with per-case timeouts), marker
+  bookkeeping, and builder hardening (`fsmonitor`, `ls-files -v`,
+  `PYTHONNOUSERSITE`). The second build was retired unrun and rebuilt:
+  `20261008T022357Z-8bbf1d16a0e23361`, image `4b1acecd…dac7`. Host fixtures
+  74/74, gadget 7/7.
+- **Fourth round** (narrow re-check of that delta): no blocker or major.
+  Fixed: the AOSP checkout's own git config could hide planted files from the
+  clean-tree check (`status.showUntrackedFiles=no`, `core.worktree`), and a
+  failing log call inside the per-iteration `catch` could still reach the
+  trap. Three new builder negatives (8/8 in all). Rebuilt:
+  `20261008T024856Z-112740d1bd6a4ecf`, image `efefe10d…7250`. Relay marked
+  ready; the fourth-round fixes are fixture-verified, without a separate
+  review pass.
+- **Post-concurrence review** (report-only, of the fourth-round delta): no
+  defect that should stop the trial. One false claim, held for FS-A-005
+  rather than fixed (any code change would void the concurrence):
+  `-c core.worktree="$AOSP"` does **not** override a `core.worktree` set in
+  the checkout's own `.git/config`. Git reads the repository config during
+  setup, so a redirected work tree still looks clean. The working fix is
+  `git --git-dir="$AOSP/.git" --work-tree="$AOSP"`, plus unsetting `GIT_DIR`
+  and `GIT_WORK_TREE`, which also blind the check. The real AOSP config has
+  no such entry [M-static], and abusing it needs write access to `.git/config`.
+  To do after the trial: fix `build.sh`, add a `core.worktree` negative, and
+  correct relay row N-1.
+- The `init.sh` binding does not tell apart rebuilds of the same `init.sh`;
+  the sign-off nonce does (a retired build run with the concurred nonce exits
+  3). Stated in the relay.
+- **COM-port fallback (PM decision, 2026-10-08): Windows-only for this trial.**
+  If Windows refuses the port, the result is "gadget seen, no COM port". A
+  later attempt can use WSL: `usbipd-win` 5.3.0 is installed, and the WSL
+  kernel has `cdc-acm` and `vhci-hcd` [M-static]. Linux binds ACM regardless of the
+  IAD class codes. It needs a WSL transport in the observer (new reviewed
+  code), since Windows loses the device once it is attached to WSL.
+- **Lesson:** both blockers in this stage were found by adversarial review,
+  not by our own checks. Keep the review before every Chair submission, and
+  prefer fixtures that *run* code over ones that parse it.
+
+**J-21 · Stage-1 trial: PASS.**
+
+- 2026-10-08, PM present and signed off live. One `fastboot boot` of
+  `20261008T024856Z-112740d1bd6a4ecf`.
+- **Result:** handoff acknowledged (`Booting OKAY [10.191s]`). Gadget
+  `FS-<nonce>` appeared as **COM7**; Windows bound it with no WSL fallback.
+  Challenge verified, `HOST_ACK` confirmed, PASS 25.5 s after the observer
+  started. LEDs: amber, blue, green, white (holding). Nothing on the panels,
+  as expected.
+- **From our shell:**
+  - 97/97 vendor modules loaded; `FW_TIMEOUT=1`;
+  - `msm_drm` probed (DSI panel, `card0`) but drew nothing;
+  - fuel gauge `bq27xxx` could not reach its chip (I2C lines unpowered);
+  - no remoteproc started.
+- **USB:** device mode needed PID 1's sysfs role write. There was no UDC
+  before it.
+- **Recovery:** `/bin/fs-reboot`, then `fastboot reboot`, back to Android
+  slot A. Ten of the eleven hashed partitions were unchanged.
+- **`misc` changed.** A PM-cleared control showed that an ordinary reboot
+  cycle rewrites the same vendor field at `0x1010`. The `bootonce-bootloader`
+  string at offset 0 comes from `adb reboot bootloader`.
+- **Lessons:**
+  - Before checks must save the **contents** of small partitions (`misc`,
+    `devinfo`), not just their hashes.
+  - Check the shell's prompt state before sending quote characters over the
+    serial channel (my collection script got that wrong twice; reads only).
+  - Keep holds short until battery management is understood. After recovery,
+    Android showed "discharging" while on AC.
+- **The first FS-A-005 draft claimed USB came up "without forcing".** The
+  adversarial review caught it: `init.sh` forces the role. Corrected.
+
+**J-22 · FS-R-005: stage 1 ACHIEVED; FS-A-006 directed (offline).**
+
+- The Chair independently verified the raw bundle: challenge response,
+  transcript, PID 1, UDC, uptime, 97 modules, partition hashes and the `misc`
+  control.
+- Milestone recorded for unit `QUEST3UNIT1`, build `50105190000000511`,
+  kernel `5.10.198-01402-g1c5986fe21ee`, image `efefe10d…7250`.
+- The Chair tightened four claims:
+  - **`misc`:** ordinary reboot handling *plausibly* explains it [C]. The
+    trial's own byte changes and their writers are [O], since the
+    immediate-before contents are missing. Do not call the trial free of
+    persistent effects.
+  - **Vendor ramdisk:** the boot path made the vendor modules available to our
+    PID 1 [D]. *Which* component assembled the ramdisk is not established.
+  - **USB role:** [M] the UDC appeared after our writes; [C] that they were
+    needed, or which of the two writes was.
+  - **Remoteprocs:** "our init launched no remoteproc; their registration and
+    execution state remain unmeasured". The absence of dmesg lines is not an
+    inventory.
+- **Corrections required before the next device proposal:**
+  - the collector redesign (do-not 22);
+  - E1, the builder fix using `--git-dir`/`--work-tree`, with its regression
+    case;
+  - complete `misc` contents before and after, with a classification rule.
+- **FS-A-006 (offline), two tracks:**
+  - **(A) Quest hardware dependencies.** Fuel gauge and I2C first, then
+    charging, thermal and cooling. Map the remoteproc, display and
+    vendor_dlkm requirements one by one. Specify exact partition sources and
+    journal-replay avoidance.
+  - **(B) Smallest headless test of genuine Valve ARM userspace** over the
+    existing USB channel.
+- FS-A-006 deliverables: the dependency map, the missing artifacts, and the
+  smallest next experiment with PASS/FAIL/INCONCLUSIVE criteria and
+  recovery.
+
+**J-23 · First FS-A-006 finding: the stock kernel config vs Valve
+userspace.** Source: `firmware/quest3/extracted/v66_unit1_slotA/kernel.config`.
+
+- **Off [M-static]:** `BTRFS_FS`, `DEVTMPFS`, `FHANDLE`, `AUTOFS_FS`,
+  `NFS_FS`, `BLK_DEV_NBD`, `SQUASHFS`, `F2FS_FS`.
+- **On [M-static]:** `EXT4_FS`, `OVERLAY_FS`, `BLK_DEV_LOOP`, `CGROUPS`,
+  `CGROUP_BPF`, `BPF_SYSCALL`, `SECCOMP`, and the USB gadgets NCM, ECM,
+  RNDIS, mass storage and FunctionFS.
+- **Consequences for Stage 2:**
+  - Valve's btrfs rootfs cannot be mounted as it is. It needs a
+    port-controlled repack, e.g. ext4 [D].
+  - Booting genuine Valve **systemd** probably needs a kernel with
+    `DEVTMPFS` and `FHANDLE` on. Both are systemd hard requirements [C,
+    to be checked against the systemd version Valve ships].
+  - That means a kernel rebuilt from Meta's published source, with module ABI
+    matching the vendor modules. This is likely the crux of Stage 2 [C].
+  - NFS and NBD are absent, so the PC cannot serve the rootfs over USB as a
+    root filesystem.
+- The **smallest** genuine-Valve-userspace test does not need systemd: Valve's
+  own loader, libc and a shell or binary carried in our initramfs, executed
+  over the existing channel.
+
+**J-24 · PM decisions: v2.7 is the build target; two-unit plan.**
+
+- **v2.7** (`5.10.246-gd7102a837402`, Android 14, the latest available
+  release) is the target for the SteamOS image. The image is built against
+  v2.7's kernel source (`dbc2bc83a2b6`), modules, device tree and firmware.
+  Toolchain: clang **r450784e** (14.0.7), the compiler in the v2.7 Image
+  banner. The PM approved the clang download.
+- **Unit 1** (`QUEST3UNIT1`, v66, slot A): `fastboot boot` only,
+  never flashed. It remains the known-good v66 reference.
+- **Unit 2** (a second Quest 3, identity to be recorded): reserved
+  for the first `fastboot flash` work. It needs its own read-only baseline
+  first.
+- [removed for publication]
+- **Testing the v2.7 kernel on Unit 1 is a hybrid.** The v2.7 kernel and
+  modules ride in our boot image and initramfs. The device tree and
+  low-level firmware stay v66. The DT differs by about 970 of 32k lines
+  [M-static]. Kernel-side results transfer to the target; DT- and
+  firmware-dependent results do not fully transfer.
+- **Earlier misreading:** I took the PM's "agreed to all your proposals" to
+  include developing on v66. The PM wants v2.7. Corrected the same day.
+
+**J-25 · Quest 2 v2.7 first look; Quest 3 v2.7 toolchain and reference.**
+
+- **Quest 3 v2.7 toolchain:** clang `r450784e` (14.0.7) downloaded from AOSP
+  `android14-release`; tarball SHA-256 `9be6c18d…`. `clang --version`
+  equals the v2.7 Image banner exactly (`8508608`, LLVM `4c603efb…`).
+  - The earlier 12.0.5 (`r416183b`) download is not needed for v2.7.
+  - An `r416183b1` attempt broke off (HTTP/2 error); the partial file was
+    deleted.
+- **Quest 3 v2.7 CRC reference** (`~/work/fs006-kernel/v27req/`):
+  - 272 modules (131 vendor_ramdisk + vendor_dlkm + odm_dlkm);
+  - 3,538 (symbol, CRC) pairs, 0 conflicts, 2,601 that vmlinux must provide;
+  - `module_layout 0xb1f01218`; vermagic `5.10.246-gd7102a837402`.
+- **Quest 2 v2.7** (`docs/research/quest2-v2.7-first-look.md`):
+  - Android 14, same SPL as Quest 3 v2.7;
+  - kernel `4.19.325-cip128`, same clang 14.0.7;
+  - boot header v2; no vendor_boot or vendor_dlkm;
+  - the same userspace config gaps;
+  - **no USB ACM gadget** (NCM only).
+- **PM decision:** Quest 2 v2.1 is not needed; local copies removed.
+
+**J-26 · Quest 2 unit; ACM on the Quest 2; Quest 1 outlook.**
+
+- **The PM's Quest 2:** one unit, on **v59**. The build target is still
+  v2.7. Until further decision, it is `fastboot boot` only (single unit).
+- **PM decisions:**
+  - add a Quest 2 offline-scoping item to FS-A-006;
+  - add the USB serial gadget to any Quest 2 kernel we build.
+- **Possible no-rebuild route [C]:** build `u_serial.ko` and `usb_f_acm.ko`
+  as separate modules against the stock 4.19 kernel. f_acm registers the
+  configfs function itself, so this works if their imported CRCs match.
+- **Quest 1 outlook [D]:** the hardest of the three, but pioneered by
+  Quest1-SteamOS: a 4.4 kernel with backports, LSE emulation, and the GPU
+  through libhybris. Our shared userspace layer transfers; their kernel and
+  graphics work is the template.
+- **Gate:** `git fetch --depth 1 <sha>` from GitHub needs the full 40-char
+  sha. The short form failed. v2.7 source is
+  `dbc2bc83a2b673f5d1c24ee9dadb0cd708ffda3f`.
+
+**J-27 · Performance envelope research and safety requirements.**
+
+- **PM policy:** use the full hardware-supported clock range with thermal
+  protection; no beyond-spec overclocking (no firmware changes). The PM
+  asked for all research to be logged and for safety to come first. The
+  device safety requirements are now `PROJECT_SETUP.md` §6A.
+- **Quest 3** (`docs/research/perf-envelope-quest3.md`). Confirmed on Unit 1
+  [M], FS-A-006 (private review record):
+  - CPU domains max 2054.4 MHz (cpu0-1, 9 steps) and 2361.6 MHz (cpu2-5, 11
+    steps); governor walt.
+  - GPU 285–690 MHz in 10 levels.
+  - Meta's sustained app ceiling is about 1.92–2.05 GHz CPU / 545 MHz GPU.
+    690 MHz is never exposed to apps.
+  - **No DT cooling map targets the GPU:** Android throttles it from
+    userspace.
+  - The fan steps are 3700–5500 rpm, of an 8500 rpm maximum.
+  - Battery temperature is the binding constraint.
+- **Quest 2 and Quest 1** (`docs/research/perf-envelope-quest1-2.md`). From
+  Meta's own firmware tables, matching Meta's docs:
+  - Quest 2: CPU 1.80/2.42/2.84 GHz; GPU 587 MHz (no higher step for its
+    bin).
+  - Quest 1: CPU 1.90/2.30 GHz; GPU 710 MHz.
+  - **Both stock kernels default to the `performance` governor.**
+  - Skin and battery protection is userspace-only.
+  - The cells are 5–7 years old.
+- **Kernel gate side issue, verified at the PM's request:** the
+  environment-detected config values.
+  - `CONFIG_PAHOLE_VERSION` is unused by this tree.
+  - `CC_CAN_LINK`'s consumers are all off in both configs.
+  - The `pahole` binary (1.31) generates the kernel's BTF. The stock v2.7
+    BTF uses only kinds 1–15. Our build must too (a pass/fail check); 0 of
+    the 272 vendor modules carry BTF.
+- **Make:** WSL's GNU make 4.4.1 was not the cause of the first config
+  failure. Meta's Makefile needs `REAL_CC` (its compiler-wrapper hook),
+  which is set by the documented build environment in `README.meta.md`.
+  The AOSP make 4.3 is used anyway (`~/toolchains/build-tools`, hashes
+  recorded).
+
+**J-28 · XR Elite performance envelope (offline), at the PM's request.**
+
+- Source: `docs/research/perf-envelope-xr-elite.md`, from HTC firmware
+  v2.0.999.960 slot B in an earlier, shelved programme's archive (read-only;
+  copies only) plus the PM's
+  live bugreport.
+- **The CPU and GPU frequency tables are identical to the Quest 2's:**
+  1.8048/2.4192/2.8416 GHz; GPU bin 0, 587 MHz [M-static]. The Quest 2
+  ceilings can be reused.
+- **Thermal, fan and battery policy cannot be reused:**
+  - the fan is userspace-only (MAX31760 + HTC's closed thermal-engine; no
+    kernel curve);
+  - the main 24.32 Wh pack is in the rear cradle and reports over UART,
+    outside the kernel;
+  - there is no kernel gold-cluster limit zone and no kernel skin trip;
+  - HTC's shutdown thresholds are compiled into a binary.
+- **Safety:** no full-range clocks on the XR Elite until our own fan loop
+  and cradle-battery monitoring exist (`PROJECT_SETUP.md` §6A item 3).
+- **Correction:** the XR Elite's SoC is XR2 (Gen 1), not "XR2+ Gen 1"
+  (`PROJECT_SETUP.md` §1).
+
+**J-29 · Device port checklist (PM directive).**
+
+- The PM asked for a list of differentials that **must** be checked for
+  every device port, with the original devices' controls copied so the
+  hardware operates nominally. Created `docs/DEVICE_PORT_CHECKLIST.md`.
+- It covers eight areas:
+  - **A** thermal;
+  - **B** fan and cooling;
+  - **C** battery, charging and power;
+  - **D** CPU/GPU performance;
+  - **E** display;
+  - **F** platform, boot and recovery;
+  - **G** remote processors;
+  - **H** other hazards (IR emitters, speaker protection, haptics,
+    accessories).
+- It ends with a status matrix for the Quest 3, Quest 2, Quest 1 and XR
+  Elite.
+- Binding through `PROJECT_SETUP.md` §6A item 8.
+
+**J-30 · Community report on overclocking.** [paraphrased for publication]
+
+- Community reports: CPUs can run up to the OEM-defined maximum, and forcing
+  them beyond it has permanently damaged a headset; the GPU can be pushed well
+  beyond its intended limits with only a kernel module [C]. [paraphrased for publication]
+- **CPU:** confirms the policy of staying within the OEM table. Added as
+  do-not 25.
+- **GPU:** feasible because the GPU levels are kernel-defined, but
+  beyond-spec. Raised voltage corners mean heat and wear; the Quest 3 GPU
+  has no kernel throttle. Kept outside the envelope. Any future GPU
+  overclock needs a PM decision, Chair review, the thermal stack first, a
+  soak test, and Unit 2 only.
+- Recorded in `docs/research/perf-envelope-quest3.md` and
+  `perf-envelope-quest1-2.md`.
+- **Follow-up reports** [paraphrased for publication]:
+  - Quest 2 GPU sustained 940 MHz but was very unstable (+60% over
+    587 MHz);
+  - Quest 3 reached 710 MHz and might go further (+3% over
+    690 MHz); [paraphrased for publication]
+  - the same applies to the Quest Pro and the Quest 3S respectively [C].
+- **Position unchanged.** GPU overclocking stays outside the envelope; the
+  Quest 2's 940 MHz is excluded as unstable. If ever revisited: the Quest
+  3's 710 MHz as the first step, with a PM decision, Chair review, the
+  thermal stack first, instrumentation, and Unit 2 only.
+- **PM goal (later phase):** about **+20% over Meta's nominal sustained
+  clocks**, if safe, not over the maximum.
+  - Within the hardware tables on the Quest 3 (CPU 2.30 GHz, GPU 654 MHz)
+    and on the CPUs generally.
+  - Exceeds the table on the Quest 2 GPU (in-spec maximum +12%) and the
+    Quest 1 GPU (+6%).
+  - Tested only after the thermal stack and fan control exist, with soak
+    tests.
+  - Table in the perf-envelope notes.
+
+**J-31 · Kernel rebuild gate, Quest 3 v2.7: PASSED (step 2).**
+
+- Meta's public source `dbc2bc83a2b673f5d1c24ee9dadb0cd708ffda3f`, built
+  offline with:
+  - the **exact stock v2.7 config**, run through olddefconfig. Only
+    environment-detected values differ: `PAHOLE_VERSION`, `CC_CAN_LINK*`;
+  - clang r450784e (14.0.7, matching the stock banner);
+  - AOSP make 4.3;
+  - Meta's documented build environment.
+- **Result [M-static]:**
+  - **2601/2601** vendor-required (symbol, CRC) pairs match, 0 mismatched,
+    0 missing;
+  - `module_layout 0xb1f01218` equals stock;
+  - **BTF:** 111,670 types, kinds 1–15 only (stock: 111,669), so pahole
+    1.31 is safe for this tree.
+- **Consequence (reworded after review):** a kernel rebuilt from the
+  public tree is **ABI-equivalent for module loading** [D]. Its runtime
+  loadability and full source identity are [O]: release hash, Image size
+  and some BTF functions differ, consistent with a squashed public tree. The rebuild route to systemd is open, pending step 3:
+  - group (a): DEVTMPFS, FHANDLE, AUTOFS=m, BTRFS=m;
+  - group (a′): + USER_NS, PID_NS;
+  - each must change no existing CRC.
+- **Build pitfalls found along the way:**
+  1. GitHub single-commit fetch needs the full 40-char sha.
+  2. Meta's Makefile sets `CC := $(REAL_CC)`, so `REAL_CC` and the LLVM tool
+     variables from `README.meta.md` are required. Without them, Kconfig
+     sees an empty compiler and fails with "Illegal option --". I first
+     wrongly blamed make 4.4.
+  3. `link-vmlinux.sh` calls `${PYTHON}` (default `python`), so pass
+     `PYTHON=python3`.
+- **Build identity:** our build reports `5.10.246-gdbc2bc83a2b6`. A real
+  image must set `LOCALVERSION` to match stock (`-gd7102a837402`).
+- **Evidence:** FS-A-006 (private review record) (scripts, logs, config
+  diff, CRC compare, reference lists, IDENTITIES).
+- **Step 3, group (a): PASSED.**
+  - Config verified: DEVTMPFS=y (DEVTMPFS_MOUNT off), FHANDLE=y,
+    AUTOFS_FS=m, BTRFS_FS=m. `btrfs.ko` and `autofs4.ko` were built.
+  - **vmlinux CRCs: 0 changed, 0 removed** (0 added; these options export
+    nothing from vmlinux).
+  - Vendor-required 2601/2601; BTF kinds ≤ 15.
+  - Build time 66 min.
+- **Step 3, group (a′) (+ NAMESPACES, USER_NS, PID_NS): PASSED.**
+  - **vmlinux CRCs: 0 changed, 0 removed, 12 added** (namespace exports).
+  - Vendor-required 2601/2601; `module_layout 0xb1f01218`; BTF kinds ≤ 15.
+  - Build time 77 min.
+  - **For the real image config:** `BTRFS_FS_POSIX_ACL` came out off;
+    enable it (it is module-internal).
+  - The USER_NS caveat stands [C]: vendor modules built without it treat
+    IDs as the initial namespace.
+- **Quest 3 v2.7 kernel route: VIABLE.** systemd's hard requirements, btrfs
+  and the sandbox namespaces can be added while keeping every stock vendor
+  module loadable. SYSVIPC and POSIX_MQUEUE (group b) are still excluded:
+  they change struct layouts.
+- Evidence: FS-A-006 (private review record).
+- **Quest 2 gate (queued, PM-approved):**
+  - public source `6bde5fc06b252c97761bc0963dd13c1abcf377ab` is an
+    **exact** match for the v2.7 build (`5224299.2420.150`);
+  - reference: 28 vendor modules, 838 symbols from vmlinux,
+    `module_layout 0x74b4ebeb`;
+  - the stock Quest 2 BTF already contains 2 ENUM64 entries, so its BTF
+    rule is "no kinds beyond stock".
+
+**J-32 · Quest 2 v2.7 kernel gate: PASSED.**
+
+- Public source `6bde5fc06b252c97761bc0963dd13c1abcf377ab` (an exact match
+  for build `5224299.2420.150`), stock config, clang r450784e.
+- **838/838** vendor-required CRCs; `module_layout 0x74b4ebeb`; BTF kinds
+  as stock (stock already carries 2 ENUM64).
+- **Each step changes no existing CRC:**
+  - + USB_CONFIGFS_ACM (the PM's request; F_ACM and U_SERIAL built in):
+    6 added;
+  - + DEVTMPFS, FHANDLE, AUTOFS4=m, BTRFS=m: 6 added;
+  - + NAMESPACES, USER_NS, PID_NS: 18 added.
+- **olddefconfig set COMPAT_VDSO=y** (environment-detected; off in stock).
+  Force it off in the real image.
+- **Build pitfall:** Meta's committed symlinks in `techpack/audio` (and
+  `include/soc/internal.h`) assume their internal tree layout
+  `kernel/qcom/kona`. A link `~/kernel/qcom/kona → src` fixes it. A first
+  attempt that linked inside the object directory did not help (the links
+  are relative to the source). The `brcm4389ar` include link points into
+  Meta's internal repo; that driver is off.
+- Evidence: FS-A-006 (private review record).
+
+**J-33 · Quest Pro and Quest 3S added as offline scoping; refresh-rate and
+tester requirements.**
+
+- **PM decision:** re-add the **Quest Pro** (dropped earlier) and add the
+  **Quest 3S**, both as offline scoping.
+  - The PM has no units, but others may, and the kernel
+    builds may be useful later.
+  - Strategy: do the work on the Quest 2 and Quest 3, then port the fixes;
+    the Quest Pro and Quest 3S should be ~90% complete that way.
+- **Firmware** (copied from the PM's archive, cmp-verified, provenance in each
+  `firmware/<dev>/PROVENANCE.txt`):
+  - Quest Pro v2.7 `QPro_51503870024400340` (`seacliff`, SPL 2026-06-03);
+  - Quest 3S v2.7 `3814840020600610` (`panther`, SPL 2026-06-02).
+- **Same sources, device configs [M-static]:**
+  - **Quest 3S** = the Quest 3 tree, kernel `5.10.246-gd7102a837402`, ACM
+    present; 36 config lines differ from the Quest 3.
+  - **Quest Pro** = the Quest 2 tree, kernel
+    `4.19.325-cip128-st12-g49638c7a8637`, no ACM; 127 config lines differ.
+  - The binaries differ, so the gates are re-run with each device's own
+    config and vendor modules (running).
+- **PM requirement:** **90 Hz by default on all headsets, 120 Hz optional
+  where supported** (`PROJECT_SETUP.md` §3 stage 3; checklist E4). The
+  Quest 1's panels are believed to be 72 Hz only [C, to verify].
+- **PM requirement:** brief third-party testers in writing on the
+  conditions and risks before any test (`PROJECT_SETUP.md` §6A item 9).
+
+**J-34 · FS-A-006 adversarial review (v2.7 re-scope).**
+
+- The gate numbers held when the reviewer recomputed them: Quest 3
+  2601/2601 and Quest 2 838/838; 0 changed CRCs per group; `module_layout`.
+- **Three blockers, all in experiment (ii)** (the v2.7 kernel on Unit 1):
+  - it would have bulk-loaded **36 extra modules** found only in v2.7's
+    `modules.load.recovery`: ADSP, charger, thermal, and the USB-PD
+    controllers, which could kill the only channel;
+  - **`PANIC_ON_OOPS` is off in v2.7**, so stage-1 recovery assumptions
+    don't hold;
+  - it had no outcome classes.
+- **(ii) is demoted to "named, not proposed"**, with 8 requirements
+  (FS-A-006 §5.6): a pinned module list with a named exclusion list; never
+  loading v66 modules; boot-header patch levels pinned to v66;
+  TZ-facing modules; oops recovery; outcome classes; the gate run on the
+  exact image kernel; the full §5.5 corrections.
+- **Safety finding:** `qcom-spmi-temp-alarm` can set
+  `SHUTDOWN_CTRL1_OVERRIDE_S2`, **disabling the PMIC's hardware stage-2
+  over-temperature shutdown** [M-static source]. Added to the checklist (A5)
+  and the safety rules.
+- **Wording fixes:**
+  - "exact match" becomes "same build number in the commit message;
+    ABI-equivalent [D]; source identity [O]";
+  - the gate's coverage and limits are now stated (CFI unchecked; inline
+    semantics; vermagic/LOCALVERSION rationale; export collisions 0,
+    verified);
+  - a v66/v2.7 module-location table was added;
+  - the Quest 2 framing became retroactive disclosure, and the Quest 2
+    hybrid and its `performance` governor are noted;
+  - the Quest Pro and Quest 3S were added.
+
+**J-35 · Device ordering (PM decision) and build economy.**
+
+- **Ordering (PM, 2026-10-08):**
+  - **primary:** the Quest 3 and Quest 2 (the PM's units; experiments and
+    hardware work happen there);
+  - **lockstep:** the Quest Pro and Quest 3S. Every build, fix and config
+    change is applied to them at the same time, wherever it applies; they
+    share the Quest 2 and Quest 3 kernel trees;
+  - **after SteamOS boots** on the Quest 3 and Quest 2 (and presumably the
+    Pro and 3S): the Quest 1 and XR Elite.
+- **Build economy:** per-group isolation builds were needed to prove the
+  method. Every group passed with 0 CRCs changed on the Quest 3 and Quest
+  2. For the siblings, only stock plus the final superset config are built.
+  (The reason first written here, "no subset can then change a CRC", is
+  not sound; see Corrections and J-36.)
+- **Process slip:** a patch script asserted and aborted without writing,
+  and I launched the gate run without checking. I caught it within a minute,
+  before it could delete the hour-long Quest 3S stock build. Rule: **verify
+  that a patch landed (grep or `bash -n`) before launching anything that
+  depends on it.**
+- **Quest 3S stock gate: PASSED.** 2583/2583 vendor-required CRCs;
+  `module_layout 0xb1f01218` (identical to the Quest 3); BTF kinds ≤ 15.
+
+**J-36 · Quest 3S and Quest Pro kernel gates PASSED; Quest 2 unit baseline.**
+
+- **Quest 3S** (Quest 3 tree `dbc2bc83a2b6` + Q3S config): **2583/2583**
+  vendor-required CRCs from 268 modules; `module_layout 0xb1f01218`; BTF
+  kinds as stock. The superset (DEVTMPFS, FHANDLE, AUTOFS=m, BTRFS=m,
+  USER_NS, PID_NS) changes **0** existing CRCs (12 added).
+- **Quest Pro** (Quest 2 tree `6bde5fc06b25` + QPro config): **776/776**
+  from 29 modules; `module_layout 0x74b4ebeb`; BTF kinds as stock
+  (2 ENUM64, as on the Quest 2). The superset **with USB_CONFIGFS_ACM**
+  changes **0** existing CRCs (18 added). olddefconfig again set
+  COMPAT_VDSO=y: force off in the image.
+- Only stock + superset were built (PM: "why so many builds?"; J-35).
+  Evidence: FS-A-006 (private review record).
+- **Quest 2 unit read-only adb baseline** (PM present): the Quest 2
+  unit (`QUEST2UNIT`), Rev11, v59 build `50670960048600150` (Android 12, SPL
+  2023-08-05), kernel `4.19.157+`, slot `_a`.
+  CPU/GPU frequency tables on the unit match the v2.7 static analysis
+  (587 MHz GPU cap confirmed on hardware). Evidence:
+  FS-A-006 (private review record).
+- **Quest 2 `fastboot getvar all`** (PM present; `getvar` reads only, but the reboot cycle is a state change, see Corrections; back to
+  Android on `_a`, build unchanged): `kernel:uefi`,
+  `hw-revision:20001`, **`model-revision:Hollywood (DVT)`** (the PM states it is this unit's production label; see J-37) [paraphrased for publication]. Slot a successful (retry 6); **slot b never marked
+  successful** (retry 7), so it is not a known-good fallback. `super` 6 GiB.
+  Evidence
+  FS-A-006 (private review record).
+  - Do-not: keep the unit off Wi-Fi / decline OTAs. An update would change
+    the baseline and move the slot state.
+- **Narrow adversarial re-check of FS-A-006** (2 blockers, all numbers
+  verified against the raw files). Fixed:
+  - the bootloader readout had been called "read-only"; the reboot cycle
+    is a state change (`misc` probably written, not captured). The
+    procedure and a post-return `getprop` check were appended to the
+    evidence;
+  - the device ordering departs from FS-R-005 and now has an explicit ask;
+  - the superset-only claim was reworded: no subset was gated, and every
+    other config must pass the gate itself;
+  - the Quest Pro stock config also defaults to the `performance`
+    governor (the Quest 3S uses schedutil); slot b on the Quest 2 is still
+    marked bootable with retries, so a slot-a failure could fall through to
+    unknown contents [removed for publication].
+  - Note: v59 Android runs schedutil on the Quest 2 [M]; the v2.7 stock
+    config defaults to performance [M-static]. The v59 kernel's default is
+    unknown, so whether Android userspace switches it is [D/O].
+
+**J-37 · PM decisions confirmed; Quest 2 provenance; ordering refined.**
+
+- **Build target:** v2.7 for the Quest 3, Quest 2, Quest Pro and Quest 3S;
+  the Quest 1 and XR Elite will have different targets.
+- **Units:** Unit 1 (Quest 3) and the Quest 2 unit are `fastboot boot`
+  only; Unit 2 (Quest 3) is for flashing.
+- **Ordering (supersedes J-35):** Quest 3 primary, Quest 2 secondary,
+  Quest Pro tertiary, Quest 3S quaternary, then Quest 1 and XR Elite.
+  Kernel/OS changes for the Quest 3 and Quest 2 go to the Pro and 3S in
+  lockstep.
+- **Quest 2 provenance (PM):** retail unit. "DVT" in
+  `model-revision` is the production label on this unit, so J-36's
+  "possibly pre-production" is withdrawn. Our probes ran as adb `shell`
+  (uid 2000).
+- **Unit 1 and Unit 2** (Quest 3, DT model `PVT1.1`): [removed for
+  publication]. Open question for release reach: whether
+  retail Quest 3 units have the same speed bins and frequency tables [O];
+  a read-only adb check of a retail Quest 3 (no reboot) would answer
+  it, low priority.
+- FS-A-006 updated with these decisions before sending.
+
+**J-38 · FS-A-006 sent.**
+
+- The PM relayed FS-A-006 (private review record) with `FS-A-006-raw.zip` (sha256
+  `e3a41195…eef2e`, 29 files, `MANIFEST.sha256` inside) on 2026-10-09.
+  Awaiting FS-R-006. FS-A-007 is not drafted until the ruling arrives.
+- The PM does not need retail comparison units for now.
+- Docs swept for the J-36/J-37 changes: checklist matrix (Quest 2
+  baseline), Quest 1/2 envelope note (Quest 2 frequency probe resolved),
+  research notes heading, Quest 3 README (primary; 3S split out).
+
+**J-39 · FS-R-006 received: v2.7 route accepted for offline development;
+prepare FS-A-007.**
+
+- **Ruling** (FS-R-006 (private review record), verbatim):
+  - concurs with offline v2.7 development, per-device dependency work and
+    preparation of experiment (i);
+  - **adopts the PM's order** Quest 3 → Quest 2 → Quest Pro → Quest 3S →
+    Quest 1 → XR Elite (supersedes FS-R-005). Shared changes may proceed
+    together offline, but each device keeps its own configs, artifacts
+    and gates;
+  - records the unit constraints (Unit 1 and the Quest 2 temporary-boot
+    only, never flashed; Unit 2 for separately reviewed flashing; Pro and
+    3S offline, no tested-device claim);
+  - acknowledges the disclosed probes; **authorises no further hardware
+    action.**
+- **The Chair checked our evidence:** all 2601 Quest 3 rows, and the four
+  reference lists (2601/838/2583/776). It accepts [M-static] that the
+  recorded builds pass the CRC and `module_layout` comparisons, and [D]
+  that the routes are credible candidates.
+- **Verified the Chair's thermal corrections in the v2.7 source myself**
+  (`~/work/kgate27/src`):
+  - `eureka-thermal.dtsi`: `batt-virt-limit` trips at 45/58 °C (line 61ff)
+    and `surf-virt-limit` at 48 °C (line 1898ff) map to CPU cooling;
+  - `kgsl_pwrscale.c`: `of_devfreq_cooling_register` (line 796) and a
+    `DEV_PM_QOS_MAX_FREQUENCY` notifier (line 777);
+  - `pwm-tach-fan.c`: on `DRM_PANEL_EVENT_BLANK` the fan is set to
+    `min(current, silent_rpm)` (lines 677–686), not stopped. DT
+    `oculus,silent-rpm` = 4000 (eureka), 5000 (panther).
+- **Docs corrected** (PROJECT_SETUP §6A and kernel-gate row, checklist A/B
+  rows and B4, Quest 2/3 READMEs, power-thermal note,
+  both performance notes, kernel and Quest 2 research notes). The +20%
+  table now shows real table steps only.
+- **Before FS-A-007 (experiment (i), stock kernel + 4 Valve files):**
+  - A. pin the 4 full hashes, ELF dependencies, interpreter line and
+    provenance; absolute paths; controlled child environment (clear
+    loader variables);
+  - B. FSB1 framing: attempt nonce, challenge, step IDs, byte counts,
+    defined newline handling; reject incomplete/ambiguous records;
+  - C. bounded supervision with verified KILL escalation (BusyBox
+    `timeout` only sends TERM); fixture with a TERM-ignoring child; 143 is
+    an exit status, not proof the timer fired;
+  - D. PID 1 deadline independent of HOST_ACK and collection, tested;
+    recover immediately after collection (300 s is a ceiling);
+  - E. decide the software watchdog explicitly; manual recovery stays;
+  - F. outcome classes PASS / compatibility FAIL / integrity fault /
+    INCONCLUSIVE with explicit precedence;
+  - `misc` rule: accept only specifically expected boot-command
+    contents/transitions; vendor-range changes are "presumed
+    reboot-related", not harmless by location;
+  - plus the FS-R-005 prerequisites already listed in FS-A-006 §5.5;
+  - the bundle must include the exact image, helper/collector code, full
+    hashes, offline fixture outputs, before/after commands, recovery
+    procedure, **and the cited research notes, `PROJECT_SETUP.md` and
+    `DEVICE_PORT_CHECKLIST.md`**.
+- **Before any rebuilt-kernel proposal (parallel, offline):** gate scripts
+  must reject (nonzero exit) on mismatch, missing symbol, changed/removed
+  protected export, forbidden collision, unsatisfied requested option,
+  failed extraction, empty reference or parse failure; module inventory
+  keeps source paths and hashes (no `cp -n` flattening); `btfkinds.py`
+  fails on missing/malformed BTF and is called a kind scanner only;
+  negative fixtures for each. USER_NS/PID_NS stay out of the first
+  rebuilt-kernel experiment unless needed.
+- **Performance:** tuning stays outside the userspace test; only existing
+  table steps (Quest 3 GPU: 640 MHz = +17.4%; 690 withheld).
+
+**J-40 · Stage 3 in parallel; Quest 1 90 Hz; device-monitor pop-ups.**
+
+- **PM:** develop Stage 2 and Stage 3 **in parallel**, as separate
+  experiments (not one combined test). Stage 3 (an image on the panels)
+  does not depend on Stage 2: the stock kernel already drives the panels
+  in Android, and `msm_drm` probed in stage 1. Offline display work falls
+  under FS-R-006's "per-device dependency work". The reordering (a display
+  trial before Stage 2 completes; FS-R-002 §7 put headless first) needs
+  the Chair: it is rolled into FS-A-007 as an ask, per the relay
+  convention (no separate relay). Display feasibility research running
+  (`docs/research/display-bringup-quest3.md`).
+- **Quest 1 refresh rate (PM):** not 72 Hz-only. Carmack (OC6, 2019) said
+  the panels can do 90 Hz; it was held back (performance, FCC
+  certification) [C, press report]. The PM reports a community mod that
+  enabled 90 Hz [C, source not yet found by our search]. Corrects the
+  earlier "believed to be 72 Hz only" (PROJECT_SETUP §3, checklist E4,
+  Quest 1 README).
+- **Device-monitor pop-ups:** a local tooling hook outside this project
+  opened a device monitor whenever a command merely mentioned device tools.
+  Not changed by us; the fix belongs to the PM. [removed for publication]
+
+**J-41 · Display bring-up research: a static pattern on the stock kernel
+looks feasible.**
+
+- Note: `docs/research/display-bringup-quest3.md` (agent, read-only;
+  spot-checked by me).
+- **Panel:** `meta,eureka_panel_sharp` (the bootloader passes
+  `msm_drm.dsi_display0=meta,eureka_panel_sharp`, and stage-1 serial log
+  line 638 shows it binding) — Sharp/Novatek dual-DSI, video mode, DSC;
+  the stage-1 log reports a stepped refresh range of 120–72 Hz [M]. Both
+  eyes are on one connector. Corrects `sy103` (FS-A-006 §2.3, kernel
+  note).
+- **Why stage 1 showed nothing [D]:** our init never opened
+  `/dev/dri/card0`, so no frame was committed. The stock config has no
+  `CONFIG_FB`, no `DRM_FBDEV_EMULATION`, no `VT` (verified in the v2.7 and
+  v66 configs), so there is no `/dev/fb0` or console. The PM saw nothing
+  on the panels during the stage-1 hold [M, PM observation]; whether lit
+  black or off is [O].
+- **Minimal route [C]:** the same 97 recovery modules stage 1 loaded; no
+  firmware; `mknod /dev/dri/card0 c 226 0`; a small static C program of
+  ours (dumb buffer, one TEST_ONLY atomic commit, then the real commit,
+  hold the fd open: closing it blanks). Meta's own recovery uses the same
+  modules without a compositor.
+- **Safety:** the stock driver does power sequencing; the backlight stays
+  at the boot level (the driver blocks brightness changes "until bootanim
+  is done", `dsi_panel.c:3918`); never write backlight/BLU knobs; static
+  dark pattern, no flashing; the fan driver starts in "display on" (closes
+  the `is_display_on` item), but nothing drives it in a stage-1 image, so
+  the hold stays within the dead-man or gets a monitored variant.
+- **Neither Valve userspace nor the rebuilt kernel is needed** (Stage 3 in
+  parallel with Stage 2, J-40).
+- **Top unknowns:** whether stock recovery draws on the panels (a reboot
+  into recovery would show it, but that is a device action: FS-R-006
+  authorises none, so it goes to the Chair in FS-A-007); first-frame
+  behaviour after the splash handoff; actual boot backlight level; heat
+  with the display held and no cooling.
+
+**J-42 · Parallel tracks: T1 pins done; kgate under review; fs-pattern built.**
+
+- **Track 1A (FS-R-006 §5 A): T1 pins** — `devices/quest3/stage2a/`
+  (`T1-PINS.md`, `T1-pins.json`, evidence, tools). No Valve binary in the
+  repo (staged only in WSL `~/work/t1pin/stage`).
+  - Provenance: image `steamframe-oobe-repair-20260922.5153644-0.3.0.img`
+    SHA-256 `081a38c0…cc654` (= FS-A-001 §10) → GPT #2 `rootfs-A`
+    (offset 335,561,728) → btrfs → `usr/lib/…`, `usr/bin/…` (`lib`, `bin`
+    are symlinks). Three sources agree (mount copy, btrfs restore, Valve
+    package manifests glibc-2.39-2 / coreutils-9.5-1). All four SHA-256
+    and the 2,062,760-byte total match FS-A-006 §4.
+  - qemu-aarch64 runs with an empty environment and absolute paths: all
+    steps rc 0; negative controls fail as required; the pin gate rejects 9
+    tampering cases. `b2sum` KAT and challenge digests (with and without a
+    trailing newline) agree with two independent implementations.
+  - Limit: qemu is not the Quest kernel (ELF loader, vDSO, CPU features
+    untested).
+- **Corrections to FS-A-006 §4/§5** (carried into FS-A-007): see the
+  Corrections table (`--list` rule; kernel BLAKE2b; `LD_PRELOAD` not
+  blocked by `--library-path`). Also: `uname`/`b2sum` list
+  `ld-linux-aarch64.so.1` in DT_NEEDED; `libc.so.6` has PT_INTERP
+  `/usr/lib/…`; `b2sum` needs GLIBC_2.38.
+- **Track 2: `tools/kgate/`** (commit `2578f7f`): two independent
+  adversarial reviews found false-PASS paths (optional enforcement inputs;
+  image/config not bound; reference device not compared; incomplete
+  references accepted; symlinked module dirs skipped; toolchain WARN list
+  too broad; one-directional config diff). All sent back for fixing with a
+  fixture per finding; a fresh review follows. **Not yet a gate.**
+- **Stage 3a: `fs-pattern`** (commit `877332d`): static DRM test pattern;
+  fresh nonce in block digits on both eyes, dark greys only (max 0x90,
+  3.6% lit); TEST_ONLY then real commit; 120 s hard hold cap plus a 150 s
+  `alarm()` backstop; offline fixtures 46/46 under qemu; binary SHA-256
+  `175cece4…c11451`. Adversarial review running. **Not proposed for a
+  device** until the Chair rules on FS-A-007.
+
+**J-43 · PM: monitor fixed; Quest 1 90 Hz source; hand tracking and
+controllers; recovery display; 10 s display hold.**
+
+- **Device monitor:** the PM had the local tooling fixed. No project
+  change needed. [removed for publication]
+- **Quest 1 90 Hz source:** `github.com/Juspertinry/q1-modules`,
+  `q1_90hz` (MIT, author Juspertinry, v4.2, Quest 1 v50 only)
+  [M-static]. `tools/dtpatch.py` retimes the panel in the appended DTBs:
+  refresh rate and horizontal front porch only, size-preserving; DSC and
+  init sequence untouched; plus a boot-time panel-clock resync. The
+  Android byte-patches (composer HAL, VrDriver, xrspd) are irrelevant to
+  us. Recorded in the Quest 1 README.
+- **New PM requirements (later stage):**
+  - **hand tracking:** SteamOS has none; keep the Quests' hand-tracking
+    models and training if possible. Licensing and the camera/DSP runtime
+    are [O]: these are Meta's proprietary files, so the "have" vs "ship"
+    rule applies (PROJECT_SETUP §5);
+  - **cross-controller pairing:** Oculus Touch, Meta Touch, Touch Plus and
+    Logitech MX Ink on the Quest 1, 2, 3/3S and Pro; Touch Pro on the Quest
+    3 and Pro only. Community modders have done it; the PM can supply
+    sources when we get there.
+  - Recorded in PROJECT_SETUP §3 (stage 5b) and checklist H5/H6.
+- **Quest 3 stock recovery lights the panels** [M, PM observation]: the
+  route in `display-bringup-quest3.md` (same 97 modules, plain DRM, no
+  compositor) is confirmed to produce an image on this hardware. This
+  closes that unknown; no recovery reboot is needed from us.
+- **Display test hold: 10 s** (PM): fs-pattern's compiled maximum drops
+  from 45 s to 10 s once the current review finishes.
+
+**J-44 · Review rounds; shared PID 1 infrastructure.**
+
+- **kgate 2.0** (`999e6c4`): a third, fresh review still found two exit-0
+  paths: (1) the base config and baseline symvers were operator-chosen,
+  so a wrong-device build or a self-comparison passed; (2) a truncated
+  Image passed (trailing-zero tolerance). Plus: segment gaps not compared,
+  multi-member gzip accepted, export type/namespace not bound, uneven
+  waiver reporting, incomplete JSON. Sent back for fixing. **Still not a
+  gate.**
+- **fs-pattern v0.3** (`0df7974`) under fresh review; PM decision: the hold
+  cap drops to **10 s** after that review.
+- **Shared infrastructure** (`devices/quest3/common/`, `e890a7a`):
+  `fs-supervise` (absolute path, controlled environment refusing loader
+  variables, TERM→KILL on the process group, reports exactly how the child
+  ended; a TERM-ignoring child ends `timer-kill sig=9`; an own exit 143 is
+  reported as `exited code=143`); FSB1 framing (base64 payloads, record
+  hash, trailing-`
+` tolerance only, rejection of duplicates, reorders,
+  stray lines, wrong nonce/challenge) with matching Python and PowerShell
+  decoders; the deadline moved into PID 1's own loop with a backstop child,
+  HOST_ACK only recorded; outcome precedence; the `misc` rule (only
+  empty→empty, bootonce→same, empty→bootonce accepted; vendor range
+  recorded as "presumed reboot-related"). Fixtures 51/36/36/15/18.
+  Adversarial review running.
+  - busybox `timeout -k` returned 143 and left a background child running
+    under qemu, so it is not used.
+  - ~~Finding on the stage-1 image: an unreadable `/proc/uptime` would
+    abort PID 1.~~ **Withdrawn** (review, J-45): busybox ash treats the
+    empty value as 0, so the shell survives; the real effect would be that
+    `fail()` and the ack window never fire, while the dead-man still
+    covers the hold. See Corrections.
+  - `.gitattributes`: on-device `target/**` files now forced to LF
+    (`fs-done` has no extension; a CRLF script would fail on the headset).
+
+**J-45 · Review of the shared infrastructure: not ready.**
+
+- Two blockers: (1) replacing `/run/fs.log` with a FIFO stops **both**
+  deadline timers, because both log to `/run` before rebooting (FS-R-006
+  §5D broken); (2) `fs-supervise` reads output until EAGAIN without
+  checking the clock, so several fast writers starve the deadline and the
+  report is wrong (seen natively, not under qemu, so the fixtures missed
+  it). Plus: inherited fds and the controlling tty leak to the child;
+  inherited ignored SIGCHLD/SIGALRM break the supervisor; surviving
+  descendants unreported when `/proc` is hidden; **a fork failure kills
+  busybox ash, so a PID-exhausting step could take PID 1 down (kernel
+  panic, crash-dump mode)**; outcome rules misclassify tool faults and a
+  missing pinned file. All sent back for fixing, with native-speed timing
+  fixtures added.
+- Verified sound: FSB1 binding and canonical base64; Python and
+  PowerShell decoders agree on 159 new fuzz cases; the `misc` rule matches
+  FS-R-006 §6.
+
+**J-46 · kgate review rounds 4–5; threat model; display and infra
+progress.**
+
+- **kgate 2.2** (`7a8782c`): round 4 showed CRCs and exports were read from
+  the non-loaded `.symtab`; 2.2 decodes the Image's allocated
+  `__ksymtab*`/`__kcrctab*` (8-byte PREL32 on 4.19, 12-byte on 5.10).
+  Round 5 forged vmlinux+Image together: a decoy table (the kernel finds
+  tables via `__start/__stop___ksymtab`, kgate via section headers), an
+  unsorted table (the loader binary-searches), and a redirected export
+  address. Being fixed in 2.3 (kallsyms-anchored bounds, sortedness,
+  address decode, committed profile by default).
+- **Threat-model decision (Arbiter):** kgate catches mismatched,
+  incomplete or wrong builds from our own build process and enforces
+  acceptance, decoding what the loader uses where feasible. It is **not**
+  the defence against a malicious builder forging binaries; that is build
+  provenance: rebuild from the pinned source, toolchain and config, and
+  require a bit-identical result. A reproducibility check is being added.
+  To be stated to the Chair with the gate.
+- **fs-pattern v0.4** (`0a78645`): 10 s cap; strict mode policy; 85/85.
+- **Shared infra rev 2** (`3d4590e`, `05a2dd2`): review fixes; PID 1 now
+  reboots by `exec` of `fs-reboot-final` (bootloader, then plain restart,
+  then sleep forever; never exits). Fresh review running.
+- **Host collector redesign, E1, PowerShell classifier, before/after
+  lists:** in progress (`devices/quest3/host/`).
+
+**J-47 · SteamOS 0.4 stable released; host collector built.**
+
+- **Valve released SteamOS 0.4 for Steam Frame to all users (stable) on
+  2026-10-08** (Steam news, app 4165890; beta 0.4.3–0.4.5 preceded it).
+  The notes list power, streaming, dashboard, CEF and accessibility
+  changes; no base-OS (glibc/systemd/kernel) details are given.
+- **Decision (Arbiter, for the PM):** keep FS-A-007 on the pinned
+  `20260922.6152327` files. Experiment (i) tests Valve's loader and glibc
+  on the Quest kernel, and switching now would invalidate the pins,
+  hashes, fixtures and reviews. In parallel: obtain a 0.4 stable image
+  (the PM; same path as the 0.3 repair image), extract it, and diff the
+  base packages (glibc, coreutils, systemd, kernel ABI tag). Adopt 0.4
+  stable as the baseline for Stage 2 onward, per the stable-only release
+  policy. If 0.4 changes glibc's minimum kernel or the T1 files' ABI, it
+  is reported before any device use.
+- **Availability (PM report, 2026-10-09):** SteamOS 0.4 is not yet downloadable as an image; the PM will fetch it when it is.
+- **Host side** (`devices/quest3/host/`, `da0ad56`): collector redesign
+  (D1 removed by construction: fixed verbs plus host hex tokens, one write
+  site; raw capture with SHA-256; replay engine), E1 git checks (`.ps1` and
+  POSIX `.sh`), outcome classifier, misc-rule port (matches Python on all
+  cases), before/after command lists; 228/228 offline. Review running.
+
+**J-48 · kgate 2.3; reproducible kernel builds; host review.**
+
+- **kgate 2.3** (`4ab8e93`): decodes the Image's own kallsyms (formats from
+  each tree's `scripts/kallsyms.c`) and requires the kernel's
+  `__start/__stop___ksymtab*` and `__start___kcrctab*` to equal the
+  decoded table bounds, each entry's address to equal its kallsyms
+  address, strictly sorted tables, non-overlapping sections within
+  `_edata`, and the pinned 38-section set. Committed profiles required by
+  default. 170/170 fixtures; all 11 real builds PASS with the committed
+  profiles and no committed-profile waiver (stock builds carry only the
+  expected baseline waiver). The round-5 decoy, swap and redirect attacks
+  are rejected.
+  - Review loop paused here: a fresh adversarial review is run before any
+    rebuilt-kernel proposal (the gate is not needed for FS-A-007, which
+    uses the stock kernel). Forging kallsyms as well is outside the stated
+    threat model.
+- **Reproducibility [M-static]:** the Quest 2 v2.7 tree rebuilds
+  **bit-identically** when the object-directory path and
+  `KBUILD_BUILD_TIMESTAMP/USER/HOST/VERSION` are pinned (two pinned builds:
+  vmlinux, Image, Image.gz, Module.symvers identical). The FS-A-006 builds
+  pinned none of these, so they differ by 27 explained bytes (three GNU
+  build-ids hashing the object path; cpio mtimes). Quest 3/3S (5.10) not
+  yet measured. Future gate builds pin these.
+- **Host review** (`da0ad56`): not ready. A blocker: the collector could
+  send into an unverified state (bytes during the ack settle, or a
+  `Password:`/pager tail before the first command). Also: E1 bypassable via
+  `git replace`, clean filters, `core.fileMode`, unscrubbed git env;
+  binary before/after captures corrupt when typed into PowerShell
+  (256 → 519 bytes); unescaped device bytes on the console; a classifier
+  `[int]` overflow. Being fixed.
+
+**J-49 · Candidate images built; two design decisions.**
+
+- **Images** (gitignored `build/`; builders and fixtures tracked, `cba8439`):
+  stage2a `b8d5e207…e10be` (nonce `77809dbabbc11f51`), stage3a
+  `0a907aca…775c7a` (nonce `c7e31c52882acbe3`). Kernel bytes identical to
+  stock; only the ramdisk/signature size header fields differ, as in
+  stage 1. Every input pinned (97-module list, vendor files, Valve files in
+  builder and `T1-pins.json`, `elfpin.py` gate); E1 via
+  `host/fs-gitcheck.sh`; BLAKE2 scan on the final image. Deadlines:
+  stage2a T0+180 s (ack window 120 s); stage3a T0+60 s (ack window 40 s).
+  Builder refusals 9/9 and 7/7; whole-image runs (the image's own `/init` as
+  PID 1 under qemu in a sandbox, fake sysfs/configfs/reboot) 9/9 and 7/7,
+  replayed end to end through `fs-collect.ps1 -Replay` and the classifier.
+  The stage-1 `fail()` path now execs `fs-reboot-final` too. These images
+  will be **rebuilt** once `host/` is final, then reviewed.
+- **Decision: no software watchdog** in either image (FS-R-006 §5E). A
+  software watchdog does not protect against kernel hangs; the SoC
+  watchdog would need correct petting and adds a new failure mode.
+  Protection is the PID 1 deadline, the `fs-reboot-final` exec path, the
+  backstop, and the PM's manual recovery (expected, not guaranteed).
+- **Decision: include the read-only inventory** promised in FS-A-006 §1/§5.1
+  (`/proc/modules`, remoteproc name/state, `power_supply` uevents) in
+  stage2a as an informational step that cannot change the outcome class
+  (only its presence and `why` are recorded). Requires a coordinated
+  change to OUTCOMES, the host classifier and the init.
+- Open: `fs-display` verb and a stage-3a classifier on the host side.
+
+**J-50 · Package reviews of FS-A-007 (round 6 fixes running); tag
+corrections.**
+
+- Three reviews at `cf251bb`:
+  - **images:** sound to propose; no blocker. Fix: panels-off-on-close is
+    source-derived ([D], v66 [O]; worst case powered until the PID 1
+    reboot); a §6A thermal statement and the `inv` driver-I/O risk for
+    stage2a; reproducible cpio; restore stage-1 behaviours changed without
+    need; full hashes; recovery procedure.
+  - **end to end:** a **blocker**: the only observer is stage 1's
+    `host-observe.ps1`, which refuses the new MANIFESTs and, if adapted,
+    sends its own ack; PID 1 records only the first ack, so the collector's
+    ack fails and the one-shot attempt is burned (reproduced under qemu).
+    Needs a stage-2a/3a observer that runs no session. Also: the ack window
+    missing from the timing model; runner refusals not terminal;
+    Android-landing branch in before/after.
+  - **requirements trace (Chair role):** FS-A-007 must carry a recovery
+    procedure, full hashes, the bundled PROJECT_SETUP/checklist/research
+    notes, the watchdog decision reconciled with §6A, a thermal and
+    governor case per hold, the `inv` risk, the display-reordering ask
+    with the PM's observation disclosed as a PM report, the T1 provenance
+    (filename build vs BUILD_ID; rc channel; 0.4 plan), and tag fixes.
+- **Tag corrections (this entry):** PM sightings are **PM reports**, not
+  [M] (J-41's "saw nothing on the panels", J-43's "recovery lights the
+  panels"); "confirmed to produce an image" withdrawn (recovery's minui
+  path working does not show our route works). J-49's image hashes and
+  180/60 s deadlines are superseded (260/170 s, J-48/`cf251bb`; final
+  hashes after round 6).
+- PROJECT_SETUP §6A.1 now states that FS-A-007's short, attended holds fall
+  under the bounded-hold rule, with no software watchdog.
+
+**J-51 · FS-A-007 ready for the PM to send.**
+
+- Fix rounds 6 and 7, then a final Chair-role review (would concur with
+  both trials and the reordering once fixed). Its fixes: a private
+  `FS-A-007-image.zip` with both images and our three binaries (blocker:
+  FS-R-006 §7 "the exact image"); thermal wording (no thermal-zone drivers
+  in these boots, so the DT CPU maps are inactive; `pwm-tach-fan.ko`
+  loaded but not commanded, fan state [O]; PROJECT_SETUP §6A.3 carve-out
+  for short, attended holds); a per-phase read-only capture tool
+  (withheld); a
+  single-operator display protocol (cue, high beep, 10 s dark check, low
+  beep; stage 3a uses 2 status polls to fit the budget); an FS-R-005
+  trace; the stage-1 `fs-proto.ps1` bundled (hash equals the FS-R-004
+  reviewed copy). A verification pass confirmed the fixes; remaining text
+  items applied.
+- Images unchanged since round 6: stage2a `e8775c89…51e5`, stage3a
+  `d2bb28f7…cc23`. Host suite 385/385; `check-timing.py` CONSISTENT.
+- `captures/` is gitignored (device data; bundled explicitly when a trial
+  is reported).
+
+**J-52 · FS-A-007 sent.**
+
+- The PM relayed FS-A-007 (private review record) with `FS-A-007-raw.zip`
+  (SHA-256 `f5e2ad183a26f6ebc9843902dca0f2d3e71ff27c0bcdfb8440826628dfff8d84`)
+  and the private `FS-A-007-image.zip`
+  (`80c2521a896a05bd06505e58bf0f1fbbc19155154a2895e80d9105905be0b4ec`).
+  Awaiting FS-R-007. No device action until the ruling, the PM present,
+  and the PM's own nonce entry.
+
+**J-53 · FS-R-007: images accepted; live concurrence held for a host
+timing fix (B1) and exposure wording (C1).**
+
+- Ruling recorded verbatim (FS-R-007 (private review record)). The Chair independently
+  verified both images (594/594 and 5/5 manifest entries; kernel bytes
+  equal stage 1's; ramdisks parsed file by file; Valve pins; native
+  fs-supervise and fs-pattern checks). **Concurs with the reordering**
+  and with the persistent-state rules; notes the decisions. No
+  rebuilt-kernel concurrence.
+- **B1 (host only):** the host's guarantee "Th precedes T0" is
+  unsupported: a successful `fastboot boot` return can be timestamped after
+  PID 1 starts (Chair's counterexample: stage 3a runner could run past the
+  device deadline). Also, the collector computed its remaining budget
+  before gadget discovery and transport construction, so preparation time
+  inflated the budget. Fix: BootStartUtc as the origin for every handoff;
+  absolute deadlines converted to the transport's clock after preparation;
+  a fresh remaining-budget check before the runner. Regression fixtures
+  required. Images and nonces unchanged.
+- **C1 (wording):** "panels lit at most 10/15 s" overstated. Corrected in
+  stage3a IMAGE.md and README, PROJECT_SETUP §6A and the display note: the
+  client hold is 10 s (alarm at 15 s); closing does not prove v66 turns
+  the panels or backlight off [O]; the frame may persist until recovery;
+  T0 + 170/171 s are intended reboot times, not guaranteed panel-off times.
+  The on-device `init.sh` comment ("black") is recorded as errata. New
+  `devices/quest3/SIGNOFF.md` puts the retained-frame exposure into the
+  PM's sign-off.
+- **Return package** (narrow, FS-A-008): corrected observer/collector,
+  regression outputs, timing explanation, exposure wording.
+
+**J-54 · Thermal and fan control design (task 4, first draft).**
+
+- `docs/research/thermal-control-design.md` (agent draft; adversarial
+  review pending). Key findings [M-static, Meta source/DTB]:
+  - the DT CPU cooling maps reach **state 1 only** (one frequency step:
+    ≈2.36→2.21 GHz, 2.05→1.92 GHz); **no DT map targets the GPU**, the 110 °C
+    CPU trips, the 95 °C GPU trips or DDR (settles FS-R-006 §4's GPU
+    question at the DT level: a devfreq cooling device exists, no zone binds
+    it);
+  - the only kernel `critical` trips are the PMIC temp-alarm zones (145 °C),
+    present only if that module is loaded;
+  - **the v66 fan driver stops the fan on blank** and defers thermal
+    requests while the display is off (public v66-era source, near match
+    to Unit 1's build); v2.7 caps at `silent_rpm` instead (J-39 applies to
+    v2.7 only);
+  - virtual sensors return the last value (initially 0) when an input
+    fails, so a dead input can look plausible;
+  - the `usb-conn` 60 °C trip disables USB-C CC (cuts our channel);
+  - temp-alarm stage-2 override applies only to GEN1 and first-revision
+    GEN2 alarm types; which of the 8 PMIC instances are which is [O];
+  - `cpufreq.default_governor=performance` comes from the vendor_boot DTB
+    bootargs.
+  - Android thresholds (v2.7 thermal JSON): battery 58/61/63/65 °C, skin
+    48/50/52/60 °C, SoC 89/92/95/115 °C, USB 70 °C.
+- **Relevance to FS-A-007 trial (iii) on Unit 1 (v66):** if fs-pattern's
+  close blanks the panel, the v66 fan driver would stop the fan for the
+  rest of the hold (≤ T0 + 171 s, idle). The fan state was already [O] and
+  not commanded; disclose in FS-A-008. Not a reason to change the image
+  (FS-R-007 §4: no new thermal-stack change for the first experiment).
+- Design proposes: schedutil + caps at boot (CPU 1.92 GHz, GPU 545 MHz), a
+  fan policy with tach-failure checks, not loading temp-alarm until a
+  read-only PMIC-type probe settles it, and a fail-safe `fs-thermald`;
+  attended validation trials T0–T6. T0 needs read-only Android probes and a
+  debugfs read: a future relay item, not run.
+
+**J-55 · Trial order (PM).** Once FS-R-008 grants live concurrence, trial
+(i) (stage 2a, Valve files) runs first, then trial (iii) (stage 3a,
+display) after (i)'s comparisons complete with no STOP — matching the
+Chair's stated preference (FS-R-007 §5 ask 3). Fan policy for future
+images (temperature-driven; screen-off quiet cap that yields to
+temperature; fan off only in suspend, no suspend while hot; tach-failure
+throttle/shutdown) proposed to the PM, pending their confirmation.
+
+**J-56 · Fan policy recorded (PM); FS-A-008 ready.**
+
+- **Fan policy (PM, 2026-10-09):** cooling follows temperature, not screen
+  state. Screen on: the device's own Meta zones. Screen off: still
+  temperature-driven, an optional quiet cap that **yields** to
+  temperature, optional throttling. Suspend: fan off, no suspend while hot.
+  Always: tach-failure and stale-sensor fail-safe (throttle, then orderly
+  shutdown). **Per device:** each port copies its own device's Meta policy
+  from its own firmware and DT; the Quest 3S is not the Quest 3 and the
+  Quest Pro is not the Quest 2 (PM). Where a stock driver stops the fan on
+  blank, our port replaces that. Valve's Frame fan control is not used on
+  Quests. Recorded in PROJECT_SETUP §6A.3, checklist B4/B7.
+- **FS-A-008** (return package for FS-R-007): B1 fix reviewed (closed; nits
+  applied: future origin refused, T9); a Chair-role review of the relay
+  found no blocker; its fixes applied (a leftover C1 claim in
+  RECOVERY.md; full `init.sh` errata; the v66 fan disclosure carried into
+  PROJECT_SETUP and the sign-off sheet; harness-run provenance; tag split).
+
+**J-57 · FS-A-008 sent.** The PM relayed FS-A-008 (private review record) with
+`FS-A-008-raw.zip` (SHA-256
+`bbbb7dfd994448e92c1c70a561a0cf1afb824b828e67a37af98cd73b88f03413`).
+Awaiting FS-R-008. Trial-day practice (PM): the steps are given **one at a
+time** as the trial proceeds, not as one block.
+
+**J-58 · FS-R-008: B1 and C1 CLOSED; CONCUR with trial (i) and,
+separately, trial (iii).**
+
+- Ruling recorded verbatim (FS-R-008 (private review record)). Live scope: Unit 1
+  only, v66 build 50105190000000511, slot A, stock kernel/DT/firmware;
+  temporary boot, no flash, one attempt per trial, no retry. Images and
+  nonces as FS-R-007 §1; reviewed host hashes `fs-observe.ps1`
+  `b939640d…834a`, `fs-collect.ps1` `3a8d7775…8776` (checked equal in the
+  working tree, 2026-10-09). Neither nonce used (no ledger yet).
+- Order: (i), recovery and comparisons, then (iii) only with no STOP and a
+  fresh baseline; each with its own PM sign-off and nonce.
+- Editorial fixes applied (do not touch the reviewed host scripts):
+  COLLECTOR.md "handoff" → "BootStartUtc"; SIGNOFF.md "removing the
+  headset from the eyes does not stop execution"; the Unit 1 fan
+  near-match inference tagged [C].
+- Next relay: actual attempt logs, identities, raw captures,
+  classifications, separate optical/dark observations, recovery outcome,
+  battery/temperature readings, persistent-state comparisons; PASS / FAIL
+  / INCONCLUSIVE without substituting evidence categories.
+
+**J-59 · Trial (i) run (stage 2a, nonce 93a1501f0b1fb692), 2026-10-09.**
+
+- **Deviation:** the PM ran it **remotely, not physically present at the
+  headset** (stated after the command was entered; FS-R-007/008 require the
+  PM present). No intervention was needed; to be reported to the Chair.
+- BA OK (100 %, 23.0 °C, slot `_a`, build `…0511`, kernel
+  `5.10.198-01402-g1c5986fe21ee`); BF OK. BootStartUtc 18:22:27.27Z;
+  `fastboot boot` HANDOFF_ACKNOWLEDGED, Th 18:22:38.50Z; gadget on COM8 at
+  Th + 13 s (a WRONG-serial variant `FS-93A1501F0B1FB692` was seen first and
+  ignored); collector: COLLECTED-VALID, FSB1 VALID, `fs-done` acknowledged
+  (`FSD1 queued`), exit 10; back in fastboot.
+- **Classification (pre-registered rules): stage-1 class PASS; OUTCOME
+  COMPATIBILITY FAIL**, lowest failing step 4 `list`: "not exactly 3
+  terminated lines". Steps 1 `hash` and 2 `absent` MEASURED clean; 3 `diag`,
+  5 `uname`, 6 `b2kat`, 7 `b2chal` OK; 8 `inv` INFO.
+  - [M] Valve's `uname` printed `5.10.198-01402-g1c5986fe21ee`; Valve's
+    `b2sum` gave the empty-input KAT and **BLAKE2b-512 of
+    `93a1501f0b1fb692:c59a60eb2c479d5ceaa48612d91d36c5` =
+    `a28b0404…d006`**, recomputed independently on the host.
+  - [M] step 4's `ld.so --list` printed 4 lines; the extra first line is an
+    entry with an empty name and only an address (`(0x0000007fb78d0000)`);
+    libc and the loader resolved to `/valve/lib/…`; exit 0. That it is the
+    main program's own map entry, absent under qemu, is [C]. The rule is
+    reported as it stands; no re-grade.
+- **After:** AF slot state identical to BF; `getvar all` differs only in
+  battery voltage (4360 → 4356 mV). AA OK. Partition hashes identical except
+  `misc`; **misc rule RECORDED** (boot command `E1` unchanged; vendor words
+  `0x1010–0x101b` changed, presumed reboot-related as in the stock control);
+  persistent-state comparison identical (method private); slot, fingerprint,
+  kernel identical [paraphrased for publication]. Boot reason after: `bootloader`.
+- **Battery: 23.0 → 34.0 °C** (AA10, after Android boot, on AC, 100 %).
+  That is > +5 °C, so the **cooling rule applies** (RECOVERY.md §4) before
+  any further step. The cause (trial vs Android boot and charging) is [O].
+
+**J-60 · Trial (i) report reviewed; root cause of the step-4 line.**
+
+- Root cause [D, offline source and disassembly analysis;
+  FS-A-009 (private review record), `listing-evidence/`]: the
+  extra line is the **main program's own map**; glibc 2.39 prints it when
+  an uninitialised flag (`mode_trace_program`, set only from
+  `LD_TRACE_LOADED_OBJECTS`) happens to be true on the `--list` path, so it
+  appears nondeterministically. Reproduced under qemu with `-cpu
+  cortex-a72` (logged rerun: 11/15 runs for `b2sum`, 7/15 for `uname`). **Corrects J-59**, which tagged the cause [C]
+  and said the line was "absent under qemu" (it is absent only with qemu's
+  default CPU model, 0/30).
+- The "exactly 3 lines" rule is judged defective [D]; FS-A-009 asks the
+  Chair to rule on how to record the run and on a corrected rule.
+- **Deviation re-assessed:** the PM's remote run breached the FS-A-007
+  §5.5 start gate ("the PM is absent"), and the thermal basis lacked its
+  attendance component. The Arbiter also failed to ask for explicit
+  confirmation of physical presence before giving step 5. **Corrective
+  rule:** the attempt step is given only after the PM confirms in chat
+  that they are physically at the headset; the completed sign-off sheet is
+  filed with the attempt log. FS-A-009 asks the Chair to rule on
+  admissibility.
+- Cooling record: 28.0 °C at 19:11:37Z (from 34.0 °C at AA).
+
+**J-61 · PM statement on trial (i).** The PM ticked the sign-off sheet
+after the attempt, and states: "I accepted the risk of not being present
+and made an executive decision as PM. My override should be enough."
+Recorded in FS-A-009 §1; the admissibility question still goes to the
+Chair (the scope it concurred with required presence). The presence gate
+(J-60) stands for future attempts.
+
+**J-62 · FS-A-009 sent** with `FS-A-009-raw.zip` (`dfc6c2d2b3e3031d03062477b593eeaede79564c1072e88bc020f9d0bf6a2527`). Awaiting FS-R-009 (listing rule, admissibility, trial (iii)).
+
+**J-63 · FS-R-009; thermal rulings (PM).**
+
+- **FS-R-009** (verbatim, FS-R-009 (private review record)): trial (i) **admissible
+  with the deviation recorded**; registered outcome **COMPATIBILITY FAIL,
+  step 4 (listing-rule defect)** retained (option 1a; rule 8 is not a
+  conversion mechanism); no promotion to PASS under a later rule. The
+  loader explanation is supported (glibc commit and disassembly checked
+  independently). Future listing rule: **amended A** (optional first
+  address-only line, nonzero and distinct; **no "below the loader"
+  condition**, which the qemu log contradicts in nine cases); option B
+  rejected. A registered stage-2a PASS needs a separate attempt with a
+  fresh nonce (optional, not a prerequisite). **Trial (iii): CONCUR**,
+  after the cooling hold, fresh BA/BF, pre-attempt sign-off, PM physically
+  present.
+- **Wording corrections from FS-R-009 §5:** "no ADSP running" narrowed to
+  what was measured (empty remoteproc enumeration; ADSP driver link
+  absent); the cause of the temperature rise stays [O] (do not attribute
+  it to charging or bootloader dwell); the image lifetime was not measured
+  as 30 s (`fs-done` queued about 35 s after command launch); the readable
+  gauge is a finding, not proof of reliable thermal protection.
+- **Thermal rulings (PM, 2026-10-09):** P1–P10 accepted; P11 rejected
+  (start at Meta's L4, 1.92 GHz / 545 MHz). All to be revisited before the
+  first public release (PM). Recorded in PROJECT_SETUP §6A.3 and the
+  design §0.1.
+
+**J-64 · Listing rule v2A ready on a branch (merge after trial (iii)).**
+
+- Branch `listing-rule-fix` (`eb541e2`, tip `6441b07`): `fs-classify.ps1`
+  step-4 rule versioned. v1 (registered) for trial (i)'s nonce and
+  **locked** there (`-ListRule v2A` refused, FS-R-009 §3: no promotion to
+  PASS); v2A (amended A, FS-R-009 §4) for all new runs; unknown rule name
+  refused. OUTCOMES rev 5; T1-PINS §3; LISTING-RULE-A.md; option B marked
+  not adopted. Fixtures: section L 58 checks incl. device output, qemu
+  cases on both sides of the loader, 33 negatives, the registered-run lock;
+  host suite 456/456 from a clean export. Adversarial review: one gap (the
+  manual override could print PASS for trial (i)), fixed.
+- **Not merged:** trial (iii) is classified with the reviewed
+  `fs-classify.ps1` (`762579e0…`); the branch is merged after it.
+- Quest 2 port plan committed (`4ffe334`); awaiting the PM's answers on the v59
+  artifact source and a schedutil switch at boot.
+
+**J-65 · Quest 3 kernel reproducibility (task 2).**
+
+- [M-static, `tools/kgate/validation/reproducibility-quest3.txt`] The Quest
+  3 v2.7 (5.10) tree is **not** bit-reproducible with the Quest 2 method
+  (same object path, pinned `KBUILD_BUILD_TIMESTAMP/USER/HOST/VERSION`):
+  two builds with ASLR on differ in 25.3 MB of the Image (Module.symvers and
+  all 272 `.ko` identical). With **every make under `setarch x86_64 -R`
+  (ASLR off)**, two builds are **bit-identical** (vmlinux `1d855c2c…`, Image
+  `fbfb86f4…`, Module.symvers `7b5cfa8f…`, all 272 `.ko`).
+- Cause [D]: the stock config has `CONFIG_META_SAMPLE_PGO=y`
+  (`-fprofile-sample-use=vmlinux.profdata`); in clang r450784e the attached
+  profile counts depend on memory addresses, so 8 of 4,696 objects differ
+  between runs; that changes inlining, and full LTO shifts the whole
+  layout. Confirmed per file (printk.o: 7 distinct outputs in 20 runs with
+  ASLR, 1 without ASLR or without the profile). The Quest 2 4.19 tree has
+  no sample PGO.
+- Every run matched the gate: `module_layout 0xb1f01218`, 2601/2601
+  vendor-required CRCs, all 14,059 vmlinux CRC pairs equal the FS-A-006
+  build.
+- **Rule for future gate builds:** same object path, the four pins, and
+  `setarch -R` for the whole build. The FS-A-006 build (unpinned, ASLR on)
+  cannot be matched bit for bit. Untested: other paths or hosts.
+
+**J-66 · v2.7 for real, not a hybrid (PM).**
+
+- **PM direction:** the Quest 2 (and Quest 3) work targets **v2.7 only**,
+  for compatibility with the latest firmware; v59 is too rare to target.
+  The Quest 2 port plan is refocused on v2.7.
+- **Why a v2.7 boot image on a v59 unit is a hybrid** [D]: `fastboot boot`
+  replaces only the kernel, the DT in the boot image and our ramdisk for
+  one boot; the boot chain (xbl, abl, tz, hyp, aop), co-processor firmware,
+  DTBO and vendor partitions stay as installed. FS-A-006 §3A already named
+  this hybrid as needing analysis.
+- [removed for publication]
+- **Quest 2 governor (PM):** PID 1 switches to `schedutil` at boot.
+
+**J-67 · [removed for publication]**
+
+**J-68 · Quest 2 port plan revision 2 (v2.7 only).**
+
+- `devices/quest2/PORT-PLAN.md` rev 2 + `analysis/v27-stage1/` (agent;
+  unreviewed). [M-static] the v2.7 boot and dtbo hashes match the OTA's
+  vbmeta; boot header v2, raw kernel, 3-blob DTB; stage 1 keeps kernel and
+  DTB byte-identical and swaps a **gzip** ramdisk (`RD_GZIP=y`, LZ4 off).
+  No modules needed: gadget, display, fan, thermal, charger and watchdog
+  are built in.
+- **USB channel:** NCM gadget (config:3630) with IPv6 link-local (or IPv4
+  + `udhcpd`), records FSV1/FSA1/FSS1/FSB1 unchanged, one per TCP
+  connection; Windows `usbncm` binding and busybox `nc -l -e` behaviour
+  untested [O].
+- Hardware watchdog on by default and petted by a kernel thread; PID 1 must
+  **never open `/dev/watchdog`** (softdog could not be stopped). 4.19 has
+  no default-governor boot parameter → PID 1 sets `schedutil` (PM). Panic
+  reboots immediately (`PANIC_TIMEOUT=-1`). The fan driver waits for a
+  panel; quiet speed 0.
+- Unit binding: compare the unit's `ro.boot.vbmeta.digest`
+  with the computed `91b7f93d…` [D, own script; to cross-check with
+  avbtool].
+- **Open decision (for the Chair, before Q2-P2):** how to capture misc
+  before/after on v2.7. Options to propose: `fastboot fetch` if the ABL
+  supports it [O], or our own PID 1 reading misc read-only during the
+  trial boot. The same applies to a Quest 3 on v2.7.
+
+**J-69 · PM decisions and facts on the v2.7 move.**
+
+- **Firmware ceiling (PM):** v2.7 is the target; do **not** move to builds
+  newer than v2.7.
+- **Slots (PM report):** a manual slot switch does not boot properly
+  [PM report; mechanism O].
+- **Quest 3 Unit 2 hardware fault (PM report):** a **faulty IPD slider**
+  that has caused issues on newer firmware; it may matter for SteamOS
+  (IPD sensing, lens-distance handling). To be added to the Unit 2
+  baseline and the device checklist before Unit 2 is used.
+- **PM question: write only the boot chain, omitting the userspace?**
+  Arbiter answer: no. (a) Writing boot-chain partitions is forbidden by
+  FS-R-001 (do-not 3) and would need the Chair to revisit it; (b) a
+  SteamOS image still needs v2.7 vendor firmware, vendor modules and DT
+  from the logical/vendor partitions, so a boot-chain-only change would be
+  a new hybrid; (c) the boot chain is where bricks happen.
+
+**J-70 · [removed for publication]**
+
+**J-71 · [removed for publication]**
+
+**J-72 · Quest 2 USB network channel built offline (agent; unreviewed).**
+
+- `devices/quest2/channel/` (README first). Offline fixtures: device side
+  28/28, host side 71/71. **Nothing has run on a headset.** The Quest 3
+  trial tools are unchanged; their hashes still match FS-R-008 and the
+  reviewed classifier.
+- **Addressing:** IPv6 link-local `fe80::<nonce>/64`; the 64-bit nonce is
+  the interface identifier. No DHCP, no IPv4. Duplicate-address detection
+  is disabled through settings (busybox `ip` has no `nodad`). Fallback:
+  fixed `169.254.x.y`.
+- **Responder:** a static C program `fs-rpcd` replaces busybox `nc -e`.
+  - Under qemu, `nc` listened on every interface, spawned a shell per
+    connection and reset a second client.
+  - `fs-rpcd` binds one address, serves one connection at a time, allows
+    3 s and 64 characters per request, and never runs a shell. Its only
+    exec is the fixed collect runner.
+  - Build: `src/fs-rpcd.c` sha256 `09a5710b…`, binary `7c819fa1…` (AOSP
+    clang r450784e, static, bit-identical rebuild; `build/BUILD.txt`).
+- **Requests:** lowercase Quest 3 names, each carrying the nonce
+  (`fs-verify`, `fs-ack`, `fs-status`, `fs-done`, `fs-collect`). This
+  departs from the port plan's uppercase verbs. A stale image or the wrong
+  unit returns a refusal record; replays are refused.
+- **Host side:** `host/fs-transport-tcp.ps1`, a single send site, a
+  stop-on-doubt check before each request, raw responses kept with
+  SHA-256, deadlines from BootStartUtc.
+- **Found and fixed during the build:**
+  - the responder accepted a trailing NUL byte;
+  - the WSL relay loses responses after a half-close, so the transport
+    never half-closes.
+- **Open [O]:**
+  - Windows `usbncm` binding to the 4.19 NCM gadget;
+  - the v2.7 USB controller name and role switch;
+  - link-local addressing and Windows Firewall on the real gadget;
+  - the adapter MAC;
+  - 4.19-specific behaviour (fixtures ran on WSL 6.18);
+  - Quest 2 timer values and the collector.
+- **Adversarial review:** started; required before any relay.
+- **Side effect:** the agent's first run rewrote the gitignored
+  `devices/quest3/common/tools/__pycache__/fsb1.cpython-314.pyc` (same
+  source and Python version). No tracked file changed.
+- **Adversarial review of `e0d364f`** (read-only; it rebuilt the binary
+  bit-identically and checked the hashes, address derivation, 4.19
+  sources, timing and send discipline):
+  - **2 MAJOR:**
+    - the build's "no shell string" gate cannot fire (SIGPIPE under
+      `pipefail`), and the binary does contain `/bin/sh` from static
+      glibc, so the BUILD.txt claim is false;
+    - the runner reap after SIGKILL is unbounded, so a stuck runner would
+      hang the responder until DEADLINE.
+  - **11 MINOR:**
+    - signal state inherited by the responder and runner;
+    - a second line arriving in a later segment is drained, not refused;
+    - wildcard binds are accepted;
+    - collect-once and replay state are kept in memory only;
+    - RPC_READY is recorded without checking the responder listens;
+    - the host send gate is not re-checked immediately before the write;
+    - the host API's adapter and deadline bindings are weak;
+    - the reference flow counts an FSR1 as COLLECTED;
+    - README overclaims;
+    - fixture gaps (most device cases half-close, unlike the real host);
+    - three undisclosed PORT-PLAN departures.
+  - Fixes delegated to the build agent; a re-review follows.
+- **Revision 2 (fixes):** all 13 addressed (10 fixed; m6/m11 fixed in
+  part and reworded in part; m13 reworded). Highlights:
+  - build gates now capture output before checking; BUILD.txt states that
+    the `/bin/sh` string comes from static glibc and that `fs-rpcd` code
+    calls only `execve` (checked from its undefined-symbol list);
+  - the reap is fully non-blocking: 2 s poll, SIGKILL, 2 s poll, then
+    `runner-unreaped`;
+  - signals and mask reset; umask 077; a 75 ms trailing-byte window;
+    wildcard binds refused; an `fs.collect-started` O_EXCL marker;
+    RPC_READY only after the responder's own listening line;
+  - the host time gate is re-checked just before the write; adapter-bound
+    scope; one-shot deadlines; mandatory start refusal and runner guard;
+    FSB1 required for COLLECTED.
+  - Extra bug found: exactly 8 MiB of runner output was refused.
+  - Hashes: `fs-rpcd.c` `654db098…`, binary `5c1357f2…` (bit-identical
+    rebuild), `fs-ncm.sh` `41f2b388…`, `fs-transport-tcp.ps1` `ea91128c…`.
+  - Fixtures: device sections 36/36 (D-qemu 101/101, D-asan 101/101,
+    D-native 102/102, G 22/22, L 6/6, I 5/5), host 79/79. The old source
+    fails the new cases (89/97).
+  - The D-state runner is simulated with a `waitpid` shim [O on real
+    hardware]. The replay table is still kept in memory only (disclosed).
+  - Re-review started.
+- **Re-review of `a0ab780`:**
+  - **Status:** 9 of 13 closed. M2, m7, m9 and m11 partly closed. The
+    reviewer's own rebuild matches the binary hash, and crafted inputs
+    confirm the build gates fire.
+  - **New: 2 MINOR.**
+    - N1: the responder is not killed when `fs_rpc_start` fails, so it
+      could serve during `fail()`'s wait.
+    - N2: the exec gate misses `syscall(SYS_execve, …)`; the fix is to make
+      it an allowlist.
+  - **Residuals:**
+    - phase-2 kills are reported as `runner-unreaped`;
+    - the runner guard is not tied to the device runner limit;
+    - the README status line is stale;
+    - a `setsid` stray survives the process-group kill.
+  - No BLOCKER or MAJOR remains. Revision 3 delegated.
+- **Revision 3:** all six items fixed in code.
+  - N1: the responder is SIGKILLed and reaped before every `fail()` in
+    `fs_rpc_start`, with liveness read from `/proc` stat. The host refuses
+    an FSV1 whose stages contain `ERROR_`.
+  - N2: the exec gate is now a symbol allowlist
+    (`tools/fs-rpcd.undef.allow`, `undef-gate.sh`); crafted variants
+    (`syscall(SYS_execve)`, `system`, `popen`, `execvp`, `posix_spawn`,
+    `dlopen`) are rejected, 9/9.
+  - Phase-2 kills now report `runner-killed`.
+  - The host runner guard is derived from the image's `-T`:
+    RunnerTimeoutMs = T + 39.075 s, RunnerWorstMs = that + 5 s.
+  - The README status line is fixed.
+  - Child subreaper plus a bounded `/proc` sweep kills `setsid` strays
+    (X6, X7).
+  - Hashes: `fs-rpcd.c` `5bd7d10d…`, binary `77b24f9f…` (bit-identical
+    rebuild), `fs-ncm.sh` `116d938f…`, `fs-transport-tcp.ps1` `00fc87c9…`.
+  - Fixtures: device 37/37 sections (D-qemu 103, D-asan 103, D-native 104,
+    G 23, L 6, I 5), host 90/90, build gate 9/9. The `a0ab780` source
+    fails exactly the new X3, X6 and X7 cases.
+  - Final re-review started.
+- **Final re-review of `58817ec`:**
+  - **Closed:** N1, N2 and the M2/m9/m11 residuals. The reviewer's
+    rebuild matches the binary hash, and the sweep is confirmed
+    descendants-only, non-blocking and race-free.
+  - **Reviewer's view:** ready for the Chair as offline work.
+  - **4 MINOR:**
+    - R1: the ERROR_ marker can be lost to the 200-byte truncation, and
+      `-ReadyStage` is optional;
+    - R2: the build gates can be bypassed by source edits (inline `svc`,
+      a function-pointer execve, an edited allowlist), so they are defence
+      in depth on top of source review;
+    - R3: the `-T` 240 s cap can never be used; a Quest 2 timing check is
+      needed;
+    - R4: a wording nit.
+  - Revision 4 delegated.
+- **Revision 4:** R1–R3 fixed in code, R4 reworded.
+  - Truncated fields are marked with a trailing `+` (data `+` becomes
+    `?`). The host refuses truncated or `ERROR_` stages in FSV1 and FSS1.
+    `-ReadyStage` is mandatory live, and the transport stops by itself on
+    these.
+  - New `src-gate.sh` (asm/svc/exec-family tokens). `undef-gate.sh` checks
+    a pinned allowlist sha256, requires exactly one direct-call `execve`
+    relocation, and rejects svc/hvc/smc in the object.
+  - New `check-timing.py`: max T = DEADLINE − 194.075 s (104 s at
+    299 s). The cap was lowered from 240 to 104 and is enforced in the
+    build.
+  - Hashes: `fs-rpcd.c` `d2711be2…`, binary `6ccb0fcc…` (bit-identical),
+    `fs-transport-tcp.ps1` `7b642903…`.
+  - Fixtures: device 37/37 (D-qemu 111, D-asan 111, D-native 112), host
+    97/97, build gate 14/14, timing CONSISTENT.
+  - A verification pass of rev 4 follows before FS-A-010.
+- **Verification pass of `e6e5cf0`:**
+  - R1, R3 and R4 closed. The binary rebuild matches. The truncation
+    marker and host refusals behave as claimed (ASan clean).
+    `check-timing.py` reads its inputs from the sources, and the 104 s cap
+    is the same in all four places.
+  - R2 partly closed. **V1 (MINOR):** a token-pasted `asm` emitting
+    `.word 0xd4000001` (a raw `svc`) passes both gates, because objdump
+    shows it as data.
+  - V2: a wording point; the relocation check limits call sites, not
+    arguments.
+  - Nits: an all-separator cut field loses its `+` marker; the `+`→`?`
+    rule also applies to the kernel release.
+  - Reviewer: ready for the Chair as offline work. Revision 5 (raw-word
+    svc scan, `##`/`_Pragma` ban, nits) delegated.
+- **Revision 5:** V1 and N-a fixed in code; V2 and N-b reworded.
+  - New `tools/obj-scan.py` scans the raw code words for svc/hvc/smc (any
+    immediate). It refuses `$d` in code, and refuses code-named sections
+    that are not executable. The builder found a second bypass that needs
+    no asm: a `section(".text")` constant is merged into executable
+    `.text` by lld.
+  - `src-gate.sh` bans `##` and `_Pragma`.
+  - `join_field` returns `-+` for an empty cut field.
+  - Hashes: `fs-rpcd.c` `df75cd26…`, binary `da8626c3…` (bit-identical).
+  - Fixtures: device 37/37 (D-qemu 113, D-asan 113, D-native 114), host
+    98/98, build gate 21/21, timing CONSISTENT.
+  - A narrow check of the rev 5 gate changes was requested.
+- **Narrow check of `9758eda`:**
+  - V2, N-a and N-b closed. The rebuild matches.
+  - V1 partly closed. A line-spliced `asm` with
+    `.reloc ., R_AARCH64_ABS32, 0xd4000001` over a `nop` passes every
+    gate: the linker writes `svc #0`.
+  - `obj-scan.py` reports OK on four malformed-ELF shapes, which only a
+    broken toolchain could produce.
+  - Nit: about 1.5 KiB of `.rodata` shares the executable page.
+  - Reviewer: ready for the Chair. **Revision 6 is the final gate pass**:
+    a relocation-type allowlist for code, token checks on preprocessed
+    output, a fail-closed ELF parser, and `-z separate-code`. The gates
+    remain defence in depth; source review is the control.
+- **Revision 6 (final gate pass):** `fs-rpcd.c` is unchanged
+  (`df75cd26…`).
+  - `obj-scan.py` checks relocations into `.text` against an
+    instruction-relocation allowlist, and each one must sit on a word of
+    its own instruction class (this closes `.reloc` ABS/PREL and crafted
+    ADRP tricks).
+  - The ELF parser fails closed (m1–m11 exit 2).
+  - `src-gate.sh` also checks `clang -E` output and refuses splices,
+    trigraphs and digraphs.
+  - The link uses `-z separate-code`, so no non-code bytes share an
+    executable page (`seg-check.py`).
+  - Binary `da19367b…` (680,968 B), bit-identical across two builds.
+  - Fixtures: device 37/37, host 98/98, build gate 43/43, timing
+    CONSISTENT.
+  - **Gate iteration stops here.** Residual, stated in BUILD.txt: a
+    determined source editor with control of the toolchain can defeat any
+    static gate; source review is the control. Rev 6 is covered by the
+    FS-A-010 package review.
+- **Relay plan (Arbiter):** no relay is needed for this alone. The channel
+  rolls into the next open relay, FS-A-010 (the trial (iii) report), as
+  offline work for the Chair.
+
+**J-73 · Trial (iii) executed (stage 3a display test), PM physically
+present.**
+
+- Evidence: FS-A-010 (private review record)
+  - `attempt-log.md`;
+  - `signoff-as-signed.md`;
+  - `analysis-initial.md`;
+  - `captures/`, `observe/`;
+  - `fsp1-decoded-partial.txt`;
+  - `EVIDENCE.sha256`.
+- **Presence gate met.** The PM stated physical presence and ability to do
+  the manual recovery before the attempt command was given. The sheet was
+  signed (re-timed) after `PHASE BF OK`. The PM had ticked all lines in
+  advance; times were written in local time, not UTC. [paraphrased for publication]
+- **Registered outcome:**
+  - STAGE-1 CLASS **PASS**; OUTCOME **INCONCLUSIVE** (OUTCOMES §8 rule 2,
+    FSB1 line-count);
+  - the collector reported COLLECTED-REJECTED; fs-done was acknowledged
+    and the device recovered to fastboot by itself.
+- **Cause of the rejection [M]:** about 1 KB (12 DATA lines) was lost in
+  the serial transfer, right after the host's first 12 289-byte read.
+  Where the bytes were dropped is [O].
+- **Display program records:** 66 of 69 FSP1 records pass their own
+  crc32; the 3 lost or damaged are mode-list entries. They show:
+  - the modeset commit (split, modeset) was accepted, rc=0 in 657 ms;
+  - the frame was held 10 s; close rc 0; `shown=1`.
+- **Optical (PM):**
+  - no image in either eye; black throughout;
+  - the panels went dark the moment `fastboot boot` ran and relit only
+    back in fastboot.
+- **Reading:** the handoff assumption (ABL continuous splash keeps the
+  panels lit) is contradicted [D]. Candidates are listed in
+  `analysis-initial.md` [O].
+- **Persistent state:** AF01–09 = BF01–09; AF10 differs only in battery
+  voltage; misc RECORDED (same vendor words); persistent-state comparison identical [paraphrased for publication]; slot A.
+- **Temperature: 30.0 → 44.0 → 45.0 °C (rising).** The PM powered off and
+  was asked to unplug, because off-mode charging adds heat. Cause [O];
+  long bootloader dwells (about 14 min before, up to about 9 min after)
+  are a candidate. Streamlining the prerequisites is a safety item too
+  (PM request).
+- **Next:**
+  - offline investigation of the display handoff and backlight;
+  - a fix design for the serial loss;
+  - a pattern preview image for the PM;
+  - then FS-A-010.
+- **Serial loss analysis** (`docs/research/serial-loss-trial3.md`, agent,
+  offline):
+  - **Exactly 1 024 bytes were lost** [D]: 13 + 11 × 89 + 32. That is one
+    SuperSpeed bulk packet.
+  - The first read of 12 289 bytes = the lone `
+` from
+    `fsb1-enc.sh:97` + 12 × 1 024, so it is the host driver's queue cap,
+    not a buffer size. The 4 MB `ReadBufferSize` is evidently ignored [D].
+  - The device tty path and `u_serial` cannot drop on a full buffer
+    [M-static]. The one device-side path, an errored request not being
+    resent (`u_serial.c:464-488`), is [O].
+  - Most consistent explanation: Windows `usbser.sys` dropped a packet
+    while its queue sat at the cap [D/C; SEGGER, OSR field reports].
+  - **Fix, ranked:**
+    1. pace `fsb1_emit` on the device (about 10 lines every 100 ms;
+       record bytes and hash unchanged; about 2–3 s per record, to be added
+       to DEADLINE and `RunnerWorstSec`; a new image);
+    2. host-side logging only;
+    3. chunked ACK/retransmit: not recommended (needs a Chair decision).
+  - **To pin the cause:** a host USB capture (USBPcap, a download, so the
+    PM's decision), or read-only `dmesg | grep -i unexpected` plus
+    `current_speed` on the device right after a burst.
+  - The Quest 2 TCP channel is not exposed: TCP retransmits.
+- **Dark-panel investigation** (`docs/research/display-handoff-dark.md`,
+  agent, offline; adversarial review pending). Sources: v66 tree
+  `23c97b2` (build .510; the device runs .511), checked
+  against the real v66 `msm_drm.ko`.
+  - On `fastboot boot`, the ABL clears the screen to black and then
+    starts the kernel. No display power-off was found on that path
+    (indirect chains not traced exhaustively) [M-static]. This explains
+    "dark instantly".
+  - The kernel builds `active=1` from MDSS registers and the DT; it never
+    reads the panel or backlight [M-static].
+  - **`backlight_changes_blocked` does not exist in v66** (source and
+    binary; it is v2.7 only). So `display-bringup-quest3.md` §1/§3 are
+    wrong for v66, and candidate 2 is ruled out.
+  - On our modeset, v66 restarts the DSI link and reprograms the backlight
+    at 1000/1000 (≤ 8.2 % duty), but never sends reset, sleep-out or
+    display-on.
+  - Hypotheses [O]:
+    - H1: the panel or BLU was physically off at takeover;
+    - H2: restarting the link without re-initialising the panel broke it.
+  - **Options:**
+    - R0: read pstore now (time-sensitive);
+    - R1: a read-only lit baseline (TE and BLU IRQs, sysfs);
+    - R2: the stage 3a image plus read-only probes to separate H1 from
+      H2;
+    - R3: run `fs-pattern` twice, so the second run gets a full screen-on
+      modeset;
+    - R4: run inside normal-boot recovery (Chair).
+  - Pattern previews in `docs/research/pattern-preview/`.
+- **R0 not run yet:** the Quest 3 was unplugged (not rebooted) when the
+  PM connected the Quest 2.
+- [removed for publication]
+
+**J-74 · PM directions after trial (iii).**
+
+- **Pattern (PM):** "keep the pattern light, and not dark, for
+  visibility. Removes one variable." This needs a new stage 3a pattern
+  revision and a Chair concurrence. The prior design (dark greys, no
+  full-field white) was a caution, not a measured limit. The BLU duty cap
+  (≤ 8.2 %) bounds luminance at normal-use levels [M-static, v66 source].
+- **Quest 2 (PM):** moved to v2.7 as a PM executive decision [removed
+  for publication].
+- **Quest 3 (PM report):** "the screen on the Q3 was off, not just
+  'black.' The backlight definitely wasn't on." This favours H1 (the
+  panel or BLU off) over a dim or black frame [PM report].
+- **PM:** FS-A-010 to be prepared without the Quest 2 read. The PM agrees
+  with the second trial (iii) proposals: a light/bright pattern, and the
+  run-twice route (plus read-only probes).
+- **R0 pstore check (Quest 3, read-only, 06:50:30Z):** `/sys/fs/pstore`
+  is **empty**, so no trial (iii) kernel log survived. This agrees with
+  the earlier finding that ramoops does not survive bootloader reboots on
+  this unit.
+- **Uptime:** 6418.72 s, i.e. Android has run continuously since about
+  05:03:32Z (the AA boot). The headset was evidently in standby, not
+  powered off, during the cooling period.
+- Battery 25.0 °C, 100 %.
+- **Online research** on the Quest 3 panels and similar dark-panel reports
+  was started (PM suggestion; output `docs/research/quest3-panel-online.md`).
+
+**J-75 · FS-A-010 package review: findings and fixes.**
+
+- Adversarial review of the FS-A-010 draft (`99ff75f`): **2 BLOCKER, 15
+  MAJOR, 15 MINOR**. The machine-side facts were verified (hashes, 1 024-B
+  loss, 66/69 FSP1 crc, comparisons, timings, key ABL/kernel claims of
+  `display-handoff-dark.md`).
+- **BLOCKERs:**
+  - a false review-status claim for `display-handoff-dark.md`;
+  - the bundle/manifest did not exist as described.
+- **MAJORs:**
+  - optical-quote provenance and the per-eye reading;
+  - the softened sign-off account;
+  - tag upgrades from the notes;
+  - "fully explains" the dark at handoff;
+  - **a wrong bright-pattern safety basis**: the commit programs 8.2 %,
+    about 2× recovery;
+  - two-run timing, DEADLINE, cues and outcome registration missing;
+  - a loose settled-temperature rule;
+  - wrong battery charge-state facts;
+  - serial-loss overclaims (link speed not recorded);
+  - Quest 2 "read-only" and missing disclosures;
+  - the channel revision 6 review status;
+  - the consent-description consequence of the backlight correction.
+- **Fixes:**
+  - attempt-log corrections appended;
+  - correction notes in `display-bringup-quest3.md`, stage 3a
+    README/IMAGE, and Corrections rows;
+  - the relay rewritten;
+  - a manifest-covered bundle;
+  - a narrow channel revision 6 review started.
+- **Channel revision 6, narrow review:**
+  - the rebuild is bit-identical (`da19367b…`);
+  - V1 (including the `.reloc` bypass) is closed, and the malformed-ELF
+    item is closed;
+  - `seg-check` is confirmed, and fails on the old link;
+  - no gate silently passes on a tool failure;
+  - **nit:** `#line`, quoted includes, or `-E` flag differences can evade
+    the textual gate; the object gates catch these;
+  - reviewer: ready for the Chair as offline work.
+- **FS-A-010 rewritten (draft rev 2)** to address B1/B2, M1–M15 and the
+  minors. The bundle and manifest will be built at finalisation, after
+  the Quest 2 v2.7 read and the online panel research.
+- **Online panel research** (`docs/research/quest3-panel-online.md`,
+  agent; sources [C]):
+  - no public prior art lighting Quest panels from a non-Meta kernel, and
+    nothing on Tokki;
+  - two 2064×2208 fast-switch LCDs; vendor and DDIC unknown;
+  - CLO's `is_skip_op_required` skip-on-splash supports the run-twice
+    plan;
+  - risks: DisplayDxe power cut (H1); BLU timing set by Meta userspace;
+  - new read-only probes: `/proc/cmdline` and the panel/rail/BLU status
+    nodes;
+  - folded into FS-A-010 §5.5/§6.
+- **PM:** the fixes and proposals are accepted; a new panel test will
+  follow after the Quest 2 work.
+- **Reference (PM screenshot, Nura Wiki "META Quest 3S (panther)", last
+  edited 2026-09-28) [C]:**
+  - status "not booting" [paraphrased for publication];
+  - no display work is reported. It lists the display as 3664×1920
+    (1832×1920 per eye) LCD.
+  - The page is noted only as prior-art context: no lit panels from a
+    non-Meta kernel.
+- **Display clues, second look (PM suggestion):** quest-kexec (Quest Pro;
+  our notes say "DRM was brought up twice before the composer") and
+  Quest1-SteamOS (`fastboot boot` route) are being mined for panel
+  bring-up details (agent; output
+  `docs/research/display-clues-kexec-quest1.md`).
+- **Safety (PM report):** firmware of this era added a "Switch Boot Slot"
+  option to the bootloader menu, which "does not do anything useful but
+  can actually cause a brick if triggered".
+  - Recorded as a never-use rule in the Quest 2 and Quest 3 READMEs and in
+    Quest 3 `RECOVERY.md`.
+  - Whether the Quest 3's firmware has it is [O]. This also fits the PM's
+    earlier report that manual slot switches don't boot properly.
+- **Display clues from the community repos**
+  (`docs/research/display-clues-kexec-quest1.md`):
+  - **quest-kexec runs its atomic client twice after the kexec handoff on
+    the Quest Pro.** Its comment: "The panel only lights on the second
+    bring-up" [M-static/C, commit `4554025`; no mechanism given; closed
+    binary].
+  - This is the closest prior art for the run-twice plan.
+  - Our earlier note misread its "VrPowerManager black screen": that was
+    TimeWarp blanking content, not the panel.
+  - Quest1-SteamOS lights its OLED panels with one `FBIOBLANK`; there is no
+    dark-start report.
+  - Folded into FS-A-010 §5.6/§6: run 1 synchronous and the last `card0`
+    close; an optional shorter run 1; wider dmesg; DRM
+    status/enabled/dpms, fan and backlight reads.
+- **Community advice [C]** [paraphrased for publication]:
+  - later stages need a modified Mesa driver with a custom compositor,
+    because the SteamVR compositor's use of libdrm gets in the way;
+  - the panels are DSC displays with quad views, so displaying directly
+    does not always work;
+  - reuse the stock OS's existing CRTC parameters and render with them;
+  - colourful garbage lines on the screen point to a DSC mistake.
+  - The public fork YusufOzmen01/oculus-linux-kernel was recently updated;
+    an agent is examining it.
+- **Arbiter's reading [D]:**
+  - `fs-pattern` already reused the CRTC's current mode (`why=crtc_current`)
+    and let the stock SDE driver apply the DT's DSC topology. Trial (iii)
+    saw no light at all, not garbage.
+  - The compositor and mesa point matters for later stages (the SteamVR
+    compositor on libdrm).
+  - A read-only "stock CRTC parameters" capture in Android (DRM debugfs
+    state) fits the planned lit baseline.
+- **oculus-linux-kernel fork (YusufOzmen01)**
+  (`docs/research/oculus-linux-kernel-yusuf.md`):
+  - all author work is Quest Pro 4.19; Quest 3 is an untouched mirror;
+  - no panel power-on, DSC or topology changes, so the second bring-up
+    remains unexplained;
+  - a Quest Pro backlight-timing re-send fix (ghosting; not applicable to
+    the Quest 3 Tokki-A path);
+  - kernel side of Turnip-on-KGSL sync bridges (later stages);
+  - no sign our split commit caused a DSC mismatch;
+  - read-only Android captures A1–A7 proposed (debugfs state,
+    `crtc/status`, dmesg, modes, cmdline);
+  - folded into FS-A-010 §5.7/§6.3.
+- A full non-display review of Quest1-SteamOS and quest-kexec at their
+  latest commits is running (PM: "anything is helpful").
+- **Quest 2 after v2.7 (08:25Z, fastboot, already in fastboot):**
+  - current-slot b; ABL ad4b133f68.20260708.
+  - **Android read (08:27Z; the PM booted it):**
+    - fingerprint
+      `oculus/hollywood/hollywood:14/UP1A.231005.007.A1/52242990024200150:user/…release-keys`,
+      the **same build as our pinned zip**;
+    - slot `_b`;
+    - kernel `4.19.325-cip128-st12-g49638c7a8637` (our v2.7 build
+      target);
+    - **`ro.boot.vbmeta.digest` = `91b7f93d…`**, which matches the digest
+      computed offline from the pinned OTA (J-68), so the unit binding
+      works [M];
+    - security patch 2026-06-03; 100 %, 31.2 °C.
+  - **Q2-P1 read-only baseline in Android (adb shell,
+    `evidence/v27-baseline/`):**
+    - `ro.boot.dtb_idx=1`, `dtbo_idx=0`; hardware revision Rev11;
+    - **`sys.usb.controller` = UDC = `a600000.dwc3`**, so the channel's
+      `FS_UDC_EXPECT` for v2.7 can be `a600000.dwc3` (in Android; under our
+      own init it is to be confirmed);
+    - cpufreq governor `performance` on all three policies in Android:
+      silver 1.8048 GHz fixed; gold max 2.4192 GHz; prime max 2.8416 GHz;
+    - thermal zones, cooling devices, hwmon and LEDs are not readable
+      from adb shell (SELinux); `panel0-backlight` exists;
+    - battery: AC, 100 %.
+- **PM product goal:** "I want to improve upon their work as well.
+  Optimize it. Make it better, if we can. They walked so we can run. I'd
+  really like our port to feel like a polished, professional product."
+- **Quest 1 (PM):** Quest 1 units are stuck at v50 due to end-of-life
+  [paraphrased for publication].
+  - The Quest 1 target is therefore **v50** (Quest 1 README).
+- **Quest 3 units (Arbiter recommendation to the PM):**
+  - keep Unit 1 on v66 until trial (iii-b) is done (the concurred v66
+    baseline);
+  - baseline Unit 2 before use; note its IPD fault.
+- **PM:** the Quest 2 is unplugged and shut down. FS-A-010 to proceed.
+  **Quest 3 Unit 2's identity to be supplied later.**
+- **Stock display state, Quest 3 Unit 1, Android (PM-approved,
+  read-only), 08:35Z, screen asleep**
+  (`devices/quest3/evidence/stock-display-20261010/`):
+  - debugfs is **not mounted** (A1–A4 need the PM's OK to mount it);
+  - cmdline `msm_drm.dsi_display0=meta,eureka_panel_sharp:`,
+    `cpufreq.default_governor=performance`;
+  - dmesg: panel "Sharp novatek dual video mode dsi panel with dsc";
+    "default topology: lm: 4 comp_enc:4 intf: 2"; "cont_splash enabled in
+    1 of 1";
+  - **Android performs three mode sets during boot** (90 Hz at 6.0 s,
+    72 Hz at 11.5 s, 90 Hz at 13.5 s);
+  - DSI-1 connected, enabled, dpms Off (asleep); 24 modes as in trial
+    (iii); DP disconnected; Virtual connected;
+  - crtc-0 sysfs: `backlight_timing=55,4828,4828`, `blu_default_duty=82`
+    (confirms the DT value [M]), `fifo_trim=40`;
+  - `panel0-backlight` brightness 0 / max 255, `bl_power=4` (off, asleep);
+  - IRQ counts: `te-edge-isr` 20085, `blu-pwm-isr` 20087.
+- **Arbiter slip (no effect):** an `adb push` of a read-only script to
+  `/data/local/tmp` was attempted. It would have been a write to the
+  headset. It failed; the file is absent (verified). The reads were then
+  streamed via stdin with no file written. Rule restated: no
+  `adb push`/write without the PM's OK.
+- **Stock display state, screen ON (08:41Z; PM woke the display; debugfs
+  mounted with the PM's approval, runtime only, until the next reboot):**
+  - DSI-1 dpms On; measured 89.8 fps; `panel0-backlight` brightness 255,
+    `actual_brightness` 0 (unreliable as a light indicator), `bl_power` 0;
+  - crtc-0: `backlight_timing=422,5659,5659` (asleep: 55,4828,4828),
+    `blu_max_overlap_us=500`, `fifo_scanlines=741`,
+    `vsync_timing=32,2208,2918@90`;
+  - **TE and BLU-PWM interrupts both advance about 182/s** (33236 → 33600
+    and 33255 → 33619 in 2 s), i.e. about 2 × 90 Hz, while lit. These are
+    the counters the trial (iii-b) probes will compare.
+  - **Android's actual layout (debugfs `state` + `crtc155/status`):**
+    - 4 mixers × 1032 px, one CTL;
+    - **4 planes** (IDs 112, 115, 131, 134; two multirect pairs) from one
+      4160×2208 AB24 buffer with a Qualcomm compressed modifier
+      (0x500000000000001);
+    - each plane is 1032 px wide: src x 0 / 1032 / 2064 / 3096;
+    - **plane dst/crtc x is only 0 or 1032** (two per stage). The left-eye
+      source (0–2063) is on stage 1 and the right-eye source (2064–4127)
+      on stage 2.
+  - **Reading [D/O]:** Meta's composer places planes in a per-half
+    (2064-px) coordinate space. How a plane is assigned to the right half
+    is not visible in the core DRM state (SDE-specific properties) [O].
+    Our trial (iii) commit used 2 planes × 2064 px at crtc x 0 and 2064 in
+    full-width coordinates; TEST_ONLY accepted it.
+  - This mismatch cannot explain the dark backlight, but it matters for a
+    correct image. Trial (iii-b) should mirror Android's layout: 4 × 1032,
+    the same stages, and the SDE properties read via GET ioctls.
+- **Community repos, full review** (`docs/research/community-quest-repos-2.md`,
+  agent):
+  - upstream Quest1-SteamOS and quest-kexec are unchanged;
+  - **new: machachu56/quest-kexec-q2 `quest2-port` `9c96c19`** (Quest 2,
+    GPL-2.0; Monado driver BSL-1.0). It kexecs a 4.19 kernel and runs the
+    Frame userspace in a chroot (Steam UI works), with library-free
+    SyncBoss IMU and controllers (commands 110/133; packets 80/143),
+    Turnip-KGSL plus Zink, 3DoF Monado and camera record/replay.
+  - **Quest 3 rootfs placement:** userdata uses wrapped-key metadata
+    encryption plus FBE; quest-kexec places its rootfs in a file on
+    userdata [removed for publication].
+  - Most Quest1-SteamOS backports are unnecessary on 4.19/5.10. Stock
+    Quest 3 still lacks SysV IPC and PID namespaces, so a rebuilt kernel
+    is needed (kgate).
+  - New hazard rules → PROJECT_SETUP §6A 8b, checklist H7.
+  - **Licences:** Quest1-SteamOS has no licence (only its kernel/Monado
+    patches are reusable); quest-kexec ships closed binaries and a
+    modified-ROM release (not to be used).
+  - Chair question noted (FS-A-010 §7.4): sharing images built from
+    Valve's public repos.
+
+**J-76 · FS-A-010 finalised (rev 4).**
+
+- The verification pass of rev 3 (`0a4aa6d`) closed B1–B2, all MAJORs
+  except M8 (partly), and all minors.
+- **3 new MAJORs, all fixed:**
+  - N1: the optical PASS now needs all 8 characters **in each eye**,
+    recorded per eye and per run; a one-eye result is registered
+    separately.
+  - N2: **the plane layout stays unchanged (2 × 2064) in both runs.**
+    Android's 4 × 1032 layout is deferred; it would change commit content,
+    and the right-half selection is [O].
+  - N3: the state changes on Unit 1 are disclosed in §5.8: the debugfs
+    mount (still mounted until reboot; no node written), the display
+    woken, and the failed `adb push`. [paraphrased for publication]
+- **Minors fixed:**
+  - cue windows (3 s cue gap; per-eye reporting);
+  - power-off check order (power off while connected, then unplug);
+  - papers scope (Quest 2/3S); Quest 3S wiki "not booting";
+  - "left/right half of the buffer", not eyes;
+  - `actual_brightness` reads 0 while lit;
+  - Q2-P1 precondition disclosure;
+  - §8 list (Quest 2 README; `FS-A-006-quest-projects.md` bundled);
+  - the sign-off quote cited as one verbatim chat message.
+- **Added from the reviewer:** the v66 scanline formula puts Android's
+  normal lit BLU at about 8.2 %, the same as our commit (§5.8, §6.1).
+
+**J-77 · FS-A-010 sent; PM notes; end of session block.**
+
+- **FS-A-010 SENT** by the PM with `FS-A-010-raw.zip` (sha256
+  `66be50a574dc1fdd8b7d04a2a9720cf861b2b011b060bda050c71fee9b941476`).
+  Awaiting FS-R-010. No further relay until the Chair rules.
+- **PM notes:**
+  - quest-kexec's encrypted-storage workaround may not apply to us.
+    - Arbiter: our v66 fstab still uses FBE plus wrapped-key metadata
+      encryption, so a fastboot-booted Linux cannot read userdata either.
+    - We also have other options: a dedicated partition or slot, or a
+      reformatted userdata. These are writes, so they need Chair/PM
+      decisions.
+  - Quest1-SteamOS's missing licence is probably an oversight. Keep things
+    above board: ask the author to add a licence; until then reuse only
+    the GPL kernel patch and BSL Monado patch, and reimplement anything
+    else ourselves.
+  - **Valve public packages:** the PM wants an agent to investigate this
+    alongside the Chair's ruling. To start next session.
+  - **New repo:** https://github.com/Producdevity/ArmadaVR [removed for
+    publication]. To examine next session.
+- **Pending:**
+  - FS-R-010;
+  - the Valve-packages agent;
+  - the ArmadaVR review;
+  - Quest 3 Unit 2's identity;
+  - **Unit 1 still has debugfs mounted until its next reboot.**
+
+**J-78 · FS-R-010 received (Chair ruling on FS-A-010).**
+
+- FS-R-010 (private review record) (verbatim).
+- **Disposition:**
+  - trial (iii) report accepted, INCONCLUSIVE retained;
+  - **preparation** of trial (iii-b) concurred in principle, with a
+    DEADLINE ceiling of 200 s and backstop 201 s. This is not concurrence
+    to execute.
+  - the v66 backlight correction is accepted: "backlight stays at boot
+    level" is withdrawn for v66, and the consent description understated
+    the possible brightness;
+  - the Quest 2 results are noted;
+  - the channel implementation review is incomplete (source and binary
+    absent).
+- **Binding design decisions for (iii-b):**
+  - mid-grey/white pattern, with a preview before execution;
+  - **write `panel0-backlight` = 127 before run 1** (an added runtime
+    write; not approval of BLU controls); verify the brightness before
+    both runs; about 4.1 % duty is an expectation, not a measured cap;
+  - **first hold 3 s, second hold 10 s**; pause ≥ 2 s; **plane layout
+    unchanged**;
+  - require an accepted first commit and a successful close before run 2;
+    if run 2 does not find the inactive CRTC, register the unmet
+    precondition and recover, with no off→on claim;
+  - probes bounded, read-only, with no extra `card0` opens;
+  - per-eye, per-run observations; lit-but-garbled is a lighting finding,
+    not an optical PASS;
+  - no numerical eye-safety claim from transition spacing.
+- **Pacing:** byte-identical FSB1 and rejection rules. Demonstrate:
+  identical bytes and hashes; the trial (iii) capture still rejected;
+  correct operation across chunk boundaries; an emission bound from the
+  **maximum** record size and line count.
+- **Deadline:** justified from the implemented bounds (probes, both
+  supervisor limits, pause, maximum paced emission, margin, post-record);
+  runner guard about 95 s, to be recomputed. Clock regressions updated
+  for the new stage.
+- **Procedure:**
+  - "stable within tolerance" (two readings ≥ 10 min apart, < 35 °C,
+    ≤ 0.5 °C rise);
+  - BA→attempt ≤ 5 min, enforced before boot; prepare everything before
+    BA; if the cap expires, record the abandoned cycle and take a new
+    baseline;
+  - immediate AF; at ≥ 40 °C after recovery, begin shutdown/cooling
+    immediately; at least one scheduled follow-up reading even if below
+    40 °C; record the highest observed reading;
+  - power-off verified by power menu, physical observation and
+    unplugging (adb absence alone is insufficient); no restart just for
+    telemetry.
+  - A new image, nonce, pins, outcomes and sign-off; split BA/BF lines.
+- **Quest 2:** send the complete channel folder (source, tools,
+  allowlists, harnesses, the exact binary) or an accessible repository at
+  the exact commit. The 104 s cap is a planning result. Thermal and
+  recovery for the Quest 2 to be assessed later.
+- [removed for publication]
+- **Return:** the trial (iii-b) package (sources, image, pins,
+  maximum-size pacing evidence, timing checks, outcomes, preview, node
+  list, procedure). The Quest 2 implementation may arrive separately.
+
+**J-79 · ArmadaVR reviewed; usermode-helper finding checked.**
+
+- `docs/research/armadavr.md`. Producdevity/ArmadaVR `272b607`, **no
+  licence** (ideas only; ask the author).
+  - A Fedora + FEX + Monado/SteamVR lab in QEMU for the Quest 3 and the
+    Pico Neo3 Pro Eye, on Meta's 5.10.246 kernel.
+  - Quest 3 via kexec (planned). **Nothing has booted on a headset.** There is no Quest 2
+    code in the repo. [paraphrased for publication]
+  - New for us:
+    - Turnip-KGSL on the A740 needs the newer KGSL GPUOBJ allocation
+      calls (from Jbbrack03/Quest-3-Turnip-Driver `b09a4535`) [C];
+    - KGSL↔DRM-syncobj and SDE `DRIVER_SYNCOBJ` patches;
+    - the ADSP→PMIC-GLINK→UCSI→DWC3 wait order (QRTR service 64 first;
+      `ucsi_glink` loaded explicitly) [C, QEMU only];
+    - pd-mapper `SurviveFinalKillSignal`; failures power off rather than
+      drop to an emergency shell.
+  - Not reused: material outside FrameShift's scope [paraphrased for
+    publication]. No display findings.
+- **`CONFIG_STATIC_USERMODEHELPER=y` with an empty path** is in our stock
+  configs, per the agent [M-static]. Arbiter check of the near-match v66
+  source:
+  - every usermode-helper call (`/sbin/poweroff`, `modprobe` autoload)
+    fails;
+  - **but** a thermal critical trip calls `orderly_poweroff(true)`, and on
+    failure that forces `emergency_sync(); kernel_power_off()`
+    (`kernel/reboot.c:459-475`), with a backup delayed
+    `thermal_emergency_poweroff()` (`thermal_core.c:405-417`) [M-static,
+    near-match].
+  - So a **critical-trip shutdown is still forced, just not orderly**
+    [D]. ArmadaVR's "never runs" applies to the orderly path.
+  - Module autoload does not work, so our init must load modules
+    explicitly (it already does).
+  - Our stage images load no thermal-zone drivers. Protection remains the
+    short hold plus attendance (SIGNOFF), and later stages need userspace
+    thermal ownership (thermal design rev 2).
+
+**J-80 · Valve package licensing research (for a Chair ruling; not legal
+advice).**
+
+- `docs/research/valve-packages-licensing.md`. No gated path was accessed
+  and no token was used; the report quotes no credential value (Arbiter
+  check).
+- **Repos:** Valve's package host serves the Frame ("deckard") repos and
+  the Holo Core preview without credentials, but has **no terms or licence
+  notice**. Valve's SteamOS licence calls only the **Deck** mirror publicly
+  available. The Frame itself uses a gated, tokened repo.
+- **Licences (Valve metadata):** the Steam client and SteamVR are "Steam
+  Subscriber Agreement, Proprietary"; about 17 `deckard-*` hardware
+  packages are proprietary; the Frame kernels are labelled "GPL-2.0-only
+  **no-source-release**"; the Arch-derived base publishes its sources.
+- **Valve terms:** the Steam client is "non-redistributable" without a
+  separate licence. Only the 2013 x86 bootstrapper grant exists, from
+  secondary sources.
+- **Precedent:** Jovian-NixOS fetches Valve's bootstrap on the user's
+  machine. No takedowns found (absence of evidence).
+- **Holo Core:** a public aarch64 preview with no Steam, SteamVR or
+  `deckard-*` packages; it is not the Frame's shipped base.
+- **Options ranked:**
+  1. (a) our code plus an installer that fetches from Valve on the user's
+     device, with terms shown, no patching, no token, signatures checked;
+  2. (b) an open-source-only base, with full GPL compliance on us;
+  3. (d) ask Valve, in parallel;
+  4. (c) redistribute full images: not without Valve's licence.
+- **Questions for the Chair** (to go in FS-A-011):
+  - shared images built from Valve's repos fall under (c);
+  - does "Valve binaries" (§6A item 9) include open-source packages built
+    by Valve or Collabora?
+  - "Valve stable only" = the contents of signed update bundles marked
+    stable?
+  - whether to authorise a written query to Valve.
+
+**J-81 · [removed for publication]**
+
+**J-82 · Trial (iii-b) package built offline (agent; unreviewed).**
+
+- `devices/quest3/stage3b/` (README, IMAGE), `common/target/fsb1-pace.sh`,
+  `host/fs-classify3b.ps1`, `host/test-host3b.ps1`; updated collector,
+  classifier, observer, OUTCOMES §9, FSB1-SPEC §9, DEADLINE §4, COLLECTOR
+  §13, SIGNOFF (trial iii-b, split BA/BF), RECOVERY (Th + 260 s) and
+  PROJECT_SETUP §6A.1.
+- Previews: `docs/research/pattern-preview/bright-v0.5-*`.
+- **Image** `build/stage3b/20261010T181510Z-8b1a9e00e2a3a9bc/boot-stage3b.img`,
+  sha256 `a09ff582…6be0`, nonce `8b1a9e00e2a3a9bc`; bit-identical rebuild.
+  Never booted (sandbox harness only).
+- **fs-pattern v0.5:**
+  - grey 0x80 field with white marks;
+  - `show` (run 1, 3 s) and `show-off` (run 2, 10 s; commits only if the
+    CRTC is provably inactive, otherwise exits 31 with no commit);
+  - read-only property logging within a 20 KiB budget;
+  - the layout, TEST_ONLY order and hold code are unchanged from v0.4.
+- **Runner:**
+  - the single write is brightness 127, with read-back verification
+    before each run;
+  - run 2 is gated on run 1's accepted commit and clean close, a pause
+    ≥ 2 s, and the read-back;
+  - bounded, supervised probes; no `card0` opens, no debugfs;
+  - paced emission at 10 lines per 0.1 s.
+- **DEADLINE 200 s (backstop 201 s):**
+  - W = 80.6 s (including paced emission of the maximum 1600-line record,
+    18.6 s);
+  - B = 90 s; **runner guard 97 s**.
+- **Pacing evidence 20/20:** byte- and hash-identical at 878 and 1600
+  lines; the trial (iii) capture is still rejected; chunk-boundary splits
+  decode correctly; 17.3 s ≤ 18.6 s bound.
+- **Tests:** fs-pattern 109/109, builder 10/10, image 12/12, host3b
+  106/106, host2 459/459; timing checkers consistent.
+- **Design choices to put to the Chair:**
+  - run 2 refuses to commit if the CRTC is active;
+  - a failed brightness read-back skips that run;
+  - a 1600-line record cap is enforced (the step caps alone would allow
+    5141);
+  - dmesg deltas per probe point;
+  - "after modules" = the runner's first probe plus an init interrupt
+    sample;
+  - the full property dump in run 1 only.
+- **The stage 3a host tools changed** (new hashes; trial (iii)
+  classification still reproduces). The stage 3b pins will be stated in
+  FS-A-011.
+- Adversarial review next.
+- **Review of `afc6666`:** no BLOCKER; **2 MAJOR**:
+  - **M1:** the 1600-line record cap could discard a legitimate record
+    (step caps allow 5141 lines; heavy dmesg is about 1770), losing all
+    commit evidence. The fix: per-step caps consistent with MAXLINES,
+    graceful truncation, and a corrected "maximum record" evidence claim.
+  - **M2:** the SIGNOFF thermal step contradicted itself at ≥ 40 °C.
+  - 9 minors: a circular exit-31 claim; classifier labels and O3 scope;
+    the pre-snapshot completion gate; unverified probe timing windows; an
+    undisclosed H2 brightness case; dwell evidence not logged; wording;
+    the stalled-reader note; out-of-step lists.
+- **Verified sound:** every FS-R-010 §4 decision; a bit-identical rebuild;
+  the only sysfs write is brightness; the layout code is unchanged; run 2
+  is gated; pacing is byte-identical; W/B/guard 80.6/90/97 s; dwell
+  refusal; outcomes.
+- Fixes delegated: a new nonce and rebuild.
+- **Fix round (agent):** all 2 MAJORs and 9 minors fixed.
+  - **New candidate image** `c620c1b8…76bd`, nonce `d4ad74bb5d64f949`
+    (`build/stage3b/20261010T191219Z-d4ad74bb5d64f949/`); bit-identical
+    rebuild. Withdrawn: `a09ff582…` (reviewed) and `00aca656…`.
+  - **Caps:** hash 256, probe1 16384, pattern1 40960, probe2 12288,
+    pattern2 20480 (raised from the suggested ~16384 because run 2 carries
+    the `mode_properties` blob).
+  - **MAXLINES 1900:** the worst case within caps is 1898 lines (the
+    checker asserts it); an over-cap probe truncates gracefully; maximum
+    evidence regenerated with every step at its cap; 1901 is refused with
+    nothing written.
+  - Probe stderr goes to /dev/null; dmesg only at mods/mid/post, 1536 B
+    each.
+  - Pre-snapshot `.done` gates; a 1 MB dmesg costs 0.53 s under qemu.
+  - Dwell evidence goes to observe.json/log; the H2 brightness disclosure,
+    wording and classifier separation are fixed.
+  - **Timing:** W = 83.9 s (paced 1900 lines = 21.9 s), B = 90 s,
+    **runner guard 100 s (1 s spare: thin)**; DEADLINE 200 s; manual
+    route Th + 260 s.
+  - **Tests:** fs-pattern 109/109, pacing 24/24, builder 10/10, harness
+    12/12 (deadline reboot T0 + 200.3 s), host3b 116/116, host2 459/459,
+    timing checkers consistent.
+- Verification pass requested.
+- **Verification of `bdf5451`: ready for the Chair.**
+  - M1, M2 and minors 1–8 closed; m9 partly (a stale IMAGE line).
+  - Independently confirmed: the 1898-line worst case, graceful truncation
+    (VALID record), the maximum evidence at caps, the stage 3a
+    reproduction, host suites 116/116 and 459/459.
+  - New minors:
+    - the **thin guard margin**: in the planning model only 1 s spare; at
+      run time fs-display must be sent by +85 s versus about +32 s in
+      trial (iii). Tripping it refuses before display (no write, no light)
+      but spends the attempt;
+    - N1: the run 2 stream could theoretically exceed its 20480 cap
+      (INCONCLUSIVE, fail-safe);
+    - N2: the dwell is recorded at boot but not enforced at that instant.
+- **Arbiter decision:** restore the margin before the Chair (20-line
+  pacing, collector start 25 s, pattern2 cap 28672, a new nonce).
+  Delegated.
+- **Final round done:**
+  - **Candidate image**
+    `build/stage3b/20261010T194509Z-6cf0f15867f14edc/boot-stage3b.img`,
+    sha256 `ea60d6cd…5841`, **nonce `6cf0f15867f14edc`**; identical
+    rebuild. `c620c1b8…` withdrawn.
+  - **Timing:** 20-line pacing (EMIT 12.4 s, largest write about 2.2 KB);
+    W = 74.4 s; B = 85 s (collector start 25 s); planning spare 10.6 s;
+    **guard 91 s (5 s spare)**; MAXLINES 2070 (worst case 2069, pattern2
+    cap 28672); DEADLINE 200 s.
+  - N2 documented (the gate runs less than 1 s before BootStartUtc; both
+    values recorded).
+  - **Tests:** harness 12/12, pace 27/27, builder 10/10, fixtures
+    109/109, host3b 116/116, host2 459/459, timing CONSISTENT.
+  - The package is ready for FS-A-011 (the reviewer's verification
+    covered the substance; this round changes pacing and caps only).
+
+**J-83 · PM directions (product, installer, safety, continuity); Unit 2
+identified.**
+
+- **Licences (PM):** ArmadaVR has no licence yet. The PM will ask its
+  owner to add one and has invited a collaboration [paraphrased for
+  publication].
+- **Engineering principle (PM):** learn from others, then independently
+  decide the best method. Prefer a more robust, reliable approach of our
+  own; adopt others' methods where they prove best. Polished and
+  professional, not jerry-rigged.
+- **Graceful emergency shutdown (PM requirement):** design a graceful
+  shutdown for critical failures (thermal, battery, hang), given that
+  stock `STATIC_USERMODEHELPER` blocks the kernel's orderly poweroff
+  (J-79). → design item.
+- **Distribution (PM): option 1** (our code plus an installer; positive
+  user experience is paramount).
+  - PM idea: build everything around the **unmodified Valve image**. The
+    user installs our package, then downloads and slots in Valve's image
+    unmodified, and everything comes up.
+  - Arbiter assessment in the reply and in PROJECT_SETUP §0.1.
+- **Continuity (PM):** someone new must be able to start with the
+  README.md in the root folder and pick up exactly where we left off
+  [paraphrased for publication]. The same applies to the future GitHub repo.
+  - **There was no root README.md**, and the JOURNAL "Where we are now"
+    was stale (it still said FS-A-007 in preparation). → being fixed.
+- **Quest 3 Unit 2 identified (read-only, 18:45Z):** `QUEST3UNIT2`.
+  - v71 `50352750111100511`, slot `_b`, security patch 2024-07-05;
+  - 96 %, 27.0 °C.
+  - 93 by-name entries: 86 partitions totalling 9.51 GiB, excluding
+    `userdata` (106 GiB) and whole-disk nodes.
+
+**J-84 · [removed for publication]**
+
+**J-85 · Valve-image slot-in architecture researched**
+(`docs/research/valve-image-slot-in.md`; agent, offline). Summary in
+PROJECT_SETUP §0.0.
+- **Sources:**
+  - Valve's public recovery directory lists
+    `steamframe-oobe-repair-20260922…img.bz2/.zip` (what we hold)
+    [M-static];
+  - Valve's whole-device flashing packages are **never used with a
+    Quest**; only the verified rootfs range of the recovery image is used;
+  - signed RAUC index plus casync bundles rebuild the btrfs slot byte for
+    byte [M-static/D]. Whether Valve intends `vr/` for third parties is
+    [O].
+- **btrfs features:** flags `0x355`, no block-group-tree. A 5.10 kernel
+  supports them [D].
+- **New device writers in the Valve image** [M-static], added to the
+  hazards:
+  - `steamvr-program-ble.service` (openocd over gpiochip9, nRF52
+    `nrf52_recover`, a mass erase);
+  - `deckard-charger` (battery-pack NVM register writes);
+  - `vrconfig_write` (writes `/persist`);
+  - also `systemd-repart` is enabled by default and could add a partition
+    on LUN 0 [D].
+- **Recommended:**
+  - our kernel and initramfs, plus the Valve rootfs read-only behind
+    dm-verity (v2.7 has DM_VERITY, overlay, loop), with our layer on top;
+  - `/boot` hidden;
+  - the safety boundary in our parts: a kernel block-write guard (a
+    source patch; BPF-LSM is off), no Frame partition names, command-line
+    masks, refusing stubs, an ingest allowlist;
+  - our installer handles A/B updates, and RAUC never runs;
+  - the safety supervisor is started from our initramfs.
+- **Risks [O]:**
+  - whether SSA/EULA "modify/tamper" reaches runtime layering;
+  - OOBE forcing an update or pairing;
+  - Steam client hardware checks;
+  - storage on encrypted userdata (a new write class);
+  - SYSVIPC is missing in the stock kernel.
+- **Decisions:**
+  - PM: image route, small metadata downloads and QEMU tests, installer
+    platform, storage default, telemetry, outreach to Valve; [paraphrased for publication]
+  - Chair (FS-A-011): R3 restatement, kernel guard, shadowing,
+    allowlist, storage write route, the whole-device-package ban.
+
+**J-86 · PM decisions on distribution, controllers, repo, installer.**
+
+- **Unit 1 was powered down last night (PM)**, so the debugfs mount from
+  J-75 is cleared.
+- [removed for publication]
+- **Official Frame image (PM):**
+  https://store.steampowered.com/steamos/download/?ver=steamframe, still
+  v0.3.0.
+- **PM questions:**
+  - Can Valve's updater deliver newer SteamOS OTAs and still slot in?
+  - Is the project possible without modifying SteamOS?
+  - Weren't we going to ship FrameShift images ourselves? The PM wants
+    OTAs on the headset, not manual flashing.
+  - Arbiter answer in chat; PROJECT_SETUP §0.0 to be updated after the PM
+    agrees.
+- **Contacting Valve:** the PM agrees. Outreach correspondence (private;
+  not sent). [paraphrased for publication]
+- **Controllers (PM requirement):** let users pair any VR controller they
+  own (Meta, HTC, Valve, Samsung, PlayStation, others) → a later-stage
+  requirement (checklist H5).
+- **Storage (PM question):** with our own firmware, wouldn't we have our
+  own user storage, and shouldn't all partitions be replaced? Answer in
+  chat.
+- **GitHub (PM):** private for now; public when there is a bootable test
+  image (community testing).
+- **Metadata downloads for offline tests:** approved (PM).
+- **Installer (PM):** WebUSB first; later updates on the headset.
+
+**J-87 · PM decisions: repo public before contacting Valve; OTA; [paraphrased for publication]
+controllers; installer.**
+
+- **GitHub:** the PM wants the repo **public before** Valve is contacted,
+  so that Valve can see the work. This supersedes "private until a
+  bootable image" (J-86) for this purpose. [paraphrased for publication]
+  - A pre-publication audit (private) is running: Valve and Meta
+    material, credentials, personal data, licences, history. [paraphrased for publication]
+  - Creating and pushing the repo needs the PM's explicit go and repo
+    details.
+- **Outreach correspondence (private):** updated at the PM's request
+  [paraphrased for publication].
+- [removed for publication]
+- **OTA approach agreed (PM):** intercept or switch off the Valve-specific
+  incompatible parts and layer our own (PROJECT_SETUP §0.0, Updates).
+- **Controllers (PM clarification):** BLE VR controllers with
+  inside-out/SLAM-style camera tracking, from a future catalogue;
+  **minimum: the Meta Touch series** (checklist H5).
+- **Installer:** design for a WebUSB flow (PROJECT_SETUP §0.0).
+- **Publication scope (PM):** not everything needs to go public. Omit
+  Valve/Meta material, or replace it with proxy files (hashes and
+  pointers).
+  - Arbiter note: anything ever committed is in git history. The public
+    repo should therefore be a **curated export** (a filtered history, or
+    a fresh history from a cleaned tree). The full private repository
+    stays local as the master. The audit will define the include/exclude
+    list.
+- [removed for publication]
+
+**J-88 · [removed for publication]**
+
+**J-89 · Pre-publication audit (private; not for publication itself).**
+[paraphrased for publication]
+- 220 commits, 3 branches. **Valve material: clean.** No Valve binary,
+  image, keyring or credential in any revision.
+- **MUST-FIX before public:**
+  - extracts of Meta firmware metadata and their manifests with
+    identifying data and private archive paths; [paraphrased for publication]
+  - the decompiled Quest 2 v2.7 DTS (`devices/quest2/analysis/v27-dt/`);
+  - docs: package-source lines; verbatim private messages from community
+    members; provenance wording tied to identified units;
+  - an overstatement in outreach correspondence (fixed);
+  - the author identity on all commits (PM's call). [paraphrased for publication]
+- **SHOULD-FIX:** small partition captures (contents benign); the `fs-rpcd`
+  static-glibc binary (LGPL); LGPL notices on the glibc excerpts and ld.so
+  disassembly; home paths and host name in about 60 files.
+- **PM's call:** device identifiers; third-party names and handles
+  (consent); journal passages. [paraphrased for publication]
+- **Third-party code: none copied. Size:** 7.3 MB `.git` (no size
+  problem). **No LICENSE yet:** recommended Apache-2.0 for the repo,
+  GPL-2.0 for future kernel patches (own folder), optionally CC-BY-4.0
+  for docs, plus a NOTICE (no Valve/Meta material, not affiliated).
+- **Plan:** the public repo is a **fresh single-commit export** from a
+  cleaned copy; this repo stays the private record. Local tool settings
+  are now gitignored. [paraphrased for publication]
+
+**J-90 · PM publication decisions; GitHub tooling.** [paraphrased for
+publication]
+- **Agreed (PM):**
+  - a fresh public repository (created private first);
+  - licences: Apache-2.0 for the repo, GPL-2.0-only for future kernel
+    patches in their own folder, optionally CC-BY-4.0 for docs; [paraphrased for publication]
+  - a NOTICE (no Valve/Meta material; not affiliated);
+  - no personal e-mail address on public commits; [paraphrased for publication]
+  - all audit MUST-FIX and SHOULD-FIX removals.
+- **Standing publication rules (PM):**
+  - **no headset serial numbers are ever disclosed** publicly;
+  - **credit only people who directly contributed** (decided later, once
+    there is a bootable image);
+  - **remove usernames** unless they refer to another public repo or link
+    to that person's work;
+  - the project assumes an **already-unlocked headset**, so no unlocking
+    guides, data or info go into the public repo.
+- **GitHub tooling:** the GitHub command-line client was installed with
+  the PM's approval (installer hash verified). The PM signs in personally;
+  the Arbiter does not handle credentials. [paraphrased for publication]
+- **Repo form guidance given:** Private; README off; no .gitignore; no
+  licence.
+- **Done (PM):** `continuumxr/frameshift` created, Private and empty, with
+  the agreed description. `gh` is logged in as the PM's account [removed for publication] (scopes: repo,
+  read:org, workflow, gist), verified read-only by the Arbiter.
+- **Connectors:** the MCP registry search found **no GitHub connector**
+  for this session, so the `gh` CLI is the route.
+- **Public content rule (PM, confirmed):** the public repo contains
+  **only material we developed ourselves, or have explicit permission to
+  post**.
+  - Excluded under this rule: copied glibc source excerpts, the
+    disassembly of Valve's ld.so, any copied third-party text beyond a
+    short citation, anything extracted from Meta binaries or firmware, and
+    captures of third-party tool output.
+  - Kept: our own analysis with citations, and data our tools generated
+    from Meta's **public GPL-2.0** kernel source, with attribution.
+
+**J-91 · [removed for publication]**
+
+**J-92 · Sanitised public copy built (`frameshift-public`; not pushed).**
+- Single commit `092ffec3…` on `main`, under the GitHub noreply identity,
+  set in local config only. No remote. Exported from private `ec8a523`.
+- 1,646 files examined: 981 identical, 258 sanitised, 13 new, 468
+  excluded. The commit holds 1,191 files, 11 MB.
+- **Excluded:**
+  - raw relay evidence folders and device evidence folders (each replaced
+    by a README note);
+  - firmware-metadata extracts, the v2.7 DTS, built binaries, `.img` dumps,
+    outreach correspondence (private), a pre-publication audit (private); [paraphrased for publication]
+  - under the own-work rule: the glibc excerpts, the ld.so disassembly,
+    stage2a evidence (inspections of Valve files), kgate
+    `required_crcs.txt`/`inventory.tsv` (extracted from stock modules),
+    the Quest 2 vendor scan and boot-header dump.
+- **Sanitised:**
+  - serials → `QUEST3UNIT1` / `QUEST3UNIT2` / `QUEST2UNIT` /
+    `THIRDPARTYUNIT`;
+  - paths → `<repo>`/`$HOME`; host → `<build-host>`;
+  - 40 scripts now derive the repo root;
+  - prose edits in dated records marked "[removed for publication]".
+- **Added:** LICENSE (Apache-2.0), NOTICE, `kernel-patches/README.md`
+  (GPL-2.0), a public README.
+- **Final scan:** zero hits on serials, email, paths, host,
+  third-party handles, firmware-site names or secrets; no ELF or image
+  files outside the synthetic kgate fixtures.
+- **Tests in the public copy:** kgate 170/170, stage1 74/74, fsb1 38/38
+  ×2, gadget all pass. Some suites abort or need withheld files
+  (host2/host3b sections reading raw evidence; quest2 fs-rpcd binary
+  case).
+- Adversarial pre-push review started. **No push until the PM's go.**
+- **Review of `092ffec`:** clean on serials, personal data in files,
+  third-party names, firmware-site names, Valve/Meta binaries and licence
+  files. **Not ready to push.**
+  - **MUST-FIX:**
+    - M1: the commit identity (first name; the noreply address embeds the
+      account name; a local timezone offset [paraphrased for publication]) is a PM decision; UTC dates adopted;
+    - M2: Quest 2 `boot-layout.txt`/`vbmeta.txt` are verbatim
+      firmware extracts → withhold;
+    - M3/M4: out-of-scope material still recoverable in several docs →
+      remove; [paraphrased for publication]
+    - M5: fix everything before the first push, because force-pushed
+      commits can stay reachable.
+  - **SHOULD-FIX:**
+    - S1: unmarked edits in dated records, including one factually wrong
+      replacement;
+    - S2: test suites abort on withheld inputs → skip cleanly;
+    - S3: NUL bytes stop GitHub rendering two .md files;
+    - S4/S5: remaining out-of-scope pointers and metadata;
+    - S6: the reproducibility note;
+    - S7: cosmetic leftovers.
+  - All delegated to the export agent. The commit will be re-created once.
+- **PM decision (M1):** keep the PM's first name [removed for publication] with the GitHub noreply address
+  (standard practice; links the commits to the GitHub profile), with UTC
+  commit dates.
+- A network outage (API unreachable) interrupted the export agent twice;
+  it was resumed both times, with no data loss.
+- **Fixed commit `b322135`:** all M/S findings closed (the re-review
+  scans are clean; README tests on a fresh clone pass with 0 FAIL, except
+  one item below). New issues:
+  - **S8:** a fresh Windows clone (autocrlf) converts a hash-pinned file
+    to CRLF, so `fixtures-build` gets 1 FAIL → fix with
+    `* text=auto eol=lf`;
+  - **S9:** `run_validation.sh` overwrites committed records when inputs
+    are absent → refuse;
+  - polish: 19 mid-sentence markers; local-time timestamps (time zone) → UTC; [paraphrased for publication]
+    small README notes.
+  - Reviewer: push-private yes after S8, flip-public yes after S8. A final
+    polish round is delegated, then the commit is re-created.
+- **Final public commit `7b14e154…`** (the PM's first name [removed for publication] with the noreply address,
+  2026-10-11T01:03:49Z UTC; 1,189 files; no remote):
+  - S8: `* text=auto eol=lf`; a fresh Windows clone is byte-identical and
+    pins match (fixtures-build 42 PASS / 1 SKIP);
+  - S9: `run_validation.sh` refuses before writing;
+  - markers moved or dropped; local time → UTC everywhere; [paraphrased for publication]
+  - README counts fixed; refusing suites no longer delete committed
+    outputs.
+  - Fresh-clone tests: 0 FAIL, 0 aborts.
+  - **Arbiter spot-check:** no remote; clean tree; a grep for serials,
+    email, paths, host, third-party handles, firmware-site names, DO_NOT_SHARE values,
+    local-time stamps and archive-drive paths → 0 hits [paraphrased for publication]; no file > 1 MB.
+  - **Pushed (PM's go):** `main` = `7b14e154…` to
+    `https://github.com/continuumxr/frameshift` (**PRIVATE**). `git
+    ls-remote` confirms the single commit. The private master repo is
+    untouched. Next: the PM reviews on GitHub, then flips it public; then
+    outreach correspondence (private) [paraphrased for publication].
+
+**J-93 · FS-A-011 drafted; roadmap position.**
+- FS-A-011 (private review record) (DRAFT; adversarial review pending) with
+  `FS-A-011-raw.zip` (952 files) and `FS-A-011-image.zip`.
+- **Contents:**
+  - the trial (iii-b) return package (image `ea60d6cd…`, nonce
+    `6cf0f15867f14edc`; each FS-R-010 decision mapped to file and line;
+    six design choices);
+  - the full Quest 2 channel, including the binary `da19367b…`;
+  - the distribution model, questions D1–D7;
+  - the PM's decisions and state changes;
+  - other findings and corrections.
+- **Asks:** execute trial (iii-b); rule on the six choices; review the
+  channel; rule on D1–D7; note the record.
+- The review must also cover the final stage 3b margin round (`bb96b7a`),
+  which no independent reviewer has checked yet.
+- **Roadmap:** Stage 1 achieved; Stage 2 partly shown (trial (i));
+  **Stage 3 (display) is the current gate**, with trial (iii-b) ready.
+  After that: the thermal, fan and graceful-shutdown stack; graphics;
+  tracking and Touch controllers; the installer and OTA around Valve's
+  unmodified image; Quest 2 bring-up.
+- Status sections refreshed (the README line, JOURNAL "Where we are now").
+- **`continuumxr/continuum` archived** at the PM's request (via `gh`).
+  - Its description now reads: "Archived. Continuum continues as
+    FrameShift (SteamOS on Meta Quest headsets) under the continuumxr
+    organization."
+  - No content commit was made. A README pointer with a link can be added
+    once FrameShift is public (archived repos can be unarchived to edit).
+  - Previous description: "Continuum is a privacy-first, open-source XR
+    operating system focused on preserving standalone VR/AR hardware
+    beyond vendor end-of-life."
+
+**J-94 · FS-A-011 SENT (PM), before its adversarial review completed.**
+- The PM sent the DRAFT text with `FS-A-011-raw.zip` sha256
+  `8b7a43952dfb1121b4b64ee09c9850e9e7be7eae1801f3a5ee28272ab8114ed4` and
+  `FS-A-011-image.zip` sha256
+  `84b962925981a3efd5ff5ecb3500c331ce2686fbe236878b6b6258fe047b781d`, both
+  built 2026-10-11 ~03:12 UTC and unchanged since (verified).
+- **Deviation from relay practice:** the adversarial review (which also
+  covers the unreviewed final stage 3b margin round) was still running
+  when the relay was sent. Its findings will be logged here and sent as
+  **errata** in the next relay, or sooner if anything bears on trial
+  (iii-b) safety. The relay file's status line now records this.
+- **Process change (PM):** relay files are never made available, and
+  never suggested for sending, until absolutely ready.
+  - Drafts live in the private review records *[editor's note: a private working folder, not in this copy]*.
+  - Bundles are built only after all reviews pass.
+  - Only then is the file moved to the private review records and announced as
+    "READY TO SEND".
+
+**J-95 · FS-A-011 to be consolidated (PM).** The PM told the Chair that
+  the FS-A-011 sent was incomplete, and asked for a finished, consolidated
+  FS-A-011 to send instead.
+- Record kept: FS-A-011 (private review record), with the zips renamed to
+  `FS-A-011-sent-draft-raw.zip` and `-image.zip` (hashes in J-94).
+- Work copy: the private review records (NOT READY).
+- It will incorporate the running adversarial review, get a re-review,
+  then the final bundles, and only then "READY TO SEND".
+
+**J-96 · FS-A-011 review sweeps complete; J-79 corrected.**
+- The main review plus sub-sweeps A/B/C and the Arbiter's own sweeps A/B/C
+  have all reported on the sent draft text.
+- **Key correction (BLOCKER in sweep C):** the J-79 emergency-shutdown
+  reading was wrong (Corrections table).
+  - On the Quest 3 a critical trip still forces an unsynced power-off,
+    via the 100 ms emergency work.
+  - **On the Quest 2 (v2.7 config, delay 0) a critical trip forces no
+    power-off at all** [M-static config; D]. (Scope narrowed in J-99: no
+    software-forced power-off via the kernel thermal core; vendor and PMIC
+    protection not assessed [O]; see Corrections.)
+  - This raises the priority of the graceful-shutdown / thermal-ownership
+    design (PM requirement, J-83), especially for the Quest 2.
+  - Arbiter check of `umh.c:397-423`, `thermal_core.c:375-386` and both
+    configs.
+- **Other findings, for the consolidated FS-A-011:**
+  - FS-R-001 R3 quoted in full, including its review clause
+    (PROJECT_SETUP §0.0 fixed); FS-R-002 §4/§6 cited (guard deferral;
+    keep the build pinned during bring-up);
+  - "stable" presupposed; the J-85/J-86 source tags; "no light" claims;
+    the continuum archive and the network fetches to disclose;
+  - the self-test scope; table-v2 not byte-identical; Quest 2 README
+    narrowings; what the Chair can verify from the bundle;
+  - §7 additions: the [O] on whether the first optical report preceded the
+    console, and standby versus power-off;
+  - citation fixes (fs-pattern.c 1357-1365, rule 15, timeline sources,
+    dmesg case-insensitivity, FSDE1 printed by fs-display.sh);
+  - the cue/SIGNOFF beep mismatch (the cue says "until beep 1"; SIGNOFF
+    says until the second beep) → fix the host cue text;
+  - new bundler paths that freeze the sent manifests; the README refresh.
+- Consolidation delegated; a fresh review follows; bundles only after it
+  passes.
+
+**J-97 · Consolidated FS-A-011 revision (draft; NOT READY).**
+- Every finding of the main review and the six fact-check sweeps (J-96) is
+  applied to the private review records, with an appendix "Changes
+  from the sent draft". The sent draft and its manifests are untouched.
+- **Host-side fix (no image change):** `devices/quest3/host/fs-collect.ps1`
+  stage-3b cue now says "Keep looking until the SECOND (LOW) BEEP" (it said
+  "until BEEP 1"), matching `SIGNOFF.md` E (the dark check falls between the
+  beeps); the stale line-9 comment now says RunnerWorstSec 75 s. Stage 2a/3a
+  texts and behaviour unchanged.
+  - New hash `fs-collect.ps1` `2b90d641a15065da522e885df6cb627cd01e48608f7a20faea4cd07698068089`
+    (was `09052f40…a2ae1`); `test-host3b.ps1` C4 now also asserts the new cue
+    text (`d50035c4…844a`); `COLLECTOR.md` §13 aligned.
+  - Re-run (scratch first, then copied): `test-host3b.ps1` **116/116**,
+    `test-host2.ps1` **459/459**; committed outputs updated (only times and
+    scratch paths differ).
+- `devices/quest2/README.md`: the FS-R-010 §7 narrowings (104 s planning cap
+  with the send-time guard retained; ELF 3.7.0 annotation; thermal absence
+  not established; reboot cycles are state changes), the J-96 Quest 2 thermal fact, and the stale FS-A-010 lines fixed.
+- `README.md` status refreshed; "Where we are now" refreshed;
+  `serial-loss-trial3.md` body cap assertions annotated; the
+  `valve-image-slot-in.md` download-page [O] updated (PM report, J-86).
+- Corrections rows added (FS-A-010 "not rising"; the flicker-band basis;
+  [removed for publication]).
+- New bundler FS-A-011 (private review record) written, **not run**
+  (bundles only after the re-review passes).
+- Not changed (optional item declined): a
+  `pace_evidence.py` upper-bound assert (the relay states the measured
+  values). The stage-3b image and everything in it are unchanged.
+
+**J-98 · Re-review of the consolidated FS-A-011 (`bf95cec`): not ready yet.**
+- All `a011-findings` items closed; the code change is clean (cue text
+  and comment only; host3b 116/116, host2 459/459); the image is
+  unchanged.
+- **3 MAJOR:**
+  - (A) the relay cites the ORIGINAL FS-R-002 §4/§7, which is superseded
+    by the revised FS-R-002 (binding: revised §6/§8);
+  - (B) the r2 bundler drops 6 gitignored build records;
+  - (C) **some CR-significant FSB1 fixtures (`valid-crlf`, `valid-pty`,
+    `echo-only`, `valid-echo-prompt`) were committed with their CRs
+    stripped by autocrlf**; the working copies are the true bytes. A
+    repository-integrity fix: `-text` rules and re-staging the true bytes.
+    The public copy needs the same fix.
+- **Minors:**
+  - the image-zip container hash will differ (members identical);
+  - bundler hardening;
+  - pin and working-copy CRLF drift for the host `.ps1` (add `eol=lf`;
+    record the host-tool hashes in SIGNOFF A);
+  - §6.1 scope ("no software-forced power-off via the thermal core";
+    vendor and PMIC protection not assessed [O]);
+  - the disclosure list of network reads; citation details.
+- Fixes delegated. The bundle will be built only after a short
+  verification.
+
+**J-99 · Re-review fixes for the consolidated FS-A-011 (draft; NOT READY).**
+- **FS-R-002 citation (MAJOR-A).** The relay now cites the binding revised
+  FS-R-002 §6 ("Kernel-side protection remains a later investigation"; the
+  known-writer diff is "an alarm rather than proof") and §8. The original
+  §4 (five guard requirements) and §7 ("pinned during bring-up") are
+  labelled superseded guidance, and the Chair is asked to confirm them. D2,
+  ask 5, the Appendix and §6.2 ("FS-R-002 (revised) §4.C") are fixed.
+- **Bundler (MAJOR-B, B1, B2).** FS-A-011 (private review record)
+  (not run in the repo):
+  - adds the six gitignored text build records explicitly;
+  - uses the sent bundler's streamed write method;
+  - derives the repo root from its own path;
+  - requires the relay to be tracked and clean, handles rename records,
+    and refuses a tracked file missing from the working tree.
+  - **Dry run in a temp clone** (all changes committed there, the relay
+    copied to FS-A-011 (private review record)): **952 raw files**, the same set as the
+    sent bundle except the two renamed `r2` paths. The would-be raw zip is
+    `e6825696…8c93` (3,012,086 B; indicative only, the relay and the
+    JOURNAL will still change). The image zip is **`84b96292…781d`**,
+    identical to the sent one, and `IMAGE-MANIFEST.sha256` is
+    byte-identical.
+- **CR-significant fixtures (MAJOR-C).**
+  - `.gitattributes`: `devices/quest3/common/fixtures/fsb1/** -text`;
+    `text eol=lf` for `devices/*/*/*.output.txt`, `devices/quest2/channel/fixtures/**` and
+    `devices/quest3/host/*.ps1`.
+  - Staged with their true CRLF bytes: `valid-crlf.txt` (22 CR),
+    `valid-pty.txt` (23), `valid-echo-prompt.txt` (23), `echo-only.txt`
+    (1). Each equals the `fsb1_mutate.py` output, and `valid-pty` equals
+    `valid.txt` with ONLCR.
+  - On the staged bytes (exported with `checkout-index`), Python
+    `test_fsb1.py` 38/38 and PowerShell `test-fsb1.ps1` 38/38, with the
+    cross-check 38 of 38; both RESULTS files are identical to the
+    committed ones.
+  - No other blob changes under the new rules (`hash-object` over every
+    tracked file). Fifteen working copies were re-checked out as LF (blob
+    unchanged): `fs-classify.ps1` (now `ed5d07ea…`), `test-host2.ps1`,
+    `test-host3b.output.txt`, `stage1/test-host.output.txt`, the channel's
+    `fixtures/host/RESULTS.txt` and ten other outputs.
+  - `FSB1-SPEC.md`: `valid-pty` has 23 CRLF pairs.
+  - `SIGNOFF.md` A: a new `Get-FileHash` step for the pinned host tools
+    (SIGNOFF is not hash-pinned; its lines after 67 moved by 7, and the
+    relay's citations were updated).
+- **Found, not fixed (for the PM/coordinator): relay evidence damaged at
+  commit by the same mechanism.** 94 tracked `-text` files under
+  FS-A-004 (private review record), `-005-raw`, `-006-raw`, `-009-raw`, `-010-raw` and
+  `devices/quest2/evidence/` (a baseline folder) [paraphrased for publication] have CRs in the working
+  copy but none in the blob (they were committed before the `-text`
+  rules).
+  - 70 of the working copies match their relay manifests (the sent
+    bytes); the other 24 are in no manifest.
+  - A fresh clone therefore fails those manifests.
+  - The fix would be `git add --renormalize` on exactly those paths, after
+    checking each against its manifest. Not done: outside this request.
+- **§6.1 scope (MINOR-1).** Now "no software-forced power-off via the
+  kernel thermal core"; vendor notify hooks and PMIC/TSENS hardware
+  protection not assessed [O]. `reboot.c:465`. The same scope is applied in
+  the relay, `armadavr.md`'s box, the J-96 Corrections row,
+  `devices/quest2/README.md` and `README.md`.
+- **Wording (MINOR-2, MINOR-3):**
+  - the §5 network reads and their source docs (index 109,892 B);
+  - the send gate in §2;
+  - byte-for-byte against LF;
+  - pace chunk 2,178–2,234 B;
+  - stale-comment split: the `test-host3b.ps1` comment and K43 string were
+    fixed, and the C4 label now names the cue assertion;
+  - `serial-loss-trial3.md`: every remaining cap assertion annotated;
+  - PROJECT_SETUP §0.0: `vrconfig_write` is not new.
+- **Tests after all changes:** `test-host3b.ps1` **116/116**,
+  `test-host2.ps1` **459/459** (outputs copied as LF); FSB1 38/38 Python and
+  PowerShell.
+- New hashes: `test-host3b.ps1` `d03f4bd9…f7e3` (not pinned);
+  `fs-collect.ps1` unchanged `2b90d641…`.
+
+**J-100 · Relay evidence blobs restored to the bytes the Chair received.**
+- Fixes the damage found in J-99: 94 tracked `-text` evidence files under
+  FS-A-004 (private review record), `-005-raw`, `-006-raw`, `-009-raw`, `-010-raw` and
+  `devices/quest2/evidence/` (a baseline folder) [paraphrased for publication] had CR-stripped blobs.
+- **Check before the fix (Arbiter):** every one of the 94 working copies
+  is byte-identical (SHA-256) to an entry in a sent relay zip
+  (the private review records) and appears in a tracked manifest. J-99's "70 match,
+  24 in no manifest" came from a narrower manifest lookup; against all
+  tracked manifests and the sent zips, 94 of 94 match. All differences
+  were CR-only.
+- `git add --renormalize` on exactly those 94 paths (all already `-text`);
+  each staged blob now equals its working copy (0 mismatches). A fresh
+  clone now reproduces the sent evidence bytes.
+- No other file changed. The public copy (`frameshift-public`) still
+  needs its own fixture/evidence check before any further push [O].
+
+**J-101 · FS-A-011 fix-round verification passed; relay finalised.**
+- Independent read-only verification of the J-99 fixes and J-100 (HEAD
+  `6e6ebba`): items 1–7 PASS; **no BLOCKER or MAJOR**. Dry run in a temp
+  clone: 952 raw files; image zip `84b96292…781d`, identical to the sent
+  one; every member equals its committed blob; the fsb1 fixtures keep
+  their CRs in the zip. All 28 tracked manifests hold for `-text`
+  evidence in a fresh autocrlf clone.
+- **Fixed:**
+  - MINOR-1: `README.md` cited the original FS-R-002 §4/§7 as binding;
+    now the revised §6 is binding and §4/§7 are superseded guidance.
+  - MINOR-2: `make-bundle.py` silently skipped a tracked file deleted from
+    a walked folder; it now refuses (tested: a deleted fixture → refusal;
+    the clean run → 952 files, image zip `84b96292…781d`).
+  - NIT-1: the J-96 entry now carries the J-99 scope note.
+  - NIT-2: the relay's change list mentions J-100; README status bumped.
+  - NIT-3: `devices/quest2/analysis/v27-dt/** -text` (its `SHA256SUMS`
+    failed on an autocrlf checkout; blobs unchanged, all OK).
+- The relay moves to FS-A-011 (private review record); the bundles are built from this
+  commit and their hashes recorded in the next entry.
+- Public copy: only the same four fsb1 fixtures are CR-damaged there; the
+  other 268 differences are sanitisation or later private edits. Plan: a
+  fresh sanitised re-export after FS-A-011, reviewed, pushed only with the
+  PM's OK [O].
+
+**J-102 · FS-A-011 (consolidated) bundles built; READY TO SEND.**
+- Built by FS-A-011 (private review record) from commit `a28679f`
+  (clean tree):
+  - FS-A-011 (private review record): 952 files + MANIFEST, 3,015,077 B,
+    SHA-256 `0055df6dbe8a99bcab9cae72a95a88edea39761989e6c2985dbc4691c2725df0`;
+  - FS-A-011 (private review record): 11 files + IMAGE-MANIFEST, 19,856,259 B,
+    SHA-256 `84b962925981a3efd5ff5ecb3500c331ce2686fbe236878b6b6258fe047b781d` (identical to the sent image zip).
+- Checks (Arbiter): every member matches `MANIFEST.sha256`; every tracked
+  member equals its committed blob (the 13 others are the gitignored build
+  records and `IMAGE-MANIFEST.sha256`); the relay in the zip equals
+  FS-A-011 (private review record) at `a28679f`; no excluded path; fsb1 CR counts
+  22/23/23/1; `fs-rpcd` `da19367b…`; `IMAGE-MANIFEST.sha256` equals the
+  frozen sent one.
+- The manifests are committed with this entry. The PM sends the relay and
+  both zips to the Chair, replacing the incomplete sent draft. Awaiting
+  FS-R-011.
+
+**J-103 · Consolidated FS-A-011 sent.**
+- PM report (2026-10-11): the relay and both zips were sent to the Chair
+  (relay `8b385ab7…9952`, raw `0055df6d…25df0`, image `84b96292…781d`),
+  replacing the incomplete draft. Awaiting **FS-R-011**. No device action
+  until then.
+
+**J-104 · FS-R-011 received: CONCUR EXECUTE trial (iii-b); distribution rulings.**
+- Recorded verbatim: FS-R-011 (private review record).
+- **§1 Trial (iii-b): CONCUR EXECUTE**, exactly: Unit 1, v66, slot
+  A, one temporary boot, no flash, no retry, nonce `6cf0f15867f14edc`, image
+  `ea60d6cd…5841`, the §1.1 host pins, DEADLINE 200 / backstop 201 s, the 91 s
+  guard, the PM physically present. Two clarifications before the PM signs
+  and before BA:
+  - **A. Host dependencies:** `fs-proto.ps1` `52e007eb…`, `fs-native.ps1`
+    `101ddfb1…`, `fsb1.ps1` `1f84c633…` join the pre-BA hash check.
+    **Arbiter check: all three match** (working copy = committed blob; the
+    FS-A-007 and FS-A-008 zip copies of `fs-proto.ps1` are also `52e007eb…`).
+    Added to SIGNOFF A.
+  - **B. "Dark gap"** reads as "a pause of at least 2 s, during which actual
+    darkness is observed separately; run 2 executes only if its
+    inactive-CRTC precondition is established". Recorded in SIGNOFF D (the
+    pinned collector cue is unchanged and is read this way).
+  - Also recorded in SIGNOFF: the dwell gate runs before attempt
+    registration/launch (`DwellSec` and `DwellAtBootStartSec` already
+    recorded by `fs-observe.ps1`); at ≥ 40 °C act at once, never wait for the
+    manual schedule; shutdown and unplug are separate observations.
+- **§2:** the Chair independently parsed the image and reproduced the C, FSB1,
+  timing and preview checks [D]; `fs-pattern` `4c36e4d9…`. The PowerShell
+  suites and the ARM programs under QEMU were not re-run by the Chair.
+- **§3:** all six implementation choices ACCEPTED. Keep the raw reason when
+  the CRTC precondition is unmet (never report ACTIVE=1 unless read); an
+  admitted run 1 can establish the display milestone but not a full two-run
+  PASS.
+- **§4 Quest 2 channel:** ACCEPT continued offline work. Use UDC
+  `a600000.dwc3` explicitly; keep "possibly partially sent" on a failed
+  host send; FSB1 validation stays necessary. No Quest 2 execution.
+- **§5:** [removed for publication]
+- **§6 Thermal:** the J-96 finding is supported but "never fires" is too
+  absolute (allocation failure or a disabled helper can still reach the
+  forced fallback). Required wording: "The successful-no-op helper path
+  supplies no dependable forced shutdown through the generic thermal core
+  on this configuration." Quest 3: the delay schedules a power-off
+  *attempt*, not a guaranteed power-off at 100 ms. Not a gate for trial
+  (iii-b); it must inform the Quest 2 trial and Valve userspace.
+- **§7 Distribution:** D1 ACCEPT (architecture, not a package or a legal
+  conclusion); D2 RETAIN the revised deferral (write boundary before broad
+  stock-service activation or automatic updates; guard gaps listed;
+  investigate SELinux too); D3 ACCEPT (add the BLE programmer, the
+  charger/NVM writer and systemd-repart to the writer inventory); D4 Unit 2
+  installer may be scoped; [removed for publication]; D5 ACCEPT; D6 and
+  D7 need **PM policy decisions** (below). Licensing correction: Valve's
+  Frame download page presents the backup-image EULA.
+- **§8:** before any action on Unit 2, establish its new fingerprint, slot,
+  kernel and firmware inputs (do not reuse v71 identities).
+  Before publication: repair the exported CR fixtures and verify the
+  published tree's manifests and licensing/source material.
+- **Open for the PM [O]:** (D6) whether licence-audited FOSS packages fall
+  within the "no Valve binaries" exception; (D7) an explicit exception for
+  the exact official recovery image (manifest branch main/OOBE) as the
+  first-install base, plus the official 2026-10-08 stable article and its
+  signed manifest.
+- **Next device action:** trial (iii-b) on Unit 1, attended, when the PM
+  connects it; one step at a time.
+
+**J-105 · Private documents brought up to FS-R-011.**
+- Delegated docs pass (18 files), checked by the Arbiter:
+  - `PROJECT_SETUP.md` §0.0 (D1–D7 outcomes; open PM decisions D6/D7),
+    §6A (thermal wording; Unit 2 re-baseline; licence obligations), §7;
+  - `DEVICE_PORT_CHECKLIST.md`: new F7 (per-unit re-baseline), H8 (writer
+    inventory: BLE programmer, charger/NVM writer, systemd-repart), H9
+    (licence obligations: BusyBox, kernel, static glibc); **H6, H7 and the
+    status matrix restored** verbatim from `e57ec2c` (commit `d58ef82`, J-86,
+    had truncated the file by 34 lines; confirmed by diff);
+  - research notes: `valve-packages-licensing.md` (Frame download page
+    presents the backup-image EULA; the "Deck terms" claim struck),
+    `valve-image-slot-in.md` (D1–D7; "recovery is always to
+    Horizon" struck), `thermal-control-design.md` (§6 wording; risk R10),
+    `community-quest-repos-2.md`;
+  - Quest 2 channel README and PORT-PLAN (§4); Quest 3 README, stage3b
+    README/IMAGE.md, RECOVERY.md, host README (trial (iii-b) concurred, not
+    run); root README (resume steps); a pre-publication audit
+    (private) [paraphrased for publication].
+- `SIGNOFF.md` D: the FS-R-011 §3 reading rules (CRTC label scope, skipped
+  run, cut stream, run 1 milestone vs full PASS, separate reporting).
+  `common/OUTCOMES.md` is left unchanged (part of the reviewed package); the
+  §3 widening is carried by SIGNOFF and goes in the trial report.
+- Claims checked: every stage image carries BusyBox and the stock kernel;
+  our helpers are static glibc (`common/build-record/BUILD.txt`,
+  `stage3b/BUILD-RECORD.txt`: `libc6-dev-arm64-cross 2.43` static).
+
+**J-106 · Public re-export; PM public-scope directive and audit.**
+- PM: "Go ahead with the public re-export." Built as an incremental 3-way
+  merge of private `ec8a523..40b569f` onto the sanitised public tree, with
+  the mechanical sanitiser and marked prose sanitisation. It also includes:
+  - the CR fixtures restored (22/23/23/1 CRs);
+  - local times converted to UTC;
+  - `docs/PUBLIC-MANIFEST-CHECK.txt` (FS-R-011 §8), which classes every pin.
+- First adversarial review: tree PASS. Its BLOCKER was the local WIP commit
+  history (test identity, local dates, unsanitised WIP). The public push is
+  always one fresh commit with the agreed identity and UTC dates.
+- **PM directive (2026-10-11):** the public record contains **no mention of
+  unlock methods, unlock results, rooting, or anything exploit-related**;
+  only the SteamOS-port dev work, builds and procedures, for a reader who
+  already has an unlocked headset.
+- **Audit:** 507 rows in 118 files (four read-only auditors). Results in
+  `docs/public-scope-audit/` (private, never exported).
+- **PM decisions:**
+  1. withhold the root-based tools, keeping the safety rule;
+  2. drop all lock-state lines;
+  3. rename the build-type label to "v66 (Unit 1)" in the public copy;
+  4. withhold all anti-rollback / update-path research.
+  The Arbiter defaults in the report apply.
+- Nothing is pushed until the edits are applied, a fresh adversarial review
+  passes and the PM approves the push.
+
+**J-107 · Trial (iii-b) run (FS-R-011 §1): first light on the Quest 3 panel; run 2 lit but garbled.**
+- Unit 1, v66 slot A, image `ea60d6cd…5841`, nonce `6cf0f15867f14edc`, PM present.
+  Full record: FS-A-012 (private review record) (attempt log, captures, observe/collect,
+  readings, classifier, misc rule, signed sheet).
+- **Sequence (UTC, 2026-10-11).** Settled pair 250 (18:48:10) / 250 (18:58:41),
+  stable. BA 19:01:41.57 (100 %, 250); BF 19:02:48 (`current-slot: a`).
+  Presence confirmed in chat. Attempt 19:04:20.83; dwell 159.3 s at
+  BootStartUtc. `fastboot boot` rc=0, HANDOFF_ACKNOWLEDGED, Th 19:04:31.99;
+  gadget at Th+9 s.
+- **Collector:** COLLECTED-VALID, **FSB1 VALID** (capture.raw 103458 B
+  `ff90fea6…`), `FSD1 queued END`. AF 19:07:05. AA 19:09:00 (300).
+  Follow-ups: 300 at +5 min, 300 at +10 min (not rising; highest observed
+  300). No shutdown was needed.
+- **Classifier:** STAGE-1 PASS. **Machine side PASS** (OUTCOMES §9 rule 25):
+  - run 1 committed and closed on a CRTC already active (`crtc_active=1`);
+  - run 2 committed from an inactive CRTC (`crtc_active=0`, show-off) and
+    held;
+  - pause 2278 ms; brightness 127 written once and read back before both
+    runs.
+  **OPTICAL: LIT BUT GARBLED; LABEL: RUN 1 DARK, RUN 2 LIT.** Not a stage
+  PASS (the stage needs all 8 characters read in each eye).
+- **PM readings** (verbatim in `readings-notes.txt`): "I *think* run 1 was
+  dark, both eyes. I *think* run 2 was lit, but garbled, both eyes." No beeps
+  were heard (host console beeps). The PM's later description: the image
+  looked "almost like a raw LCD pattern" (fine regular red/green/blue
+  stripes; a similar reference image is saved, not a capture). The PM could
+  not tell whether the panel went dark before or at the reboot; phase
+  boundaries were not distinguishable.
+- **Persistent state:** devinfo identical. BA11/AA11: every hashed
+  partition identical except `misc` (boot, vendor_boot, dtbo, vbmeta, abl
+  on both slots, devinfo, pstore). Misc rule RECORDED: boot command
+  unchanged; vendor field 0x1010–0x101b changed (the field the stock
+  control changes). BF/AF identical except timing lines.
+- **Reading [D]:** the panel can be lit from our boot, but only by a full
+  inactive→active modeset (run 2). A commit onto the CRTC state the
+  bootloader handed over (run 1) gave no light. The garble suggests a
+  format mismatch between our frame and what the panel/DSI path expects
+  (compression, pixel format or stride) [C]; it is analysed next from the
+  captured probes.
+- The signed sheet was saved as `signoff-as-signed.md`:
+  - signature "PM", 12:03 PDT = 19:03 UTC, after BF and before the attempt;
+  - section B values were not written on the sheet (they are in the attempt
+    log); the C and F lines were left unticked;
+  - the template is restored.
+- **PM decisions after the run:**
+  1. Next run uses **live phase markers from the headset** (the image
+     prints a marker at each phase boundary; the PC shows a coloured banner
+     and plays a sound for each, in real time). The preflight plays a test
+     sound the PM must confirm hearing.
+  2. **Analyse the captured data first**, then decide what the rerun tests.
+  3. **PM executive decision: subsequent runs are authorised without a
+     relay first.**
+- **Arbiter scope for decision 3** (stated to the PM):
+  - Covered: repeat/diagnostic temporary `fastboot boot` runs on Quest 3
+    Unit 1 in the current stage line (never flashed).
+  - Each run still needs: an independent adversarial review of every new
+    image and host-tool change; a fresh nonce typed by the PM; the image
+    deadline and backstop; read-only probes; the settled pair; the dwell
+    gate; AF/AA; the ≥ 40 °C rule; the PM present with sign-off; one step
+    at a time.
+  - No writes beyond the reviewed backlight value; FS-R-001 intact.
+  - Still to the Chair first: any flashing, Valve userspace, any Quest 2
+    run, a new write class, firmware changes.
+  - The results go to the Chair afterwards in FS-A-012, disclosed as a PM
+    executive decision.
+
+**J-108 · Garble analysis; first-time-reader test of the public copy; doc fixes.**
+- **Garble analysis** (offline, read-only; record decoded VALID):
+  - run 2 committed mode `4128x2208x90vid`, XR24 linear, as **2 planes of
+    2064** (split layout);
+  - stock Android uses **4 DMA pipes of 1032** (one per mixer, UBWC) at
+    core_clk 503 MHz (= 1032 × 5158 × 90 × 1.05);
+  - a 2064-wide pipe needs ≈ 1.006 GHz against the 550 MHz MDP maximum
+    [D], so pipe starvation corrupting the DSC stream is the leading
+    hypothesis;
+  - a flat grey field can't become RGB stripes through a format or stride
+    error [D];
+  - run 1: TE 0 before and during (the panel was handed over asleep; the
+    splash handoff sends no panel-on), and run 1's close reset the panel,
+    so run 2's enable woke it (TE ≈ 181/s, the stock rate).
+  - Next-run proposal: 4 planes of 1032 (split as fallback), more read-only
+    logging (post-commit state, a larger blob buffer, a wider dmesg filter).
+  - The analysis read strings from the stock recovery UI library (private
+    analysis only; never published).
+- **PM proposal: an interactive per-phase flow.** The host runs a phase,
+  then prompts for single-key per-eye readings (a lit / b dark / c garbled /
+  d read). Arbiter guardrails:
+  - prompts only while the panel is off; lit holds are device-enforced;
+  - per-prompt timeout leading to a safe finish; an abort key;
+  - timestamped answers.
+  This needs a per-phase protocol (one command and one record per phase),
+  so it gets a full review. Awaiting the PM's confirmation that one-handed
+  key presses work.
+- **First-time-reader test** (PM idea): a fresh agent read only the public
+  candidate, then answered an 18-question quiz, about 17.5 of 18 correct
+  with citations.
+  - Gaps found: stale dates and labels, the runner guard as 97 s instead of
+    91 s, undefined jargon, the Chair's nature unstated, the FSB1 suite
+    wrongly listed as refusing, the Quest 2 "never flashed" wording, and no
+    outsider quickstart.
+  - Replication is limited by the withheld capture tooling.
+  - Fixed in the private repo (README status/state/glossary/Chair
+    description, relays index, PROJECT_SETUP [C] tag and pointer, SIGNOFF
+    wording) and in the public candidate (also a quickstart, a plain status,
+    an architecture overview and a contributing section).
+
+**J-109 · Display research; stage-3c design drafted; PM decisions; second reader test.**
+- `docs/research/display-pipeline-and-geometry.md` (new):
+  - **Why run 2 garbled.** Meta's 5.10 SDE driver doesn't check per-pipe
+    throughput; clock and bandwidth are votes the userspace client passes in
+    (unset means maximum, 550 MHz). With 2208 active lines in a vertical
+    total of 5158, each plane must deliver its width every 2.154 µs, which
+    caps a plane at about 1128 px at 550 MHz. Our 2064-px planes need about
+    1.0 GHz [D]. Mainline DPU splits planes by the same rule [M-static].
+  - **Precedent:** `machachu56/quest-kexec-q2`, Quest 2 through the stock
+    driver. One plane across both mixers gave "rows of small purple
+    blocks"; one half-width plane per mixer, XR24 linear, displayed
+    correctly (licence to be checked before any reuse).
+  - **Ruled out:** UBWC and AB24 are not required. DSC and topology come
+    from the device tree, and `qcom,disable-default-pps` means no PPS is
+    sent.
+  - **Stock layout:** Android uses DMA pipes as two half-pairs; the splash
+    uses VIG0–3, planes 71/97/100/103.
+  - **Geometry:** panels mounted 180° plus about 21° roll
+    (`bootloader_screen_rotation=201`); lens axes are offset toward the
+    nose and upward. Compensation belongs in the runtime (eye-to-head
+    transform, projection, distortion); per-unit calibration is in
+    `/persist` (names only). Valve has published no Frame geometry format.
+  - **Next:** D1, 4 × 1032 with explicit zpos (2 × 2064 as a TEST_ONLY
+    probe only). D2, read-only underrun counters, which need a debugfs
+    mount (a new action class). D3, a marker per quadrant plus chiral
+    markers and a centre line per half.
+- `devices/quest3/stage3c/DESIGN.md` drafted:
+  - interactive per-phase protocol (`fs-phase`, one FSB1 record per phase,
+    chained by `prev16`);
+  - live `FSPM1` markers, banners and generated sounds, a blind sound check
+    and a one-handed key test;
+  - run 2 with 4 planes; run 3 a red field, only if run 2 is garbled;
+  - DEADLINE 200/201 s unchanged, plus an idle watchdog;
+  - read-only logging.
+  It is to be revised with the research, then adversarially reviewed.
+- **PM decisions:**
+  1. Explicit **zpos** is part of the reviewed commit (a standard property
+     in the same atomic commit, runtime only); disclosed in FS-A-012.
+  2. **No debugfs mount in this run**; the read-only underrun read is
+     proposed to the Chair in FS-A-012 for later runs.
+  3. PM report: run 2 showed **no structure at all** in the garble.
+  4. PM: **AI use is disclosed publicly**, models named (Claude Opus 5.5 as
+     Arbiter, ChatGPT Sol 6.1 as Chair).
+  5. PM agrees to the interactive flow, and wants a **standing concurrence
+     for repeat runs** asked of the Chair in FS-A-012.
+- **Second first-time-reader test:** 20/20 correct after the fixes.
+  Remaining stale lines and jargon fixed in both repos (pacing rate per
+  stage, FSB1-SPEC usage, stage-3b and recovery status, SIGNOFF title,
+  editor's notes on the superseded device order and the code-block rule,
+  PROJECT_SETUP §6A order, glossary rows, a single status source).
+
+**J-110 · Public re-export pushed (private repo): single commit `2158d06`.**
+- After the scope edits (J-106 decisions) and the final adversarial review,
+  the first-time-reader tests (17.5/18, then 20/20) and their doc fixes, a
+  targeted review of the new text found two MAJOR factual errors, both
+  fixed:
+  - "physically present for every boot" now says "required to be", noting
+    the trial (i) remote-run deviation;
+  - a wrong "there is no §0.1".
+  Minors and nits were fixed in both repos.
+- One orphan commit, `2158d06`: 1167 files, tree `e29912fd…`, identity
+  the PM's first name [removed for publication] with the GitHub noreply address, dates +0000.
+  Message: "initial public import", private HEAD 40b569f plus later
+  documentation fixes, AI-assistance note.
+- Checks: the local scratch history is unreachable; a scan of all objects
+  found no serials, personal e-mail, local paths or out-of-scope terms
+  (the only name hits are the approved commit identity).
+- **PM chose to force-push** over the first export (`7b14e15`), rather
+  than delete and recreate the repo. Pushed: `main` = `2158d06`; the repo
+  stays **PRIVATE**. Note for the public flip: GitHub may keep the replaced
+  commit reachable by its id until garbage collection.
+- The local `frameshift-public` was reset to `origin/main` (the same
+  tree).
+- Next public steps: the PM flips the repo public when ready; add the repo
+  link to the Valve letter; later exports use `<private export tooling>` (base
+  `40b569f`).
+
+**J-111 · Stage 3c built, integrated, build-reviewed and fixed; candidate `9d3ad984…`.**
+- **Design reviews:**
+  - R-A on rev 2: B1, zpos 0×4 aliases the right pair onto an unconfigured
+    stage, so zpos is now {0,0,1,1}; M1, pipe type is told by max_upscale
+    (VIG 20, DMA 1); M2, CRTC_X reads back converted for the right half;
+    M3, FSXE1 carries ran=0|1; M4, the dot-source parameter hazard. Run 3
+    holds 5 s.
+  - Revision 3 committed (`efd18dc`). Kernel source: zpos_max 10, multirect
+    auto PARALLEL.
+- **Build** (two parallel halves, then integration, `71f9d62`/`90b5e96`):
+  - device: fs-pattern v0.6, per-phase scripts, idle watchdog, FSPM1/FSXE1;
+  - host: collect3c, session3c (banners, sounds, keys), classify3c,
+    observe3c;
+  - list encoding unified (`.`); 24 device scenarios replayed end to end.
+  - CR bytes in the scripted keys.txt files were stripped at commit; fixed
+    with -text rules (`cc58cc0`).
+- **Build reviews:**
+  - R-B device: safety invariants PASS; MINOR, a pre-mkdir refusal did not
+    close the session; MINOR, the timing model omitted the END pass and the
+    cold run.
+  - fs-pattern review: code PASS, mutants caught; policy wording, run 1
+    keeps the reviewed 2×2064 wake commit (the TEST_ONLY rule applies to
+    runs 2/3).
+  - Rebuild/mutation review: bit-identical; four test gaps (the
+    refusal-closes rule, a silent second backlight write, idle writing to
+    the tty, a disguised debugfs mount).
+  - R-C host: MAJOR-1, lit phases were not gated on p0 integrity; MAJOR-2,
+    Ctrl+C / closed console; MAJOR-3, a false run-3 runner inconsistency;
+    plus ten minors (key repeat, `d` then timeout, summary shown before the
+    notes, step order, QuickEdit, …).
+- **All fixed:**
+  - PHASE_WORST 23/38/47/39, so W + 0.5 s; guards G 34/68/82/64;
+    DEADLINE 200 / backstop 201 unchanged;
+  - integrity gate before run 1; Ctrl+C acts as x; readings checkpointed;
+  - harness inotify on the backlight write; tty-byte accounting; a builder
+    mount whitelist and a tty grep;
+  - every surviving mutant is now caught.
+- **Suites:** fixtures 136, builder 16, image 25, pace 63, timing
+  CONSISTENT; host 294 (test-host3b 116 and test-host2 459 identical before
+  and after).
+- **CANDIDATE** image `9d3ad98400ac94f42b291a66b0420576df5ad8ee447e831d971fcaba9bd914bd`,
+  nonce `b7cf9a0bfb559dcb`, fs-pattern `066bdc3e…`. Withdrawn unbooted:
+  `e1856cd2…` (nonce 3296cd623cc7da0f).
+- **Next:** a verification review of the fixes; then the PM's rehearsal,
+  sound check and key test; then the attended run (PM executive decision,
+  J-107).
+
+**J-112 · PM report: Quest 3 Unit 2 now on v2.7; stage-3c readiness.**
+- PM (2026-10-12): "Q3u2 is on v2.7 now. Still has some panel issues due to IAD constructor
+  crash, but I think we can either work around that or ignore it completely. If it proves to be
+  an issue, we'll adjust." [PM report; the panel issue's cause is the PM's attribution, [O]].
+  Before any FrameShift action on Unit 2: read-only baseline (fingerprint, slot, kernel,
+  effective firmware inputs) per FS-R-011 §8; v71 identities are not v2.7 identities.
+- Stage 3c: R-D verification READY (`113e87a`); then repeat window 600 ms, console-mode restore
+  order, tap-don't-hold instruction, re-pinned fs-session3c (`81a96f0`). Host pins (14) checked
+  and preflight OK for candidate `9d3ad984…` nonce `b7cf9a0bfb559dcb` (no device action). PM
+  sound check / rehearsal next.
+
+**J-113 · PM sound check passed; rehearsal NO-GO (bar prompts); prompt fixes paused overnight.**
+- **Sound check:** PASSED (`captures/b7cf9a0bfb559dcb/soundcheck.json`, Pass true): all five
+  sounds heard, the three blind sounds named, every reach key pressed one-handed.
+- **Rehearsal** (replay of `garbled-r3`, real keys): every banner, sound, prompt, dark check and
+  the safe finish worked; 11 readings saved.
+  - The PM answered "garbled" throughout. Run 1 answers 16.4 s, run 2 50.2 s, total 66.6 s:
+    **NO-GO** (> 40 s).
+  - The two bar-count prompts took about 48 s. **PM feedback:** the bar question was not
+    understood (what it referred to, how to answer); `n = light STILL visible now` on the
+    eye prompts was confusing (it only makes sense at the dark check).
+- **Decided:**
+  - Apply the reviewed Q7 fallback: no bar prompts on the run-3 path.
+  - Any bar prompt that remains must explain itself in its own text.
+  - `n` is shown only at the dark check; `x` stays on every prompt.
+  - Eye prompts become shorter.
+- **Paused** at the PM's request (end of day): the agent applying these changes was stopped
+  mid-change. Its partial, untested edits are on branch **`wip/q7-prompt-fallback`**
+  (`a3959ce`); `master` is the clean, reviewed state (`81a96f0` package).
+- **Resume:**
+  1. finish the change from the WIP branch (or redo it), with tests, re-pins and a short
+     review;
+  2. the PM redoes the rehearsal (answers: run 1 b, b, y; run 2 c, c, y; run 3 s, s, y; s),
+     which must be GO;
+  3. connect Unit 1 for the attended stage-3c run (candidate `9d3ad984…`, nonce
+     `b7cf9a0bfb559dcb`; host pins and preflight already OK; redo both if any host file
+     changes);
+  4. Unit 2's read-only v2.7 baseline (FS-R-011 §8) when convenient.
+
+**J-114 · Prompt changes finished and reviewed (Q7 fallback + PM feedback); merged.**
+- The interrupted change (J-113) was finished on `wip/q7-prompt-fallback` (`f11433e`) and then
+  reviewed adversarially: **GO, no safety regression**.
+  - On the run-3 path no bar prompts are asked (recorded NOT_ASKED; the classifier writes a
+    READINGS NOTE, never INCONCLUSIVE).
+  - Where bars remain (run 3 does not follow: rules 1, 2 or 3 fail), the prompt explains
+    itself. After review it now reads "next to each of the two F letters (below it when
+    upright) … 1 to 4 bars".
+  - `n` is shown only at the dark check; `x` stays on every prompt; `n` during a lit run is
+    still taken as `x`. Eye prompts are shorter.
+- **Accepted, to disclose in FS-A-012** (data loss only, no safety cost):
+  - bars are skipped on the rules 1–4 decision even when run 3 then does not happen (rule 5
+    G3 refusal, "no longer possible", x/timeout before the r3 send);
+  - light seen at an eye prompt is now recorded as an abort (x), so the dark check that
+    follows is the retained-frame evidence, not a LIGHT_NOW reading.
+- Also: eol=lf rules for the pinned stage1/common host helpers (`fs-proto.ps1`, `fsb1.ps1`;
+  blobs already LF; a fresh checkout would otherwise fail their pins, safely).
+- Tests: test-host3c 298/0 (+1 regression skip; Y1 stage-3b unchanged); the full -Regression
+  run before the last wording fix was 302/0 with test-host3b 116 and test-host2 459 identical.
+  `fs-session3c.ps1` re-pinned in SIGNOFF-3c A.
+- Merged fast-forward into `master`; the WIP branch was deleted.
+- Next: PM rehearsal 2 into `captures/b7cf9a0bfb559dcb/rehearsal-2` (must be GO), then the
+  attended run (host pins and preflight to be re-run first, since host files changed).
+
+**J-115 · Unit 1 cycle stood down (PM at work); Unit 2 v2.7 read-only baseline; offline work started.**
+- **Stage-3c cycle `b7cf9a0bfb559dcb`:**
+  - Settled pair failed: 230 at 15:52:25 → 250 at 16:02:57 UTC; the battery was charging
+    from 90 to 96 %.
+  - The PM had to leave (remote for about 8 h), so the cycle was stood down **before BA**:
+    no capture was taken and the nonce is unspent.
+  - The host pins, preflight, sound check and rehearsal 2 (GO) remain valid unless host files
+    change. The PM was given the OK to power Unit 1 off.
+- **Unit 2 baseline (FS-R-011 §8), read-only adb, 16:10 UTC:**
+  `devices/quest3/evidence/unit2-v27-baseline-20261012/` (devices, full getprop, uname,
+  /proc/version, /proc/cmdline, battery, by-name list, /proc/partitions, SHA256SUMS).
+  - Build `52433670036000520` (= v2.7), type **user** (release-keys; was v71 (Unit 2)).
+  - **Slot `_a`** (was `_b`); kernel `5.10.246-gd7102a837402` (the v2.7 build target).
+  - vbmeta digest `66b7619671a8a8dcb75262812e7ce1bd176af6aa32cd76dc3548b9c942e9f12a`; battery
+    98 %, 18.0 °C [M].
+  - Not captured: `fastboot getvar all` (needs a reboot to the bootloader, a state change; PM
+    OK required).
+  - v71 identities are superseded. Unit 2 is now the candidate for true v2.7 trials, but tooling
+    that relied on v66 (Unit 1) may need adapting [O].
+  - PM report (J-112): panel issues from an "IAD constructor crash".
+- **Offline agents started:** the FS-A-012 draft (the private review records, not ready), the
+  quest-kexec-q2 licence check, the Unit 2 baseline script, the graceful-shutdown/thermal
+  design, and the Valve writer inventory (FS-R-011 D3).
+
+**J-116 · Offline block while the PM is at work: FS-A-012 draft, writer inventory, shutdown design, evidence-tracking fix.**
+- **FS-A-012 draft** (the private review records, NOT READY): §1–§4 and §6–§8 written; §5 (stage-3c
+  run) open.
+  - Review 1 found a bundle BLOCKER and five MAJORs: the missing FS-R-010 §2 caveat; frame
+    counters not "0 at every point" (post1 fps 0.2, frame_count 1; post2 frame_count 1); stale
+    licence lines; ask (b) scope; ask (d) contradiction. All fixed (`ef73d40`).
+  - New observation: run 2's BLU rate was about 106/s against TE about 180/s (stock: about
+    182/s for both) [M]; its meaning is [O].
+- **Evidence-tracking BLOCKER fixed:** `.gitignore` `captures/` and `*.img` had silently
+  excluded relay evidence. 65 FS-A-012 files and 59 FS-A-009 (trial (i)) capture files had
+  never been committed; the FS-A-009 files are byte-identical to the sent zip.
+  - Exceptions `!relays/*-raw/captures/` and `!relays/*-raw/captures/*.img` added; all files
+    committed byte-exact (`d8992e2`, `d957fb1`).
+- **Valve writer inventory** (`docs/research/valve-writer-inventory.md`, FS-R-011 D3):
+  - 36 writers plus 15 uncalled tools; unit masks plus whiteouts contain only 10.
+  - Highest risks on a Quest:
+    - `format-device.sh` accepts any `/dev/sd[a-z]` (on the Quest, the boot-chain LUNs);
+      polkit allows it without a password, and steamos-manager FormatDevice and the Steam
+      client reach it;
+    - `driver_cv.so` (GPIO/SPI, controller firmware updater);
+    - `steamvr-program-ble.service` (nRF52 mass-erase/flash; can run a `/home` copy);
+    - `restore-calibration` (`blockdev --setrw /dev/sdd*` plus mke2fs);
+    - `systemd-repart`.
+  - The charger NVM writer is lower risk than previously summarised (the NVM commit is
+    commented out in 0.3.0).
+  - Valve userspace therefore needs a polkit deny set, a device-node policy and the block
+    guard, not masks alone. 12 open gaps.
+- **Emergency-shutdown / thermal-ownership design** (`docs/research/emergency-shutdown-design.md`
+  rev 1):
+  - single owner `fs-thermald`, tiers, graceful sequence, a stage thermal guard;
+  - new facts: the Quest 2 v2.7 DT has no critical trip; the Quest 3 has no SoC watchdog node;
+    an unclean reset with dump mode armed lands in crash-dump (RECOVERY.md already covers
+    `05c6:900e`).
+  - Review 1: **NO-GO**. B1: after a failed `reboot(POWER_OFF)` the caller do_exits while
+    holding `system_transition_mutex` and the other CPUs are stopped, so no userspace fallback
+    can run and the S1 guard could disable PID 1's DEADLINE reboot. M1: the softdog stays armed
+    through POWER_OFF. M2: a hot runaway was ignored for 120 s. M3: RESTART into Android is
+    unsafe for flashed images.
+  - Revision 2 is in progress. Current stage images are unaffected (their end path is a clean
+    reboot to the bootloader).
+- **quest-kexec-q2 licence:** GPL-2.0 (Monado driver BSL-1.0); citation only, closed.
+- **Unit 2 read-only baseline script** (the Unit 2 baseline script (private)): allowlisted,
+  13 offline scenarios pass.
+- Stage-3c docs: FS-R-010 §2 wording for run 1 (no "known dark"); status lines say the reviews
+  are done.
+
+**J-117 · Emergency-shutdown design: rev 2 re-review GO for presentation; rev 3 (`a1e1f3c`).**
+- **Rev 2:** review-1 findings applied.
+  - No userspace fallback after a failed POWER_OFF. In stage images PID 1 is the sole reboot
+    caller (the guard writes TRIP; PID 1 execs `fs-poweroff-final`; PID 1's exit panics into a
+    lock-free restart).
+  - The softdog survives POWER_OFF, with a pet deadline.
+  - Hot-runaway rule; initramfs thermal gate.
+  - New facts F18–F24. F18: the Quest 2 4.19 CPU-stop leaves CPUs online, so the msm watchdog
+    bites in about 12–21 s.
+- **Re-review 2: GO for presentation** (not a device GO). Eight minors were folded into rev 3
+  (`a1e1f3c`, F25–F30):
+  - `Conflicts=shutdown.target` for the shutdown detector;
+  - `CapabilityBoundingSet=~CAP_SYS_BOOT`;
+  - JobTimeoutSec on every shutdown target; soft-reboot and halt masked;
+  - RT-priority hardening (the CAP_SYS_NICE bypass is certain);
+  - the gate uses T3's exit rule;
+  - PID 1 checks TRIP first;
+  - a guard-alive check;
+  - `download_mode`=0 as the precondition for the softdog in S1.
+  - Declared residuals: R11/K5, R12, R13, O6, R21, R22.
+- **For the PM (decision box at the top of the design):**
+  - P12 budgets; P13 warning; P14 unplug notice; P15/sysrq-c (Chair);
+  - P16 Quest 2 stage-guard limits; P17 softdog margins;
+  - the `pid1-hold.sh` change (design and harness only);
+  - opening the softdog in S1;
+  - Quest 3 tsens/ADC loads (deferred).
+- **For the Chair:** the new action classes (power-off syscall, softdog open, sysrq, systemd
+  hardening, module loads). They go in a later relay; nothing here authorises device use.
+
+**J-118 · PM decisions (D6, checklist, Meta thermal config, backups); repo public; Frame protections research.**
+- **Public repo made PUBLIC** (PM OK: "If you feel the repo is ready to be pushed public, I am okay
+  with doing so"): `continuumxr/frameshift`, single commit `2158d06`. Caveat noted: the replaced
+  first export `7b14e15` may stay reachable by id on GitHub until garbage collection (unlinked).
+- **D6 (PM):** "If a package is truly FOSS, then we can include them" → licence-audited FOSS
+  packages are allowed (with their notice/source obligations for anything we ship); proprietary
+  components are not redistributed.
+- **D7:** the PM asked for research into Valve's update channels (stable, beta, main, …) and prefers
+  whichever Valve recommends for general users; research agent started
+  (`docs/research/steamos-update-channels.md`). Decision pending that research.
+- **Checklist (PM):** replace the sign-off sheets with a **checklist in the console** for the
+  remaining runs (the PC tool asks each confirmation at the right moment and records the answers
+  with timestamps); disclosed in FS-A-012. PM question answered: the sheet is a pre-flight
+  checklist and record for the Chair, not a liability instrument.
+- **Shutdown design (PM):** follow Meta literally where hardware-specific: our supervisor reads
+  Meta's thermal configuration from the user's own headset at runtime and applies Meta's
+  thresholds and mitigation order; nothing of Meta's is copied into the repo; fixed values only as
+  fallback. Design to be updated (rev 4).
+- **Backups (PM):** no further backups of any current unit; all necessary information and
+  partitions are captured. Unit 2's `getvar all` waits until the PM is home.
+- **Valve letter:** still recommended (proprietary components and the EULA's open
+  runtime-overlay question; goodwill); the repo link can now be added. ArmadaVR: the PM has
+  contacted the owner, no reply yet.
+- **PM rule:** every decision needing the PM is asked in chat, not buried in relays/docs (memory).
+- **Frame protections research** (`valve-writer-inventory.md` §6): the Frame has no polkit deny set
+  (all 26 Valve actions `allow_any=yes`), no device-node policy (GPIO/SPI/nvmem opened on purpose),
+  and a soft block guard (initramfs `blockdev_ro` on sdb/sdc/sdd, undoable). Valve's model: root
+  is trusted; guards prevent accidents and are owner-removable. **The hazards are Quest-specific**
+  (Frame device names land on Quest boot-chain LUNs; we replace Valve's initramfs, so even its soft
+  guard is absent). Recommendation: narrow 1 and 2 to the Quest-specific hazards; keep 3 scoped to
+  Quest boot-chain/unit-unique partitions, with an owner opt-out Valve code cannot trigger.
+
+**J-119 · PM decision: Quest-specific protections only; Discord community; private community note.**
+- **PM decision (protections):** keep Valve's open model ("root is trusted"); protect only
+  against Quest-specific hazards:
+  - deny the few Frame-specific polkit actions that would reach Quest boot storage (format,
+    restore-calibration, factory reset, update/branch, udisks system-disk);
+  - remap or mask the Frame-numbered device-node rules (grant the Quest nodes a working feature
+    needs; charger/battery writes reserved to our supervisor per §6A);
+  - one boot-chain write guard covering only the Quest bootloader and unit-unique partitions, on
+    by default, with an owner opt-out that Valve code cannot trigger (a FrameShift boot flag,
+    not `blockdev --setrw`).
+  - Basis: `valve-writer-inventory.md` §6. Goes to the Chair with the D1–D3 follow-up.
+- **Community:** the PM started a Discord server for SteamOS-on-Quest porters (mostly kexec on
+  locked headsets).
+  - [removed for publication]
+  - Rule: share public-scope material only; never quote private messages publicly without
+    permission.
+- **In progress:** update-channel research (D7); the console checklist (branch
+  `feat/console-checklist`, review to follow); shutdown design rev 4 (Meta config read at
+  runtime).
+
+**J-120 · PM direction: a compatibility (translation) layer after a bootable image.**
+- PM: "once we have a bootable image, if we find that Valve's software commands can actually be
+  tied to Quest commands, then we can write a translation layer?" Agreed, and recorded as the
+  planned hardware-compatibility approach (PROJECT_SETUP §0.0):
+  1. standard Linux interfaces exposed by Quest drivers;
+  2. thin adapters for Frame-specific names and paths;
+  3. SteamVR/OpenXR driver plugins for tracking, controllers and display.
+  - Dangerous actions are blocked, not translated.
+  - Behaviour is learned from public interfaces and runtime observation only; no disassembly.
+  - Fits FS-R-011 D3's preference for documented additive integration. Starts at Stage 2.
+
+**J-121 · D7 decided (PM); design principle "as close to SteamOS as possible"; 0.4 stable identified.**
+- **Update-channel research** (`docs/research/steamos-update-channels.md`):
+  - `stable` is Valve's public release (stable key, CN=steamdeck-images), recommended for most
+    users.
+  - beta, preview, rc and main use the dev key (`main` is the development head).
+  - The recovery image is official rc 0.3.0 content filed under `main` (with `skip: true`); its
+    own manifest defaults to `stable`.
+- **PM decisions (D7):** stable now, with beta opt-in soon. Then the PM: "Ideally we would allow
+  whatever is available in SteamOS out-of-the-box … We should *try* to keep the experience as
+  close as possible." Hence:
+  - default **stable**;
+  - the user may choose any channel Valve's Frame UI offers (beta, and preview if offered);
+  - verification mirrors Valve's own updater (the stable key for stable, Valve's dev key for
+    beta/preview, as Valve's client does), which replaces the stricter "never trust the dev key";
+  - a FrameShift notice on non-stable builds not yet checked against our layer (not a block).
+- **Standing design principle (PM):** match Valve's out-of-the-box behaviour; depart only where
+  Quest hardware forces it (e.g. the J-119 boot-storage protections).
+- **0.4 stable identified** (PM-approved metadata fetch, ~86 KB public, no credentials;
+  `docs/research/steamos-stable-0.4-metadata/`):
+  - build `20261007.6125817`, version 0.4.5, branch `stable`, variant `vr`; stamped
+    2026-10-08 23:21:16 UTC, 2 minutes before Valve's post "SteamOS 0.4 for Steam Frame"
+    (the match is a deduction).
+  - Signature: Valve publishes no separate file; it is inside the `.raucb` tail. A range read of a
+    few KB needs PM approval. Stable key in the rootfs `ba942c60.0`, fingerprint D5:62:FE:…:02:D9.
+
+**J-122 · PM decisions: shutdown settings approved; Meta config method; bundle download; letter on hold.**
+- **Shutdown design (PM, "Approve all as recommended"), for design and harness work only:**
+  - P12 budgets (Valve userspace 45/55 s, stage ≤ 3 s, early jump if rising);
+  - P13 user-visible warning (SEVERE, any fault, 10 % battery);
+  - P14 "unplug" notice;
+  - P15 / sysrq-c instant restart if the final power-off returns (also needs the Chair);
+  - P16 Quest 2 stage-guard limits 60/40/45/40 °C (confirmed against Q2-P1 idle readings first);
+  - P17 softdog margins 30 s, provisional;
+  - the `pid1-hold.sh` TRIP-first change;
+  - the softdog opened in S1 (Quest 3 only after T0 reads `download_mode`=0).
+  - Quest 3 tsens/ADC module loads deferred. Nothing runs on a headset without its own review
+    and the PM's sign-off.
+- **Meta thermal config:** read-only user-space parse of the vendor partition (option B, no mount,
+  no device-mapper); unreviewed versions use the built-in values and tell the user (P18).
+  Design rev 4 (`2ca58e6`) is to be adversarially reviewed.
+- **Bundle:** the PM approved downloading the full 0.4.5 stable `.raucb` ("may also be useful in
+  the future") to verify the signature. Kept in the gitignored firmware area, never committed or
+  published.
+- **Valve letter:** "Not yet".
+- **Console checklist:** branch `feat/console-checklist` (`84f49ba`); test-host2 459/459 from
+  the main checkout (the 2 worktree failures were an environment artefact). Adversarial review
+  next, then merge.
+
+**J-123 · 0.4.5 signature verified; shutdown rev 4 reviewed; credits list; Meta identifiers allowed.**
+- **SteamOS 0.4.5 stable signature VERIFIED** (PM approved the full bundle download;
+  `docs/research/steamos-stable-0.4-metadata/SIGNATURE-CHECK.txt`, `c032e0a`):
+  - `deckard-stable-20261007.6125817-0.4.5.raucb` (2,283,618 B, sha256 `e3d14c21…bb8d`; kept
+    in the gitignored firmware area);
+  - plain RAUC; CMS signed by CN=frame-images, which was issued by the stable root
+    CN=steamdeck-images (from Valve's rootfs, not the server);
+  - fails against the dev key and on a single-byte change;
+  - manifest: `compatible=steamos-aarch64`, `version=20261007.6125817`; rootfs.img.caibx
+    10 GiB, sha256 `692b998b…` (chunks not fetched).
+- **Shutdown design rev 4 review:** GO once M1 (Virtual A/B merge-pending detection, fallback
+  `vab-merge`) and M2 (the reader must never block the boot: poll timeouts, low priority, rlimits)
+  are fixed. No path applies unreviewed thresholds. Rev 5 in progress.
+- **PM decision:** Meta interface identifiers (JSON key names, sensor names, mitigation level
+  names), threshold numbers and hashes may appear in the public design; never file contents.
+- **Credits list** (PM request; `<private note, withheld>`, private, excluded from
+  export, `2233e25`): 37 individuals/sources, 12 projects/organisations, 10 tools/licences.
+  - Three licence obligations before any image is handed out: BusyBox (GPL-2.0), Meta's stock
+    kernel (GPL-2.0), static glibc (LGPL-2.1+).
+  - Open PM decisions (later): consent or pseudonyms for dump owners; guide authors; private
+    sources (ask first); [removed for publication]; the PM's reference image (source unknown; private only);
+    licence requests to unlicensed repos (Quest1-SteamOS, ArmadaVR).
+
+**J-124 · Shutdown design rev 5; console checklist review (merge after fixes).**
+- **Emergency-shutdown design rev 5** (`105990b`): review-4 M1 and M2 fixed.
+  - F38: Virtual A/B is on; a `-cow` partition in the active slot → fallback `vab-merge`; the
+    vendor incremental must match. The residual (COW wholly on userdata) is declared as R25/O27.
+  - F39: `fs-metacfg` is spawned before RT elevation with `SCHED_RESET_ON_FORK` and rlimits; the
+    parent waits ≤ 2 s on the pipe and pidfd (ppoll), never a blocking waitpid; a stuck helper
+    is killed and the boot continues on the fallback.
+  - All minors applied. O28 is closed per the PM's decision (J-123).
+  - Correction carried: [removed for publication].
+- **Console checklist review** (branch `feat/console-checklist`): merge after four MUST fixes:
+  - test output regenerated in a real clone;
+  - A3 states consent ("read … and accept");
+  - capture paths follow the stage-3b convention (`<cycle>` = `captures\<nonce>`; no
+    `-CapturesRoot` except for a dwell retry);
+  - re-run the host pin check (15 files).
+  - Also: B tied to the BA start, a longer reading time in phase A, plain-language section D,
+    and clearer STOP lines. Fixes in progress in a separate clone; then merge.
+
+**J-125 · STAGE 3 DISPLAY MILESTONE: stage-3c run on Unit 1 — STAGE PASS (first correct image); practice rerun.**
+- **Before:** the console checklist was merged (`742075c`); 15 host pins and the preflight
+  re-checked. Unit 2's read-only `getvar all` was taken (`1ce181c`; [removed for publication], current slot a, slot b unbootable). Two settled pairs failed while Unit 1 was charging (220 → 260); the
+  PM first said "go ahead", then chose to wait for the checklist (no override used).
+- **Run `b7cf9a0bfb559dcb`** (image `9d3ad984…`), 2026-10-13, PM present:
+  - Checklist A PASSED; B PASSED (260 → 260, 629 s; Arbiter-run); BA 01:37:42; BF 01:38:26;
+    E PASSED 01:38:57; attempt at about 01:39.
+  - Classifier (`captures/b7cf9a0bfb559dcb/classify3c.txt`): STAGE-1 PASS; P0 OK; R1 SHOWN
+    (split; optical DARK); **R2 SHOWN-QUAD [quad_vig]** (read-back SRC_X 0/1032/2064/3096,
+    CRTC_X 0/1032/0/1032, zpos 0/0/1/1; held; clean close; TE 170/s, BLU 112/s; no dmesg flags),
+    **OPTICAL PASS: all 8 characters read correctly in each eye**. **REGISTERED: STAGE PASS.**
+    Run 3 not reached (PM answer time).
+  - Persistence: devinfo identical; misc RECORDED (the same vendor field); every hashed partition
+    identical except misc. AF 01:43:04; AA 01:45:56, 300; +5 min 320, +10 min 310 (highest 320).
+  - PM description (verbatim in notes.txt): characters, F letters, bars and cross seen; "canted
+    inward toward the center"; the same in both eyes apart from the bars.
+- **Practice rerun** (PM: "without regard for the answers"; minimal log): nonce `55f521af22ce3e10`
+  (image `ed2acedb…`), a nonce-only rebuild verified against the candidate.
+  - Pair 270 → 260; A, B, E PASSED; run 1 dark; run 2 displayed; **worked**.
+  - Run 3 not run by design (run 2 was not reported garbled).
+  - PM confirmed: **the panels are swapped** (bars 3,4 seen in the left eye, 1,2 in the right),
+    and **canted inward** (clockwise left, counter-clockwise right) [PM report].
+  - AA 340; +5 min 350; +10 min 330 (highest 350).
+- **Findings:** the per-pipe throughput cause (J-108/J-109) is confirmed by the fix. Rendering must
+  account for the eye swap and the per-eye roll. BLU about 112/s vs TE 170/s again ([O]).
+- **PM decisions:** single temperature readings from now on (proposed rule: one reading
+  < 35.0 °C, ≤ 15 min before BA, battery not charging; reviewed change pending; disclose in
+  FS-A-012). The PM asked to run the panel test on Unit 2; the Arbiter explained that the image
+  is built from Unit 1's v66 files (a hybrid on Unit 2's v2.7) and that the capture tooling needs
+  root, and proposed a Unit 2 / v2.7 variant (PM decision pending).
+
+**J-126 · PM decisions: build for v2.7 (stage 3d); single reading is a requirement; Unit 1 stays on v66 for now; display handoff explained.**
+- **PM:** "we will probably need a v2.7 build anyway … If you think it prudent to build a v2.7
+  image, then yes, let's go ahead." Stage 3d starts (branch `feat/stage3d-v27`):
+  - the stage-3c test rebuilt on Unit 2's own stock v2.7 files, from the official OTA we hold
+    for build 52433670036000520, verified against Unit 2's runtime vbmeta digest;
+  - the v2.7 module list; the display assumptions re-checked from the v2.7 DT.
+  - Host side (branch `feat/single-reading-userbuild`): user-build capture rows for Unit 2.
+- **PM:** "please implement the single temp reading as a new requirement": one reading < 35.0 °C,
+  ≤ 15 min before BA, battery not charging; replaces the 10-min pair (FS-R-010 §6 procedure
+  change, PM executive decision; disclose in FS-A-012).
+- **Unit 1 to v2.7?** The PM asked; the Arbiter recommended holding. Unit 1 is needed for deep display diagnostics; Unit 2 is
+  already on exact v2.7; firmware moves are one-way in practice. Revisit after the first v2.7 test.
+- **Run 1 dark vs run 2 lit (PM question), explanation [D/C]:**
+  - On `fastboot boot` the bootloader turns the panel off at the boot command (the PM observed this
+    in trial (iii)), but the kernel's continuous-splash handoff still assumes a lit panel and skips
+    the panel power-on (run 1: TE 0).
+  - Run 1's close fully resets the display; run 2 enables from inactive, gets the full power-on
+    sequence, and lights.
+  - Normal power-on keeps the splash lit, which is how stock's seamless takeover works.
+  - Mitigations: test boots do one deliberate off→on cycle before the first frame; installed boots
+    keep the bootloader's lit panel and draw with the correct 4-pipe layout without a modeset. To
+    be verified on the first boot from an installed slot.
+
+**J-127 · PM decisions: Unit 1 to v2.7 (PM flashes); omit lit run 1 (display reset); correct the eye swap and cant in stage 3d.**
+- **Build types (PM question):** no hardware difference; it is a build configuration. [removed for publication]
+- **Unit 1 → v2.7 (PM executive decision):** the PM can restore firmware on these units by flashing partitions (has done it before) and holds Unit 1's full v66 dumps, so
+  the one-way concern does not apply.
+  - The PM performs the flashing; FrameShift tools never write boot-chain partitions
+    (FS-R-001).
+  - Afterwards: Unit 1 read-only v2.7 baseline. Disclose in FS-A-012 (FS-R-010 §8 did not
+    concur Quest 3 firmware changes).
+- **Omit the lit run 1:** a non-lit display reset (ACTIVE=0 commit from the splash state, the same
+  commit class) before the first lit frame. A fully seamless takeover is only possible on
+  installed boots (the bootloader leaves the splash lit).
+- **Stage 3d corrects the panels:** each eye's content goes into the buffer half that reaches that
+  eye (swap), pre-rotated by the opposite cant (left counter-clockwise, right clockwise, about
+  21°, parameterised); fs-pattern v0.7; the reviewed brightness bounds are unchanged.
+
+**J-128 · PM accepts 21° as the starting cant (test and correct); stereo depth and the boot splash belong to rendering; geometry research started.**
+- **Cant angle:** 21° is [C], from `ro.boot.bootloader_screen_rotation=201` (180 + 21) and the PM's
+  qualitative observation of the direction (J-126). It may be rounded or vary per unit. **PM
+  decision:** use 21° in stage 3d and correct it if testing shows otherwise. The angle stays a
+  parameter, and angle variants can be compared in practice runs.
+- **Stereo depth (PM question):** not a display-test concern. Depth comes from rendering each eye
+  from its own viewpoint (IPD), with per-eye projection and lens-distortion correction. SteamVR
+  on SteamOS already does this; FrameShift supplies the Quest geometry (per-eye resolution and FOV,
+  distortion, IPD, eye-to-head transforms including the cant and the swap) through a SteamVR/runtime
+  driver (tier 3, J-120). Preferred source: the unit's own factory calibration read at runtime,
+  with public reference values as the fallback.
+- **Boot splash (PM question):** Meta's bootloader logo already applies the 201° rotation. A
+  SteamOS boot animation (Plymouth on the Steam Deck; the Frame is [O]) draws one flat image, so
+  on the Quest it would appear split, swapped and tilted unless it is drawn per eye, rotated and
+  swapped (a hardware-forced departure, the same job as fs-pattern). It needs no stereo depth.
+- **Research agents:** display geometry and stereo (local evidence, driver needs, boot splash) →
+  `docs/research/display-geometry-stereo.md`; a separate web-research agent on the published
+  geometry. Results pending.
+- **Unit 1:** the PM confirms they will flash v2.7 themselves (J-127) and will report when it is done.
+
+**J-129 · Stage 3d built (candidate ec822b85, nonce 4e98edbf3fbc2d4e, branch `feat/stage3d-v27` 6c7f726); geometry research results; PM decisions on modules, backlight and the calibration listing.**
+- **Geometry research** (`docs/research/display-geometry-stereo.md`):
+  - 21° is Meta's design value [M-static: the v2.7 odm build.prop comment next to
+    `ro.minui.rotation_degrees=201`]. It is one value per model; any per-unit residual is [O].
+  - The "eye swap" is the 180° mount applied to the whole 4128-wide frame. Stage 3c rotated each
+    half in place.
+  - The Frame has no Plymouth. Its logos are pre-warped per unit from `device_config.json`. FrameShift
+    needs its own per-eye KMS splash.
+  - Lens distortion: there is no public Quest 3 model [O].
+  - IPD comes from two magnetic sensors; the conversion to millimetres is [O].
+  - Meta's per-unit calibration is under `/persist/calibration/`; the names and format are [O].
+- **Stage 3d build:**
+  - Inputs from the v2.7 OTA, matching Unit 2's runtime vbmeta digest `66b76196…9f12a` (the slot
+    bytes are inferred, not read back).
+  - fs-pattern v0.7: `eyes=swap`, `roll=21`; `roll=0 eyes=direct` gives v0.6 byte for byte.
+  - The briefed ACTIVE=0-only reset would not clear the DSI splash flag [D, kernel source], so r1 is
+    a three-step reset that scans out only black: disable, dark re-enable on a black buffer, then
+    close. Untested on v2.7 [O].
+- **PM decisions:**
+  - (a) **Modules:** load the proven v66 set (minus the 2 debug modules), not v2.7's 131-module
+    list. Rebuild pending, with a fresh nonce.
+  - (b) **backlight_changes_blocked:** left alone. The image does not write it; a dim or dark run 2
+    leads to a follow-up build.
+  - (c) **Names-only listing:** a names-only listing of the calibration folder on Unit 2 [removed for publication]. Reading the contents is a new action class for the Chair.
+- **Adversarial reviews:** two reviews started, (A) fs-pattern v0.7, reset and geometry, and (B) the
+  image build, writes and modules.
+- **WSL extract:** the v2.7 system, system_ext, odm and product partitions are extracted at
+  `~/work/geom-x/` (about 2.8 GB, outside the repo), kept for now.
+
+**J-130 · Stage 3d reviews: both GO-with-fixes; PM approves the three-step reset with a y/n observation.**
+- **Review B (image build):**
+  - Image, inputs and vbmeta digest independently re-verified.
+  - Device writes are the same as stage 3c; nothing touches partitions, `/persist`, misc beyond 3c,
+    or `backlight_changes_blocked`.
+  - MAJOR: 6c7f726 loaded all 131 modules (fixed by J-129's v66 set; the reviewer simulated the
+    load: 95 modules, none of the 36 pulled in, nothing missing).
+  - MINORs: stale r1 wording in the MANIFEST and the fs-phase header; no device-side refusal on
+    other firmware (Unit 1 at v66 would fail silently through CRC mismatches); the
+    "inferred, not read back" caveat missing from the MANIFEST.
+  - Fixes ordered: init checks `modules.dep` and `modules.softdep` hashes before loading and fails
+    closed.
+- **Review A (fs-pattern v0.7):**
+  - The reset claim holds against the v2.7 kernel source, and a suspected NULL dereference was
+    ruled out.
+  - Only black is scanned out; the roll sign and the swap are correct.
+  - `roll=0 eyes=direct` is byte-identical to v0.6.
+  - Worst white is 3.09 % across roll −25..25; arguments fail closed.
+  - MINORs: stale header comments; 8 empty stray `reset*.out/err` files committed; the PM approval
+    of step B and the dropped r1 observation.
+- **PM decision:** approves the three-step reset (disable, dark re-enable on a black buffer, close;
+  backlight at 127 from p0). The host keeps one recorded, non-gating question after r1: "Anything
+  visible during the reset? y/n".
+- **Rebuild** with all fixes and a fresh nonce is in progress; the fixes get a delta re-review.
+
+**J-131 · Unit 1 on v2.7 (PM flashed); baseline matches Unit 2; calibration file names listed.**
+- **Firmware:** the PM flashed Unit 1 to v2.7 (J-127).
+- **Read-only baselines** (`evidence/unit1-v27-baseline-20261013`; [removed for publication]):
+  - Unit 1 has the same build (52433670036000520), vbmeta digest `66b76196…9f12a`, kernel, cmdline
+    token set and by-name partition layout as Unit 2; only the loop-device order differs.
+  - **The stage-3d image applies to both units** [M-static].
+  - Battery 40–41 °C on AC at 100 % about 4–6 min after the first boot.
+- **Build type:** both units are `user` builds. [removed for publication]
+- **Calibration listing** (PM-approved names-only `ls -lR /persist/calibration` on Unit 1,
+  `evidence/unit1-v27-persist-calib-names-20261013`):
+  - `display/screen_offset.json` (2323 B) is the per-unit display offset candidate.
+  - `rgb_calibration.json` (49 KB), plus camera, IMU, magnetometer, LED and microphone files.
+  - `prox/min_ipd/*` (proximity thresholds).
+  - `online/<numeric>` (10984 B, rewritten at runtime).
+  - There is no obvious lens-distortion file. It may be inside a larger file or elsewhere [O].
+  - The contents were not read; reading them is a new action class for the Chair.
+
+**J-132 · Calibration files read off-device; PM: no further `/persist` access; offline backups used instead.**
+- **Live pull of Unit 1:**
+  - The PM permitted pulling the calibration files ("read them away from the headset").
+  - The Arbiter pulled `/persist/calibration` (18 files) at 07:00:27Z. `/persist` is
+    mounted `noatime`, so nothing on the device changed.
+  - Right after the pull, the PM said they would prefer we don't touch `/persist`.
+- **PM decisions:**
+  - **No further `/persist` access on the headsets** (this cancels the Unit 2 listing, J-129 (c)).
+  - Keep the copies and read them on the PC; they stay private and gitignored.
+  - Whether the product may read calibration at runtime is decided later.
+- **offline backups:** the PM pointed to the `/persist` images on the PM's offline backup drive.
+  - Only our own units' images were used. Each was copied, its hash checked against the inventory,
+    and extracted with read-only `debugfs`; nothing was written to the PM's offline backup drive.
+  - The two third-party images were not opened.
+  - The Unit 1 E: copy matches the live pull for all 17 factory files.
+- **Findings** (private: `<private note, withheld>`, excluded from export):
+  - `display/screen_offset.json` holds per-eye `Rotation` (residual at most 0.2° on both units, so
+    21° holds), boresight, decentre at the IPD extremes, and a two-point IPD ADC → mm calibration.
+  - The IPD ADC ranges differ completely between the units, consistent with different sensor parts,
+    so the conversion is per unit.
+  - Per-eye luminance and white point.
+  - There is no full lens-distortion model.
+  - `online/` and `camera_`/`imu_calibration.json` hold the tracking calibration.
+- **The Chair** will be told in FS-A-012 (a PM executive decision).
+
+**J-133 · Unit hardware faults (PM report); stage 3d rebuilt (3453f94, candidate 3d730337, nonce 7a22c3d2ff0fef44); Unit 2 pre-check.**
+- **Unit faults (PM):**
+  - **Unit 2:** the IPD sensor and the proximity sensor do not work properly. The PM believes this
+    causes the IAD/HAL crashes and the screen issues under Android.
+  - **Unit 1:** faulty proximity sensor; everything else works.
+  - **PM decision:** do not try to fix or compensate for these in testing, but keep in mind that
+    they may affect results.
+  - Stage 3d loads neither IPD-sensor driver (ak09973 and as5510 are among the 36 excluded
+    modules).
+  - Unit 2's factory IPD calibration values are treated as unreliable (private note).
+- **Stage 3d rebuild 3453f94:**
+  - Loads the 95-module v66 set, checked by `tools/module-list-check.py`.
+  - init pins the device's `modules.dep`/`modules.softdep` and fails closed: no modules, no USB
+    gadget, no LED, back in fastboot at T0+60.
+  - Nothing writes `backlight_changes_blocked`, and the builder refuses scripts that do.
+  - Headers and MANIFEST corrected; stray files removed; README §6.5 keeps the r1 y/n question.
+  - fs-pattern is unchanged (`7c9fa98c…`).
+  - All suites pass, including a bit-identical rebuild.
+  - Earlier candidates `ec822b85…` and `b5ecfcdf…` were never booted.
+- **Reviews started:** a delta re-review of 3453f94 and an adversarial review of
+  `feat/single-reading-userbuild`.
+- **Unit 2 pre-check, read-only, 07:08:14Z:** vbmeta digest `66b76196…9f12a`, build
+  52433670036000520, slot `_a`, booted, AC, status 5 (full), 99 %,
+  temperature 250.
+- **Correction to stage 3d README §7.5:** Unit 2 is a user build. [removed for publication]
+- **PM plan:** run stage 3d on **both** Unit 2 and Unit 1, to confirm that each displays correctly
+  on v2.7 and to check the eye-swap and roll corrections. Each run needs its own single-use nonce
+  (a nonce-only rebuild per unit, as for the J-125 practice run), and the host tools must take the
+  unit's serial as a parameter rather than a pinned Unit 2 serial.
+
+**J-134 · [removed for publication]**
+
+**J-135 · Overnight: stage 3d merged to master (review C GO); single-reading review GO-with-fixes; host work started.**
+- **Delta review C of 3453f94:** GO.
+  - Fixes (a)–(g) verified.
+  - The 95-module closure was re-derived and run under the image's own busybox in qemu.
+  - The index refusal holds in five cases.
+  - The image, nonce and fs-pattern were re-verified.
+  - MINORs:
+    1. Check 4 of `module-list-check.py` could not catch an addition on its own. **Fixed** (7634871):
+       a fixed forbidden set of 38 as check 5, plus negatives. The image is unchanged.
+    2. The init.sh comment "Meta's recovery set" is left as is, to keep the candidate
+       byte-identical; noted in README §5.
+    3. `c-modules-real` covers only the set; the reviewer's busybox run covers order and softdeps.
+- **Merge:** `feat/stage3d-v27` merged into master (16b9dec). Builder suite 32/32, including the
+  candidate rebuild: bit-identical, `3d730337…c224` (9847d0f).
+- **Review of `feat/single-reading-userbuild`:** GO-with-fixes. The core rule and its boundaries
+  hold, and the observer rechecks the 900 s window against BA.
+  - MAJOR-1: `[int]` parameters round, so `-R1 36.2` passes as 36.
+  - MAJOR-2: nothing ties the reading to a unit's serial.
+  - MAJOR-3: the user-build rows are stale now that both units are v2.7 user builds.
+  - MINORs: BA10 "status not 2" should be 3/4/5; `/persist` must be explicitly denied in the
+    allowlist; WALKTHROUGH clock source; age rounding; RECOVERY.md.
+- **Host agent started:** part 1 fixes the single-reading findings; part 2 adapts the host for
+  stage 3d per README §6 (the r1 y/n question, per-eye bars plus tilt, a serial parameter for
+  both units, rehearsal mode).
+- **Open for the PM:** does battery status 5 ("full") while on AC count as "not charging"? The
+  J-133 pre-check read AC, status 5, 99 %. adb over USB may also charge the headset.
+
+**J-136 · Host tools built and reviewed (both GO-with-fixes); fixes in progress.**
+- **Branches** (not merged): PART 1 `feat/single-reading-userbuild` 24553fc, rebased on master;
+  PART 2 `feat/stage3d-host` e44f60c (stage-3d host: fs-observe3d, -session3d, -collect3d,
+  -classify3d, -checklist3d, -nonceonly3d). Tests: test-host3d 79/79; test-host3c -Regression
+  324/0; `fs-observe3d -Preflight` OK on 3d730337.
+- **PART 1 review:** GO-with-fixes. All earlier MAJORs are fixed, and hostile inputs were refused
+  (`36.2`, `099`, non-ASCII digits, wrong serial, 901 s, future times, forged BA10).
+  - MINORs:
+    1. Malformed dates (T24:00:00Z) crash, and were accepted in-process.
+    2. No floor on BA10's temperature.
+    3. An old reading could carry over after an abandoned cycle.
+    4. Capture steps lack `-Serial`.
+    5. Loose ends.
+- **PART 2 review:** GO-with-fixes. Safety holds: only the PM-pasted observe command runs
+  `fastboot boot`; the nonce ledger is written before the boot; serial mismatch is refused; pins
+  match.
+  - **MAJOR-1:** a layout-question timeout ends the session, the same loss as stage 3c, and the
+    rehearsal skips the per-eye path. Fix: continue past a timeout; ask tilt first; add a timed
+    nominal rehearsal.
+  - **MAJOR-2:** `fs-nonceonly3d` does not open the image. Fix: a byte-level check that only the
+    nonce differs, required by the observer for any candidate other than 3d730337.
+  - MINORs:
+    - machine-check the BA/BF must-be rows (slot, digest, level);
+    - the `n` key wording;
+    - remove the expected-bars hint, which biases the swap check;
+    - report a reset/skip inconsistency;
+    - name the mixer for a 0 bar;
+    - state in the WALKTHROUGH that the pasted command boots;
+    - make the test section Y skip.
+- All fixes were sent to the host agent; a re-review follows.
+
+**J-137 · Single-reading change merged; stage-3d host in its last fix round.**
+- **Fix rounds:** PART 1 → 98c5736, PART 2 → 6bd2745.
+  - Tests: test-host3c -Regression 325/0/2; test-host3d 92/92.
+  - Nominal-read timing at stage-3c speeds: all 9 items fit, with 11.8 s to spare (HOST.md §4a).
+- **Arbiter decision:** on the run-3 path, a timeout at a tilt or F question still ends the session
+  safely (fs-done, no lit run 3). On the read path a timeout skips only that item. This is the
+  conservative choice, consistent with Q7.
+- **Delta re-review D:**
+  - PART 1: all MINORs verified with hostile inputs. GO, so **merged into master (29a3511)**.
+  - PART 2: GO-with-fixes.
+    - MAJOR-1: fs-nonceonly3d refuses every REAL nonce-only rebuild (ramdisk-scan.txt lines 1-2
+      vary per build; the tests copied the reference file). This fails safe but blocks Unit 1.
+    - MINORs:
+      - a copied 3d730337 folder with an edited nonce passes preflight (bind the reviewed nonce
+        and directory);
+      - three preview pictures (asseen, panels, mixermap) show the expected bars and tilt (drop
+        them from the PM preview until after the readings);
+      - HOST.md wording.
+  - The fixes were sent to the host agent.
+
+**J-138 · Stage-3d host tools merged; ready for the PM's sound check, rehearsals and the Unit 2 run.**
+- **Fix round** 956c54a: nonce-only check proven on a REAL rebuild (test K4); the reviewed candidate
+  bound to its own directory and nonce; biasing pictures removed from the pre-session preview.
+- **Final review E:** GO-with-fixes.
+  - Merge-time MAJOR: after the merge, `<withheld rows file>` kept CRLF, which breaks its pin.
+    Fixed by renormalising; all 18 SIGNOFF-3d pins verified.
+  - MINORs fixed by the Arbiter (4d1967b):
+    - D3 no longer primes "upright and level";
+    - fs-nonceonly3d explicitly refuses a TEST OVERRIDES line;
+    - HOST.md §6.6 updated.
+  - Informational: the builder hashes in a MANIFEST are self-reported. There is no device risk,
+    because the image and ramdisk are compared byte for byte.
+- **Merged into master:** 791879e. Tests: test-host3d 93/0/0; test-host3c -Regression 326/1. The one
+  failure, CL15, is expected in the main checkout: the newest stage-3c candidate's nonce is spent.
+- **Ready:**
+  - Unit 2 runs candidate `20261013T065151Z-7a22c3d2ff0fef44` (sha256 `3d730337…c224`, nonce
+    `7a22c3d2ff0fef44`, unspent).
+  - Unit 1 gets a nonce-only rebuild with its own nonce, checked by `fs-nonceonly3d`.
+  - Before the run: the sound check and two rehearsals (garbled-r3 and the timed nominal read).
+- **Open for the PM:**
+  1. Does status 5 ("full") on AC count as not charging?
+  2. FYI, the Arbiter decision of J-137: a timeout on the run-3 path ends the session safely.
+  3. Not urgent: the community member's offer (J-134).
+
+**J-139 · PM decisions: status 5 on USB accepted; run-3-path timeout design approved; storage offer deferred.**
+- **Status 5:** "full but plugged in" is accepted as not charging for the tests. The PM notes that
+  a headset on USB/adb always trickle-charges when its level drops, so this cannot be avoided. The
+  tools already accept status 3/4/5. The temperature bound (< 35.0 °C) still applies.
+- **Approved by the PM:** the Arbiter's J-137 choice. A timeout on the run-3 path ends the session
+  safely.
+- **Storage offer (J-134):** [removed for publication]
+
+**J-140 · Stage-3d Unit 2 session: rehearsals GO; the attempt refused (phase order); stood down for the PM's work.**
+- **Before the attempt:**
+  - Pins 18/18 and preflight OK.
+  - Sound check passed.
+  - Rehearsals both GO: garbled path 7.4 s; timed read path 9/9 items with 47.9 s to spare.
+  - Phase A passed on the second try. The first `n` came from the PM expecting no pictures; the
+    Arbiter had not said the three shown are neutral.
+  - Reading 240 (status 5, full) and phase B passed; BA and BF OK.
+- **The attempt was REFUSED before any device action:** phase A had been run again (16:10:31)
+  between B and E, which breaks the A, B, E order. Nothing booted; nonce `7a22c3d2ff0fef44` is
+  unspent.
+- **Retry started, then stood down:** the Arbiter began the documented retry (rebooting Unit 2 to
+  Android). The PM then had to leave for work, so the cycle stood down with no new reading and no
+  retry BA/BF.
+- **Resume after work** per `captures/7a22c3d2ff0fef44/attempt-log.md`: re-check pins and
+  preflight; new reading; BA and BF into `retry-1`; phase E; the attempt with the retry-1 summaries.
+- **Lesson:** warn against re-pasting earlier commands from scrollback.
+
+**J-141 · Stage-3d Unit 2 run: safe refusal, fs-pattern's mode limit (128) vs v2.7's 305 modes; nothing shown; fix v0.7.1 before Unit 1.**
+- **The retry went through:** reading 240 (status 3); BA and BF into `retry-1`; phase E; the attempt
+  at 00:51:49Z.
+  - p0 was valid.
+  - **r1: fs-pattern exited code 30 `too_many_modes` before any commit** (connectors 33/55/65 with
+    37/305/0 modes; MAXMODES 128).
+  - r2 was skipped (`run1-supervisor`); run 3 was not requested; fs-done was sent cleanly.
+  - The PM saw dark throughout, matching the records [M].
+  - AF and AA OK; AA temperature 300, then 310 (falling within limits).
+  - Nonce `7a22c3d2ff0fef44` is spent.
+- **Cause [M]:** v2.7's DT raised the max refresh to 240 with no step sizes, so the DSI connector
+  lists 305 modes (v66 listed far fewer). Our mock DRM model never had more than 128.
+  - It is not a hardware effect; Unit 1 would fail identically.
+  - Reviews A–E missed it, because no review compared the limits with the v2.7 connector's real mode
+    count. **Lesson:** audit every fixed limit against the target firmware's real values before a
+    run.
+- **PM context:** on Unit 2 the PM runs an Android-side workaround so Android finishes booting
+  despite the faulty IPD sensors ([removed for publication]). It is unrelated to the stage-3d image. Logged in the attempt log.
+- **PM decision:** fix first, then Unit 1, then Unit 2.
+- **Fix agent started:** fs-pattern v0.7.1 raises MAXMODES and audits every fixed limit against
+  v2.7. It adds a mock scenario with tonight's exact connector set, rebuilds a new candidate with a
+  fresh nonce, and re-points the host pins. A focused review follows.
+
+**J-142 · fs-pattern v0.7.1 merged; new Unit 1 candidate fcca5ee7 (nonce 13ed21be49c7b4ba) ready.**
+- **Fix** (`fix/stage3d-modes`, merged fdb2aae):
+  - **fs-pattern v0.7.1** (`bfafad97…`): MAXMODES 512. v2.7 builds 2 timing nodes × 169 rates =
+    338 modes and prunes 33 (vrefresh 17–49, matching Unit 2's 66 dmesg lines), leaving 305.
+    Mode records are logged up to index 48, plus the chosen mode.
+  - Every other fixed limit was audited against v2.7; none is exceeded.
+  - There is exactly one 4128x2208@90 mode (index 0, the stage-3c timing), and the reset and r2
+    use the same timing.
+  - **fs-probe.sh:** drops and counts the v2.7 mode-validation dmesg lines, so the real panel lines
+    stay within budget.
+  - Candidate 96cc15aa was superseded before any boot (withdrawn); 3d730337 is withdrawn (spent).
+- **Reviews:** device side GO (independent mode count 305; the v0.7 control build matches the real
+  failure record by record); image check (bytes, ramdisk, nonce placement, a real nonce-only
+  rebuild) OK; host side no BLOCKER.
+  - MAJOR (operations): the gitignored v0.7.1 binary was not on master. The Arbiter's first
+    test-builder run on master refused all builds; the binary was then rebuilt (`tools/build.sh`,
+    `bfafad97` verified), and WALKTHROUGH gained step 0-pre.
+  - MINORs open, for the next build:
+    - fs-probe's filter could also hide an fps-90 mode error (fs-pattern's commit result still
+      shows a failure);
+    - the meaning of opt_skipped in the docs;
+    - add the v2.7-shaped streams to test-host3d section E;
+    - stale "v0.7" labels.
+- **On master:** builder 32/32, including a bit-identical rebuild of fcca5ee7; test-host3d 95/0/0;
+  test-host3c -Regression 326/1 (CL15, the spent stage-3c practice nonce); preflight OK for
+  fcca5ee7; the withdrawn candidates are refused.
+- **Next:** the Unit 1 run with `build/stage3d/20261014T014738Z-13ed21be49c7b4ba`. Phase A must be
+  redone, because the host files changed. A new cycle directory: `captures/13ed21be49c7b4ba`.
+
+**J-143 · PM decision: a standing phase-A acceptance; sound check and rehearsals carry over.**
+- **Unit 1 cycle `captures/13ed21be49c7b4ba`:** pins 18/18; preflight OK; sound check passed;
+  rehearsals GO (garbled path 7.2 s; read path 9/9 items, 54.3 s spare); phase A PASSED.
+- **PM:** "I would like to make that the last Phase A I need to do moving forward. I know what it
+  says, and I agree to all." The PM also questioned repeating the sound check and rehearsals.
+- **To implement after the Unit 1 run** (host change, reviewed):
+  - phase A is accepted once and stays valid until its wording (D1–D14, the keys), the preview
+    pictures or the checklist itself change;
+  - the sound check and the rehearsals carry over until the session/collector tools change, or
+    there is a new day or a new speaker setup.
+  - The accepted text is recorded with its hash, so a change forces a new acceptance.
+
+**J-144 · STAGE 3D PASS on Unit 1 (v2.7): first correct image on v2.7, with the eye swap and the 21° roll corrected.**
+- **Run:** nonce `13ed21be49c7b4ba`, candidate fcca5ee7 (fs-pattern v0.7.1), attempt at 06:11:42Z.
+  - The reading first showed status 2 (topping up at 100 %); the Arbiter waited for status 3
+    (240) before phase B.
+- **Classifier: REGISTERED STAGE PASS.**
+  - P0 OK.
+  - **R1 RESET-DONE:** disable, dark re-enable on black, close; the PM saw nothing (NOT_SEEN).
+  - **R2 SHOWN-QUAD:** quad_vig with roll=21 and eyes=swap from an inactive CRTC; held; clean
+    close.
+  - **Optical PASS:** `F6CF7FDA` read correctly in each eye.
+  - Left eye: bars 1|2, F upright, level. Right eye: bars 3|4, F upright, level.
+  - **The swap holds [D]; the 21° roll holds in both eyes [PM report].**
+  - TE 176/s, BLU 176/s, topology `sde_quadpipe_dscmerge`, no dmesg flags.
+  - Run 3 was not requested.
+- **Two J-126 questions answered on v2.7:**
+  1. The three-step reset makes the first lit frame work under `fastboot boot`.
+  2. With `backlight_changes_blocked` left set, run 2 was bright enough to read clearly (BLU
+     176/s).
+  - The 95-module v66 set is enough for display and USB on v2.7.
+- **PM description (notes.txt):** both eyes correct, canted correctly and upright, everything
+  readable, a "clear pass". The two eyes did not overlap into a 3D image. This is expected: the
+  pattern is a flat picture centred per panel, with no IPD, no per-unit boresight (screen_offset.json)
+  and no stereo viewpoint. Convergence belongs to the rendering stage (E7, J-129).
+- **After:** AF and AA OK; AA temperature 270, then 310 at +3 and +4 min (< 400; follow-ups
+  continue).
+- **Evidence:** FS-A-012 (private review record) and `stage3d-7a22c3d2ff0fef44/`
+  (the Unit 2 refusal run): captures, observe/collect and image records.
+- **Next:**
+  1. Unit 2 with a nonce-only rebuild (WALKTHROUGH step 0-pre and step 0).
+  2. The J-143 carry-over change.
+  3. The open MINORs of J-142.
+  4. Fill FS-A-012 §5 with stage 3c and stage 3d.
+
+**J-145 · PM decision: charging allowed when the reading is below 30.0 °C (to implement with the J-143 carry-over).**
+- **Context:** the Unit 2 run waited for the battery to leave status 2 (charging at 97 %, reading
+  210). The PM noted the headset has ample power; the rule exists for heat, not charge.
+- **PM decision:** from the next run, a reading taken while charging (status 2) is accepted if it is
+  **below 300 (30.0 °C)**. Otherwise the rule is unchanged: status 3/4/5 below 350. The observer's
+  BA10 cross-check follows the same rule.
+- Implemented and reviewed together with J-143. Tonight's Unit 2 run still waits for status 3/4/5,
+  because the current tools enforce it.
+- **PM, the same evening:** the post-run temperature follow-ups on an installed Android boot can end
+  once the headset is back in Android at a normal temperature. Android's own thermal management and
+  the ambient air cool it (Unit 1: the PM ended them at 310, +4 min).
+
+**J-146 · STAGE 3D PASS on Unit 2 (v2.7): both Quest 3 units display correctly with the swap and roll corrections.**
+- **Run:** nonce `3581faf87b8706eb`, a nonce-only rebuild of fcca5ee7 (`46b28f01…`, checked by
+  fs-nonceonly3d and the preflight). Attempt at 06:51:27Z.
+  - The reading waited for status 3: 97 % charging, then full; reading 250.
+- **Classifier: REGISTERED STAGE PASS.**
+  - R1 RESET-DONE (NOT_SEEN).
+  - R2 SHOWN-QUAD quad_vig with roll=21 and eyes=swap; held; clean close.
+  - `0D63122A` read in both eyes; level and upright in both eyes; bars 1|2 and 3|4.
+  - TE/BLU 176/s; no dmesg flags.
+  - AA temperature 280.
+- **PM:** "Same as Unit 1, everything readable, both eyes correct, clear pass."
+- **Stage 3 (display) is complete on the Quest 3 for both units on v2.7.** Unit 2's sensor faults
+  did not affect the display path.
+- **Next:**
+  1. J-143 and J-145 host changes (standing phase A; sound check and rehearsal carry-over; charging
+     allowed below 30 °C), plus the J-142 MINORs.
+  2. FS-A-012 §5: the stage-3c and stage-3d results and the PM executive decisions.
+  3. The stage 3 (GPU) and stage 4 (SteamOS rootfs) plan, with the PM's decisions, including
+     whether an early console boot of the SteamOS userspace is realistic before the GPU.
+
+**J-147 · Three work items started, then paused overnight (PM shutting down the PC).**
+- **Started on the PM's go:**
+  1. Host carry-over, branch `feat/host-carryover` (J-143 standing phase A; sound check and
+     rehearsal carry-over; J-145 charging below 30 °C; J-142 host MINORs).
+  2. The FS-A-012 §5 draft (stage 3c and 3d results, the PM's executive decisions disclosed, Chair
+     requests). It stays a DRAFT until reviews pass.
+  3. The stage 3 (GPU) and stage 4 (SteamOS rootfs) plan → `docs/research/stage3-4-plan.md`.
+- **Paused:** all three were stopped before committing anything. The main checkout is clean on
+  master (4cf9fb9); the host clone may hold partial work in %TEMP%.
+- **Resume in the morning:** continue the same three agents, or restart them from these briefs.
+- No headset is needed for any of them.
+
+**J-148 · Work items resumed; stage 3/4 plan written; FS-A-012 §5 drafted, review NO-GO (fixing); PM decisions on the public push and ask (b).**
+- **Plan** (`docs/research/stage3-4-plan.md`, 7a6ad7d):
+  - Valve's userspace drives the GPU only through upstream drm/msm; its Turnip builds have no KGSL
+    backend [M-static].
+  - Recommended route: (a) Meta's KGSL plus our own Turnip build with its KGSL backend.
+  - The early console milestone is realistic, but needs our own kernel (DEVTMPFS, FHANDLE, BTRFS)
+    and a RAM-over-USB rootfs.
+  - Nine PM decisions (PD-1..PD-9). An adversarial review is running before they go to the PM.
+- **FS-A-012 §5** (84fbf66): the review was NO-GO.
+  - **B1:** both PASS runs' r1 records contain two kernel `WARNING drm_atomic_helper.c:229
+    set_best_encoder` traces and sde "invalid horizontal destination -7" lines from the reset.
+    Undisclosed, and not flaggable by fs-classify3d. Being source-checked.
+  - **B2:** the public repo went public (J-118) before the licence/source review FS-R-011 §8
+    requires; D6 and D7 were decided without the Chair.
+  - **M6:** the Arbiter pulled calibration contents 2.5 min after recording that this was a Chair
+    action class, with Unit 1 at 40–41 °C and no cooling advice. This is the Arbiter's error and is
+    disclosed as such.
+  - The fixes were sent to the drafter; a re-review follows.
+- **PM decisions:**
+  - **Public push:** one export after the three items, with the scope audit, the licence/source
+    review (B2) and an adversarial review. The PM sees a summary before anything is pushed. The
+    private repo has no remote.
+  - **Ask (b):** reframed as a standing concurrence for repeat runs of reviewed display-test
+    packages on both Quest 3 units at v2.7, under today's rules.
+- **Attempt logs** (a654ed8): Unit 1's +4 min reading (310) and the PM ending the follow-ups;
+  Unit 2 had no follow-ups (J-145).
+
+**J-149 · PM decisions on the stage 3/4 plan (stage3-4-plan.md rev 1, 7cffe0b); the 0.4.5 rootfs download approved.**
+- **Plan review:** GO-with-fixes; the fixes were applied.
+  - The BLOCKER was the missing boot-chain guard before Valve userspace; it is now milestone K1b.
+  - Route (a) needs a patched Turnip fork, possibly gamescope changes and a rebuilt display module.
+  - The (a)/(b) re-check moved to G2.
+- **PM decisions:**
+  - **PD-1:** route (a), Meta's KGSL plus our patched Turnip, now. The long-term goal is upstream
+    drm/msm, re-checked at G2. The PM asked first for the most stable long-term option and what is
+    feasible.
+  - **PD-2:** no route-(b) experiment unless (a) runs into trouble. The PM's priority is getting
+    the port to users sooner.
+  - **PD-4:** upstream Mesa only; do not ask Valve.
+  - **PD-12:** if Meta's display module needs changing, rebuild it from Meta's published GPL
+    source. Cleaner legally; still a Chair class.
+  - **PD-3:** the first SteamOS boot is loaded into RAM over USB (sized RAM disk, dm-verity),
+    with no storage writes.
+  - **PD-5:** our own kernel boots on Unit 2 first, by temporary `fastboot boot` only, with the
+    PM present.
+  - **PD-10:** the fs-blkguard guard is built and tested before any Valve software runs.
+  - **PD-11:** SteamOS 0.4.5 stable. The .raucb we hold is only a signed casync index, so **the PM
+    approved downloading 0.4.5's public rootfs chunks** from Valve's public update server (verified
+    against the signed index, seeded from 0.3.0, private and gitignored, never committed or
+    published). Fallback: 0.3.0.
+  - **PD-7:** the **full thermal/battery shutdown service first**, before the first GPU test and
+    the first SteamOS boot (not the bounded-hold interim).
+  - **PD-6:** add SysV IPC to our first kernel build now, rebuilding the affected modules.
+  - **PD-8:** **research first.** The PM: "as polished a product as we can possibly make, not
+    jerry-rigged together and patched to just make functional." A research agent is comparing our
+    gadget, Valve's gadget and a hybrid → `docs/research/usb-link-design.md`.
+  - **PD-9:** dedicated install (SteamOS takes userdata). Research a carved-out partition for a
+    later dual-boot; no sharing of Android's encryption keys.
+  - **PD-13** (the rootfs route for G3) is pending; it depends on the Chair's ruling on writing
+    userdata (C6).
+- **Agents running:** 0.4.5 rootfs assembly; USB-link research; delta review of the host
+  carry-over (6f2973f); FS-A-012 fix round 2 (adds J-149 as a disclosed PM decision).
+
+**J-150 · PM principle: a pure SteamOS image, with only the Meta side modified; PD-1 reopened for research.**
+- **PM:**
+  - the full thermal and battery service first fits the "ensure safety" aspect;
+  - Steam's SysV IPC should be included, because "I'd rather have as complete a Steam image/package
+    than not";
+  - **"If we can have a 100% pure SteamOS image, and just modify the Meta parts that hook into it,
+    that would be best."**
+  - On USB: leans toward SteamOS's own stack, for an experience "as close to 'native' as possible"
+    (passed to the PD-8 research).
+- **Conflict raised by the Arbiter:** PD-1 route (a) needs a patched Turnip (and possibly gamescope
+  patches) on the SteamOS side, so the image would not be pure. Route (b), upstream drm/msm in our
+  kernel, keeps Valve's graphics stack unchanged but costs more kernel work.
+- **PM:** relies on the Arbiter's research to pick the best long-term, most stable, most polished
+  and most feasible route. **PD-1 is reopened.** A deep-research agent is comparing (a), (b), (b2)
+  a newer kernel, (c) mainline, and a uAPI shim → `docs/research/gpu-route-decision.md`, with one
+  reasoned recommendation and a staged path.
+
+**J-151 · FS-A-012 fix round 2 done (3dc445f; still a DRAFT); PM decisions on its open points; USB research.**
+- **FS-A-012:** re-review findings applied; manifest 647 entries, all verify.
+- **PM decisions:**
+  1. The stage 3/4 plan decisions (J-149/J-150) go into **FS-A-013**; FS-A-012 only points to it.
+  2. Per-unit calibration values are **not** shown to the Chair; the bound only.
+  3. The D7 recovery-image exception is **kept as a fallback**: 0.4.5 stable is primary, and the
+     exact 0.3.0 recovery image is used only if 0.4.5 cannot be assembled. This goes to the Chair.
+- **PD-8 USB research** (`docs/research/usb-link-design.md`, 56edffa):
+  - Recommends Valve's own USB stack, as the PM leaned: for the product, Valve's stack plus minimal
+    Quest add-on config files (no Valve file edited).
+  - For development: a hybrid, with our ramdisk console handing the port to Valve's gadget and
+    Developer Mode on.
+  - Quest-forced changes: our own USB identity (never Valve's), a per-unit MAC seed, the f_fs
+    `ready` attribute missing in 5.10.
+  - An adversarial review is running before PD-8a–d go to the PM.
+- **test-host3d on master:** G6/K3 fail only because nonce 13ed21be49c7b4ba is spent. Fixed on
+  feat/host-carryover, pending its delta review.
+
+**J-152 · USB research reviewed (GO-with-fixes); a reviewer broke the no-disassembly rule.**
+- **Review of `usb-link-design.md`:** the end state holds: Valve's stack plus minimal Quest
+  add-ons, never Valve's USB ID, no MTP in v1. Five MAJORs are being fixed:
+  1. With Developer Mode off, usb-gadget.service fails at every boot, because 5.10 lacks f_fs
+     `ready` and the adbd-pre/post units are not gated; a mandatory wait drop-in fixes it.
+  2. The Developer Mode preset is not Valve's exact state; run Valve's own helper instead.
+  3. There is no console after switch_root; add a dev fallback and stage PD-8a.
+  4. Role switching was forced by our own init; Meta's ucsi skips eMarked cables. Needs hardware
+     tests.
+  5. Every Quest would enumerate as serial "frame"; a per-unit serial is needed. pid.codes needs an
+     open-source licence; ask Valve for a PID as an option.
+- **Rule breach:** the reviewer cited a **disassembly of Valve's adbd binary** (offsets) for one
+  finding. The project rule is no disassembly of Valve binaries (PROJECT_SETUP §0.0, after J-90; J-120: behaviour is learned from public interfaces and runtime observation only). Earlier private disassembly (e.g. ABL, ld.so) predates the rule and was kept out of the public record. That evidence is
+  **not used**: the point is restated as [O] for a hardware test. The disassembly output is not
+  kept in the repo. Review and research briefs will state the rule explicitly from now on.
+
+
+**J-153 · PM decisions PD-8a–d (USB link), on usb-link-design.md rev 1 (756baf1).**
+- **PD-8a (developer images):** staged.
+  - Stage A: our own console link, with Valve's usb-gadget.target masked on the command line.
+  - Stage B: Valve's link with our console as an automatic fallback, only after hardware tests
+    U1–U6 pass.
+- **PD-8b (product):** Valve's stack as on the Frame, plus small separate Quest drop-ins (the
+  mandatory ffs wait, identity, per-unit serial and MAC seed). No Valve file is edited.
+- **PD-8c (identity):** the generic Linux ID (1d6b:0104) in development. For the product, an ID
+  in Valve's range (ask Valve in the held letter) or pid.codes, which needs a public open-source
+  licence first. Always a per-unit serial; never Valve's Frame ID.
+- **PD-8d:** no MTP in v1.
+
+
+**J-154 · GPU route decided: a Frame-compatible `msm` device (e′); 0.4.5 rootfs assembled; host carry-over merged.**
+- **GPU research** (`docs/research/gpu-route-decision.md`, rev 1, 61d653c; adversarial review
+  GO-with-fixes):
+  - Valve's Turnip needs a DRM device named `msm` (version ≥ 1.6) with the display on the same
+    device. On the Frame, vrcompositor drives the panels through Turnip's KHR_display.
+  - (e′): rebuild Meta's GPL `msm_drm.ko` and `msm_kgsl.ko` so that together they register ONE
+    `msm` device. It carries the SDE display, the drm/msm GPU uAPI on KGSL, syncobj, and a
+    kernel-side split of one wide plane into four pipes.
+  - SteamOS runs unchanged. Two Frame-specific Valve scripts get Quest-side drop-ins.
+  - Review corrections: the effort is **about 21–38 pw to Frame parity** (not 12–22). Five traps
+    are now planned work items:
+    - syncobj eventfd missing in 5.10;
+    - the KGSL protect table vs perf counters;
+    - per-fd VA windows;
+    - VM_BIND/sparse for vkd3d FL 12_0;
+    - a real KGSL refactor.
+  - The alternatives (a), (b), (b2), (c) and virtio native context were confirmed as worse.
+- **PM decisions:**
+  - **PD-1 = (e′).** Fallback: (b), studied only if an early checkpoint fails (PD-2). Long-term
+    horizon: (c).
+  - **PD-12 widened:** rebuild both Meta modules from GPL source and publish the changes; a Chair
+    class.
+  - **G1** (upstream Turnip-KGSL offscreen) is kept as an internal test tool only, never shipped.
+  - **M1 = (i):** back-port the syncobj eventfd ioctl into vmlinux (a Chair class); the shim
+    attaches dma_resv fences either way.
+  - **Effort accepted, no route-(a) stop-gap.**
+- **0.4.5 rootfs** (d2c725c, `ROOTFS-ASSEMBLY.md`):
+  - Assembled from Valve's public chunk store (`steamdeck-images.steamos.cloud/vr/…castr`, derived
+    from the Frame's own RAUC and desync config; client.conf not opened).
+  - 55,892 chunks downloaded (3.31 GiB), each verified; seeded from 0.3.0.
+  - **sha256 `692b998b…bcc3c` equals the signed manifest.** btrfs, `check --check-data-csum`
+    clean.
+  - Kept gitignored. The ROOTFS-ASSEMBLY note itself is not yet reviewed.
+- **Host carry-over merged** (829da45; final delta review GO).
+  - 19 SIGNOFF-3d pins verified on master.
+  - Three new MINORs left for a follow-up: the replay .idx is not named; the replay is hashed by
+    path, not by the bytes replayed; the WALKTHROUGH last-line wording; plus an untested observer
+    branch.
+
+
+**J-155 · PM principle: maximise our own original code, minimise Meta's, and be legally disentangled; a provenance and licence policy task.**
+- **PM:** "I would love to use as little of Meta's code, and use as much of our own original as
+  possible."
+- **Arbiter's answer** (not legal advice; a legal review before any public release):
+  - Originality is about expression, so modified or paraphrased Meta code stays derivative;
+    clean-room code from specs and public interfaces is ours.
+  - Meta's GPL kernel modules may be modified and redistributed under the GPL, with source
+    published; that is an obligation, not an entanglement.
+  - The real exposure is Meta's non-GPL firmware and proprietary parts. Never redistribute them;
+    read them from the user's device at install time. SteamOS comes from Valve's servers.
+  - Trademarks, device ToS and patents go to the legal review (this ties in with the FS-R-011 §8
+    licence/source review).
+- **Direction:** route (e′) modifies Meta's GPL modules now (legal, but Meta-derived). The
+  mainline horizon (c) replaces Meta's drivers with community upstream code: the main step away
+  from Meta.
+- **New task:** a written provenance and licence policy plus a per-file provenance record, also
+  covering the open licence review, before the next public export.
+
+
+**J-156 · PM: a bridge architecture; trademark boilerplate; 0.4.5 copied beside 0.3.0; FS-A-013 soon.**
+- **Bridge architecture (PM):** we never alter Meta's or Valve's firmware or images; we architect
+  the bridges between them.
+  - That already holds for firmware blobs and Valve's SteamOS (unchanged).
+  - For route (e′) the target is now: our **own** bridge kernel module (original code, GPL-2.0 as
+    kernel code) implementing the Frame-compatible `msm` device, plus **minimal hook patches** to
+    Meta's GPL msm_drm/kgsl source (the KGSL entry-point refactor, protect-table alignment, SDE
+    plane fan-out hooks).
+  - The patch-series size is a tracked metric. This is passed to the FS-A-013 draft and the
+    provenance policy.
+- **Trademarks (PM):** a standard notice ("Meta and Quest are trademarks of Meta Platforms, Inc.;
+  Valve, Steam, SteamOS and Steam Frame are trademarks of Valve Corporation; … not affiliated or
+  endorsed"), with nominative use only. Still on the lawyer's list.
+- **0.4.5:** the PM asked for a copy beside 0.3.0. It is being copied to
+  `firmware/SteamOS/steamos-0.4.5-stable/` (local, gitignored), verified with SHA256SUMS.
+- **PM:** FS-A-013 should reach the Chair soon; tell the PM when relays are ready.
+
+
+**J-157 · FS-A-012 final review GO-with-fixes; FS-A-013 drafted (91461e3); provenance policy (0531bfa); PM decisions on K1, G1 firmware, ask (b) and licences.**
+- **FS-A-012 final review:** GO-with-fixes, with 8 MAJORs:
+  - the core_clk values give no [M] support for the skipped down-vote;
+  - step B commits the 2 × 2064 split;
+  - the ask (b) scope;
+  - the tool set ask (b) covers;
+  - stale 0.4.5 status;
+  - the D7 exception pin;
+  - "stable" rests on unsigned metadata [C];
+  - the DESIGN line cites.
+  Fixes were sent to the drafter.
+- **0.4.5 copy:** `firmware/SteamOS/steamos-0.4.5-stable/`, verified (SHA256SUMS OK; .raucb e3d14c21…).
+- **FS-A-013 draft:** includes the J-156 bridge design. Relays go in order, so it is finalised after
+  FS-R-012.
+- **Provenance policy and record:**
+  - 2,574 files, 62 flagged.
+  - **Problems:**
+    - the exporter would publish FS-A-009 (private review record), including raw devinfo/misc
+      partition images;
+    - verbatim Valve listings and manifest in steamos-stable-0.4-metadata/;
+    - attempt logs outside the public scope.
+  - Fixes were sent to the policy agent: <private export tooling> exclusions on a deny-by-default basis, and a
+    scope scan. Nothing is pushed.
+- **PM decisions:**
+  - **K1 split:** K1a (CRC-neutral options, stock vendor modules), then SysV IPC with the rebuilt
+    module set.
+  - **G1 firmware:** staged from the matching v2.7 OTA in a private, never-distributed test image;
+    the product reads firmware from the user's headset.
+  - **Ask (b) narrow:** repeat runs of the stage-3d package only, but it **includes the
+    post-829da45 tool set** (J-143/J-145).
+  - **Licences:** Apache-2.0 for tools, scripts and services; GPL-2.0-only for kernel patches and
+    our kernel modules; CC-BY-4.0 for docs. Licence differences were explained to the PM first.
+
+
+**J-158 · FS-A-013 review GO-with-fixes; PM decisions: K1 order, ADSP firmware staging, full checklist rule.**
+- **FS-A-013 review:** GO-with-fixes (0 BLOCKER, 11 MAJOR, 16 MINOR). The main fixes:
+  - attribution of the K1 details;
+  - a C5/C4 cycle (KGSL load vs the thermal service);
+  - the ADSP firmware source;
+  - named unit, udev and polkit masks;
+  - the module-signing vs modules_disabled latch;
+  - bounding R-1 after switch_root;
+  - the full checklist rule;
+  - Turnip's environment for G1c/G2;
+  - G3's write boundary;
+  - set_active being a boot-chain slot switch;
+  - "CRC-neutral" as expected [D].
+  The fixes were sent to the drafter.
+- **PM decisions:**
+  - **K1 order:** K1a (stock modules, no USER_NS/PID_NS), then K1g (prove fs-blkguard), then K1i
+    (SysV IPC plus the rebuilt modules). Proposed by the Arbiter, confirmed by the PM.
+  - **ADSP firmware** for the thermal/battery service in test images: staged from the matching
+    v2.7 OTA (hash-checked, private, never distributed); the product reads it from the user's
+    headset.
+  - **The full v2.7 DEVICE_PORT_CHECKLIST** before T6, any extended R-1 and G3; no narrowing.
+
+
+**J-159 · FS-A-012 READY TO SEND; tracking/input research done.**
+- **FS-A-012:** three review rounds plus the final verification; the PM confirmed §5.6's
+  description of their decisions and the ask (g) proposal in chat.
+  - The final relay FS-A-012 (private review record) (sha256 `48a9510d…048d`) is sent beside the bundles:
+    - `FS-A-012-raw.zip` (`6700e284…e8ea`);
+    - `FS-A-012-package.zip` (`2a8cd98d…f9ed`);
+    - `FS-A-012-image.zip` (`91eba83b…8d2d`).
+  - Built by FS-A-012 (private review record) from 353c0ad; deterministic; re-hashed after
+    unzip; raw manifest 647/647. The bundled E: inventory is limited to our two units' rows.
+  - Fixes made in the final file only: the post_plane seq; the ask (b) action-class list completed;
+    a §5.8 row; the item 15 note.
+- **Tracking/input research** (`docs/research/tracking-input-route.md`, 6256d02; not yet reviewed):
+  - It recommends an open-source bridge: our own sensor daemon plus a FrameShift OpenVR driver,
+    Basalt 6DoF via Monado, constellation tracking for Touch, Mercury for hands. SteamOS and
+    SteamVR stay unchanged, using Valve's Oculus Touch input profiles.
+  - Valve's own tracker is tied to Frame hardware (its DSP program, FPGA and CAMSS).
+  - The biggest unknown is the cameras: Qualcomm's Spectra stack, with a TrustZone-owned power
+    GPIO.
+  - Effort: 20–45 pw to 6DoF, 60–140 pw for the full set; 3DoF early (3–6 pw).
+  - Ten PM decisions (D-T1..D-T10) follow after the adversarial review.
+
+
+**J-160 · PM direction on tracking: try Valve's tracker plus Meta's components; any Touch generation must track accurately; polished and legally clean.**
+- **PM:** use Valve's own SteamOS tracking, porting what is needed from Meta/Horizon OS so that
+  Oculus Touch, Meta Touch and Touch Plus all track accurately and consistently. A working method
+  may extend to other controllers later. Open-source or our own is even better if comparable; it
+  must be polished and legally clean.
+- **The Arbiter's assessment** (to be checked by the running review):
+  - Valve's tracker is tied to Frame hardware (DSP program, FPGA, controller models). Reusing it
+    without Valve's interface or cooperation would need reverse engineering, which our rules
+    exclude. → Add "a tracking interface or documentation" to the held letter to Valve.
+  - Meta's stack is proprietary and not redistributable, and running it outside Horizon may breach
+    Meta's terms (lawyer). Its cleanest form is running it **unchanged from the user's own headset**
+    (e.g. an Android container, files never shipped).
+  - Proposal: **one controller-tracking framework with swappable providers.** Default open/own
+    (legally clean, extensible to other controllers); an optional Meta provider only with legal
+    clearance; a future Valve provider if Valve cooperates. **Per-controller accuracy targets**
+    define "supported".
+  - The review was extended to evaluate this; the doc is revised after it; the decisions then go to
+    the PM.
+- **FS-A-012:** the PM will send the four files after work.
+
+
+**J-161 · FS-A-013 round 3 (GO-with-fixes; PM: the G1 split); tracking review GO-with-fixes; export review NO-GO; open-source tracking survey started.**
+- **FS-A-013 re-review:** GO-with-fixes (4 MAJOR, 18 MINOR).
+  - 0.4.5 unit and writer placements are identical to the 0.3.0 inventory; no new writer.
+  - 0.4.5 ships a newer Mesa/Turnip (abc426bb), gamescope and SteamVR, so the GPU-route evidence
+    (0.3.0) must be re-pinned.
+  - **PM decision:** **G1 is split**: (i) a short baseline with the GPU at its lowest level; (ii) a
+    short throttle check, never above Meta's NORMAL cap, with fs-thermald live and the PM present.
+  - The fixes were sent to the drafter. The reviewer's 9.4 GB WSL extraction of Valve content was
+    deleted.
+- **Tracking review:** GO-with-fixes (12 MAJOR). The open bridge stands, but:
+  - the SyncBoss allow-list must go by (type, sub-type, bounds) and be enforced in a GPL kernel
+    hook;
+  - deny the SyncBoss firmware-update path;
+  - "read-only probe" was wrong;
+  - camera leads via SyncBoss/CCI;
+  - IR duty bounds;
+  - never mount /persist;
+  - Touch Plus first on Q3 (ring Touch reportedly doesn't pair with Q3);
+  - a two-layer provider design (pose API plus sensor arbitration);
+  - D-T11 "polished" targets;
+  - polished Touch Plus at 40–90 pw, may not converge.
+  - The PM's J-160 route was answered: Valve's tracker needs Valve; Meta's stack in a container is
+    plausible but heavy and needs a lawyer. The fixes were sent to the author.
+- **Export review: NO-GO.**
+  - The exporter refused.
+  - FS-A-012.md would have been exported.
+  - Unit 1's serial appears in lowercase.
+  - Merge-conflict markers are not refused; one file would be written empty.
+  - [removed for publication]
+  - "v66 (Unit 1)" leaks; licence text is missing.
+  - Fixes were sent to the policy agent. **Nothing is published.**
+- **PM:** spend time investigating the best tracking/controller path; **an open-source survey agent
+  was started** (`docs/research/oss-tracking-survey.md`).
+
+
+**J-162 · PM tracking decisions; survey reviewed and fixed (44588e8); export fixed (CC-BY text pending the PM); prompt-injection reporting rule.**
+- **OSS survey:** review GO-with-fixes; the fixes are in rev 1, 44588e8.
+  - Valve's tracker is a Basalt-derived estimator inside a proprietary SLAM/relocalisation layer,
+    so an open map layer is a gap.
+  - Licence traps: Basalt's apriltag (ship the shared library only); OKVIS2's DBoW2 notice and CNN.
+  - CPU budget: 4.7–9.1 of 6 cores at a sustained 1.92 GHz; an ARM replay is required.
+  - Touch Plus quality is unknown.
+- **PM decisions and questions:**
+  - **No Meta provider:** Meta will not clear its models or software.
+  - **Ring Touch must work on Quest 3.** FXR reportedly ported Meta binaries;
+    we build our own clean implementation, with their work as pointers only.
+  - **Steam Frame controllers via Valve's tracker:** needs Valve's cooperation (held letter).
+  - **Basalt is the lead:** our own improved fork plus an open map layer. (Valve's derivative is
+    not "open by default": BSD-3 allows proprietary derivatives.)
+  - **One hand-tracking model for all Quests' cameras.**
+  - **Polish over effort:** agents compress research and coding, but quality is bounded by hardware
+    iterations and data.
+  - Asked: are cameras usable if detected as peripherals? How does Quest track, and does it
+    offload? Both go to the doc revision (rev 2).
+- **Export:** all review items were fixed (0099761, 69d9ea1, 6808f1f, 80a0824). The trial export
+  is clean (2,495 files; 0 serials, names, conflict markers or captures). The only remaining block
+  is the CC-BY-4.0 text download, which awaits the PM. Ten conflicting files were resolved to the
+  public side; their dropped private changes need review before the push.
+- **PM rule:** always tell the PM about AI-directed or suspicious prompt text found by agents
+  (memory saved). The case so far: Basalt GitLab issue #117 asked AI assistants to read repo files
+  and create branches/MRs with glab; ignored.
+
+
+**J-163 · Valve letter draft 4; the translation-layer question; PM: Horizon parity as the tracking pass mark.**
+- **Valve letter draft 4** (b5d8946, still held, excluded from export). New asks:
+  - 6: a USB PID in Valve's range, or Valve's preference (PD-8c);
+  - 7: a documented interface to feed another headset's camera and IMU streams (with calibration)
+    into SteamOS tracking, which would also enable Steam Frame controllers on a Quest (J-160/J-162);
+  - 5 (extended): how Valve wants its trademarks referred to (J-156).
+  - Not asked: Valve's Mesa tree (PD-4).
+- **PM question:** a translation layer feeding Quest camera and IMU streams into Valve's tracker.
+  Our capture and conversion side is clean. The handoff into Valve's tracker is undocumented:
+  emulating the Frame's sensors (FPGA/CAMSS cameras, IMU from Valve's ADSP firmware) would need
+  reverse engineering, which is against the rules, fragile across updates and legally grey. It is
+  clean only with Valve's interface (ask 7). Touch tracking is ours in any case.
+- **PM direction:** our own model, built to Meta's measurements. **Horizon parity is the pass
+  mark**, measured black-box on the same unit; D-T11's numbers stay as floors. Adopt Meta's safety
+  limits and hardware operating points as values from GPL source and the DT (J-123), never weights,
+  code or config contents. Use SteamVR's Chaperone natively, matching Guardian's behaviour by
+  measurement. Models are trained from scratch on clean data. Passed to the tracking doc (rev 2).
+
+
+**J-164 · Tracking rev 2 (bfe8cb9); PM: offload tracking to a dedicated process.**
+- **Rev 2:**
+  - Ring Touch on Q3 via our own pairing (nRF52833 with the same GPL driver; the `jedi`/`ruby`
+    firmware archives may include ring support [O]); stop at checkpoint C-R if pairing crypto or
+    firmware blocks it.
+  - Cameras declared in the DT are not powered (TrustZone sensorlock).
+  - Offload: CPU + GPU first; DSP via unsigned PD is open; NPU and EVA excluded.
+  - Effort: 134–289 agent pw plus 89–200 hardware sessions (+25 %), about 1–2 years of hardware
+    calendar for the full set; 6DoF head is much sooner.
+  - D-T1..D-T16.
+  - J-163 (Horizon parity, Meta limits as values, Chaperone) arrived after rev 2 and is being
+    applied as rev 2.1.
+- **PM:** "offload the tracking to a dedicated process for efficiency."
+  - **Software:** fs-trackd as a dedicated, isolated service with reserved cores, real-time
+    priority, fixed thread budgets, lock-free IPC, and supervision by fs-thermald with a
+    degradation order.
+  - **Hardware:** the Hexagon DSP feasibility (unsigned PD, open toolchain) becomes an EARLY
+    checkpoint before T2b. GPU compute is second; NPU and EVA stay excluded.
+  - Added to rev 2.1.
+
+
+**J-165 · Tracking rev 2.1 complete (eb4862b, 0984c42); PM priority: each device's own Meta controllers first.**
+- **Rev 2.1:**
+  - J-163: Horizon parity is the pass mark; Meta limits are taken as values (140 mA flood LEDs,
+    safety timer ≤1280 ms, SyncBoss 8 MHz/150 µs); strobe duty, frame rates and the IMU rate are to
+    be measured.
+  - J-164: fs-trackd on 2 reserved cores, RT below SyncBoss's 51; degradation order hands →
+    controller rate → head floor.
+  - The CPU split is unmeasured. Without the DSP, head plus controllers fit and hands don't (mode
+    switching or GPU).
+  - DSP check C-DSP becomes stage T2d (unsigned PD on the CDSP; firmware and SDK licence open);
+    it needs one PM-signed trial.
+  - D-T1..D-T18.
+- **PM:** "focus on getting the Meta controllers to work first, then we can worry about Frame/other
+  controllers. Most likely, users will own the Quest 3 and controllers, or a Quest 2 and
+  controllers."
+  - Order on Q3: 3DoF head → 6DoF head → Touch Plus (inputs, then 6DoF) → hands → ring Touch on Q3
+    → Frame/others.
+  - On the Q2 port, its bundled ring Touch comes right after head tracking.
+  - Reusing the Horizon pairing for bundled controllers fits this priority.
+  - Still open for the PM: D-T3 (calibration source) and D-T16 (ground truth).
+
+
+**J-166 · PM decisions: calibration export, no Lighthouse, Meta limits as default, no reliance on Valve, user-initiated updates, timing targets; CC-BY text downloaded.**
+- **PM:**
+  - head tracking in stages: agreed;
+  - **D-T3 = export under Horizon plus self-calibration fallback** (never mount /persist);
+  - **no Lighthouse**, so D-T16 needs another reference (the Arbiter recommends a printed-marker rig
+    with a phone camera; pending);
+  - Meta's safety limits and measurements are the benchmark. Exceeding one is an explicit,
+    per-case PM decision, like overclocking. The Arbiter added that eye-safety (IR) limits are
+    never exceeded.
+- **PM questions:**
+  - Does Meta dedicate 2 cores to tracking? Unknown; the 2-core figure was a planning guess. **PM:
+    do not dedicate cores unless Meta does.** To be measured in an observation session on stock
+    Horizon, which the PM offered.
+  - How does Meta switch between controllers and hands? Public facts: the IMU going still or the
+    controllers leaving view switches to hands; multimodal exists; Touch Plus is aided by hand
+    tracking. Details to be measured.
+- **PM:** plan as if **Valve does not respond or declines the letter's asks** (not the project);
+  do not bank on Valve.
+- **Updates (PM):** the user downloads SteamOS updates *through* FrameShift's on-device updater,
+  which verifies Valve's signature and installs the applicable parts into the inactive slot.
+  Arbiter: keep it user-initiated; Valve's server terms for third-party clients go on the lawyer's
+  list.
+- **Timing (PM):** something showable in 1–2 days; an image shippable to a few FXR testers in
+  about 2 weeks.
+  - The PM notes that Claude's sense of time is unreliable (memory saved). Plans are now made in
+    PM sessions, review rounds and Chair turnarounds.
+  - Arbiter proposal: (1) a branded per-eye splash demo built from the stage-3d stack; (2) a
+    "FrameShift Preview" temporary-boot tester image (writes nothing; splash plus live
+    diagnostics; Q3 v2.7), with a Chair request added to FS-A-013.
+  - Both are being built offline; their runs need the PM.
+- **CC-BY-4.0 text** downloaded with the PM's approval (3fa006b): the export's last blocker.
+
+
+**J-167 · PM answers: no tester preview (wait for SteamOS); no external tracking reference (research community ports); Perfetto approved; no splash demo now; old relays withdrawn from public.**
+- **Testers:** wait for SteamOS; no interim preview image.
+- **D-T16:** no Lighthouse or mocap ("ridiculous"). The PM reports that others got 3DoF and 6DoF in
+  their SteamOS ports. A research agent is scouring the public Quest ports
+  (`docs/research/quest-ports-tracking.md`) and designing validation without external hardware.
+- **Observation session on stock Horizon:** approved, including short Perfetto traces (trace files
+  copied off, then deleted on the device). The session plan comes when the PM is home with a unit.
+- **Splash:** SteamOS's own splash does not appear on a Quest (Frame U-Boot logos and Valve's
+  lens-aware console are not run). The Arbiter proposed Meta logo → FrameShift → Steam logo,
+  with Valve's logo read at runtime from the user's own image, never shipped. **PM: not now** (no
+  demo). The idea is kept for the product splash.
+- **Export review 2:** NO-GO on small items (wording and a redaction-order bug). Hand merges for README, JOURNAL and RECOVERY. Fixes are in progress.
+- **PM: withdraw all relays from the public copy**, including the 44 already public. They remain in
+  public git history (2158d06) unless it is rewritten; that is a separate PM decision.
+
+
+**J-168 · PM: our own FrameShift splash (no Steam logo); next milestone, the SteamOS desktop; milestones not time; the bridge diagram.**
+- **Splash:** our own FrameShift logo only; never Valve's. Artwork spec given to the PM: one
+  square PNG of about 1024×1024, black or transparent background, logo centred, bold shapes; an
+  optional PNG sequence for animation. It is placed per eye with the proven rotation and swap.
+- **Milestone (PM):** boot to the SteamOS desktop or virtual environment and show SteamOS
+  working, "as others have done". It needs the GPU, because Valve's image has no software GL. A
+  research agent is surveying how community ports booted SteamOS (kernel, display, GPU,
+  image changes) → `docs/research/steamos-ports-survey.md`. It also asks for the fastest SAFE path.
+- **Planning (PM):** checkpoints and milestones only; time is irrelevant. The PM rejects
+  "years": others booted SteamOS within weeks.
+  - Arbiter: the multi-year figure applied only to full Horizon-parity tracking (head, both
+    controller families, hands), never to booting SteamOS. Others used shortcuts we decline
+    (unsupported shortcuts, modified images, no safety layer). Our safety gates add milestones, not
+    years.
+- **The PM's diagram:** Meta hardware (Quest) ⟷ FrameShift FOSS ⟷ Valve firmware (SteamOS). It
+  matches the architecture: Meta firmware read from the user's device; our kernel from GPL source,
+  the GPU bridge, safety, tracking, USB and display in FrameShift; SteamOS unmodified.
+
+- **Relays in public history (PM):** "It's fine if the past relays are in the history. Just make
+  sure they are removed from the public repo moving forward." No history rewrite; the next export
+  deletes them and keeps them withheld.
+
+
+**J-169 · Splash format: Meta's boot animation is a live 3D GLB; ours is designed once in GLB, pre-rendered for early boot, live 3D later.**
+- **Read-only, names only**, from the v2.7 `system_ext` image we hold (WSL ~/work/geom-x, debugfs
+  -c): `/system_ext/etc/bootanim/` holds `meta-horizonos.glb`, `meta-animation-config.json`,
+  `meta-colors.png` and `meta.bin`. No contents were opened. Horizon renders its boot logo live in
+  3D, in stereo, on the GPU [D].
+- **Plan:**
+  - The PM designs the FrameShift logo as a GLB (glTF binary, an open Khronos standard).
+  - **Early boot (pre-GPU):** our KMS splash plays a pre-rendered PNG sequence per eye, with the
+    proven rotation and swap.
+  - **After the GPU route works:** live stereo 3D using our own renderer and an open glTF loader
+    (e.g. cgltf, MIT; licence-check). Never Meta's files or program.
+  - A GIF is also acceptable (converted to frames).
+  - Guidance: low-poly, simple materials, a 2–4 s loop, dark/transparent background, no
+    edge detail.
+
+
+**J-170 · The bootloader logo stays Meta's; community tracking ports surveyed (dbeda68); PM: pass = Horizon parity.**
+- **Bootloader logo (PM question):** drawn by Meta's ABL (the splash partition is empty), so it is
+  part of the boot chain: never modified (FS-R-001). It includes the unlocked-state warning screen.
+  The FrameShift splash starts when our kernel takes over the display.
+- **Community tracking ports** (`docs/research/quest-ports-tracking.md`, not yet reviewed):
+  - Only one live 6DoF attempt: cstahly/quest1-bootloader-to-VR (MIT), Basalt via Monado on
+    Quest 1. Its owner rejected it (lost lock on fast motion, lag, low light).
+  - Elsewhere 3DoF only (Quest1-SteamOS: no licence; Block-Flock: no licence; quest-kexec-q2:
+    GPL-2.0 / BSL). YusufOzmen01's "6DoF" is Meta's own tracker in a second Android.
+  - Reusable: the Basalt epipolar bug fix (`optical_flow.h:210`), 2 BSD-3 patches, MIT scripts, the
+    quality-gate design, the Q2 Monado driver structure, QuestSLAM (MIT) for logging Horizon
+    poses.
+  - Validation without external hardware is ranked (fixture stations, Horizon pose logs, printed
+    boards, self-consistency, yaw steps, slow-motion latency). It replaces D-T16.
+  - AI-directed text: cstahly's docs carry handoff notes to its author's own agents (asking
+    nothing of us); Quest1-SteamOS's README states it was written by Claude. Both were reported to
+    the PM and ignored. Reddit and the Nura wiki were not readable; FXR was not searched.
+- **PM decision (D-T11):** PASS = matching Horizon measured on the same unit; the fixed numbers
+  stay as goals to beat. Published Quest 3 numbers (Duke 2024) put Horizon around 1 cm typically
+  and over 10 cm in hard scenes [C].
+
+
+**J-171 · Fan fix approved, with on-screen fault feedback requested; SteamOS-ports survey (a95e822); observation plan (706b0f2); logo-transition idea; external-source reading offer.**
+- **K-15/K-16 fan fix: APPROVED** by the PM, after explanation. **PM request:** visual feedback
+  telling the user which sensor or component is faulty before the headset shuts down. This goes
+  into thermal part 2 (design below).
+- **Thermal part 1** (feat/thermal-service, 19a1c61): suites pass; adversarial review running.
+  - **PM decisions:** J-145 mid-run (the battery reaching 30 °C while charging) = **warn only**,
+    with the normal tiers deciding any shutdown; **PMIC die-temperature channels are required
+    before READY** (identified at T0).
+- **SteamOS-ports survey** (`docs/research/steamos-ports-survey.md`):
+  - Nobody has booted SteamOS on a Quest 3, and nobody booted Valve's Frame image unchanged on any
+    Quest.
+  - Quest 2 (quest-kexec-q2, GPL-2.0): a chroot rootfs with Steam, a patched gamescope, its own
+    Turnip-on-KGSL plus Zink (the route-(a) style); Steam UI in both eyes plus 3DoF; CPU caps only.
+  - Quest 1 (Quest1-SteamOS, no licence): Valve's generic Holo rootfs, Meta's GPU blob via
+    libhybris, Big Picture and Aurora at about 40 fps.
+  - No community GPU approach is faster than (e′) for a pure desktop.
+  - On the Frame, the Steam UI and Plasma run inside SteamVR, so a viewable desktop needs
+    vrcompositor plus our HMD driver.
+  - Fastest safe path: K1a → K1g → full fs-thermald → K1i → **R-1 "SteamOS boots"** (Valve's
+    systemd, unmodified 0.4.5 in RAM, no GPU) → G1 → G1c → G2 → PD-13 → **V0 "desktop in headset"
+    (fixed pose, proposal)** → V1 3DoF.
+  - **AI-directed text (reported to the PM):** gitlab HttpAnimations/neoframe has files addressed to AI agents (AGENTS.md, CLAUDE.md); not followed. autune1/steam-frame-tinkering has a CLAUDE.md that was not
+    opened.
+- **Observation plan** (the observation plan (private)): 15 PM steps, seven 30 s
+  Perfetto scenarios, about 35–45 min; atrace excluded (it would setprop); never opens /dev
+  nodes; an adversarial review is running. PM decisions are pending (trace files local only;
+  trace_processor download; the S6 app).
+- **Bootloader logo (PM clarification):** the PM wanted its format and size, to match them. It is
+  embedded in Meta's ABL (not a file), so it is not extracted; we measure its on-screen size and
+  position instead.
+  - The PM would like an animation from the Meta symbol into the FrameShift logo. **Trademark
+    concern:** J-156 says no logos; the Arbiter recommends starting from a neutral shape or glow
+    at the same size and position (pending the PM).
+  - The PM cannot author GLB; the Arbiter's agents can build the animation from the PM's 2D
+    artwork.
+- **External sources:** the PM offered to read Reddit, the Nura wiki and YouTube via ChatGPT or
+  screen captures; the URLs and a prompt were given.
+
+
+**J-172 · PM: splash later, R-1 "SteamOS boots" as the first big milestone, trace_processor approved; the milestone table revised; reviews of thermal part 1 and the observation plan; export trial clean.**
+- **PM:**
+  - splash transition: "not worry about this for now", to be revisited;
+  - **R-1 "SteamOS boots"** confirmed as the first big showable milestone, then the GPU stages,
+    then V0 "desktop in headset";
+  - **Perfetto trace_processor download approved** (official release, gitignored tools/perfetto/);
+  - trace files stay local, with their hashes in the repo.
+- **Milestone table:** PROJECT_SETUP §3 rewritten (e40cf01) as M1 ✅, M2 ✅, K1a ▶, K1g, TS, K1i,
+  R-1, G1, G1c/S0, G2, G3/G3s, V0, V1–V5, P1, with pass conditions. the private game plan §3 marked superseded.
+- **Thermal part 1 review:** GO-with-fixes.
+  - MAJOR-1: fan checks starved by oscillating demand; unbounded rpm_per_sec.
+  - MAJOR-2: one missing fan zone disables all fan control.
+  - MINORs: int32 overflow (confirmed with UBSan), frozen-value rule, ddr zone, cap read-back,
+    policies.
+  - Verified: K-15/K-16, read-only fs-metacfg (seccomp), the 2 s budget, fuzzing, real images.
+  - The fixes were sent.
+  - Arbiter decisions on §8: Quest 2 READY = headless idle with min caps; F4 redefined against DT
+    max-rpm at T3a (the PM keeps it); O20 agreed with the soc-usr and tsens common-mode caveats;
+    raw demand zone accepted; K-23 tie-breaks confirmed; part-2 additions listed (suspend/resume,
+    signal 38, softdog after download_mode=0, a log-only build, a product build without overrides,
+    GPU cap mandatory).
+  - The PMIC channels stay required before READY (PM, stricter than the reviewer suggested).
+- **Fault feedback (J-171):** designed in PLAN.md §2.1 (R43–R50); the core emits
+  `warn|shutdown:<reason>[:<seconds>]` per tick; parts (b)–(e) are part 2.
+- **Observation plan review:** GO-with-fixes.
+  - MAJOR: syncboss_nsync dump_stats writes the kernel log (removed); tracefs is not restored by
+    traced (pre-checks added); no wait timeout or abort path (fixed).
+  - PM question pending: the fd-link scan may see /persist link names (filtered on the device).
+- **Export:** 0 refusals at 9653677 (2,453 files); relays withdrawn, hand merges recorded; the
+  observation plan is withheld from export. A final review is running before the PM sees a
+  summary.
+
+
+**J-173 · fd-scan approved with the filter; trace_processor downloaded; thermal fix round done (d852349); final export review (B1, M1, M2).**
+- **PM:** the observation session's open-files scan is within J-132 **with the on-headset
+  filter** that drops any /persist name before output (D-O6 resolved).
+- **trace_processor:** the observation-plan agent declined to download it, because it had no direct
+  PM consent; the PM's consent was given in chat (J-172). The Arbiter downloaded the official
+  Perfetto v58.2 `windows-amd64.zip` (80,941,801 B, sha256 `5a00dbb9…1409`) into gitignored
+  `tools/perfetto/v58.2/`. Nothing has been run from it yet.
+- **Observation plan:** review fixes applied (7adec57).
+- **Thermal part 1 fix round** (d852349):
+  - F2/F5 run through the ramp after a 15 s grace; the ramp is capped at 60 s; rpm_per_sec is
+    bounded to 50–2000.
+  - A missing fan zone is fault F8 and the fan is still driven; trips are asserted against the
+    table.
+  - 64-bit arithmetic; frozen non-virtual sensors; CRITICAL/EMERGENCY fail closed.
+  - Quest 2 min caps and policies; F4 measured against DT max-rpm; the contradiction rules.
+  - 85/85 scenarios C = Python, native and aarch64.
+  - K-32 confirmed by the Arbiter (CRITICAL/EMERGENCY latches T4 as `shutdown:<name>`).
+  - A delta review is running before the merge.
+- **Final export review:** GO-with-fixes after B1.
+  - B1: the PROJECT_SETUP milestone-table hunk had no resolution, so the export refused at HEAD
+    ('theirs' recorded).
+  - M1: the manifest check must be regenerated.
+  - M2: stale status rows in README and JOURNAL.
+  - Minors: withheld-file references, relay leftovers, drive-letter mentions, privileged-adbd plans, a tool name to
+    remove, the research index, a third-party AGENTS.md quote, the serial
+    prefix.
+  - The PM summary is prepared. The fixes were sent; nothing is pushed.
+
+
+**J-174 · Public export ready for the PM's approval; thermal delta review GO-with-fixes; K1a and fs-blkguard started offline.**
+- **Export:** all final-review items fixed (0366157..67c6810).
+  - The Arbiter's own dry run at HEAD: refused 0, scope hits 0, guard 0, rules unused 0.
+  - 1,327 new files included; 44 relay files withdrawn by policy; 22 conflict hunks resolved and
+    recorded; the manifest check is regenerated by the exporter.
+  - **Awaiting the PM's approval** to push (run in a clean clone without a remote, with the fixed
+    noreply identity and UTC dates).
+  - Watch item: new private commits keep adding out-of-scope text; the exporter catches it, but
+    each export may need new rules.
+- **Thermal delta review:** GO-with-fixes.
+  - The fan fixes hold; no hot-device escape path.
+  - A new false-shutdown path in the K-27 frozen-sensor rule (a steady battery temperature
+    flagged as frozen).
+  - An older immediate shutdown on a single transient fan read error while trip ≥1 is active.
+  - Minors: tach noise plausibility; a stuck-at-lower-target window; atol in the cap read-back.
+  - The fixes were sent.
+- **Offline builds started:**
+  - **K1a** (our kernel: expected CRC-neutral options, stock modules; gated and packaged with a
+    fresh nonce; branch feat/k1a-kernel);
+  - **fs-blkguard** (the K1g boot-chain write guard: a kernel patch covering all write paths
+    including SG_IO, discard and BLKPG; safe-by-design probes; a QEMU proof; branch
+    feat/blkguard).
+  - No device actions; the K1a run awaits the Chair and the PM.
+
+---
+
+## Corrections
+
+Earlier claims we got wrong, kept visible on purpose.
+
+| when | we said | actually | how we found out |
+|---|---|---|---|
+| J-144, J-146 | stage 3d r1 (the reset) was clean: "dmesg-flags none" | the flag covers r2 only. Both PASS runs' r1 logged two kernel `WARNING … drm_atomic_helper.c:229 set_best_encoder` traces from step A (Meta's continuous-splash connector state meets a connector detach) and the planned −7 single-plane rejection; step A disables the CRTC, not the DSI encoder, and by source its stale encoder mask skips the clock/bandwidth down-vote [D, source only; the post_state core_clk/16e9 values are CRTC property defaults, not the votes]; step B commits the 2 × 2064 split on a black buffer [M]. TE stayed 0 through r1 [M] | FS-A-012 §5 review (J-148), decoded r1 records and the v2.7 kernel source |
+| J-125 | the per-pipe throughput cause "is confirmed by the fix" | consistent with the fix: the plane count and the explicit zpos changed in the same step, so the fix does not isolate the rect width; underruns were never observed | FS-A-012 §5 review (J-148) |
+| J-132 | the per-eye residual roll is "at most 0.2°", "so 21° holds" per unit | the static `Rotation` term is below 0.25 (derived from private per-unit values); the right eye's IPD-dependent `Rotation_Disparity` term is larger and how it applies is [O]; no per-unit correction is established | FS-A-012 §5 review (J-148) |
+| J-144 | Unit 1 follow-ups: 310 "at +3 and +4 min" | the attempt log recorded only +3 min until `a654ed8` added the +4 min line (06:18:10Z, 310, steady) about 9.6 h later | FS-A-012 §5 drafting (J-148) |
+| J-146 | Unit 2 run complete as logged | no follow-up reading was taken after AA (280), per J-145; the attempt log said so only after `a654ed8` | FS-A-012 §5 drafting (J-148) |
+| J-96 Corrections row, J-99 scope, FS-A-011 §6.1 | with an empty helper path the forced fallback "never fires"; Quest 3 "forced power-off at 100 ms" | too absolute: allocation failure or a disabled helper can still reach `__orderly_poweroff`'s forced fallback. Use: "The successful-no-op helper path supplies no dependable forced shutdown through the generic thermal core on this configuration." Quest 3: the positive delay schedules an emergency power-off **attempt**, not a guaranteed physical power-off 100 ms later | FS-R-011 §6 (J-104) |
+| FS-A-010 §6.4 | settled reading: "the second ≤ the first + 0.5 °C (not rising)" | "stable within tolerance", not literally "not rising" | FS-R-010 §6 |
+| FS-A-010 §6.6 | one extra off→on transition "far outside the 3–30 Hz flicker band" (as an eye-safety basis) | no numerical eye-safety guarantee is claimed from the spacing of the transitions | FS-R-010 §4 |
+| J-79, J-83, armadavr.md, FS-A-011 (sent draft) §6.1 | with an empty `STATIC_USERMODEHELPER_PATH`, every usermode-helper call fails, so `orderly_poweroff(true)` falls back to `emergency_sync(); kernel_power_off()`; a critical trip still forces a power-off | empty path = **successful no-op**: `call_usermodehelper_exec` returns 0 (`kernel/umh.c:397-423`), so `run_cmd` returns 0 and the forced fallback (`reboot.c:465`) **never fires**. The only forced path is `thermal_emergency_poweroff()` (`thermal_core.c:375-386`; unsynced `kernel_power_off()` then `emergency_restart()`), scheduled only if `CONFIG_THERMAL_EMERGENCY_POWEROFF_DELAY_MS > 0`. **Quest 3 v66: 100 ms, so a forced (unsynced) power-off still happens. Quest 2 v2.7: 0, so a critical trip gets NO software-forced power-off via the kernel thermal core** [M-static config, near-match source; D]; vendor notify hooks and PMIC/TSENS hardware over-temperature protection not assessed [O] (scope added J-99) | FS-A-011 review sweep (J-96) |
+| FS-A-010 §5.3 | "No light was seen, so no exposure occurred" | "no light seen" is not a measurement of zero emitted light, backlight power or exposure | FS-R-010 §2 |
+| FS-A-010 §3 | FSB1 "244 arrived" against END lines=255 | END counts preceding lines: 243 preceding lines arrived (244 including END); the difference is 12 | FS-R-010 §1 |
+| serial-loss note, FS-A-010 §3 | usbser.sys queue cap; the 4 MB request ignored | the location is [O]; neither is established | FS-R-010 §5 |
+| display-bringup §1/§3, stage 3a README/IMAGE, FS-A-007 (sent) | v66 blocks backlight changes, so the BLU stays at the boot level during our test | the gate is v2.7-only. v66 reprograms the BLU at 1000/1000 (≈ 8.2 % duty) on our full-modeset commit [D, near-match source]; the sign-off's risk description was wrong for v66 (no light was seen) | `display-handoff-dark.md` §3; FS-A-010 review (J-75) |
+| FS-A-010 draft | `display-handoff-dark.md` "adversarially reviewed" | not separately reviewed; spot-checked in the FS-A-010 package review | FS-A-010 review |
+| attempt log (trial iii) | fs-done ack about 04:52:41; headset "powered on again" at 05:49; battery "charging at 100 %" | 04:53:05.3; standby throughout (uptime); BA status full, AA status discharging at 95 % on AC | FS-A-010 review |
+| FS-A-009 §3, J-59 | "no ADSP running" | measured only: `/sys/class/remoteproc` empty and the ADSP driver link absent | FS-R-009 §5 |
+| FS-A-009 §5 | the trial "held about 30 s"; the rise mostly from bootloader dwell/charging [C] | image lifetime not measured (`fs-done` queued about 35 s after launch); cause [O], not to be attributed | FS-R-009 §5 |
+| FS-A-009 §4 option A | optional address must be below the loader's | contradicted by the qemu log (nine cases); removed | FS-R-009 §4 |
+| J-59 | step-4 extra line: cause [C]; "absent under qemu" | the main program's map, printed nondeterministically via an uninitialised glibc flag [D]; appears under qemu with `-cpu cortex-a72` (11/15 logged) | offline root-cause analysis (J-60) |
+| FS-A-007 §0, §3.7; stage3a IMAGE.md | lit-panel heat bounded by fs-pattern to ≤ 10/15 s | the client hold is 10 s (alarm 15 s); v66 panel/backlight off on close is [O]; the frame may persist until recovery | FS-R-007 §4 (J-53) |
+| FS-A-007 §5, COLLECTOR.md §4 | the host stops before the device deadline because Th precedes T0 | a successful fastboot return is not a lower bound on T0; the origin must be BootStartUtc, and preparation time must not inflate the budget | FS-R-007 §3 (J-53) |
+| J-44, common `DEADLINE.md` §1 | stage-1 `init.sh` aborts PID 1 if `/proc/uptime` is unreadable | ash evaluates the empty value as 0; PID 1 survives; only `fail()`/the ack window are lost, the dead-man still covers it | common-infra review (J-45) |
+| FS-A-006 §5.2 | `--list` rule: the interpreter line has no `=>` | it does (`/lib/ld-linux-aarch64.so.1 => …`); only `linux-vdso.so.1` lacks it; an anchored three-line rule replaces it | T1 pinning (J-42) |
+| FS-A-006 §4 | "no other BLAKE2 implementation in the image" | the kernel has `CRYPTO_BLAKE2B=y`, unreachable from userspace (`CRYPTO_USER_API_HASH`/`CRYPTO_USER` off); no userspace BLAKE2 in the image | T1 pinning (J-42) |
+| FS-A-006 §5 | explicit `--library-path` invocation controls library loading | `LD_PRELOAD`/`LD_DEBUG` are still honoured; an empty environment (`env -i`) and absent `/etc/ld.so.preload` are required | T1 pinning, qemu (J-42) |
+| FS-A-006 §2.3, kernel note | Quest 3 panel `sy103` (1280p) | `meta,eureka_panel_sharp`, dual-DSI DSC, 2064×2208 per eye; `sy103` is only in Qualcomm reference DTs | display research (J-41) |
+| PROJECT_SETUP §3, checklist E4 | "the Quest 1's panels are believed to be 72 Hz only" | shipped at 72 Hz; panels reported 90 Hz-capable (Carmack, OC6) and a community mod enabled it (PM) | PM (J-40) |
+| FS-A-006, J-31–J-36 | "ABI-equivalent for module loading" | "matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open" | FS-R-006 §2 |
+| FS-A-006 §3B, PROJECT_SETUP §6A | "skin and battery limits are enforced only by Android userspace" | the Quest 3 DT has kernel CPU mitigation (`batt-virt-limit` 45/58 °C, `surf-virt-limit` 48 °C); only the shutdown thresholds are userspace | FS-R-006 §4; verified in v2.7 source (J-39) |
+| FS-A-006, perf notes | "the Quest 3 GPU has no kernel thermal throttle" | `kgsl_pwrscale.c` registers a devfreq cooling device and a thermal max-frequency QoS path; whether a zone drives it autonomously is [O] | FS-R-006 §4; verified (J-39) |
+| power-thermal note, PROJECT_SETUP, checklist | "the Quest 3 fan stops on panel blank" | the v2.7 driver caps it at `silent_rpm` (4000 RPM) on blank | FS-R-006 §4; verified (J-39) |
+| FS-A-006 §2.1 | stock "ignores" the bq27 gauge | stock keeps accessing it (errors, virtual-sensor errors); coexistence does not show missing input is harmless | FS-R-006 §4 |
+| perf notes (+20% table) | Quest 3 GPU 545 → 654 MHz; CPU 1.92 → 2.30 GHz | not table steps; use 640 MHz (+17.4%) and 2.208 GHz (+15%); never add steps | FS-R-006 §7 |
+| FS-A-006 §5 | `timeout 20` bounds a step to 20 s | BusyBox `timeout` sends TERM only; needs KILL escalation | FS-R-006 §5C |
+| gate scripts (`kgate*.sh`, `btfkinds.py`) | "the gate" | they report but do not enforce: a synthetic failure exited 0 | FS-R-006 §3 |
+| FS-A-006 §2.5 | "kernel-side results transfer to the target" | a v2.7-kernel/v66-DT trial establishes that hybrid's result only | FS-R-006 §6 |
+| J-35, `kgate-sibling.sh` | "if the superset changes no CRC, no subset can" | unsound: a subset is a different build and Kconfig options interact; only the configs actually gated are cleared | FS-A-006 narrow re-check (J-36) |
+| FS-A-006 draft, J-36 | Quest 2 `getvar all` called "read-only" | the reboot cycle around it is a state change (`misc` probably written, not captured) | FS-A-006 narrow re-check (J-36) |
+| setup docs | U-Boot at `/UBOOT/U-BOOT.IMG` | `/UBOOT/LIB/U-BOOT.IMG`; and it is a staging copy — U-Boot boots from `uboot_a/b` partitions | ESP walk, then `kernelsetup.sh` |
+| J-02 | "the kernel probably lives in `efi-A`" | `efi-A` holds only partition-set files; the kernel is in `rootfs-A/boot` | reading `efi-A` |
+| J-04 | several "file is empty / config missing" reads | artefacts of the `btrfs restore` bug | kernel-mount re-extraction |
+| `FS-A-001` | "the image lacks a USB serial gadget, so we need our own kernel" | true of **Valve's** kernel only. Every stock **Quest 3** kernel has ACM built in | Quest 3 IKCONFIG scan |
+| `FS-A-001` | tags `[I]` and a redefined `[M]` | Chair restored `[M]/[D]/[C]/[O]` and added explicit `[M-static]` | `FS-R-001` |
+| J-07 | "0.5.5 is Valve's newest build" | 0.5.5 is a dev `main` build. The announced release is 0.4.4 beta; newest `stable` is 0.3.0 | Steam news + manifests + signatures |
+| J-07 | "107 builds on the server" | 111 at the top level, plus `goldmaster/`, `mr/`, `oobe/` | full index walk |
+| J-11 | "use slot B, the active baseline" | slot **A** is active | live probe |
+| `FS-A-003` | "ramoops is the fallback evidence channel" | configured and live, but **not retained across any reboot tested** | retention tests T1/T1b/T2 (J-14) |
+| `PROJECT_SETUP` §1 | "Quest 3 is SM8550-derived" | its platform is `anorak`; clock/UFS layout closer to SM8450; no mainline support | research pass (J-17) |
+| `FS-A-002` | "`splctl` writes `bootenv` every boot" | a conditional route (needs `graphical.target` and `/efi/SteamOS`); successful writes are not established | FS-R-002 rev. §4A |
+| `FS-A-002` | "`steamos-firmware-update` is inert" | its later fwupd path is blocked by the syntax error. What runs before it (a sourced colour-variable library) writes nothing, but "inert" overstated it | FS-R-002 rev. §5, then source check |
+| J-16 | "`modules.dep` lists no dependencies for the USB modules" | it uses absolute paths, and my lookup used bare names. 52 of 97 modules have dependencies, and Android loads in dependency order | stock boot log on the device, then the sandbox test (J-18) |
+| `FS-A-004` | "gate 4 would refuse the bootfw write" | it checks the *current* firmware slot; the writes go to the *other* slot. Device probing happens before the model check anyway | FS-R-002 rev. §2 |
+| `PROJECT_SETUP` | "the **[C]** tag is not used" | my own bad search-and-replace; it should have read `[I]`. **[C]** is in use | FS-R-002 rev. §7 |
+| `FS-A-004` rev 3 draft | "gadget identity is read back before the bind" | the readback line was mangled (`\n` literal) and failed on every healthy boot | second-round adversarial review (J-20) |
+| `FS-A-004` rev 3 draft | "builder negatives show no image published" (publish-after-checks) | both negatives failed at step 1, before any publish logic | second-round host review (J-20) |
+| J-31 | "a kernel rebuilt from the public tree loads the stock v2.7 vendor modules" | ABI-equivalent for loading [D]; runtime and full source identity [O] | FS-A-006 review (J-34) |
+| J-31 (in progress) | "make 4.4.1 breaks this 5.10 tree" | the cause was the missing `REAL_CC` (Meta's compiler-wrapper hook); make 4.4 was not shown to be at fault | reading Meta's Makefile and `README.meta.md` |
+| `PROJECT_SETUP` §1 | XR Elite SoC "XR2+ Gen 1" | XR2 (Gen 1): HTC spec; frequency tables identical to the Quest 2's | XR Elite envelope research (J-28) |
+| `FS-A-004` r3, `FS-A-005` | tag **[O]** used to mean "observed" | **[O] = open**. Observed hardware output is [M]; static artifacts are [M-static] | FS-R-005 §5 |
+| `FS-A-005` | "no remoteproc device registered or booted" | not measured; there was no inventory. Only "our init launched none" holds | FS-R-005 §4C |
+| `FS-A-005` | "the kernel combined our ramdisk with the vendor ramdisk" | which boot-chain component assembled it is not established; [D] only that the modules were available to our PID 1 | FS-R-005 §4A |
+| `FS-A-005` | the trial's `misc` change is localised to two fields | the immediate-before contents are missing, so the trial's byte changes are [O] | FS-R-005 §3 |
+| `FS-A-005` draft | "USB role is peripheral without forcing" | PID 1 wrote `ssusb/mode=peripheral`; no UDC existed before that | adversarial review of FS-A-005 (J-21) |
+| `FS-A-004` rev 3 §2C (N-1) | "`ag()` prevents a redirected work tree" | `-c core.worktree` does not override the repository's own config; the redirect still blinds the check | post-concurrence review (J-20); fix after the trial |
+| `FS-A-004` rev 3, 2nd build | "after registration an error is logged and observation continues" | the trap's `continue` would have ended the watch loop | final adversarial pass (J-20) |
+| `FS-A-004` rev 2 | "a copied image is refused" | only within this checkout: the ledger is local | second-round host review (J-20) |
+| previous programme | "any bad XR Elite kernel is recoverable" | rejected as overreach | `ERRATA-001` |

@@ -1,0 +1,8 @@
+== round-6 probes, code under test: <repo>\devices\quest3\host
+PASS  B1  already-acked: stop at the first FSS1 with a foreign ack, no fs-valve, gated fs-done
+PASS  S2  runner refusal (FSVE1): terminal at once, INCONCLUSIVE, gated fs-done
+PASS  S1  the ack window caps the phases before the runner
+PASS  B1  fs-observe.ps1 exists and defines Invoke-FsObserve (no session)
+PASS  B1  the classifier derives the stage-1 class from observe.json + the verified FSV1 (Get-FsStage1Class)
+PASS  nit stage-3a own-SIGALRM reason is one string (argument-mode concatenation fixed)
+TOTAL: 6 passed, 0 failed

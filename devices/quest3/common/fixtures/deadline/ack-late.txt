@@ -1,0 +1,8 @@
+# scenario ack-late (sim.sh, action a_ack_late), deadline=8 ack_window=4 
+# T0=176 reboot records (fake syscall; first one counts):
+#   184 deadline pid=1033 via=final
+# PID 1 log:
+#   FS t=176s DEADLINE armed t0=176 deadline=T0+8 ack_window=4 backstop=T0+9 reboot-reasons-not-logged-at-reboot
+#   FS t=176s BACKSTOP armed pid=1220 in=9s
+#   FS t=180s STAGE=HOST_ACK ack=0123abcd deadline-unchanged=T0+8
+# sim stdout/stderr:

@@ -1,0 +1,59 @@
+FrameShift Quest 3 stage-3d image (v2.7 interactive per-phase display run, fs-pattern v0.7.1) — ONE ATTEMPT ONLY, never reuse
+For the Quest 3 units on Horizon OS v2.7 (build 52433670036000520, kernel 5.10.246-gd7102a837402, vbmeta digest 66b76196...f12a; both units, J-131) only. No Valve file. Phases p0 r1 r2 [r3]: r1 = display reset, no picture (A: disable the handed-over CRTC, MODE_ID/ACTIVE/CRTC_ID 0 and its planes off; B: a dark re-enable on an all-black buffer to end the continuous splash; C: close, lastclose powers the panel off), r2 = 10 s (4 planes x 1032, zpos 0,0,1,1; per-eye picture, eyes=swap, roll=21), r3 = 5 s (red field) (fs-pattern compiled cap 10 s); one write: panel0-backlight brightness=127; idle limit 120 s; PID 1 deadline T0+200 s, backstop T0+201 s (init.sh DEADLINE)
+built:            20261014T014738Z
+nonce:            13ed21be49c7b4ba   (USB serial FS-13ed21be49c7b4ba)
+TEST OVERRIDES:   FS_TEST_NONCE=13ed21be49c7b4ba FS_TEST_OUTBASE=$HOME/work/fsbuild-neg/stage3d/cand FS_TEST_STAMP=20261014T014738Z (negative fixtures only; NOT a candidate image)
+OUTPUT IMAGE:     boot-stage3d.img  size=44875776  sha256=fcca5ee791ee6e9dcf696eba16c676de1c26ab60ce82211c49a457e9cca24fb5
+
+## inputs (sha256 enforced unless noted)
+stock boot        e32f98c74bcce5c25b098393f7804e19fbba2f0c2034c49a4fcf6aa9a8cdc024  <repo>/firmware/quest3/v2.7-user_ota/boot.img
+stock vendor_boot bc0dd14de41834a601513123b2225a677fa4212dfa4505bf964228cea40d2f5b  <repo>/firmware/quest3/v2.7-user_ota/vendor_boot.img
+vbmeta            aae4af3a1740d568a1bcd1104f1b30b2998082def674e00c319acfab10faf215  <repo>/firmware/quest3/v2.7-user_ota/vbmeta.img
+vbmeta_system     28f5ccc91f25665dda5db1abf1fc3bd3fcea58f30cb33827642cddf6f9c8bc50  <repo>/firmware/quest3/v2.7-user_ota/vbmeta_system.img
+vbmeta digest     66b7619671a8a8dcb75262812e7ce1bd176af6aa32cd76dc3548b9c942e9f12a  (computed = Unit 2 runtime ro.boot.vbmeta.digest; boot and vendor_boot match their hash descriptors; avb-check.txt, tool 02ec464e26046a9f98d4166ac15490cd7bf0a060e663d4be76e377de3e0de55f)
+CAVEAT            the bytes on Unit 2's slot a are INFERRED from the OTA (the runtime vbmeta digest, kernel string, vendor command line and bootconfig match), NOT read back: AVB's hash descriptors are not enforced at boot on these units; the OTA payload signature was not verified
+device-side check init.sh refuses to load any module unless /lib/modules/modules.dep = ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 and modules.softdep = 8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62 (the pinned vendor_boot's): mismatch -> no module, reboot error-modules at T0+60 s
+stock kernel      db61c073962bf1df38cbb09cbb01f03e5595822754ffea1dc75166555f7d545e  (5.10.246-gd7102a837402; byte-identical in the output: AOSP re-unpack)
+vendor modules    0dd1deb02e5e9183e66c14682f94339da34fd56152a12208b22868ca231f66f4  lib/modules/modules.load.recovery (131 modules; provenance only, NOT loaded as a list)
+loaded modules    1b93d77d029146cf93289be87de51514c6ab7b96987f9c467a7f13f6e2a6463f  stage3d/modules.load.v66 -> /lib/fs/modules.load (95 modules, the proven v66 set, J-129; module-list-check.txt, tool 402525cd94220832b4201212684e22a910833e1dd0c6b7dc2cbd438ba14bf4c8)
+vendor file list  c01d89a16159be9ad67ee6bf32fd11a14827068a4e23e298f33bdea0d621b2ce  (143 entries)
+AOSP mkbootimg    d2bb0af5ba6d3198a3e99529c97eda1be0b5a093  (E1 fs_gitcheck CLEAN; helper adbe27e92be16da5d2d8a2bc8f3ea35bd2040cd41ed38068c1360030433487e8)
+E1 notes          NOTE: mode bits not checkable here: skip (drvfs without metadata: no exec bits) 
+ramdisk-scan-3d   a417a1225d58b6da9e4623721b4676cf28155f55aa2ac2f11f85e5a57cfca7d7  (recorded; output in ramdisk-scan.txt)
+init.sh source    9141cc3b9ef71dfa8163dfc776e8eb2f4b691946d97155ac910e350da0dc79a8  (recorded)
+fs-phase.sh       a72d451a6b0e534035fcf8d1babe4e82cb2d2cfd56e44598cec388defe33c4ac  (recorded)
+fs-probe.sh       f0fda86513f1f758f45086741861632f10809be0744476a7f625238246e57173  (recorded)
+fs-idle.sh        989472569328413928b5c2ab01b53060aa3a99081cf66209e45d161737ed6124  (recorded)
+fsb1-pace.sh      71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c  (pinned)
+build-image.sh    b90c0fbb7e874f798f2dd56fc2f9c25c73b94f82f1b4472c5087abefd7286c34  (recorded)
+ramdisk.cpio      23a7a95fcbb34dacdadcaffec83853de697c0d551c1e6aaa9fed490649cde417  size=3414016
+ramdisk.lz4       c67d0d8019039616283cb147122eb5cf19766113bf5a2dd78ce004399d35e236  size=1963122
+
+## ramdisk files (sha256  size  path  source); directories: bin config dev lib lib/fs proc run sys tmp 
+c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02  1981032  /bin/busybox  <repo>/build/third_party/busybox/busybox
+7ad5f1106acd828fa3e9d6da9cfa0e50d66431b4b2d3a951ce39f12375064959  705  /bin/fs-done  common/target/fs-done
+bfafad97c7ca11ef4e41a6be8aae4fde5ca529d8955d9b77d6fc603495049a9a  686776  /bin/fs-pattern  <repo>/devices/quest3/stage3d/build/fs-pattern
+a72d451a6b0e534035fcf8d1babe4e82cb2d2cfd56e44598cec388defe33c4ac  16137  /bin/fs-phase  stage3d/fs-phase.sh
+c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29  1400  /bin/fs-reboot  <repo>/build/stage1-tools/fs-reboot
+ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e  808  /bin/fs-reboot-final  <repo>/devices/quest3/common/build/fs-reboot-final
+77f7a70a7904a7091db8e132b6c8f0ee68e6187f94d4690ec2a42a26f5206a74  676952  /bin/fs-supervise  <repo>/devices/quest3/common/build/fs-supervise
+c5558472bd2331da6503c9ece353210e0f5eb14561be3a98bfd6b08f7f43dfc1  15973  /init  stage3d/init.sh (9141cc3b9ef71dfa8163dfc776e8eb2f4b691946d97155ac910e350da0dc79a8) with nonce
+989472569328413928b5c2ab01b53060aa3a99081cf66209e45d161737ed6124  2276  /lib/fs/fs-idle.sh  stage3d/fs-idle.sh (= stage3c/fs-idle.sh)
+f0fda86513f1f758f45086741861632f10809be0744476a7f625238246e57173  11358  /lib/fs/fs-probe.sh  stage3d/fs-probe.sh (stage3c's + the v2.7 mode-validation dmesg filter, J-141)
+11e44d2fa386d06c596c03ff54ecfb5aeeea4790a560c8e65bf26e76733bf1a7  4943  /lib/fs/fsb1-enc.sh  common/target/fsb1-enc.sh
+71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c  3255  /lib/fs/fsb1-pace.sh  common/target/fsb1-pace.sh
+1b93d77d029146cf93289be87de51514c6ab7b96987f9c467a7f13f6e2a6463f  1487  /lib/fs/modules.load  stage3d/modules.load.v66 (the proven v66 set, J-129)
+4294c9d57f3a94eba9847596aa614f557e7b4278cfeb5a22e38955fdd5b81dc4  7556  /lib/fs/pid1-hold.sh  common/target/pid1-hold.sh
+
+## checks passed
+AVB: vbmeta digest = Unit 2 runtime, boot/vendor_boot hash descriptors MATCH; module list (95) present, closed under modules.dep/softdep, display/USB/backlight/LED/fan closure inside, no v2.7-only module reachable; no backlight_changes_blocked in any non-comment script line; E1 git check; every pin above; v2.7 kernel release string; static ELF (aarch64, ET_EXEC, no INTERP/NEEDED) for busybox, fs-reboot, fs-reboot-final, fs-supervise, fs-pattern;
+applets present: sh mount mknod mkdir cut cat echo printf sync reboot sleep insmod mdev ls tr sed grep basename setsid kill ln uname sha256sum stty mv rm chmod base64 awk wc head mkfifo tail dmesg; no BLAKE2 applet; no debugfs in any non-comment script line;
+exact ramdisk list; no symlinks; no vendor collision (only shared directories); union lacks /etc/ld.so.preload /etc/ld.so.cache /usr /lib/libc.so.6 /lib/ld-linux-aarch64.so.1 /valve;
+only the 5 expected ELF files in the union; BLAKE2 scan of the final image: no hit; kernel AF_ALG hash off;
+kernel bytes unchanged; header differs only in ramdisk size (stock signature size already 0); every file in the image equals the staged file.
+
+## header diff
+3c3
+< ramdisk size: 18697289
+---
+> ramdisk size: 1963122

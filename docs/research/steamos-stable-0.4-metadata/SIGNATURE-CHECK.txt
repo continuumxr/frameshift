@@ -1,0 +1,121 @@
+SIGNATURE-CHECK -- SteamOS 0.4.5 stable bundle (Steam Frame), offline RAUC signature check
+PM-approved task 2026-10-12 (PM date). Agent pass. Unreviewed.
+Tags: [M-static] observed on a named file; [D] derived; [O] open (not used for results).
+
+Scope kept: ONE file downloaded (the .raucb). No chunk store, no
+.chunks_details.json, no other build. Public unauthenticated URL; no
+credentials, no client.conf. Nothing from the bundle executed. No device
+commands. the PM's offline backup drive not touched.
+
+1. Download
+-----------
+Pre-check: git check-ignore -v firmware/valve/steamos-0.4.5-stable/
+  -> .gitignore:13:firmware/   (ignored, so the file cannot enter the repo)
+Command (Git Bash, curl):
+  curl -sS -D headers.txt -o deckard-stable-20261007.6125817-0.4.5.raucb \
+    https://steamdeck-images.steamos.cloud/vr/20261007.6125817/deckard-stable-20261007.6125817-0.4.5.raucb
+Time      2026-10-13T00:04:27Z (UTC)
+HTTP      200, nginx/1.26.3, application/octet-stream
+Size      2283618 B (matches HEAD Content-Length in FETCH-LOG.txt)
+Headers   Last-Modified Thu, 08 Oct 2026 23:21:16 GMT; ETag "6ac8256c-22d862"
+          (both match the earlier HEAD)
+Local     firmware/valve/steamos-0.4.5-stable/deckard-stable-20261007.6125817-0.4.5.raucb
+          (gitignored; a Valve file; never commit, never export)
+sha256    e3d14c217f934b225b56b45c1800b378583f6fda40b937eb9ac4344052bcbb8d
+
+2. Bundle layout (RAUC "plain" format)
+--------------------------------------
+RAUC public docs (https://rauc.readthedocs.io/en/latest/reference.html,
+"Bundle Formats"): plain = squashfs, then a "detached CMS signature over the
+squashfs filesystem", then the signature size. Verity/crypt formats instead
+carry a non-detached CMS over an inline manifest plus a dm-verity hash tree.
+
+Parsed with a short Python read (no execution of bundle content):
+  last 8 bytes, big-endian uint64  -> CMS size 2138 B
+  payload (bytes 0 .. 2281471)     -> 2281472 B = 557 x 4096
+  CMS (bytes 2281472 .. 2283609)   -> 2138 B, DER, starts 30 82 08 56
+  2281472 + 2138 + 8 = 2283618     (whole file accounted for)
+  squashfs superblock: magic hsqs, bytes_used 2280554, padded to 4 KiB =
+  2281472 = payload. No hash tree after it -> consistent with plain format.
+  CMS encapContentInfo eContent ABSENT -> detached, as plain format requires.
+sha256 payload.bin  e6fe890219e40b843b2eae6bddf9c7516e96bfca437e5c9894b276b33aa79e35
+sha256 sig.der      15c4531b11d8775962c670b69827336227fdb0038a65a1f556aec6f113a007e9
+(payload.bin and sig.der were scratch copies outside the repo.)
+
+3. CMS signature and signer
+---------------------------
+openssl cms -cmsout -print -inform DER -in sig.der   (OpenSSL 3.5.5, WSL)
+  SignedData v1, digest sha256, signature rsaEncryption, no signedAttrs.
+  SignerInfo issuerAndSerialNumber: CN=steamdeck-images, serial 1.
+  One embedded certificate (the signer):
+    subject  C=US, ST=Washington, L=Bellevue, O=Valve Corp, CN=frame-images
+    issuer   C=US, ST=Washington, L=Bellevue, O=Valve Corp, CN=steamdeck-images
+    serial   01, RSA 4096
+    validity 2026-02-05 23:01:18Z .. 2126-01-12 23:01:18Z
+    AKI      D4:4E:29:CA:9D:8E:45:EB:B0:1D:BC:48:95:B4:83:61:FA:E3:02:D4
+             (= the SKI of ba942c60.0, the stable root)
+    no basicConstraints / keyUsage / extendedKeyUsage extensions
+    SHA-256 fingerprint
+      8A:6B:D4:22:3B:47:BD:5B:1E:FE:3E:BE:A4:A4:41:A6:8B:33:AE:C2:AB:B9:FF:85:A8:DF:2A:9F:0C:21:FA:BA
+  So the bundle is signed by a Frame-specific leaf key "frame-images" that
+  chains to the Steam Deck stable root "steamdeck-images".
+
+Trust anchor (read-only, WSL ~/sfroot-full, rootfs 20260922.6152327; the
+Frame's /etc/rauc/system.conf (paraphrased) names /etc/rauc/trusted_keys/ as the
+keyring directory and steamos-aarch64 as the compatible string):
+  trusted_keys/ba942c60.0  sha256(file) 1d6e246961284ee152cce21e5197a2a0f03dc2fbc0f66a66566850b77714100d
+    CN=steamdeck-images (self-signed), 2021-11-23 .. 2038-04-28
+    SHA-256 D5:62:FE:FE:25:1B:76:EA:B0:E9:E9:99:35:4A:D1:86:B8:EB:2E:2F:B3:45:0F:AD:BE:C7:F6:AA:59:B6:02:D9
+  development_keys/2549da1b.0  sha256(file) f42090ff488c7e39b50ed35841e991fc685b3c911ab66cf0e093c9e0c0648ec2
+    CN=steamos-dev-images (self-signed), 2025-10-30 .. 2038-04-28
+    SHA-256 3D:4B:C2:2D:56:6C:13:62:AC:A1:60:C2:1D:60:28:99:4C:90:54:EC:EA:A2:0D:A3:75:07:A4:4F:0A:B9:89:93
+    (not in the keyring directory named by system.conf)
+
+4. Verification commands and results
+------------------------------------
+K=~/sfroot-full/etc/rauc/trusted_keys/ba942c60.0
+D=~/sfroot-full/etc/rauc/development_keys/2549da1b.0
+a) openssl cms -verify -binary -inform DER -in sig.der -content payload.bin -CAfile $K -purpose any -out /dev/null
+   -> "CMS Verification successful", rc 0
+b) same, default purpose (no -purpose)
+   -> "CMS Verification successful", rc 0
+c) openssl cms -verify ... -CAfile $D -purpose any
+   -> "CMS Verification failure ... unable to get local issuer certificate", rc 4
+d) openssl verify -CAfile $K certs.pem  -> "certs.pem: OK"
+   openssl verify -CAfile $D certs.pem  -> error 20, verification failed
+e) Negative control: copy of payload with byte 1000001 set to 0x00
+   -> "CMS Verification failure ... bad signature", rc 4
+RESULT: the bundle verifies against the stable key (CN=steamdeck-images,
+D5:62:FE:FE:...:59:B6:02:D9) via signer CN=frame-images (8A:6B:D4:22:...:21:FA:BA).
+It does NOT verify against the dev key (CN=steamos-dev-images). [M-static]
+
+5. Manifest (read-only; unsquashfs 4.7.5, nothing extracted to disk or run)
+---------------------------------------------------------------------------
+unsquashfs -s payload.bin   : squashfs 4.0, zstd, block 131072, 4 inodes,
+                              created 2026-10-07 20:04:51 UTC
+unsquashfs -lln payload.bin :
+  -rw-r--r-- 1000/1000      37  UUID
+  -rw-r--r-- 1000/1000     304  manifest.raucm
+  -rw-r--r-- 1000/1000 3546384  rootfs.img.caibx
+unsquashfs -cat payload.bin manifest.raucm   (sha256 b82af3d82902cc59a9c7887ffd4bd69c946c3aa748bd565759eee3a672fbc62a)
+  Summary (not reproduced): an [update] section with compatible steamos-aarch64,
+  version 20261007.6125817 and a build stamp; a [bundle] section with format
+  plain; an [image.rootfs] section naming rootfs.img.caibx with
+  size 10737418240 and sha256 692b998b0a3b9db9963ac77e8e188b2d08ffd99a87beb504d808b446119bcc3c.
+  It carries no branch name and no "0.4.5" string. [M-static]
+UUID                 e8f36086-bebf-474f-a7f8-66280e329d6a
+sha256 rootfs.img.caibx  297da4055ab821a86a98ba2d4baaf7c3eac1d767f07780058d9c110912a2698e
+  (casync index of the 10 GiB rootfs. Chunks were not fetched in this pass; the
+  later ROOTFS-ASSEMBLY.md pass fetched them and matched the rootfs sha256.)
+
+6. Cross-checks
+---------------
+- compatible "steamos-aarch64" = the Frame rootfs system.conf compatible. [M-static]
+- manifest version 20261007.6125817 = buildid in
+  deckard-stable-20261007.6125817-0.4.5.manifest.json (branch stable,
+  version 0.4.5). The RAUC manifest has no branch or 0.4.5 string; those
+  come from the .manifest.json and the filename (both unsigned). [M-static]
+- format=plain in manifest.raucm matches the parsed layout (detached CMS). [M-static]
+- [D] Since the CMS covers the whole squashfs, it also covers the
+  manifest, the UUID and the casync index; the per-chunk content of the
+  rootfs is tied to it only through that index (not checked here).

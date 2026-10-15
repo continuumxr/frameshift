@@ -1,0 +1,12 @@
+  12534 ms  W fs-verify 4479d9f4768ec80f8a698ae7570f3158
+  13492 ms  R FSV1 nonce=13ed21be49c7b4ba resp=5fe320a9ad0e98101d56d5a5afbd31f911becc6a945a231eb2fd096427ba95cc kernel=6.18.33.2-microsoft-standard-WSL2 pid1=/usr/b
+  13492 ms  W fs-ack 02a7fb60151f445b
+  13845 ms  R FSA1 queued END
+  16345 ms  W fs-status
+  16798 ms  R FSS1 nonce=13ed21be49c7b4ba stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=02a7fb60151f445b END
+  16798 ms  W fs-phase p0 4ade2e6f7b68d47b3a13fe7ef5e23ea6 0000000000000000
+  21988 ms  R FSB1 END v=1 nonce=13ed21be49c7b4ba chal=4ade2e6f7b68d47b3a13fe7ef5e23ea6 lines=53 rec_sha256=c0be72727d30072b72dd3b6928b508f8d2a377fa3531b82bec13c061
+  22341 ms  W fs-phase p0 4ade2e6f7b68d47b3a13fe7ef5e23ea6 c0be72727d30072b
+  22794 ms  R FSXE1 p=p0 ran=0 error=already-run END
+  22795 ms  W fs-done
+  23148 ms  R FSD1 queued END

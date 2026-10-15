@@ -1,0 +1,34 @@
+# stage3d builder negatives  2026-10-14T03:03:59Z; build-image.sh sha256=b90c0fbb7e874f798f2dd56fc2f9c25c73b94f82f1b4472c5087abefd7286c34
+PASS  fs-pattern-tampered  rc=1  BUILD REFUSED: fs-pattern hash differs from the pin ($HOME/work/fsbuild-neg/stage3d/fs-pattern: 01e319f7f314e86f0173fe18bf2e77afe9f4f39085f3c8ecf3947bcd38a0025b != bfafad97c7ca11ef4e41a6be8aae4fde5ca529d8955d9b77d6fc603495049a9a)
+PASS  fs-pattern-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-pattern
+PASS  busybox-tampered  rc=1  BUILD REFUSED: busybox hash differs from the pin ($HOME/work/fsbuild-neg/stage3d/busybox: 05cb73694524f673df60bff68a5bb4ef98af6e884eb2a3559b41b51b3d7c9dd2 != c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02)
+PASS  fs-supervise-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-supervise
+PASS  fs-reboot-final-tampered  rc=1  BUILD REFUSED: fs-reboot-final hash differs from the pin ($HOME/work/fsbuild-neg/stage3d/fs-reboot-final: af0f01157cb252b877afc0c97ea4d19fa54966d2be5d259750cd6c9c1f3cea81 != ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e)
+PASS  fs-reboot-tampered  rc=1  BUILD REFUSED: fs-reboot hash differs from the pin ($HOME/work/fsbuild-neg/stage3d/fs-reboot: 9c07d261923702124f8b6e256658afc5fa2d277991ffda8b4f86f926dc038747 != c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29)
+PASS  fsb1-pace-tampered  rc=1  BUILD REFUSED: common fsb1-pace.sh hash differs from the pin ($HOME/work/fsbuild-neg/stage3d/fsb1-pace.sh: c4eec3279a0e5c68a69ce34a55a59d2e73c35a87356b4c95806551d233f5b938 != 71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c)
+PASS  stock-boot-wrong  rc=1  BUILD REFUSED: AVB check: the stock inputs do not reproduce Unit 2's runtime vbmeta digest and hash descriptors
+PASS  stock-boot-v66  rc=1  BUILD REFUSED: AVB check: the stock inputs do not reproduce Unit 2's runtime vbmeta digest and hash descriptors
+PASS  stock-vboot-v66  rc=1  BUILD REFUSED: AVB check: the stock inputs do not reproduce Unit 2's runtime vbmeta digest and hash descriptors
+PASS  vbmeta-v66  rc=1  BUILD REFUSED: vbmeta hash differs from the pin (<repo>/firmware/quest3/v66_unit1_slotA/vbmeta.img)
+PASS  fs-pattern-v06  rc=1  BUILD REFUSED: fs-pattern hash differs from the pin (<repo>/devices/quest3/stage3c/build/fs-pattern: 066bdc3ee01e5974518f96e8311c071c8f3aed302cadefa42c1273d5196b27bc != bfafad97c7ca11ef4e41a6be8aae4fde5ca529d8955d9b77d6fc603495049a9a)
+PASS  fs-idle-debugfs-mount  rc=1  BUILD REFUSED: debugfs in a non-comment line of $HOME/work/fsbuild-neg/stage3d/fs-idle.sh
+PASS  fs-idle-debugfs-quoted  rc=1  BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/stage3d/fs-idle-q.sh: $BB mount -t debug''fs none /sys/kernel/debu''g
+PASS  fs-idle-debugfs-variables  rc=1  BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/stage3d/fs-idle-v.sh: K=/sys/kernel; F=fs; $BB mount -t debug$F none $K/debug
+PASS  fs-idle-debugfs-octal  rc=1  BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/stage3d/fs-idle-o.sh: $BB mount -t "$(printf "\144ebugfs")" none /sys/./kernel/debug
+PASS  fs-idle-tty-write  rc=1  BUILD REFUSED: fs-idle.sh names a tty or the console in a non-comment line
+PASS  inject-extra-file  rc=1  BUILD REFUSED: ramdisk contents differ from the expected list
+PASS  module-list-plus-tsens  rc=1  BUILD REFUSED: module list (modules.load.v66) hash differs from the pin ($HOME/work/fsbuild-neg/stage3d/modlist-plus-tsens: bf5902ac2afc271ae3a340b42dd503c39221a689da72ae38156e45b12a65ecfc != 1b93d77d029146cf93289be87de51514c6ab7b96987f9c467a7f13f6e2a6463f)
+PASS  fs-idle-backlight-unblock  rc=1  BUILD REFUSED: backlight_changes_blocked in a non-comment line of $HOME/work/fsbuild-neg/stage3d/fs-idle-blk.sh
+PASS  init-moddep-pin-wrong  rc=1  BUILD REFUSED: init.sh MODDEP_SHA is not the pinned vendor_boot's modules.dep
+PASS  modcheck-pinned-list  rc=0 
+PASS  modcheck-not-closed  rc=1 (list_closed_under_modules_dep_and_softdeps FAIL)
+PASS  modcheck-missing-display-root  rc=1 (roots_closure_inside_the_list FAIL)
+PASS  modcheck-file-absent-in-v27  rc=1 (entries_present_as_files FAIL)
+PASS  modcheck-forbidden-qcom_tsens  rc=1 (no_forbidden_module FAIL)
+PASS  modcheck-forbidden-usbvdm  rc=1 (no_forbidden_module FAIL)
+PASS  modcheck-forbidden-qcom_lpm  rc=1 (no_forbidden_module FAIL)
+PASS  modcheck-forbidden-userspace-consumer  rc=1 (no_forbidden_module FAIL)
+PASS  modcheck-forbidden-bcl_soc  rc=1 (no_forbidden_module FAIL)
+PASS  repro-same-nonce  two builds, nonce 0123456789abcdef: image e78822a3eaa793217fcc4a95195e47dfb74904ddab4b58a5cdb10ddbe2230f5f both times; ramdisk.cpio      23708a8b71292d31a84f214b52f8b408dcaadbcb967b97bf38f36d0301947613  size=3414016
+PASS  candidate-rebuild  nonce 13ed21be49c7b4ba stamp 20261014T014738Z: image fcca5ee791ee6e9dcf696eba16c676de1c26ab60ce82211c49a457e9cca24fb5 again; identical cpio
+TOTAL: 32 cases, 0 failed

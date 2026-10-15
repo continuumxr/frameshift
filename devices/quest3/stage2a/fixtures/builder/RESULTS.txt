@@ -1,0 +1,13 @@
+# stage2a builder negatives  2026-10-09T08:59:30Z; build-image.sh sha256=e5ce736603263ef8697dfa2ea95dbb2dde657e9d9d1a235d18260a32fbaeb456
+PASS  valve-b2sum-tampered  rc=1  BUILD REFUSED: Valve bin/b2sum: sha256 ed0cd4d35dbeff5082f475e6c8a11374c9ce738e0578df0c7ac1cfad7f950a65 != pin 90154680070cfcb2a3027b8fa26a8091d24333329294a2f4be7a12c7f11f6402
+PASS  valve-uname-missing  rc=1  BUILD REFUSED: input missing or not a regular file: $HOME/work/fsbuild-neg/stage2a/v-missing/usr/bin/uname
+PASS  valve-libc-symlink  rc=1  BUILD REFUSED: input missing or not a regular file: $HOME/work/fsbuild-neg/stage2a/v-link/usr/lib/libc.so.6
+PASS  valve-b2sum-swapped  rc=1  BUILD REFUSED: Valve bin/b2sum: size 67856 != pin 67864
+PASS  busybox-tampered  rc=1  BUILD REFUSED: busybox hash differs from the pin ($HOME/work/fsbuild-neg/stage2a/busybox: 05cb73694524f673df60bff68a5bb4ef98af6e884eb2a3559b41b51b3d7c9dd2 != c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02)
+PASS  fs-supervise-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-supervise
+PASS  fs-reboot-final-tampered  rc=1  BUILD REFUSED: fs-reboot-final hash differs from the pin ($HOME/work/fsbuild-neg/stage2a/fs-reboot-final: af0f01157cb252b877afc0c97ea4d19fa54966d2be5d259750cd6c9c1f3cea81 != ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e)
+PASS  fs-reboot-tampered  rc=1  BUILD REFUSED: fs-reboot hash differs from the pin ($HOME/work/fsbuild-neg/stage2a/fs-reboot: 9c07d261923702124f8b6e256658afc5fa2d277991ffda8b4f86f926dc038747 != c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29)
+PASS  stock-boot-wrong  rc=1  BUILD REFUSED: stock boot hash differs from the pin (<repo>/firmware/quest3/v66_unit1_slotA/vendor_boot.img: 1e3b3762724478a7f592a11a7872cb8f7c55f0f882d7bb283ecbeffd691dbbcf != 49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50)
+PASS  inject-extra-file  rc=1  BUILD REFUSED: ramdisk contents differ from the expected list
+PASS  repro-same-nonce  two builds, nonce 0123456789abcdef: image 1ad79de02132884c163fc563e3e20523ecb6fdd50ecfed601f35a3f773f4ddde both times; ramdisk.cpio      015f3ae9451188ed35eb26a13e600e3649407aae28e0b5df5f2e58c36e3ae646  size=4756992
+TOTAL: 11 cases, 0 failed

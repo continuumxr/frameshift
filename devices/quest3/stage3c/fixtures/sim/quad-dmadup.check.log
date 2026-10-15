@@ -1,0 +1,22 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 117 records, 29541 bytes
+CHECK eos_last_after_exit PASS {'records': '117', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '14168', 'opt_skipped': '0'}
+CHECK start_mode_ver PASS show-off-quad
+CHECK stream_within_the_step_cap PASS 29541 <= 57344 bytes
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=14168 measured=14168 budget=38912
+INFO essential_bytes=15373 opt_bytes=14168 total=29541 cap=57344 (essential + budget = 54285)
+CHECK set_properties_subset_of_v05_set_plus_zpos PASS ['ACTIVE', 'CRTC_H', 'CRTC_ID', 'CRTC_W', 'CRTC_X', 'CRTC_Y', 'FB_ID', 'MODE_ID', 'SRC_H', 'SRC_W', 'SRC_X', 'SRC_Y', 'zpos']
+CHECK zpos_only_in_quad_attempts_on_the_four_planes_values_0011_by_slot PASS
+CHECK at_most_one_real_commit_and_it_equals_the_last_accepted_test PASS []
+CHECK precondition_inactive_proven PASS
+CHECK plan_quad_vig_71.97.100.103 PASS 71.97.100.103
+CHECK plan_quad_dma_unavailable-ambiguous PASS unavailable-ambiguous
+CHECK plan_values_need_no_percent_encoding (a digit-splitting reader gets the right numbers) PASS
+CHECK plan_pipe_types_from_max_upscale PASS vig-0.vig-1.vig-2.vig-3 / -
+CHECK plan_zpos_before_and_zpos_set PASS
+CHECK plan_splash_set PASS match
+CHECK plan_attempts_and_split_probe PASS
+CHECK attempt_order_split_probe_quad_vig_quad_dma (unavailable: no TEST_ONLY) PASS [('0', '1', 'split_probe', 0), ('1', '1', 'quad_vig', -22)]
+CHECK mock_saw_the_same_test_only_layouts PASS ['split+modeset', 'quad_vig']
+CHECK split_probe_never_committed PASS
+CHECK no_quad_accepted_exit50_nothing_committed PASS {'code': '50', 'reason': 'no_quad_accepted', 'shown': '0', 'closed_at_exit': '1', 'elapsed_ms': '399'}

@@ -1,0 +1,110 @@
+{
+ "ack": "1552f15606fd2ef5",
+ "challenges": {
+  "p0": "ca73bfcf6ca795b7fd229f996ca22322",
+  "r1": "5a80a502b91376af6b82e77647a2b1ba",
+  "r2": "4290e276162d41421a350a28c1f89a52",
+  "r3": "ff8c47a5115a4e8d237ed7ad5dca4580"
+ },
+ "checks": [
+  {
+   "detail": "FSV1 nonce=b7cf9a0bfb559dcb resp=4f13064af1852811e1bfdeeb335508dd862e14c04b5458342605dd524315a0ad kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=b7cf9a0bfb559dcb stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=1552f15606fd2ef5 END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=3606 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "idle limit started before SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "3806 vs t0=3606",
+   "label": "/run/fs.deadline = T0 + DEADLINE",
+   "ok": true
+  },
+  {
+   "detail": "3806.86 final pid=1 arg=deadline",
+   "label": "first reboot reason = deadline",
+   "ok": true
+  },
+  {
+   "detail": "3806.86 final pid=1 arg=deadline",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "3807.96 fork pid=461 arg=backstop",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "T0+200.9",
+   "label": "deadline reboot at T0+DEADLINE..+3 (HOST_ACK did not cancel it; idle limit unarmed without p0)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "0 write-close event(s): ",
+   "label": "backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never named the decoy crtc nodes or debugfs",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "modules attempted in order fake_a, fake_b, fake_c",
+   "ok": true
+  }
+ ],
+ "mod_notes": [],
+ "mods": [],
+ "nonce": "b7cf9a0bfb559dcb",
+ "ok": true,
+ "phases": {},
+ "plan": [],
+ "reboot_at_T0_plus": 200.9,
+ "reboots": "3806.86 final pid=1 arg=deadline\n3807.96 fork pid=461 arg=backstop\n",
+ "scenario": "c-ack-no-done",
+ "sim_args": "",
+ "t_total_s": 203.6,
+ "tail": "no-done",
+ "verify_challenge": "ded8b5847ed83b74216810ffb2ff19e1",
+ "want_reboot": "deadline"
+}

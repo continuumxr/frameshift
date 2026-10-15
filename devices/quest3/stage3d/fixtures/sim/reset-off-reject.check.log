@@ -1,0 +1,18 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 116 records, 29273 bytes
+CHECK eos_last_after_exit PASS {'records': '116', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '17712', 'opt_skipped': '0'}
+CHECK start_mode_ver PASS reset
+CHECK stream_within_the_step_cap PASS 29273 <= 57344 bytes
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=17712 measured=17712 budget=38912
+INFO essential_bytes=11561 opt_bytes=17712 total=29273 cap=57344 (essential + budget = 50473)
+CHECK set_properties_subset_of_v05_set_plus_zpos PASS ['ACTIVE', 'CRTC_ID', 'FB_ID', 'MODE_ID']
+CHECK zpos_only_in_quad_attempts_on_the_four_planes_values_0011_by_slot PASS
+CHECK reset: at most two real commits (A reset_off, B the re-enable), each equal to the last accepted test PASS []
+CHECK reset: precondition active PASS
+CHECK reset: the re-enable mode is the handed-over expected mode PASS
+CHECK reset: the buffer is black (buffer black=1; every pixel 0x00000000) PASS (9114624, 0, 0, 0, 0, 9114624)
+CHECK reset_plan: 6 objects, 11 properties, 4 planes off, 2 re-enable attempts PASS {'conn': '55', 'crtc': '155', 'objs': '6', 'props': '11', 'planes_off': '4', 'overflow': '0', 'reenable_attempts': '2', 'helper': '1'}
+CHECK reset A: the first request (TEST_ONLY, ALLOW_MODESET) sets exactly the connector CRTC_ID, MODE_ID, ACTIVE and the 4 bound planes' FB_ID/CRTC_ID, every value 0 PASS [(55, 'CRTC_ID', 0), (155, 'MODE_ID', 0), (155, 'ACTIVE', 0), (71, 'FB_ID', 0), (71, 'CRTC_ID', 0), (97, 'FB_ID', 0), (97, 'CRTC_ID', 0), (100, 'FB_ID', 0), (100, 'CRTC_ID', 0), (103, 'FB_ID', 0), (103, 'CRTC_ID', 0)]
+CHECK reset: never sets zpos PASS
+CHECK reset_off rejected: exit 50 reset_off_rejected, nothing committed PASS [('0', 'reset_off', -22)]
+CHECK mode_properties_blob_roundtrip PASS 185 bytes in 1 parts

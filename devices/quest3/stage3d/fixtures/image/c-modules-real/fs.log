@@ -1,0 +1,109 @@
+FS[13ed21be49c7b4ba] t=341s DEADLINE armed t0=341 deadline=T0+200 ack_window=150 backstop=T0+201 reboot-reasons-not-logged-at-reboot
+FS[13ed21be49c7b4ba] t=342s STAGE=INIT_STARTED pid=1 kernel=6.18.33.2-microsoft-standard-WSL2 deadline=T0+200
+FS[13ed21be49c7b4ba] t=342s BACKSTOP armed pid=53 in=200s
+FS[13ed21be49c7b4ba] t=342s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62 (= the pinned v2.7 index)
+FS[13ed21be49c7b4ba] t=342s FW_TIMEOUT=1
+FS[13ed21be49c7b4ba] t=342s MODLIST /lib/fs/modules.load entries=95
+FS[13ed21be49c7b4ba] t=343s MODULE_FAIL nautilus.ko: insmod: can't insert '/lib/modules/nautilus.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=345s MODULE_FAIL qcom-scm.ko: insmod: can't insert '/lib/modules/qcom-scm.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=346s MODULE_FAIL secure_buffer.ko: insmod: can't insert '/lib/modules/secure_buffer.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=346s MODULE_FAIL qcom_iommu_util.ko: insmod: can't insert '/lib/modules/qcom_iommu_util.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=347s MODULE_FAIL iommu-logger.ko: insmod: can't insert '/lib/modules/iommu-logger.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=348s MODULE_FAIL arm_smmu.ko: insmod: can't insert '/lib/modules/arm_smmu.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=349s MODULE_FAIL proxy-consumer.ko: insmod: can't insert '/lib/modules/proxy-consumer.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=350s MODULE_FAIL gdsc-regulator.ko: insmod: can't insert '/lib/modules/gdsc-regulator.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=351s MODULE_FAIL clk-qcom.ko: insmod: can't insert '/lib/modules/clk-qcom.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=352s MODULE_FAIL clk-dummy.ko: insmod: can't insert '/lib/modules/clk-dummy.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=353s MODULE_FAIL cmd-db.ko: insmod: can't insert '/lib/modules/cmd-db.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=354s MODULE_FAIL qcom_rpmh.ko: insmod: can't insert '/lib/modules/qcom_rpmh.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=354s MODULE_FAIL clk-rpmh.ko: insmod: can't insert '/lib/modules/clk-rpmh.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=355s MODULE_FAIL tmecom-intf.ko: insmod: can't insert '/lib/modules/tmecom-intf.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=356s MODULE_FAIL hwkm.ko: insmod: can't insert '/lib/modules/hwkm.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=357s MODULE_FAIL crypto-qti-hwkm.ko: insmod: can't insert '/lib/modules/crypto-qti-hwkm.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=357s MODULE_FAIL crypto-qti-common.ko: insmod: can't insert '/lib/modules/crypto-qti-common.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=358s MODULE_FAIL dcvs_fp.ko: insmod: can't insert '/lib/modules/dcvs_fp.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=358s MODULE_FAIL dispcc0-anorak.ko: insmod: can't insert '/lib/modules/dispcc0-anorak.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=359s MODULE_FAIL dispcc1-anorak.ko: insmod: can't insert '/lib/modules/dispcc1-anorak.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=360s MODULE_FAIL dwc3-msm.ko: insmod: can't insert '/lib/modules/dwc3-msm.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=361s MODULE_FAIL gcc-anorak.ko: insmod: can't insert '/lib/modules/gcc-anorak.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=362s MODULE_FAIL gh_msgq.ko: insmod: can't insert '/lib/modules/gh_msgq.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=363s MODULE_FAIL gh_rm_drv.ko: insmod: can't insert '/lib/modules/gh_rm_drv.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=364s MODULE_FAIL icc-bcm-voter.ko: insmod: can't insert '/lib/modules/icc-bcm-voter.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=365s MODULE_FAIL socinfo.ko: insmod: can't insert '/lib/modules/socinfo.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=365s MODULE_FAIL icc-rpmh.ko: insmod: can't insert '/lib/modules/icc-rpmh.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=366s MODULE_FAIL kryo_arm64_edac.ko: insmod: can't insert '/lib/modules/kryo_arm64_edac.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=366s MODULE_FAIL llcc-qcom.ko: insmod: can't insert '/lib/modules/llcc-qcom.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=367s MODULE_FAIL mem_buf_dev.ko: insmod: can't insert '/lib/modules/mem_buf_dev.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=368s MODULE_FAIL msm_dma_iommu_mapping.ko: insmod: can't insert '/lib/modules/msm_dma_iommu_mapping.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=369s MODULE_FAIL qcom_dma_heaps.ko: insmod: can't insert '/lib/modules/qcom_dma_heaps.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=369s MODULE_FAIL mem_buf.ko: insmod: can't insert '/lib/modules/mem_buf.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=369s MODULE_FAIL mem-hooks.ko: insmod: can't insert '/lib/modules/mem-hooks.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=371s MODULE_FAIL qcom_aoss.ko: insmod: can't insert '/lib/modules/qcom_aoss.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=371s MODULE_FAIL msm_qmp.ko: insmod: can't insert '/lib/modules/msm_qmp.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=373s MODULE_FAIL nvmem_qcom-spmi-sdam.ko: insmod: can't insert '/lib/modules/nvmem_qcom-spmi-sdam.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=374s MODULE_FAIL panel_event_notifier.ko: insmod: can't insert '/lib/modules/panel_event_notifier.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=375s MODULE_FAIL qmi_helpers.ko: insmod: can't insert '/lib/modules/qmi_helpers.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=376s MODULE_FAIL qcom_glink.ko: insmod: can't insert '/lib/modules/qcom_glink.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=377s MODULE_FAIL qcom_glink_smem.ko: insmod: can't insert '/lib/modules/qcom_glink_smem.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=378s MODULE_FAIL qcom_smd.ko: insmod: can't insert '/lib/modules/qcom_smd.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=379s MODULE_FAIL rproc_qcom_common.ko: insmod: can't insert '/lib/modules/rproc_qcom_common.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=379s MODULE_FAIL pdr_interface.ko: insmod: can't insert '/lib/modules/pdr_interface.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=380s MODULE_FAIL phy-msm-snps-hs.ko: insmod: can't insert '/lib/modules/phy-msm-snps-hs.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=381s MODULE_FAIL phy-msm-ssusb-qmp.ko: insmod: can't insert '/lib/modules/phy-msm-ssusb-qmp.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=381s MODULE_FAIL phy-qcom-ufs.ko: insmod: can't insert '/lib/modules/phy-qcom-ufs.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=382s MODULE_FAIL phy-qcom-ufs-qmp-v4-anarok.ko: insmod: can't insert '/lib/modules/phy-qcom-ufs-qmp-v4-anarok.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=383s MODULE_FAIL pinctrl-msm.ko: insmod: can't insert '/lib/modules/pinctrl-msm.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=383s MODULE_FAIL pinctrl-anorak.ko: insmod: can't insert '/lib/modules/pinctrl-anorak.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=384s MODULE_FAIL pmic_glink.ko: insmod: can't insert '/lib/modules/pmic_glink.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=385s MODULE_FAIL pwm-tach-fan.ko: insmod: can't insert '/lib/modules/pwm-tach-fan.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=385s MODULE_FAIL qcom-cpufreq-hw.ko: insmod: can't insert '/lib/modules/qcom-cpufreq-hw.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=385s MODULE_FAIL qcom-dcvs.ko: insmod: can't insert '/lib/modules/qcom-dcvs.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=386s MODULE_FAIL qcom_cpu_vendor_hooks.ko: insmod: can't insert '/lib/modules/qcom_cpu_vendor_hooks.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=387s MODULE_FAIL qcom-dload-mode.ko: insmod: can't insert '/lib/modules/qcom-dload-mode.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=387s MODULE_FAIL qcom_hwspinlock.ko: insmod: can't insert '/lib/modules/qcom_hwspinlock.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=387s MODULE_FAIL qcom_ipcc.ko: insmod: can't insert '/lib/modules/qcom_ipcc.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=388s MODULE_FAIL qcom_llcc_pmu.ko: insmod: can't insert '/lib/modules/qcom_llcc_pmu.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=389s MODULE_FAIL qcom-pdc.ko: insmod: can't insert '/lib/modules/qcom-pdc.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=389s MODULE_FAIL qcom-reboot-reason.ko: insmod: can't insert '/lib/modules/qcom-reboot-reason.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=390s MODULE_FAIL regmap-spmi.ko: insmod: can't insert '/lib/modules/regmap-spmi.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=390s MODULE_FAIL qcom-spmi-pmic.ko: insmod: can't insert '/lib/modules/qcom-spmi-pmic.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=391s MODULE_FAIL qcom_wdt_core.ko: insmod: can't insert '/lib/modules/qcom_wdt_core.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=392s MODULE_FAIL qnoc-qos.ko: insmod: can't insert '/lib/modules/qnoc-qos.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=392s MODULE_FAIL qnoc-anorak.ko: insmod: can't insert '/lib/modules/qnoc-anorak.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=393s MODULE_FAIL qrtr.ko: insmod: can't insert '/lib/modules/qrtr.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=393s MODULE_FAIL qti-fixed-regulator.ko: insmod: can't insert '/lib/modules/qti-fixed-regulator.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=394s MODULE_FAIL rpmh-regulator.ko: insmod: can't insert '/lib/modules/rpmh-regulator.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=395s MODULE_FAIL rtc-pm8xxx.ko: insmod: can't insert '/lib/modules/rtc-pm8xxx.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=396s MODULE_FAIL spmi-pmic-arb.ko: insmod: can't insert '/lib/modules/spmi-pmic-arb.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=396s MODULE_FAIL ucsi_glink.ko: insmod: can't insert '/lib/modules/ucsi_glink.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=397s MODULE_FAIL ufshcd-crypto-qti.ko: insmod: can't insert '/lib/modules/ufshcd-crypto-qti.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=398s MODULE_FAIL ufs_qcom.ko: insmod: can't insert '/lib/modules/ufs_qcom.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=399s MODULE_FAIL zsmalloc.ko: insmod: can't insert '/lib/modules/zsmalloc.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=399s MODULE_FAIL zram.ko: insmod: can't insert '/lib/modules/zram.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=400s MODULE_FAIL altmode-glink.ko: insmod: can't insert '/lib/modules/altmode-glink.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=400s MODULE_FAIL blu_fw_driver.ko: insmod: can't insert '/lib/modules/blu_fw_driver.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=401s MODULE_FAIL gpi.ko: insmod: can't insert '/lib/modules/gpi.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=403s MODULE_FAIL qseecom-mod.ko: insmod: can't insert '/lib/modules/qseecom-mod.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=403s MODULE_FAIL smcinvoke_mod.ko: insmod: can't insert '/lib/modules/smcinvoke_mod.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=403s MODULE_FAIL hdcp.ko: insmod: can't insert '/lib/modules/hdcp.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=404s MODULE_FAIL i2c-msm-geni.ko: insmod: can't insert '/lib/modules/i2c-msm-geni.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=405s MODULE_FAIL pwm-qti-lpg.ko: insmod: can't insert '/lib/modules/pwm-qti-lpg.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=405s MODULE_FAIL leds-qti-tri-led.ko: insmod: can't insert '/lib/modules/leds-qti-tri-led.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=406s MODULE_FAIL mp3314.ko: insmod: can't insert '/lib/modules/mp3314.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=406s MODULE_FAIL msm-mmrm.ko: insmod: can't insert '/lib/modules/msm-mmrm.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=407s MODULE_FAIL msm_ext_display.ko: insmod: can't insert '/lib/modules/msm_ext_display.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=408s MODULE_FAIL msm_drm.ko: insmod: can't insert '/lib/modules/msm_drm.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=408s MODULE_FAIL pinctrl-spmi-gpio.ko: insmod: can't insert '/lib/modules/pinctrl-spmi-gpio.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=409s MODULE_FAIL pm8941-pwrkey.ko: insmod: can't insert '/lib/modules/pm8941-pwrkey.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=409s MODULE_FAIL reboot-mode.ko: insmod: can't insert '/lib/modules/reboot-mode.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=410s MODULE_FAIL qcom-pon.ko: insmod: can't insert '/lib/modules/qcom-pon.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=410s MODULE_FAIL spi-msm-geni.ko: insmod: can't insert '/lib/modules/spi-msm-geni.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=411s MODULE_FAIL tps65132-regulator.ko: insmod: can't insert '/lib/modules/tps65132-regulator.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=414s STAGE=MODULES_READY ok=0 fail=95 udc=a600000.dwc3  drm=card0-DSI-1 card0-sde-crtc-0 
+FS[13ed21be49c7b4ba] t=414s DRM_NODE sysfs=absent node=absent
+FS[13ed21be49c7b4ba] t=414s ROLE mode=peripheral roles=device 
+FS[13ed21be49c7b4ba] t=415s STAGE=ACM_SETUP_ATTEMPTED 
+FS[13ed21be49c7b4ba] t=416s GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-13ed21be49c7b4ba
+FS[13ed21be49c7b4ba] t=416s STAGE=UDC_BOUND state=configured
+FS[13ed21be49c7b4ba] t=417s IDLE_LIMIT started pid=4302 idle=120s stuck=180s (unarmed until p0)
+FS[13ed21be49c7b4ba] t=417s STAGE=SHELL_READY 

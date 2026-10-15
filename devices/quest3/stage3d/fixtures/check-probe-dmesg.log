@@ -1,0 +1,6 @@
+CHECK stage3d probe: the 66 mode-validation lines are not kept PASS kept=0
+CHECK stage3d probe: the 5 real display lines are kept, in order PASS kept=5
+CHECK stage3d probe: one summary line with the count (66) PASS 
+CHECK stage3d probe: the counts line (5 new matching, 5 shown) and the newest timestamp remembered PASS last=23.905183
+CHECK stage3d probe: a later point with no new line keeps nothing, counts 0 PASS 
+CHECK negative control: the stage-3c probe keeps the noise and loses REAL-1..3 to the 4096-byte budget PASS stage3c kept 27 noise lines, REAL-1..3: 0

@@ -1,0 +1,11 @@
+# stage3a builder negatives  2026-10-09T08:57:39Z; build-image.sh sha256=da789a3008329f526cfef2472d30d21dc6cdad7bde7e8cc82c200b1ed3c9d73d
+PASS  fs-pattern-tampered  rc=1  BUILD REFUSED: fs-pattern hash differs from the pin ($HOME/work/fsbuild-neg/stage3a/fs-pattern: 952ab9ee2337f618ac4a1fe575dadc0b7049be77621c4d6cadba0ba82ac98989 != c7f28cc70f05387416c47d48707ab3e20bd3ba2306cf483516e353739519ad2a)
+PASS  fs-pattern-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-pattern
+PASS  busybox-tampered  rc=1  BUILD REFUSED: busybox hash differs from the pin ($HOME/work/fsbuild-neg/stage3a/busybox: 05cb73694524f673df60bff68a5bb4ef98af6e884eb2a3559b41b51b3d7c9dd2 != c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02)
+PASS  fs-supervise-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-supervise
+PASS  fs-reboot-final-tampered  rc=1  BUILD REFUSED: fs-reboot-final hash differs from the pin ($HOME/work/fsbuild-neg/stage3a/fs-reboot-final: af0f01157cb252b877afc0c97ea4d19fa54966d2be5d259750cd6c9c1f3cea81 != ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e)
+PASS  fs-reboot-tampered  rc=1  BUILD REFUSED: fs-reboot hash differs from the pin ($HOME/work/fsbuild-neg/stage3a/fs-reboot: 9c07d261923702124f8b6e256658afc5fa2d277991ffda8b4f86f926dc038747 != c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29)
+PASS  stock-boot-wrong  rc=1  BUILD REFUSED: stock boot hash differs from the pin (<repo>/firmware/quest3/v66_unit1_slotA/vendor_boot.img: 1e3b3762724478a7f592a11a7872cb8f7c55f0f882d7bb283ecbeffd691dbbcf != 49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50)
+PASS  inject-extra-file  rc=1  BUILD REFUSED: ramdisk contents differ from the expected list
+PASS  repro-same-nonce  two builds, nonce 0123456789abcdef: image f01ebbb04473c25726bb4cfd8bbf1c59bddcb2023230979b8065e27d21eab4e4 both times; ramdisk.cpio      3adcc90e9cd6946b6f638084431b2c23bd8dbe501627deeca78bf77f1a156997  size=3306496
+TOTAL: 9 cases, 0 failed

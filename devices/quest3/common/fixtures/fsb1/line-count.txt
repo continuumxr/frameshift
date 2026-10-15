@@ -1,0 +1,22 @@
+FSB1 BEGIN v=1 exp=fixture nonce=5e1f0c3a9b7d2468 chal=c0ffee00112233445566778899aabbcc steps=7
+FSB1 STEP i=1 id=text end=exited code=0 sig=0 errno=0 ms=23 term_ms=-1 kill_ms=-1 out_total=24 out_kept=24 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=24 out_sha256=6f66b3832caa04f0e1150cac9a0fdbbeac67ac7865a22dd108fe88e5ef170cd8 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=1 s=o n=0 bGluZSBvbmUKbGluZSB0d28NCgl0YWIK
+FSB1 STEP i=2 id=bytes end=exited code=0 sig=0 errno=0 ms=1777 term_ms=-1 kill_ms=-1 out_total=256 out_kept=256 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=256 out_sha256=40aff2e9d2d8922e47afd4648e6967497158785fbd1da870e7110266bf944880 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=2 s=o n=0 AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4v
+FSB1 DATA i=2 s=o n=1 MDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5f
+FSB1 DATA i=2 s=o n=2 YGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6P
+FSB1 DATA i=2 s=o n=3 kJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/
+FSB1 DATA i=2 s=o n=4 wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v
+FSB1 DATA i=2 s=o n=5 8PHy8/T19vf4+fr7/P3+/w==
+FSB1 STEP i=3 id=empty end=exited code=0 sig=0 errno=0 ms=35 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=0 out_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 STEP i=4 id=both end=exited code=7 sig=0 errno=0 ms=35 term_ms=-1 kill_ms=-1 out_total=4 out_kept=4 err_total=4 err_kept=4 strays=0 pipes=eof why=none out_len=4 out_sha256=54034ac5c6e9ea95734ec2b729fd6d62abf64af34a9f9ce5d466cb788191a73d err_len=4 err_sha256=2ccde4875ec595757efdf23d7b1336fcd69cf0fb869310b12a0d219c52817b20
+FSB1 DATA i=4 s=o n=0 b3V0Cg==
+FSB1 DATA i=4 s=e n=0 ZXJyCg==
+FSB1 STEP i=5 id=slow end=timer-term code=-1 sig=15 errno=0 ms=1002 term_ms=1001 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=0 out_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 STEP i=6 id=kat end=exited code=0 sig=0 errno=0 ms=32 term_ms=-1 kill_ms=-1 out_total=68 out_kept=68 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=68 out_sha256=abcfa6a9d4df344d1781bc2560b5e4cdcae08b39ed303063535e7e1e926a304a err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=6 s=o n=0 ZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRj
+FSB1 DATA i=6 s=o n=1 YTQ5NTk5MWI3ODUyYjg1NSAgLQo=
+FSB1 STEP i=7 id=chal end=exited code=0 sig=0 errno=0 ms=27 term_ms=-1 kill_ms=-1 out_total=68 out_kept=68 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=68 out_sha256=7344d16ae053bc161159aaa6db3dc9b0a0278e29df39a8b8ae36a2de64fadef1 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=7 s=o n=0 MTZlYWMwMzA1MjczMDY5OGY5OTEzZGFkODU4MmQ5OGQ5NmI0YmI1MDdiMzAxNDdk
+FSB1 DATA i=7 s=o n=1 YjJhMzI3ZDkzYzRjZTgwOCAgLQo=
+FSB1 END v=1 nonce=5e1f0c3a9b7d2468 chal=c0ffee00112233445566778899aabbcc lines=121 rec_sha256=c54573b7e33b77bc342ea130904402cfd1e00309733f2ca7d96bd39a08cd9021

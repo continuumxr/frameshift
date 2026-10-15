@@ -1,0 +1,7 @@
+[   23.900073] [drm:dsi_display_set_mode [msm_drm]] REAL-1 dsi display mode set 4128x2208x90vid
+[   23.900146] [drm:sde_encoder_virt_enable [msm_drm]] REAL-2 sde encoder enable
+[   23.900219] panel_event_notifier: REAL-3 panel power on
+[   23.905110] [drm:dsi_panel_set_backlight [msm_drm]] REAL-4 backlight level 127
+[   23.905183] [drm:sde_kms_underrun [msm_drm]] *ERROR* REAL-5 underrun on intf 1
+-- dmesg: 5 new matching line(s), 5 shown
+-- dmesg: 66 mode-validation line(s) not kept (dsi_conn_mode_valid / dsi_display_find_mode)

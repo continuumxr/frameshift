@@ -1,0 +1,3 @@
+FSP1 nonce=3f9c07ab seq=0 step=crtc_state rc=0 idx=-1 w=0 h=0 vrefresh=0 clock_khz=0 hss=0 hse=0 htotal=0 vss=0 vse=0 vtotal=0 flags=0x0 type=0x0 name= getcrtc_rc=0 mode_valid=0 fb=0 in_list=0 expected=0 len=203 crc=47f312bf END
+FSP1 nonce=3f9c07ab seq=1 step=exit rc=0 code=50 reason=test_rejected shown=0 closed_at_exit=1 elapsed_ms=1 len=107 crc=815e5daf END
+FSP1 nonce=3f9c07ab seq=2 step=eos rc=0 records=3 dropped=0 overflows=0 out=file len=80 crc=0b9f7611 END

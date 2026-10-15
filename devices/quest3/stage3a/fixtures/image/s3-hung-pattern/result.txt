@@ -1,0 +1,20 @@
+# s3-hung-pattern (stage3a) mods=['hang-pattern'] plan=full; image <repo>/build/stage3a/20261009T085209Z-17449af173f0633a
+# mod: replaced /bin/fs-pattern by a TERM-ignoring endless script
+# reboots: 955.98 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=17449af173f0633a resp=cc91491c93b9c0a07618e1d87890a76cf75e892fbc06758b2d084c0609c3baa0 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=17449af173f0633a stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=6ffc9f24fe2d41ed END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=17449af173f0633a chal=6c8d3e5a0ac8b5772820acf5241ae48b lines=5 rec_sha256=8ac86038f3577ca43710c2d2989e48bdb87c6be805aef81b8428b0b237a9094d]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=923 deadline=T0+170 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [955.98 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [955.98 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.2 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  step 2 ended timer-kill sig=9  [('pattern', 'timer-kill', -1, 9)]
+PASS  an empty line immediately before FSB1 BEGIN
+SCENARIO s3-hung-pattern PASS

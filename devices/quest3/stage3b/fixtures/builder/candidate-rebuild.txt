@@ -1,0 +1,6 @@
+# candidate rebuild check 2026-10-10T19:52:24Z: build-image.sh rerun with FS_TEST_NONCE=6cf0f15867f14edc FS_TEST_STAMP=20261010T194509Z into WSL scratch (~/work/fsbuild-repro3b, deleted after)
+candidate  ea60d6cddb2d14d16e208d16f6aef0ebc8798c1e9e74c223d73438bd92705841  build/stage3b/20261010T194509Z-6cf0f15867f14edc/boot-stage3b.img
+rebuild    ea60d6cddb2d14d16e208d16f6aef0ebc8798c1e9e74c223d73438bd92705841
+cpio       candidate: ramdisk.cpio      afbe181505c000937c9e41fd16a080eb4a4f3b6ab4c8fc33159a3af5f6cbecde  size=3354112
+cpio       rebuild:   ramdisk.cpio      afbe181505c000937c9e41fd16a080eb4a4f3b6ab4c8fc33159a3af5f6cbecde  size=3354112
+PASS  candidate-bit-identical-rebuild

@@ -1,0 +1,9 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq PASS 5 records
+CHECK no_overflow_or_budget_record PASS
+CHECK eos_counts PASS {'records': '5', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '375', 'opt_skipped': '0'}
+CHECK opt_bytes_reported_equals_measured_and_within_max PASS opt_bytes=375 measured=375 max=20480
+CHECK conn_topology_once_essential PASS
+CHECK topology_values PASS {'conn': '55', 'props': '22', 'topology_prop': '1019', 'topology_val': '14', 'topology_name': 'sde_quadpipe_dsc4hsmerge', 'control_prop': '1020', 'control_val': '0', 'dsc_mode_prop': '1013', 'dsc_mode_val': '2', 'mode_props_blob': '201'}
+CHECK mode_properties_blob_roundtrip PASS 185 bytes
+CHECK off_mode_logs_topology_and_mode_properties_only PASS ['blob', 'conn_topology', 'eos', 'exit', 'start']

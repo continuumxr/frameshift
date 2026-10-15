@@ -1,0 +1,10 @@
+1.out  PASS 24 bytes
+2.out  PASS 256 bytes
+3.out  PASS 0 bytes
+3.err  PASS 0 bytes
+4.out  PASS 4 bytes
+4.err  PASS 4 bytes
+5.out  PASS 0 bytes
+6.out  PASS 68 bytes
+7.out  PASS 68 bytes
+TOTAL fail=0

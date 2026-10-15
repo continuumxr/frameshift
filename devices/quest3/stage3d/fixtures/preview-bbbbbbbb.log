@@ -1,0 +1,8 @@
+PORT bbbbbbbb roll=21 eyes=swap 4128x2208 grey-pixels sha256=88ba1b6c61237963e3f751e286eac4dde8bd01fdbe2833aa37f1e66ab12e125c
+VALIDATE port == C render (/tmp/tmp.IfrAOVi3Yw/v6-bbbbbbbb.ppm): IDENTICAL
+STATS white_ppm=30884 max=0xff mean_x1000=131922 levels=0x80,0xff
+PNG scanout sha256=3a1d6ec9068445322b879da7764f4df22c8f9dff21d6198e318e4a74481d2a88
+PNG panels sha256=ec76521c84db4a40d8c610aa8ff8c8e724dd89df7d99bfc856912c3980cca1fa
+PNG asseen sha256=c7fc3289e92c4d1552a2a9fcbcfa0958dc1bcf8308d44e19ec688f5a882c252f
+PNG mixermap sha256=335ab28c5c68bec2a643391934b72900182ebe8dc850d3413f62b6db38a8dd7a
+PNG digits sha256=eba0b0be05e99287f9d6926927a3a508d6cf5c2666f2b9782858ca674fd7417a

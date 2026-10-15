@@ -1,0 +1,14 @@
+FSPR1 helper=r1 start up=296.50
+== backlight-verify node=/sys/class/backlight/panel0-backlight/brightness (read only) up=296.53
+readback=127
+== point pre run=r1 up=296.57
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 296.61
+-- drm connectors
+card0-DSI-1 status=connected enabled=enabled dpms=On
+-- crtc-0
+backlight_timing=55,4828,4828
+backlight_event=BACKLIGHT=7197969,4972614692528,909583
+active_event=ACTIVE=1868543,4972593066018,3315573

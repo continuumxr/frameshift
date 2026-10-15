@@ -1,0 +1,34 @@
+
+<repo>/devices/quest3/common/build/fs-reboot-final:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000021013c <.text>:
+  21013c: a0 d5 9b 52  	mov	w0, #57005
+  210140: 83 ff ff 90  	adrp	x3, 0x200000
+  210144: 21 2d 83 52  	mov	w1, #6505
+  210148: 82 7a 98 52  	mov	w2, #50132
+  21014c: 20 dc bf 72  	movk	w0, #65249, lsl #16
+  210150: 63 c0 04 91  	add	x3, x3, #304
+  210154: c8 11 80 52  	mov	w8, #142
+  210158: 41 02 a5 72  	movk	w1, #10258, lsl #16
+  21015c: 42 36 b4 72  	movk	w2, #41394, lsl #16
+  210160: 01 00 00 d4  	svc	#0
+  210164: 21 2d 83 52  	mov	w1, #6505
+  210168: e2 ac 88 52  	mov	w2, #17767
+  21016c: a0 d5 9b 52  	mov	w0, #57005
+  210170: 41 02 a5 72  	movk	w1, #10258, lsl #16
+  210174: 62 24 a0 72  	movk	w2, #291, lsl #16
+  210178: 20 dc bf 72  	movk	w0, #65249, lsl #16
+  21017c: e3 03 1f aa  	mov	x3, xzr
+  210180: 89 ff ff 90  	adrp	x9, 0x200000 <.text+0x4>
+  210184: c8 11 80 52  	mov	w8, #142
+  210188: 01 00 00 d4  	svc	#0
+  21018c: 29 81 04 91  	add	x9, x9, #288
+  210190: e1 03 1f aa  	mov	x1, xzr
+  210194: e2 03 1f aa  	mov	x2, xzr
+  210198: e3 03 1f aa  	mov	x3, xzr
+  21019c: e0 03 09 aa  	mov	x0, x9
+  2101a0: a8 0c 80 52  	mov	w8, #101
+  2101a4: 01 00 00 d4  	svc	#0
+  2101a8: fd ff ff 17  	b	0x21019c <.text+0x60>

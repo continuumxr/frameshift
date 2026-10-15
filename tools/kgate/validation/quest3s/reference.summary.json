@@ -1,0 +1,133 @@
+{
+ "body_sha256": "ac1d6044d76d1d2a90bfd4d9a637d8d4fcb9f94529f364fd42d5ef3071cb2add",
+ "checks": [
+  {
+   "id": "source-empty",
+   "message": "boot: generic boot ramdisk has no modules (allowed for boot sources)",
+   "status": "INFO"
+  },
+  {
+   "id": "source-redirect",
+   "message": "vendor: /lib/modules -> /vendor_dlkm/lib/modules (covered by source 'vendor_dlkm' at /lib/modules)",
+   "status": "INFO"
+  },
+  {
+   "id": "module-lists",
+   "message": "all 2053 module references in 7 modules.load*/modules.dep file(s) are present in the inventory",
+   "status": "PASS"
+  },
+  {
+   "id": "modprobe-crosscheck",
+   "message": "__versions of 268 unique modules agree with modprobe --dump-modversions",
+   "status": "PASS"
+  },
+  {
+   "id": "same-name-identical",
+   "message": "128 module name(s) present more than once with identical content (deduplicated, all paths kept in inventory)",
+   "status": "INFO"
+  },
+  {
+   "id": "import-crc-conflict",
+   "message": "no symbol is imported with conflicting CRCs",
+   "status": "PASS"
+  },
+  {
+   "id": "stock-btf",
+   "message": "stock kernel kinds: ARRAY, CONST, DATASEC, ENUM, FUNC, FUNC_PROTO, FWD, INT, PTR, RESTRICT, STRUCT, TYPEDEF, UNION, VAR, VOLATILE (111551 types)",
+   "status": "PASS"
+  },
+  {
+   "id": "profile",
+   "message": "device quest3s: declared sources and pinned counts (module_copies=396, required_from_vmlinux=2583, unique_modules=268) match; reference sha256 matches pin",
+   "status": "PASS"
+  },
+  {
+   "id": "reference",
+   "message": "396 module copies, 268 unique; 3514 unique (symbol,CRC) imports; 2583 required from vmlinux; 0 unversioned imports; module_layout 0xb1f01218; vermagic flags 'SMP preempt mod_unload modversions aarch64'; reference.json sha256 89407ffa0c241932e88fa74b1ca110e58eee7d6d25650e1a648a0df8a4bc3457 (pin this for check --reference-sha256)",
+   "status": "PASS"
+  }
+ ],
+ "counts": {
+  "imported_pairs": 15073,
+  "module_copies": 396,
+  "presence_required_unversioned": 0,
+  "required_from_vmlinux": 2583,
+  "unique_imported_pairs": 3514,
+  "unique_modules": 268,
+  "vendor_exported_symbols": 1854
+ },
+ "exit_code": 0,
+ "module_layout": "0xb1f01218",
+ "reference_dir": "$HOME/work/kgate-refs/quest3s",
+ "reference_sha256": "89407ffa0c241932e88fa74b1ca110e58eee7d6d25650e1a648a0df8a4bc3457",
+ "result": "PASS",
+ "schema": "kgate-reference/3-summary",
+ "sources": [
+  {
+   "detail": "vendor_boot v4; ramdisk00(type1): lz4, 155 files, 128 .ko",
+   "file": "vendor_boot.img",
+   "kind": "vendor_boot",
+   "label": "vendor_boot",
+   "module_lists": [
+    "ramdisk00(type1):/lib/modules/modules.dep",
+    "ramdisk00(type1):/lib/modules/modules.load",
+    "ramdisk00(type1):/lib/modules/modules.load.recovery"
+   ],
+   "modules": 128,
+   "sha256": "58417b56a733410218779f5c3a89b36722ce27f76fc8c117196d1deccc12baf8",
+   "size": 100663296
+  },
+  {
+   "detail": "boot v4; ramdisk lz4, 230 files, 0 .ko",
+   "file": "boot.img",
+   "kind": "boot",
+   "label": "boot",
+   "module_lists": [],
+   "modules": 0,
+   "sha256": "3aef9160328d02167b5dc2000f06f09eff09d97d09e82ada8df27c4de3f5f4f4",
+   "size": 100663296
+  },
+  {
+   "detail": "ext4 /lib/modules: 253 files listed",
+   "file": "vendor_dlkm.img",
+   "kind": "ext4",
+   "label": "vendor_dlkm",
+   "module_lists": [
+    "/lib/modules/modules.dep",
+    "/lib/modules/modules.load"
+   ],
+   "modules": 248,
+   "modules_root": "/lib/modules",
+   "sha256": "c4ee7e835a52b3a7fb36d55d7ebce33315bd1a5600c496e10a68c134b51f72c0",
+   "size": 62439424
+  },
+  {
+   "detail": "ext4 /lib/modules: 25 files listed",
+   "file": "odm_dlkm.img",
+   "kind": "ext4",
+   "label": "odm_dlkm",
+   "module_lists": [
+    "/lib/modules/modules.dep",
+    "/lib/modules/modules.load"
+   ],
+   "modules": 20,
+   "modules_root": "/lib/modules",
+   "sha256": "17d729c25c9180a3ba8936fceb2ed6d72e5581017f48a0d01a2156e5d3110404",
+   "size": 1253376
+  },
+  {
+   "detail": "ext4 /lib/modules: symlink -> /vendor_dlkm/lib/modules",
+   "file": "vendor.img",
+   "kind": "ext4",
+   "label": "vendor",
+   "module_lists": [],
+   "modules": 0,
+   "modules_root": "/lib/modules",
+   "redirect": "/vendor_dlkm/lib/modules",
+   "sha256": "4d98f27139089d90d1852235aadd15dc03e88bbd39ed3a94912cbd3ea0a9c194",
+   "size": 542564352
+  }
+ ],
+ "tool_version": "2.3",
+ "vermagic": "5.10.246-gd7102a837402 SMP preempt mod_unload modversions aarch64"
+}

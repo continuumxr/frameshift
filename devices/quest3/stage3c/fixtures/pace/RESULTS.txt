@@ -1,0 +1,66 @@
+# stage 3c paced-emission evidence  2026-10-12T00:58:02Z
+# busybox c2f279d1d5640a0f (reviewed); fs-supervise 77f7a70a7904a709; fsb1-enc.sh 11e44d2fa386d06c; fsb1-pace.sh 71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c
+PASS  p0-record-at-caps-lines  358 lines, 32191 bytes (MAXLINES 360; caps-derived 358)
+PASS  p0-record-maximum-lines  360 lines, 32367 bytes (MAXLINES 360; caps-derived 358)
+PASS  p0-record-maximum-plus-1-lines  361 lines, 32457 bytes (MAXLINES 360; caps-derived 358)
+PASS  p0-a-at-caps-bytes-identical  32192 bytes; sha256 8be0727e61bca2f8
+PASS  p0-a-at-caps-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 94aabd4bc73d0099...; lines=357
+PASS  p0-d-at-caps-emission-time  358 lines: paced 2.16 s under qemu (unpaced 0.11 s); check-timing-3c.py bound for MAXLINES 360: 2.98 s
+PASS  p0-d-at-caps-chunk-burst  largest 20-line write: 2178 bytes
+PASS  p0-a-maximum-bytes-identical  32368 bytes; sha256 feee49284ac3475e
+PASS  p0-a-maximum-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 44d44901d0aa244b...; lines=359
+PASS  p0-d-maximum-emission-time  360 lines: paced 2.68 s under qemu (unpaced 0.13 s); check-timing-3c.py bound for MAXLINES 360: 2.98 s
+PASS  p0-d-maximum-chunk-burst  largest 20-line write: 2180 bytes
+PASS  p0-refuse-maxlines-plus-1  rc=3, 0 bytes written
+PASS  r1-record-at-caps-lines  1541 lines, 137651 bytes (MAXLINES 1545; caps-derived 1541)
+PASS  r1-record-maximum-lines  1545 lines, 138005 bytes (MAXLINES 1545; caps-derived 1541)
+PASS  r1-record-maximum-plus-1-lines  1546 lines, 138092 bytes (MAXLINES 1545; caps-derived 1541)
+PASS  r1-a-at-caps-bytes-identical  137652 bytes; sha256 a13ad9c455f8a162
+PASS  r1-a-at-caps-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 c2a890a596c988d4...; lines=1540
+PASS  r1-d-at-caps-emission-time  1541 lines: paced 8.58 s under qemu (unpaced 0.15 s); check-timing-3c.py bound for MAXLINES 1545: 9.58 s
+PASS  r1-d-at-caps-chunk-burst  largest 20-line write: 2012 bytes
+PASS  r1-a-maximum-bytes-identical  138006 bytes; sha256 727833a3d63cb8bf
+PASS  r1-a-maximum-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 96774e2bde728b7c...; lines=1544
+PASS  r1-d-maximum-emission-time  1545 lines: paced 8.63 s under qemu (unpaced 0.14 s); check-timing-3c.py bound for MAXLINES 1545: 9.58 s
+PASS  r1-d-maximum-chunk-burst  largest 20-line write: 2012 bytes
+PASS  r1-refuse-maxlines-plus-1  rc=3, 0 bytes written
+PASS  r2-record-at-caps-lines  1541 lines, 137651 bytes (MAXLINES 1545; caps-derived 1541)
+PASS  r2-record-maximum-lines  1545 lines, 138005 bytes (MAXLINES 1545; caps-derived 1541)
+PASS  r2-record-maximum-plus-1-lines  1546 lines, 138093 bytes (MAXLINES 1545; caps-derived 1541)
+PASS  r2-record-representative-lines  732 lines, 65453 bytes (MAXLINES 1545; caps-derived 1541)
+PASS  r2-a-representative-bytes-identical  65454 bytes; sha256 fab96627f757c575
+PASS  r2-a-representative-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 2469d8cba88077f6...; lines=731
+PASS  r2-d-representative-emission-time  732 lines: paced 4.11 s under qemu (unpaced 0.09 s); check-timing-3c.py bound for MAXLINES 1545: 9.58 s
+PASS  r2-d-representative-chunk-burst  largest 20-line write: 2008 bytes
+PASS  r2-a-at-caps-bytes-identical  137652 bytes; sha256 619b7f40e42d53b4
+PASS  r2-a-at-caps-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 51f4634858b338cd...; lines=1540
+PASS  r2-d-at-caps-emission-time  1541 lines: paced 8.77 s under qemu (unpaced 0.11 s); check-timing-3c.py bound for MAXLINES 1545: 9.58 s
+PASS  r2-d-at-caps-chunk-burst  largest 20-line write: 2011 bytes
+PASS  r2-a-maximum-bytes-identical  138006 bytes; sha256 f89bd8bcf7f503e0
+PASS  r2-a-maximum-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 817c766d7f4c6a05...; lines=1544
+PASS  r2-d-maximum-emission-time  1545 lines: paced 8.54 s under qemu (unpaced 0.14 s); check-timing-3c.py bound for MAXLINES 1545: 9.58 s
+PASS  r2-d-maximum-chunk-burst  largest 20-line write: 2012 bytes
+PASS  r2-refuse-maxlines-plus-1  rc=3, 0 bytes written
+PASS  r3-record-at-caps-lines  944 lines, 84301 bytes (MAXLINES 945; caps-derived 944)
+PASS  r3-record-maximum-lines  945 lines, 84393 bytes (MAXLINES 945; caps-derived 944)
+PASS  r3-record-maximum-plus-1-lines  946 lines, 84478 bytes (MAXLINES 945; caps-derived 944)
+PASS  r3-a-at-caps-bytes-identical  84302 bytes; sha256 ac899e97326ea4f4
+PASS  r3-a-at-caps-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 2e13f5de54190287...; lines=943
+PASS  r3-d-at-caps-emission-time  944 lines: paced 5.39 s under qemu (unpaced 0.10 s); check-timing-3c.py bound for MAXLINES 945: 6.28 s
+PASS  r3-d-at-caps-chunk-burst  largest 20-line write: 2011 bytes
+PASS  r3-a-maximum-bytes-identical  84394 bytes; sha256 f9255f4829f63836
+PASS  r3-a-maximum-valid-same-rec_sha256  fsb1.py VALID / VALID; rec_sha256 0992013dedefd863...; lines=944
+PASS  r3-d-maximum-emission-time  945 lines: paced 5.67 s under qemu (unpaced 0.16 s); check-timing-3c.py bound for MAXLINES 945: 6.28 s
+PASS  r3-d-maximum-chunk-burst  largest 20-line write: 2012 bytes
+PASS  r3-refuse-maxlines-plus-1  rc=3, 0 bytes written
+PASS  r2-c-maximum-through-pty-onlcr  139552 bytes via a pty with ONLCR
+PASS  r2-d-maximum-pty-pacing  163 reads; 77 gaps >= 80 ms (78 chunks); max read 1907 bytes
+PASS  r2-c-maximum-split-everywhere-rejoined  317 pieces; rejoined identical; VALID
+PASS  r2-c-every-prefix-before-the-end-is-not-a-record  
+PASS  refuse-cr  rc=4, nothing written
+PASS  refuse-tab  rc=4, nothing written
+PASS  refuse-del  rc=4, nothing written
+PASS  refuse-high  rc=4, nothing written
+PASS  refuse-no-final-newline  rc=4, nothing written
+PASS  b-trial-iii-capture-still-rejected  REJECT line-count END lines=255, counted 243
+TOTAL: 63 checks, 0 failed

@@ -1,0 +1,11 @@
+# v2.7 DT index (file | sha256 of the binary blob). PUBLIC COPY: model and board-id strings removed for publication;
+# regenerate the full index with ../extract-v27-dt.sh from your own firmware.
+v27-dtb0 | 396d9bbf532f13cd2ca45109140effe43eece7ae5c04399305c4a0880e0e6b52
+v27-dtb1 | 84b90415826f2735baf448a4848bb38598661d3f4aed1fb73a463bd8e692f655
+v27-dtb2 | 153da7ccd5c8a8388b43278f3d2385364d4291008274222aabea8ab384cb74f4
+v27-dtbo0 | 7e8e93bdbeb65d8f2b183f6ab48530f2387f2d3c898422e1cd4d601cdf6191f1
+v27-dtbo1 | a94bb1a459dd66f6b8ead1c3463034b6b3bfdac29e9aeb50c3a248a65e12f448
+v27-dtbo2 | 57b7a5711835f8fb292fd2b3b0db0657095fffbf400e7d658ae436ce095f7b38
+v27-dtbo3 | 586f6c2db8f2628d0cc2bc430ed2c98ff3edda32e45f99a6e98b7ead26af9a95
+v27-dtbo4 | dd2659e81717a49af4968bf22d8194d77c434193815693bedd837342d82a17a5
+v27-dtbo5 | f3f8f97e80b91c63f04f8070568fbc9d1f355498861e97dc68228bd0fd301ab3

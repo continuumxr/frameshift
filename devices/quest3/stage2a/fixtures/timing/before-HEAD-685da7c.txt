@@ -1,0 +1,42 @@
+== stage 2a (init.sh DEADLINE=260 ACK_WINDOW=150; runner fs-valve.sh)
+   i   id          -t    -g   worst s
+   1   hash         5     2      15.0
+   2   absent       5     2      15.0
+   3   diag         5     2      15.0
+   4   list         5     2      15.0
+   5   uname        5     2      15.0
+   6   b2kat        5     2      15.0
+   7   b2chal       5     2      15.0
+   8   inv         10     2      20.0
+   runner worst case W = 127.0 s (incl. 2 s emission)
+   host: give-up = handoff + 260 - 15 s; collector start = handoff + 20 s; phases before the runner <= 76.5 s
+   host record budget B = 260 - 15 - 20 - 76.5 = 148.5 s; spare 21.5 s
+   display cue before the runner: 0.0 s; run-time guard RunnerWorstSec None + margin None
+   PASS  collector device deadline (260 s) = image DEADLINE (260 s)
+   PASS  DEADLINE 260 <= 299 (common clamp)
+   PASS  ACK_WINDOW 150 <= DEADLINE 260
+   PASS  every step timeout <= 60 s and grace <= 10 s
+   PASS  runner worst case 127.0 s <= host record budget 148.5 s
+   FAIL  collector RunnerWorstSec (None s) >= computed W (127.0 s)
+   FAIL  run-time guard fits: B - display cue 148.5 s >= RunnerWorstSec + RunnerMarginSec = 0 s
+   PASS  collector ack window (150 s) = image ACK_WINDOW (150 s)
+   PASS  phases before the runner 76.5 s <= ack-window budget 150 - 15 - 20 = 115.0 s
+== stage 3a (init.sh DEADLINE=170 ACK_WINDOW=150; runner fs-display.sh)
+   i   id          -t    -g   worst s
+   1   hash         3     2      13.0
+   2   pattern     16     3      27.0
+   runner worst case W = 42.0 s (incl. 2 s emission)
+   host: give-up = handoff + 170 - 15 s; collector start = handoff + 20 s; phases before the runner <= 76.5 s
+   host record budget B = 170 - 15 - 20 - 76.5 = 58.5 s; spare 16.5 s
+   display cue before the runner: 0.0 s; run-time guard RunnerWorstSec None + margin None
+   PASS  collector device deadline (170 s) = image DEADLINE (170 s)
+   PASS  DEADLINE 170 <= 299 (common clamp)
+   PASS  ACK_WINDOW 150 <= DEADLINE 170
+   PASS  every step timeout <= 60 s and grace <= 10 s
+   PASS  runner worst case 42.0 s <= host record budget 58.5 s
+   FAIL  collector RunnerWorstSec (None s) >= computed W (42.0 s)
+   FAIL  run-time guard fits: B - display cue 58.5 s >= RunnerWorstSec + RunnerMarginSec = 0 s
+   PASS  collector ack window (150 s) = image ACK_WINDOW (150 s)
+   PASS  phases before the runner 76.5 s <= ack-window budget 150 - 15 - 20 = 115.0 s
+TIMING: INCONSISTENT
+rc=1

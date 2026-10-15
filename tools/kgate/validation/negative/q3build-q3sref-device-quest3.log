@@ -1,0 +1,2 @@
+ERROR input: profile <repo>/tools/kgate/validation/requests/quest3s.profile.json is for device 'quest3s', not --device 'quest3'
+RESULT: ERROR (exit 2) -- gate could not conclude -- build NOT accepted

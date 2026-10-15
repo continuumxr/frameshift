@@ -1,0 +1,61 @@
+# test-gadget.sh output, 2026-10-08T02:34:22Z; init.sh sha256 ed0eb75a874faa9070a4d08a9cfac8af702cd13a725c063a5b60d1d3faa4a0fc; test-gadget.sh sha256 bfdbdeef22e7c842d3b65ad46e315b6362e51badeea9340805125f7ecb493421
+################ init.sh, dash
+shell: dash  (/usr/bin/dash)
+section 4 sha256: 4a6eae386ef76dfc…  (44 lines from init.sh)
+PASS  G1 positive: identity written, read back, UDC bound
+        LOG GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-5c03f6f696db9ad0
+        STAGE UDC_BOUND state=configured
+PASS  G2 kernel prints hex in uppercase: still accepted
+        LOG GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-5c03f6f696db9ad0
+        STAGE UDC_BOUND state=configured
+PASS  G3 serialnumber cannot be opened: fail(acm write)
+PASS  G4 idVendor reads back wrong: fail(acm readback)
+PASS  G5 subclass reads back wrong: fail(acm readback)
+PASS  G6 UDC absent: fail(udc)
+PASS  G7 idProduct write() fails (ENOSPC): fail(acm write)
+
+TOTAL: all gadget cases behaved as expected
+exit=0
+################ init.sh, bash --posix
+shell: bash --posix (/usr/bin/bash)
+section 4 sha256: 4a6eae386ef76dfc…  (44 lines from init.sh)
+PASS  G1 positive: identity written, read back, UDC bound
+        LOG GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-5c03f6f696db9ad0
+        STAGE UDC_BOUND state=configured
+PASS  G2 kernel prints hex in uppercase: still accepted
+        LOG GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-5c03f6f696db9ad0
+        STAGE UDC_BOUND state=configured
+PASS  G3 serialnumber cannot be opened: fail(acm write)
+PASS  G4 idVendor reads back wrong: fail(acm readback)
+PASS  G5 subclass reads back wrong: fail(acm readback)
+PASS  G6 UDC absent: fail(udc)
+PASS  G7 idProduct write() fails (ENOSPC): fail(acm write)
+
+TOTAL: all gadget cases behaved as expected
+exit=0
+################ CONTROL: init.sh as committed at 6802d66 (mangled continuation). G1/G2 must fail with the R1 symptom; every case must fail
+shell: dash  (/usr/bin/dash)
+section 4 sha256: 906511e8c1c9697d…  (31 lines from init.sh)
+FAIL  G1 positive: identity written, read back, UDC bound (rc=99)
+        STAGE ACM_SETUP_ATTEMPTED 
+        FAIL acm vid/pid readback (0x1d6b:0x0104)
+FAIL  G2 kernel prints hex in uppercase: still accepted (rc=99)
+        STAGE ACM_SETUP_ATTEMPTED 
+        FAIL acm vid/pid readback (0x1D6B:0x0104)
+FAIL  G3 serialnumber cannot be opened: fail(acm write) (rc=99)
+        STAGE ACM_SETUP_ATTEMPTED 
+        FAIL acm serialnumber readback
+FAIL  G4 idVendor reads back wrong: fail(acm readback) (rc=99)
+        STAGE ACM_SETUP_ATTEMPTED 
+        FAIL acm vid/pid readback (0x18d1:0x0104)
+FAIL  G5 subclass reads back wrong: fail(acm readback) (rc=99)
+        STAGE ACM_SETUP_ATTEMPTED 
+        FAIL acm vid/pid readback (0x1d6b:0x0104)
+FAIL  G6 UDC absent: fail(udc) (rc=99)
+        STAGE ACM_SETUP_ATTEMPTED 
+        FAIL acm vid/pid readback (0x1d6b:0x0104)
+FAIL  G7 idProduct write() fails (ENOSPC): fail(acm write) (rc=124)
+        STAGE ACM_SETUP_ATTEMPTED 
+
+TOTAL: FAILURES
+exit=1 (expected 1)

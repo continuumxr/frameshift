@@ -1,0 +1,95 @@
+FSP1 nonce=3c3c0a0b seq=0 step=start rc=0 mode=show-off-solid ver=0.7.1 hold_req=1 hold=1 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/mock/card0 out=file rot=180 roll=21 eyes=swap t0_ms=212508 len=209 crc=9245d379 END
+FSP1 nonce=3c3c0a0b seq=1 step=open rc=0 dev=/mock/card0 major=226 minor=0 len=74 crc=60e7fdb7 END
+FSP1 nonce=3c3c0a0b seq=2 step=version rc=0 drv=msm_drm major=1 minor=4 patch=0 len=79 crc=d4caaffa END
+FSP1 nonce=3c3c0a0b seq=3 step=caps rc=0 universal_rc=0 atomic_rc=0 len=67 crc=c46322f6 END
+FSP1 nonce=3c3c0a0b seq=4 step=resources rc=0 crtcs=3 connectors=3 encoders=3 fbs=0 max_w=20480 max_h=8640 len=106 crc=bf2b70ba END
+FSP1 nonce=3c3c0a0b seq=5 step=connector rc=0 id=33 type=15 type_id=1 status=1 modes=37 encoders=1 encoder=0 mm_w=0 mm_h=0 len=122 crc=b1d40ebc END
+FSP1 nonce=3c3c0a0b seq=6 step=connector rc=0 id=55 type=16 type_id=1 status=1 modes=24 encoders=1 encoder=54 mm_w=0 mm_h=0 len=123 crc=d2f1c645 END
+FSP1 nonce=3c3c0a0b seq=7 step=connector rc=0 id=65 type=10 type_id=1 status=2 modes=0 encoders=1 encoder=0 mm_w=0 mm_h=0 len=121 crc=826a9490 END
+FSP1 nonce=3c3c0a0b seq=8 step=chosen_connector rc=0 id=55 type=16 connected=2 modes=24 encoder=54 len=98 crc=743bdba8 END
+FSP1 nonce=3c3c0a0b seq=9 step=mode rc=0 idx=0 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid preferred=1 expected=1 len=213 crc=a364bc4b END
+FSP1 nonce=3c3c0a0b seq=10 step=mode rc=0 idx=1 w=3104 h=1664 vrefresh=90 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=4619 vse=4621 vtotal=4651 flags=0x0 type=0x8 name=3104x1664x90vid preferred=1 expected=0 len=214 crc=abd70dd7 END
+FSP1 nonce=3c3c0a0b seq=11 step=mode rc=0 idx=2 w=4128 h=2208 vrefresh=120 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=3836 vse=3838 vtotal=3868 flags=0x0 type=0x0 name=4128x2208x120vid preferred=0 expected=0 len=216 crc=7210afa3 END
+FSP1 nonce=3c3c0a0b seq=12 step=mode rc=0 idx=3 w=4128 h=2208 vrefresh=115 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=4004 vse=4006 vtotal=4036 flags=0x0 type=0x0 name=4128x2208x115vid preferred=0 expected=0 len=216 crc=4a4d306e END
+FSP1 nonce=3c3c0a0b seq=13 step=mode rc=0 idx=4 w=4128 h=2208 vrefresh=110 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=4188 vse=4190 vtotal=4220 flags=0x0 type=0x0 name=4128x2208x110vid preferred=0 expected=0 len=216 crc=f5dd02a2 END
+FSP1 nonce=3c3c0a0b seq=14 step=mode rc=0 idx=5 w=4128 h=2208 vrefresh=105 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=4389 vse=4391 vtotal=4421 flags=0x0 type=0x0 name=4128x2208x105vid preferred=0 expected=0 len=216 crc=a120bf1c END
+FSP1 nonce=3c3c0a0b seq=15 step=mode rc=0 idx=6 w=4128 h=2208 vrefresh=100 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=4610 vse=4612 vtotal=4642 flags=0x0 type=0x0 name=4128x2208x100vid preferred=0 expected=0 len=216 crc=229d9f90 END
+FSP1 nonce=3c3c0a0b seq=16 step=mode rc=0 idx=7 w=4128 h=2208 vrefresh=96 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=4803 vse=4805 vtotal=4835 flags=0x0 type=0x0 name=4128x2208x96vid preferred=0 expected=0 len=214 crc=e6b2928f END
+FSP1 nonce=3c3c0a0b seq=17 step=mode rc=0 idx=8 w=4128 h=2208 vrefresh=95 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=4854 vse=4856 vtotal=4886 flags=0x0 type=0x0 name=4128x2208x95vid preferred=0 expected=0 len=214 crc=8e94660d END
+FSP1 nonce=3c3c0a0b seq=18 step=mode rc=0 idx=9 w=4128 h=2208 vrefresh=85 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5429 vse=5431 vtotal=5461 flags=0x0 type=0x0 name=4128x2208x85vid preferred=0 expected=0 len=214 crc=06f22f7b END
+FSP1 nonce=3c3c0a0b seq=19 step=mode rc=0 idx=10 w=4128 h=2208 vrefresh=80 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5770 vse=5772 vtotal=5802 flags=0x0 type=0x0 name=4128x2208x80vid preferred=0 expected=0 len=215 crc=7cae759c END
+FSP1 nonce=3c3c0a0b seq=20 step=mode rc=0 idx=11 w=4128 h=2208 vrefresh=75 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=6157 vse=6159 vtotal=6189 flags=0x0 type=0x0 name=4128x2208x75vid preferred=0 expected=0 len=215 crc=58d47797 END
+FSP1 nonce=3c3c0a0b seq=21 step=mode rc=0 idx=12 w=4128 h=2208 vrefresh=72 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=6415 vse=6417 vtotal=6447 flags=0x0 type=0x0 name=4128x2208x72vid preferred=0 expected=0 len=215 crc=ee4b308b END
+FSP1 nonce=3c3c0a0b seq=22 step=mode rc=0 idx=13 w=3104 h=1664 vrefresh=120 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=3456 vse=3458 vtotal=3488 flags=0x0 type=0x0 name=3104x1664x120vid preferred=0 expected=0 len=217 crc=91413d24 END
+FSP1 nonce=3c3c0a0b seq=23 step=mode rc=0 idx=14 w=3104 h=1664 vrefresh=115 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=3608 vse=3610 vtotal=3640 flags=0x0 type=0x0 name=3104x1664x115vid preferred=0 expected=0 len=217 crc=8156cb54 END
+FSP1 nonce=3c3c0a0b seq=24 step=mode rc=0 idx=15 w=3104 h=1664 vrefresh=110 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=3774 vse=3776 vtotal=3806 flags=0x0 type=0x0 name=3104x1664x110vid preferred=0 expected=0 len=217 crc=a5b79ba9 END
+FSP1 nonce=3c3c0a0b seq=25 step=mode rc=0 idx=16 w=3104 h=1664 vrefresh=105 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=3955 vse=3957 vtotal=3987 flags=0x0 type=0x0 name=3104x1664x105vid preferred=0 expected=0 len=217 crc=2db6e742 END
+FSP1 nonce=3c3c0a0b seq=26 step=mode rc=0 idx=17 w=3104 h=1664 vrefresh=100 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=4154 vse=4156 vtotal=4186 flags=0x0 type=0x0 name=3104x1664x100vid preferred=0 expected=0 len=217 crc=64593211 END
+FSP1 nonce=3c3c0a0b seq=27 step=mode rc=0 idx=18 w=3104 h=1664 vrefresh=96 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=4329 vse=4331 vtotal=4361 flags=0x0 type=0x0 name=3104x1664x96vid preferred=0 expected=0 len=215 crc=a05f2125 END
+FSP1 nonce=3c3c0a0b seq=28 step=mode rc=0 idx=19 w=3104 h=1664 vrefresh=95 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=4375 vse=4377 vtotal=4407 flags=0x0 type=0x0 name=3104x1664x95vid preferred=0 expected=0 len=215 crc=98c97a0d END
+FSP1 nonce=3c3c0a0b seq=29 step=mode rc=0 idx=20 w=3104 h=1664 vrefresh=85 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=4893 vse=4895 vtotal=4925 flags=0x0 type=0x0 name=3104x1664x85vid preferred=0 expected=0 len=215 crc=257a3611 END
+FSP1 nonce=3c3c0a0b seq=30 step=mode rc=0 idx=21 w=3104 h=1664 vrefresh=80 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=5201 vse=5203 vtotal=5233 flags=0x0 type=0x0 name=3104x1664x80vid preferred=0 expected=0 len=215 crc=49eccf83 END
+FSP1 nonce=3c3c0a0b seq=31 step=mode rc=0 idx=22 w=3104 h=1664 vrefresh=75 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=5550 vse=5552 vtotal=5582 flags=0x0 type=0x0 name=3104x1664x75vid preferred=0 expected=0 len=215 crc=df1bfa0d END
+FSP1 nonce=3c3c0a0b seq=32 step=mode rc=0 idx=23 w=3104 h=1664 vrefresh=72 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=5782 vse=5784 vtotal=5814 flags=0x0 type=0x0 name=3104x1664x72vid preferred=0 expected=0 len=215 crc=2b83cd1c END
+FSP1 nonce=3c3c0a0b seq=33 step=pipeline rc=0 encoder=54 crtc=155 crtc_idx=0 len=76 crc=14e69aca END
+FSP1 nonce=3c3c0a0b seq=34 step=crtc_state rc=0 idx=-1 w=0 h=0 vrefresh=0 clock_khz=0 hss=0 hse=0 htotal=0 vss=0 vse=0 vtotal=0 flags=0x0 type=0x0 name=- getcrtc_rc=0 mode_valid=0 fb=0 active_prop=2000 active=0 in_list=0 interlaced=0 expected=0 len=244 crc=335e3237 END
+FSP1 nonce=3c3c0a0b seq=35 step=precondition rc=0 required=crtc_inactive getcrtc_rc=0 active_prop=2000 active=0 len=111 crc=e5752743 END
+FSP1 nonce=3c3c0a0b seq=36 step=chosen_mode rc=0 idx=0 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid why=expected_4128x2208_90 expected=1 len=235 crc=007c3ae6 END
+FSP1 nonce=3c3c0a0b seq=37 step=planes rc=0 count=20 len=52 crc=beda662c END
+FSP1 nonce=3c3c0a0b seq=38 step=plane rc=0 id=71 type=1 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=99 crc=abcbbbc7 END
+FSP1 nonce=3c3c0a0b seq=39 step=plane rc=0 id=97 type=1 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=99 crc=7eda7dbe END
+FSP1 nonce=3c3c0a0b seq=40 step=plane rc=0 id=100 type=1 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=d7e75543 END
+FSP1 nonce=3c3c0a0b seq=41 step=plane rc=0 id=103 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=327abe85 END
+FSP1 nonce=3c3c0a0b seq=42 step=plane rc=0 id=106 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=f866fa1b END
+FSP1 nonce=3c3c0a0b seq=43 step=plane rc=0 id=109 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=3aaa230e END
+FSP1 nonce=3c3c0a0b seq=44 step=plane rc=0 id=112 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=9ea927a2 END
+FSP1 nonce=3c3c0a0b seq=45 step=plane rc=0 id=115 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=a4e0125d END
+FSP1 nonce=3c3c0a0b seq=46 step=plane rc=0 id=118 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=9679ba29 END
+FSP1 nonce=3c3c0a0b seq=47 step=plane rc=0 id=121 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=7807bd90 END
+FSP1 nonce=3c3c0a0b seq=48 step=plane rc=0 id=124 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=7ab0ce14 END
+FSP1 nonce=3c3c0a0b seq=49 step=plane rc=0 id=128 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=02291316 END
+FSP1 nonce=3c3c0a0b seq=50 step=plane rc=0 id=131 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=1096e0ff END
+FSP1 nonce=3c3c0a0b seq=51 step=plane rc=0 id=134 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=f9462d1a END
+FSP1 nonce=3c3c0a0b seq=52 step=plane rc=0 id=137 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=9c8167eb END
+FSP1 nonce=3c3c0a0b seq=53 step=plane rc=0 id=140 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=05b24592 END
+FSP1 nonce=3c3c0a0b seq=54 step=plane rc=0 id=143 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=27ec1d95 END
+FSP1 nonce=3c3c0a0b seq=55 step=plane rc=0 id=146 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=ce3cd070 END
+FSP1 nonce=3c3c0a0b seq=56 step=plane rc=0 id=149 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=2f3c801e END
+FSP1 nonce=3c3c0a0b seq=57 step=plane rc=0 id=152 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=ef6a1f3f END
+FSP1 nonce=3c3c0a0b seq=58 step=atomic_props rc=0 primary=71 helper=97 crtc_mode_id=2001 crtc_active=2000 conn_crtc_id=1005 len=123 crc=4d56c25f END
+FSP1 nonce=3c3c0a0b seq=59 step=conn_topology rc=0 conn=55 props=22 topology_prop=1019 topology_val=0 topology_name=sde_none control_prop=1020 control_val=0 dsc_mode_prop=1013 dsc_mode_val=0 mode_props_blob=201 len=210 crc=3d007cef END
+FSP1 nonce=3c3c0a0b seq=60 step=blob rc=0 what=mode_properties obj=55 blob=201 bytes=185 part=0 parts=1 data=mode_name%3D4128x2208x90vid%0Atopology%3Dsde_quadpipe_dsc4hsmerge%0Acompression%3Ddsc%0Awb_topology%3D0%0Amax_dsc_width%3D2064%0Apanel_mode%3Dvideo%0Abit_clk_rate%3D999999999%0Ahdr_luminance%3D%2D%0Aodd%2Feven%3A%2050%25%20%3C%3E%26%01%FE%0A len=350 crc=75b069a6 END
+FSP1 nonce=3c3c0a0b seq=61 step=plane_caps rc=0 plane=71 read_rc=0 caps_bytes=614 max_linewidth=5120 pipe_idx=0 max_upscale=20 smart=none zpos=0 nv12=1 len=151 crc=5adb685b END
+FSP1 nonce=3c3c0a0b seq=62 step=plane_caps rc=0 plane=97 read_rc=0 caps_bytes=614 max_linewidth=5120 pipe_idx=1 max_upscale=20 smart=none zpos=0 nv12=1 len=151 crc=13291175 END
+FSP1 nonce=3c3c0a0b seq=63 step=plane_caps rc=0 plane=100 read_rc=0 caps_bytes=614 max_linewidth=5120 pipe_idx=2 max_upscale=20 smart=none zpos=0 nv12=1 len=152 crc=98d23f4b END
+FSP1 nonce=3c3c0a0b seq=64 step=plane_caps rc=0 plane=103 read_rc=0 caps_bytes=614 max_linewidth=5120 pipe_idx=3 max_upscale=20 smart=none zpos=0 nv12=1 len=152 crc=51b6162d END
+FSP1 nonce=3c3c0a0b seq=65 step=plane_caps rc=0 plane=106 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=0 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=dde9da45 END
+FSP1 nonce=3c3c0a0b seq=66 step=plane_caps rc=0 plane=109 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=1 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=ece27808 END
+FSP1 nonce=3c3c0a0b seq=67 step=plane_caps rc=0 plane=112 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=2 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=6752570f END
+FSP1 nonce=3c3c0a0b seq=68 step=plane_caps rc=0 plane=115 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=3 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=aac13796 END
+FSP1 nonce=3c3c0a0b seq=69 step=plane_caps rc=0 plane=118 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=4 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=a0cbd525 END
+FSP1 nonce=3c3c0a0b seq=70 step=plane_caps rc=0 plane=121 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=5 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=1cb09006 END
+FSP1 nonce=3c3c0a0b seq=71 step=plane_caps rc=0 plane=124 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=0 max_upscale=1 smart=106 zpos=0 nv12=0 len=150 crc=e63e924d END
+FSP1 nonce=3c3c0a0b seq=72 step=plane_caps rc=0 plane=128 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=1 max_upscale=1 smart=109 zpos=0 nv12=0 len=150 crc=7bd45810 END
+FSP1 nonce=3c3c0a0b seq=73 step=plane_caps rc=0 plane=131 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=2 max_upscale=1 smart=112 zpos=0 nv12=0 len=150 crc=cdab4f91 END
+FSP1 nonce=3c3c0a0b seq=74 step=plane_caps rc=0 plane=134 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=3 max_upscale=1 smart=115 zpos=0 nv12=0 len=150 crc=01159bc4 END
+FSP1 nonce=3c3c0a0b seq=75 step=plane_caps rc=0 plane=137 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=4 max_upscale=1 smart=118 zpos=0 nv12=0 len=150 crc=e38a1789 END
+FSP1 nonce=3c3c0a0b seq=76 step=plane_caps rc=0 plane=140 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=5 max_upscale=1 smart=121 zpos=0 nv12=0 len=150 crc=a6722eed END
+FSP1 nonce=3c3c0a0b seq=77 step=plane_caps rc=0 plane=143 read_rc=0 caps_bytes=640 max_linewidth=5120 pipe_idx=0 max_upscale=20 smart=71 zpos=0 nv12=1 len=150 crc=fa185490 END
+FSP1 nonce=3c3c0a0b seq=78 step=plane_caps rc=0 plane=146 read_rc=0 caps_bytes=640 max_linewidth=5120 pipe_idx=1 max_upscale=20 smart=97 zpos=0 nv12=1 len=150 crc=7472b188 END
+FSP1 nonce=3c3c0a0b seq=79 step=plane_caps rc=0 plane=149 read_rc=0 caps_bytes=641 max_linewidth=5120 pipe_idx=2 max_upscale=20 smart=100 zpos=0 nv12=1 len=151 crc=ccd33b75 END
+FSP1 nonce=3c3c0a0b seq=80 step=plane_caps rc=0 plane=152 read_rc=0 caps_bytes=641 max_linewidth=5120 pipe_idx=3 max_upscale=20 smart=103 zpos=0 nv12=1 len=151 crc=250e5f73 END
+FSP1 nonce=3c3c0a0b seq=81 step=buffer rc=0 w=4128 h=2208 handle=1 pitch=16512 size=36458496 fb=207 mode_blob=208 format=0x34325258 solid=0xff0000 len=146 crc=45a61d0f END
+FSP1 nonce=3c3c0a0b seq=82 step=plan rc=0 attempts=3 split_probe=1 quad_vig=71.97.100.103 quad_dma=115.134.112.131 pipe_vig=vig-0.vig-1.vig-2.vig-3 pipe_dma=dma-3.dma-3.dma-2.dma-2 max_upscale_vig=20.20.20.20 max_upscale_dma=1.1.1.1 zpos_before_vig=0.0.0.0 zpos_before_dma=0.0.0.0 zpos_set=0.0.1.1 splash_set=match len=314 crc=97f22bb0 END
+FSP1 nonce=3c3c0a0b seq=83 step=test_commit rc=0 attempt=0 modeset=1 layout=split_probe objs=4 props=23 planes_off=0 overflow=0 result=accepted len=143 crc=b6d9484c END
+FSP1 nonce=3c3c0a0b seq=84 step=test_commit rc=0 attempt=1 modeset=1 layout=quad_vig objs=6 props=47 planes_off=0 overflow=0 result=accepted len=140 crc=59564c7e END
+FSP1 nonce=3c3c0a0b seq=85 step=commit rc=0 attempt=1 modeset=1 layout=quad_vig commit_ms=175 len=93 crc=5144eb0d END
+FSP1 nonce=3c3c0a0b seq=86 step=post_state rc=0 conn=55 topology_val=14 topology_name=sde_quadpipe_dsc4hsmerge dsc_mode_val=0 control_val=0 crtc=155 active=1 mode_id=208 core_clk=155011 core_ab=155012 core_ib=155013 llcc_ab=155014 llcc_ib=155015 dram_ab=155016 dram_ib=155017 getcrtc_rc=0 mode_valid=1 fb=207 len=308 crc=07215b62 END
+FSP1 nonce=3c3c0a0b seq=87 step=post_plane rc=0 slot=0 plane=71 crtc_id=155 fb_id=207 crtc_x=0 crtc_y=0 crtc_w=1032 crtc_h=2208 src_x=0 src_y=0 src_w=1032 src_h=2208 src_frac=0 zpos=0 len=183 crc=e1a56b72 END
+FSP1 nonce=3c3c0a0b seq=88 step=post_plane rc=0 slot=1 plane=97 crtc_id=155 fb_id=207 crtc_x=1032 crtc_y=0 crtc_w=1032 crtc_h=2208 src_x=1032 src_y=0 src_w=1032 src_h=2208 src_frac=0 zpos=0 len=189 crc=379ef4c4 END
+FSP1 nonce=3c3c0a0b seq=89 step=post_plane rc=0 slot=2 plane=100 crtc_id=155 fb_id=207 crtc_x=0 crtc_y=0 crtc_w=1032 crtc_h=2208 src_x=2064 src_y=0 src_w=1032 src_h=2208 src_frac=0 zpos=1 len=187 crc=2e142672 END
+FSP1 nonce=3c3c0a0b seq=90 step=post_plane rc=0 slot=3 plane=103 crtc_id=155 fb_id=207 crtc_x=1032 crtc_y=0 crtc_w=1032 crtc_h=2208 src_x=3096 src_y=0 src_w=1032 src_h=2208 src_frac=0 zpos=1 len=190 crc=ace67154 END
+FSP1 nonce=3c3c0a0b seq=91 step=hold_start rc=0 hold_s=1 start_ms=213661 deadline_ms=214661 alarm_s=6 len=101 crc=d04c2099 END
+FSP1 nonce=3c3c0a0b seq=92 step=hold_end rc=0 reason=deadline sig=0 held_ms=1000 late_ms=0 fd_closed=1 close_rc=0 close_ms=0 len=124 crc=bdc6f183 END
+FSP1 nonce=3c3c0a0b seq=93 step=exit rc=0 code=0 reason=held_to_deadline shown=1 closed_at_exit=0 elapsed_ms=2161 len=113 crc=19db4192 END
+FSP1 nonce=3c3c0a0b seq=94 step=eos rc=0 records=95 dropped=0 overflows=0 out=file opt_bytes=376 opt_skipped=0 len=110 crc=94193732 END

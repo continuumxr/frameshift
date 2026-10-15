@@ -1,0 +1,5 @@
+# report: FSUP1 end=exited code=0 sig=0 errno=0 ms=3 term_ms=-1 kill_ms=-1 out_total=30 out_kept=30 err_total=0 err_kept=0 strays=1 pipes=eof why=none END
+# exit=0 wall_ms=219
+# stdout (first 300 B):
+#   setsid=ok sid=83806 pid=83806
+# stderr (first 300 B):

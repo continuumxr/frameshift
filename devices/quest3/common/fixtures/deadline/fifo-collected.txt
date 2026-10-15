@@ -1,0 +1,8 @@
+# scenario fifo-collected (sim.sh, action a_fifo_done), deadline=8 ack_window=4 
+# T0=176 reboot records (fake syscall; first one counts):
+#   179 collected pid=1061 via=final
+# PID 1 log:
+#   FS t=176s DEADLINE armed t0=176 deadline=T0+8 ack_window=4 backstop=T0+9 reboot-reasons-not-logged-at-reboot
+#   FS t=176s BACKSTOP armed pid=1253 in=9s
+# harness: fifo fs.collected 
+# sim stdout/stderr:

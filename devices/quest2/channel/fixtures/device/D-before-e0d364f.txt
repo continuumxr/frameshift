@@ -1,0 +1,13 @@
+# revision-2 device cases run against the e0d364f source (git show e0d364f:devices/quest2/channel/src/fs-rpcd.c,
+# sha256=09a5710b7761e67fb874c4e64d193ed5387ed1bd95ba6952b8b05c2e5ad367f9), native gcc build, LD_PRELOAD shim for X5. FAIL lines below are
+# the behaviours revision 2 changes; compare fixtures/device/D-native.txt (same cases, current source).
+T1-trailing-in-later-segment FAIL b'FSS1 nonce=0123456789abcdef stages=INIT_STARTED,SHELL_READY acked=none END\n'
+K1-marker-refuses-collect FAIL b'ok\n'
+K2-collect-once-survives-restart FAIL b'ok\n' / b'ok\n'
+X2-exactly-8MiB-delivered FAIL 1.1s 55 bytes
+X5-unreapable-runner-bounded FAIL 30.0s b'' (2 s + 2 s polls, then give up)
+SIG1-runner-state-reset FAIL 'FSR1 nonce=0123456789abcdef error=runner-unreaped END\n'
+SIG2-collect-with-sigchld-ignored-by-parent FAIL 0.9s b'FSR1 nonce=0123456789abcdef error=runner'
+case_usage FAIL harness exception TimeoutExpired(['/tmp/fsq2bef.LHlZsU/old', '-n', '0123456789abcdef', '-a', '::', '-p', '47999', '-r', '/tmp/fsq2bef.LHlZsU/w/usage-run'], 20)
+TOTAL 89/97 PASS
+# note: case_usage's harness exception is the old binary ACCEPTING '-a ::' (wildcard bind) and listening until the 20 s harness timeout (review m5); U11-U15 were therefore not reached on the old source

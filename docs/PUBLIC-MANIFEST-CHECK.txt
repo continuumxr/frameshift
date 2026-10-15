@@ -1,0 +1,16 @@
+# Public-copy manifest check (FS-R-011 §8), generated for this tree by the export
+#
+# OK          this copy matches the pin.
+# EOL-ONLY    the pin is the CRLF form of the same text (hashed from a Windows working copy).
+# SANITISED   edited for publication; the private file matches the pin.
+# CHANGED     neither this copy nor the private file matches: edited after the manifest
+#             was frozen (and possibly also for publication).
+# WITHHELD    in the private repository but not published (see README.md).
+# NOT-TRACKED in neither repository: gitignored build outputs, images, firmware inputs.
+
+devices/quest2/analysis/v27-dt/SHA256SUMS: SANITISED 1, WITHHELD 3
+    SANITISED   devices/quest2/analysis/v27-dt/INDEX.txt
+devices/quest3/host/fixtures/replay/MANIFEST.sha256: OK 89
+tools/kgate/fixtures/data/MANIFEST.sha256: OK 183
+
+TOTAL: OK 272, EOL-ONLY 0, SANITISED 1, CHANGED 0, WITHHELD 3, NOT-TRACKED 0

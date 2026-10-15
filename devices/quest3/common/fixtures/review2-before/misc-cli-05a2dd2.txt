@@ -1,0 +1,8 @@
+# misc_rule.py at 05a2dd2, after-image missing:
+# exit status (1 = EXPECTED in that revision's code table):
+rc=1
+# stderr (first lines):
+#   Traceback (most recent call last):
+#     File "<temp>\before2\misc_rule_r3.py", line 99, in <module>
+#       sys.exit(main(sys.argv[1:]))
+#   FileNotFoundError: [Errno 2] No such file or directory: 'C:/Program Files/Git/nonexistent.img'

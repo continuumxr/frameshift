@@ -1,0 +1,22 @@
+# s2-inv-absent (stage2a) mods=['no-inv-paths'] plan=full; image <repo>/build/stage2a/20261009T085209Z-93a1501f0b1fb692
+# mod: removed /sys/class/remoteproc, /sys/class/power_supply and the ADSP platform device (the inv step must tolerate it)
+# reboots: 907.63 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=93a1501f0b1fb692 resp=386f14928f3dec32d4ea8cf4e3619a77aadd8866876ecf8b7ea42fe81d6793fa kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=93a1501f0b1fb692 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=c265c12545604d6e END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=93a1501f0b1fb692 chal=84fd992548894d55a70091aa6743fec9 lines=81 rec_sha256=91e8c7d92a5d6dd4b8e6bd00b7853e88455dd32029598935ff4b7cb815186e27]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=893 deadline=T0+260 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [907.63 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [907.63 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.2 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  step 8 inv exited 0 (read-only, busybox only)  [('inv', 'exited', 0, 0)]
+PASS  inv output has its five sections  [[b'/proc/modules', b'/sys/class/remoteproc', b'/sys/bus/platform/devices/3000000.remoteproc-adsp/driver', b'/sys/class/power_supply', b'end']]
+PASS  inv reported the missing paths as (none)/(absent), not as an error
+PASS  an empty line immediately before FSB1 BEGIN
+SCENARIO s2-inv-absent PASS

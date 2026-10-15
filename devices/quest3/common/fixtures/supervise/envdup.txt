@@ -1,0 +1,5 @@
+# cmd: fs-supervise -t 5 -e A=1 -e A=2 -o $W/cap/envdup.out -r $W/cap/envdup.err -- $W/bin/busybox env
+# report: FSUP1 end=refused code=-1 sig=0 errno=0 ms=-1 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=none why=env-duplicate END
+# exit=64 wall_ms=259
+# stdout capture: (no file)
+# stderr capture: (no file)

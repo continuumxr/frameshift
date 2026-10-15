@@ -1,0 +1,17 @@
+# stage3b whole-image fixtures  2026-10-10T19:49:15Z
+# image <repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc/boot-stage3b.img sha256=ea60d6cddb2d14d16e208d16f6aef0ebc8798c1e9e74c223d73438bd92705841
+# harness sha256=38ced9e2912acf35f9a6aea6d666a69b529f26ac9ef5803bf9605f766742c8c0  test-image.sh sha256=2f0d284760a3f40ecb10b3753fc3b7b21151882e5e9e7c106c90790c76040146
+# host: Linux 6.18.33.2-microsoft-standard-WSL2; qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2); bwrap 0.11.1
+SCENARIO b-ack-no-done PASS
+SCENARIO b-no-ack PASS
+SCENARIO b-no-udc PASS
+SCENARIO b-nodrm PASS
+SCENARIO b-sim-go PASS
+SCENARIO b-sim-active PASS
+SCENARIO b-sim-unclean PASS
+SCENARIO b-no-backlight PASS
+SCENARIO b-probe-hang PASS
+SCENARIO b-hung-pattern PASS
+SCENARIO b-pattern-stopped PASS
+SCENARIO b-done-early PASS
+TOTAL: 12 scenarios, 0 failed

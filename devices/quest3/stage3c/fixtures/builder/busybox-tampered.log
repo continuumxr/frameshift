@@ -1,0 +1,1 @@
+BUILD REFUSED: busybox hash differs from the pin ($HOME/work/fsbuild-neg/stage3c/busybox: 05cb73694524f673df60bff68a5bb4ef98af6e884eb2a3559b41b51b3d7c9dd2 != c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02)

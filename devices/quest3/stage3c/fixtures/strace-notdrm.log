@@ -1,0 +1,31 @@
+248946 uname(0x7e2ec5dfe3f8) = 0
+248946 brk(NULL) = 0x00000000002ed000
+248946 brk(0x00000000002edae0) = 0x00000000002edae0
+248946 set_tid_address(0x2ed448) = 248946
+248946 set_robust_list(0x2ed100,24) = -1 errno=38 (Function not implemented)
+248946 rseq(0x2ed7a0,32,0,0xd428bc00) = -1 errno=38 (Function not implemented)
+248946 prlimit64(0,RLIMIT_STACK,NULL,0x00007e2ec5dfe548) = 0 ({rlim_cur=8388608,rlim_max=-1})
+248946 getrandom(0x2ec108,8,1) = 8
+248946 readlinkat(AT_FDCWD,"/proc/self/exe",0x00007e2ec5dfd4d0,4096) = 79
+248946 brk(NULL) = 0x00000000002edae0
+248946 brk(0x0000000000400000) = 0x0000000000400000
+248946 mprotect(0x00000000002bc000,20480,PROT_READ) = 0
+248946 clock_gettime(CLOCK_MONOTONIC,0x00007e2ec5dfe2d0) = 0 ({tv_sec = 4774,tv_nsec = 622371108})
+248946 fstat(1,0x00007e2ec5dfe2d0) = 0
+248946 rt_sigaction(SIGTERM,0x00007e2ec5dfe108,NULL) = 0
+248946 rt_sigaction(SIGINT,0x00007e2ec5dfe108,NULL) = 0
+248946 rt_sigaction(SIGHUP,0x00007e2ec5dfe108,NULL) = 0
+248946 rt_sigaction(SIGALRM,0x00007e2ec5dfe108,NULL) = 0
+248946 rt_sigaction(SIGPIPE,0x00007e2ec5dfe108,NULL) = 0
+248946 rt_sigaction(SIGXFSZ,0x00007e2ec5dfe108,NULL) = 0
+248946 rt_sigprocmask(SIG_BLOCK,[SIGHUP SIGINT SIGTERM],NULL,8) = 0
+248946 rt_sigprocmask(SIG_UNBLOCK,[SIGALRM],NULL,8) = 0
+248946 setitimer(ITIMER_REAL,{it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 30,tv_usec = 0},},0x00007e2ec5dfe218) = 0 (old_value = {it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 0,tv_usec = 0},})
+248946 write(1,0x2d1e50,204) = 204
+248946 rt_sigpending(138739353373248,8,0,0,0,0) = 0
+248946 newfstatat(AT_FDCWD,"/dev/null",0x00007e2ec5dfe128,0) = 0
+248946 write(1,0x2d1e50,123) = 123
+248946 clock_gettime(CLOCK_MONOTONIC,0x00007e2ec5dfca90) = 0 ({tv_sec = 4774,tv_nsec = 777367760})
+248946 write(1,0x2d1e50,136) = 136
+248946 write(1,0x2d1e50,132) = 132
+248946 exit_group(11)

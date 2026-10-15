@@ -1,0 +1,19 @@
+FS[13ed21be49c7b4ba] t=102s DEADLINE armed t0=102 deadline=T0+200 ack_window=150 backstop=T0+201 reboot-reasons-not-logged-at-reboot
+FS[13ed21be49c7b4ba] t=102s STAGE=INIT_STARTED pid=1 kernel=6.18.33.2-microsoft-standard-WSL2 deadline=T0+200
+FS[13ed21be49c7b4ba] t=102s BACKSTOP armed pid=53 in=201s
+FS[13ed21be49c7b4ba] t=102s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62 (= the pinned v2.7 index)
+FS[13ed21be49c7b4ba] t=103s FW_TIMEOUT=1
+FS[13ed21be49c7b4ba] t=103s MODLIST /lib/fs/modules.load entries=3
+FS[13ed21be49c7b4ba] t=104s MODULE_FAIL nautilus.ko: insmod: can't insert '/lib/modules/nautilus.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=105s MODULE_FAIL cmd-db.ko: insmod: can't insert '/lib/modules/cmd-db.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=106s MODULE_FAIL gh_msgq.ko: insmod: can't insert '/lib/modules/gh_msgq.ko': No such file or directory
+FS[13ed21be49c7b4ba] t=110s STAGE=MODULES_READY ok=0 fail=3 udc=a600000.dwc3  drm=card0-DSI-1 card0-sde-crtc-0 
+FS[13ed21be49c7b4ba] t=110s DRM_NODE sysfs=absent node=absent
+FS[13ed21be49c7b4ba] t=111s ROLE mode=peripheral roles=device 
+FS[13ed21be49c7b4ba] t=111s STAGE=ACM_SETUP_ATTEMPTED 
+FS[13ed21be49c7b4ba] t=113s GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-13ed21be49c7b4ba
+FS[13ed21be49c7b4ba] t=113s STAGE=UDC_BOUND state=configured
+FS[13ed21be49c7b4ba] t=113s IDLE_LIMIT started pid=390 idle=120s stuck=180s (unarmed until p0)
+FS[13ed21be49c7b4ba] t=114s STAGE=SHELL_READY 
+FS t=117s STAGE=HOST_ACK ack=c5fd01640cf54243 deadline-unchanged=T0+200
+FS REBOOT_RETURNED reason=backstop

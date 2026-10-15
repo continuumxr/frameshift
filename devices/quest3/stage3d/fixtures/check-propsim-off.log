@@ -1,0 +1,8 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 5 records, 968 bytes
+CHECK eos_last_after_exit PASS {'records': '5', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '375', 'opt_skipped': '0'}
+CHECK no_overflow_or_budget_record PASS
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=375 measured=375 budget=38912
+CHECK conn_topology_once_essential_sde_none_before_any_commit PASS {'conn': '55', 'props': '22', 'topology_prop': '1019', 'topology_val': '0', 'topology_name': 'sde_none', 'control_prop': '1020', 'control_val': '0', 'dsc_mode_prop': '1013', 'dsc_mode_val': '0', 'mode_props_blob': '201'}
+CHECK mode_properties_blob_roundtrip PASS 185 bytes in 1 parts
+CHECK off_logs_topology_and_mode_properties_only PASS ['blob', 'conn_topology', 'eos', 'exit', 'start']

@@ -1,0 +1,2 @@
+# Raw serial captures and their indexes are byte-exact fixtures: never convert line endings.
+* -text

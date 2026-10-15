@@ -1,0 +1,5 @@
+# qemu-aarch64 -strace build/fs-reboot-final, unprivileged; killed by the harness after 4 s
+# alive after 4 s: yes; reboot calls 2 (EPERM 2); nanosleep calls 1; exit calls 0
+#   4086 reboot(4276215469,672274793,2712847316,2097456,0,0) = -1 errno=1 (Operation not permitted)
+#   4086 reboot(4276215469,672274793,19088743,0,0,0) = -1 errno=1 (Operation not permitted)
+#   4086 nanosleep(2097440,0,0,0,0,0)

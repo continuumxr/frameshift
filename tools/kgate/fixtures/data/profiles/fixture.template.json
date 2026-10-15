@@ -1,0 +1,49 @@
+{
+ "build_sections": [
+  ".BTF",
+  ".kallsyms",
+  ".rodata",
+  ".text",
+  "__kcrctab",
+  "__kcrctab_gpl",
+  "__ksymtab",
+  "__ksymtab_gpl",
+  "__ksymtab_strings"
+ ],
+ "builds": {
+  "btrfs": {
+   "allow_sha256": "de2ed268999368f2662cb6c5eb98255cd5f33a5474d367219bc5fdc42871a5fe",
+   "baseline": "stock-build",
+   "requested_sha256": "1e703614c59dd1a7e03b9b6a5686ca0f494c0be7d6fdf376cd566b44d5c7cddb"
+  },
+  "group": {
+   "allow_sha256": null,
+   "baseline": "stock-build",
+   "requested_sha256": "316b0634b15d7d927564f5cc6494561266b647cc4764619838cc2416b189d78f"
+  },
+  "noik": {
+   "allow_sha256": "b48c5af3deb73878616d2259fe62d00773168ba00a93f1595c87b0f6e5d75129",
+   "baseline": "stock-build",
+   "requested_sha256": "316b0634b15d7d927564f5cc6494561266b647cc4764619838cc2416b189d78f"
+  },
+  "stock": {
+   "allow_sha256": null,
+   "baseline": "waived",
+   "requested_sha256": "1ec5da9548a284c548323285cbc3fb9f4a9037366737f5b763fd1c030c2233eb"
+  }
+ },
+ "counts": {
+  "module_copies": 4,
+  "required_from_vmlinux": 6,
+  "unique_modules": 3
+ },
+ "device": "fixture",
+ "note": "reference_sha256 is added by test_kgate.py after it builds the reference (ext4 images are made at test time)",
+ "sources": {
+  "boot": "boot",
+  "vendor": "ext4",
+  "vendor_boot": "vendor_boot",
+  "vendor_dlkm": "ext4"
+ },
+ "stock_build_symvers_sha256": "03e9ab8656e1a5647f9b0b97213aeb848eb15dcd65d9e7f8e58bf8bc23af06d7"
+}

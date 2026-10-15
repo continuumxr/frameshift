@@ -1,0 +1,1 @@
+BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/stage3d/fs-idle-o.sh: $BB mount -t "$(printf "\144ebugfs")" none /sys/./kernel/debug

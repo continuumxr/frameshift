@@ -1,0 +1,32 @@
+# b-nodrm (stage3b) mods=[] plan=full; image <repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc
+# reboots: 79.28 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=6cf0f15867f14edc resp=2f18dcd21877b7f4b0a02a5a0d6ad45d2309aa7ba96bbaac65ad383cf7155415 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=6cf0f15867f14edc stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=b5f3dc12ecdc3768 END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=6cf0f15867f14edc chal=114882b9fdcc0fa7dd150a7fffcff9ee lines=136 rec_sha256=2a74b511d273d6b8a933a02780b3049eef0e6b1c1cc28344be8b7717f4875be2]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=59 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [79.28 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [79.28 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.7 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  an empty line immediately before FSB1 BEGIN
+PASS  5 steps in order hash,probe1,pattern1,probe2,pattern2  [['hash', 'probe1', 'pattern1', 'probe2', 'pattern2']]
+PASS  step 3 pattern1 exited code 10  [('pattern1', 'exited', 10, 0)]
+PASS  run 1 FSP1 stream COMPLETE  [STREAM <repo>/build/stage3b-harness/b-nodrm/fsp1-run1.txt COMPLETE 4 records]
+PASS  run 1 every FSP1 nonce = chal[0:8]  [{b'114882b9'}]
+PASS  run 1 is fs-pattern show
+PASS  step 5 replaced by the skip record (run1-supervisor)  [b'FSK1 run=2 skipped reason=run1-supervisor END\n']
+PASS  probe1: exactly one backlight write line (value 127)  [1]
+PASS  probe1: read-back 127  [readback=127]
+PASS  probe1 points mods,pre1,post1  [[(b'mods', b'71.69'), (b'pre1', b'71.99'), (b'post1', b'72.28')]]
+PASS  probe2 points pre2,post2  [[(b'pre2', b'74.78'), (b'post2', b'75.08')]]
+PASS  probes never read the forbidden crtc nodes (blu_default_duty, fifo_trim, blu_max_overlap_us)
+PASS  probe1 carries init's irq0 sample and the fake te-edge-isr/blu-pwm-isr lines
+PASS  probe1 mods snapshot has the cmdline and the fan (pwmfan, pwm-tach-fan0)
+PASS  paced: the record (137 lines) took 0.9 s on the tty (>= 0.4 s for 6 chunks of 20 lines at 0.1 s)
+SCENARIO b-nodrm PASS

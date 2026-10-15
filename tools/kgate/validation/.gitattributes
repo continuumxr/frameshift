@@ -1,0 +1,2 @@
+# Pinned gate inputs (sha256 in the profiles): never convert line endings.
+requests/** -text

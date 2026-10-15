@@ -1,0 +1,13 @@
+# b-done-early (stage3b) mods=[] plan=verify-done; image <repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc
+# reboots: 201.49 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=6cf0f15867f14edc resp=2e0f303ff8300e6c7b8585683901b17e0e4f5805aa131fd9f1af75c863434d18 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=194 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [201.49 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [201.49 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [-0.0 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+SCENARIO b-done-early PASS

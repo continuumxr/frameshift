@@ -1,0 +1,19 @@
+# c-done-early mods=[] plan=[] tail=verify-done; image <repo>/build/stage3d/20261014T014738Z-13ed21be49c7b4ba
+# reboots: 278.32 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=13ed21be49c7b4ba resp=23e80e6e4f1fcf5a588503ec59aea28f0d6957f49f12e24b7a6e05968470c107 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=263 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  idle limit started before SHELL_READY
+PASS  /run/fs.deadline = T0 + DEADLINE  [463 vs t0=263]
+PASS  first reboot reason = collected  [278.32 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [278.32 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.2 s]
+PASS  no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)
+PASS  backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)  [0 write-close event(s): ]
+PASS  tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)
+PASS  probes never named the decoy crtc nodes or debugfs
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order (nautilus,cmd-db,gh_msgq); the vendor list (decoy) never used  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+SCENARIO c-done-early PASS

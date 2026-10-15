@@ -1,0 +1,1 @@
+BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/stage3c/fs-idle-v.sh: K=/sys/kernel; F=fs; $BB mount -t debug$F none $K/debug

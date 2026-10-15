@@ -1,0 +1,16 @@
+  14598 ms  W fs-verify e45a024472fabf3c6f16ed26bd69e921
+  15253 ms  R FSV1 nonce=13ed21be49c7b4ba resp=5a38689a339eb0921a39c15a95259b22ba723006eeed0c79615ec355472ba9ae kernel=6.18.33.2-microsoft-standard-WSL2 pid1=/usr/b
+  15253 ms  W fs-ack a905cdb2414935d3
+  15659 ms  R FSA1 queued END
+  18159 ms  W fs-status
+  18814 ms  R FSS1 nonce=13ed21be49c7b4ba stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=a905cdb2414935d3 END
+  18814 ms  W fs-phase p0 69281a796f8799f35d24bdf19a0fb9e2 0000000000000000
+  24762 ms  R FSB1 END v=1 nonce=13ed21be49c7b4ba chal=69281a796f8799f35d24bdf19a0fb9e2 lines=53 rec_sha256=8cbb9ab0544f9b995e7a66fe31ea31b576982032a58f39db6e5d91fb
+  25288 ms  W fs-phase r1 e934988d20281d2648a526b6f0296458 8cbb9ab0544f9b99
+  30579 ms  R FSB1 END v=1 nonce=13ed21be49c7b4ba chal=e934988d20281d2648a526b6f0296458 lines=171 rec_sha256=fafb1c9292b4930620c0677d40e93a45f4f67b1952769d4698e0df0
+  30889 ms  W fs-phase r2 f4578290106f76b367e1de2a89563d48 fafb1c9292b49306
+  45278 ms  R FSB1 END v=1 nonce=13ed21be49c7b4ba chal=f4578290106f76b367e1de2a89563d48 lines=192 rec_sha256=bc114674853fd3abe65e923356221787fc4a8502b101e7f0d3c7768
+  45533 ms  W fs-phase r3 e71e9360d1a01b2f3cf21ab07d0bbe72 bc114674853fd3ab
+  58083 ms  R FSB1 END v=1 nonce=13ed21be49c7b4ba chal=e71e9360d1a01b2f3cf21ab07d0bbe72 lines=192 rec_sha256=c30a4917e46b5cdf2a2102edc8bc4bd1cf26fd940f98f1aa6c2628f
+  58532 ms  W fs-done
+  58935 ms  R FSD1 queued END

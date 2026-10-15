@@ -1,0 +1,22 @@
+# s3-ack-no-done (stage3a) mods=[] plan=full-no-done; image <repo>/build/stage3a/20261009T085209Z-17449af173f0633a
+# reboots: 1034.01 final pid=1 arg=deadline | 1034.18 fork pid=605 arg=backstop
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=17449af173f0633a resp=f641e357acf351a72e8339fd80d28620b28a15361ec02c1cbc799736c1ea3b19 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=17449af173f0633a stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=654d90535849458a END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=17449af173f0633a chal=dd48c303010ef5beb81f0ad36dc088c5 lines=17 rec_sha256=6b4723c37be6595bd1d7da350aa82cbd3a3649f8a94cdf50e6f0dc6ce6b6fc2c]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=863 deadline=T0+170 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = deadline  [1034.01 final pid=1 arg=deadline]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [1034.01 final pid=1 arg=deadline]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1  [1034.18 fork pid=605 arg=backstop]
+PASS  deadline reboot at T0+DEADLINE..+3 (HOST_ACK did not cancel it)  [T0+171.0]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  an empty line immediately before FSB1 BEGIN
+PASS  pattern step exited 10 (no device)  [('pattern', 'exited', 10, 0)]
+PASS  FSP1 stream COMPLETE (stage3a/tools/check_stream.py)  [STREAM <repo>/build/stage3a-harness/s3-ack-no-done/fsp1-stream.txt COMPLETE 4 records]
+PASS  every FSP1 nonce = chal[0:8]  [{b'dd48c303'}]
+PASS  FSP1 open at=stat rc=-2 (ENOENT) and exit code=10 reason=no_device
+PASS  no FSP1 text on the tty outside the base64 payload
+SCENARIO s3-ack-no-done PASS

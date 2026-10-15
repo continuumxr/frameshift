@@ -1,0 +1,22 @@
+# c-time mods=[] plan=['time', 'p0'] tail=done; image <repo>/build/stage3c/20261012T010256Z-b7cf9a0bfb559dcb
+# reboots: 3730.18 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=b7cf9a0bfb559dcb resp=fd37a5f0e3daaa7211069e5adcfc022e1ca89c340e6d9f4e45e5f36c99c831c3 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=b7cf9a0bfb559dcb stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=3bcdf18704afacd0 END]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=3718 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  idle limit started before SHELL_READY
+PASS  first reboot reason = collected  [3730.18 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [3730.18 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.3 s]
+PASS  phase p0 refused: FSXE1 ran=0 error=time...  [FSXE1 p=p0 ran=0 error=time END]
+PASS  phase p0 ran=0: no marker, no record  [[]]
+PASS  no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)
+PASS  backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)  [0 write-close event(s): ]
+PASS  tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)
+PASS  probes never named the decoy crtc nodes or debugfs
+PASS  modules attempted in order fake_a, fake_b, fake_c
+SCENARIO c-time PASS

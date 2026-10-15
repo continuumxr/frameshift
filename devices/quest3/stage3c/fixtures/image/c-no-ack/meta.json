@@ -1,0 +1,100 @@
+{
+ "ack": "38d3dd567a2e9dbe",
+ "challenges": {
+  "p0": "4adf1c9ff1e39fd0fa6c48bf8e321518",
+  "r1": "b1648939326f2e881eea95c2eaf21f4a",
+  "r2": "94ea32ccaf6144a35fd235c9f265adb1",
+  "r3": "a42faa839858db54509c22e19aca09b7"
+ },
+ "checks": [
+  {
+   "detail": "FSV1 nonce=b7cf9a0bfb559dcb resp=3cee731e87c73a0d8b78c8b49ba7f8c5b57ed22bdd2883da5dcf4a86a0fd2d80 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=3606 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "idle limit started before SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "3806 vs t0=3606",
+   "label": "/run/fs.deadline = T0 + DEADLINE",
+   "ok": true
+  },
+  {
+   "detail": "3767.71 final pid=1 arg=no-host-ack",
+   "label": "first reboot reason = no-host-ack",
+   "ok": true
+  },
+  {
+   "detail": "3767.71 final pid=1 arg=no-host-ack",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "SHELL_READY+150.7",
+   "label": "no-ack reboot at loop start + ACK_WINDOW..+3",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "0 write-close event(s): ",
+   "label": "backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never named the decoy crtc nodes or debugfs",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "modules attempted in order fake_a, fake_b, fake_c",
+   "ok": true
+  }
+ ],
+ "mod_notes": [],
+ "mods": [],
+ "nonce": "b7cf9a0bfb559dcb",
+ "ok": true,
+ "phases": {},
+ "plan": [],
+ "reboot_at_T0_plus": 161.7,
+ "reboots": "3767.71 final pid=1 arg=no-host-ack\n",
+ "scenario": "c-no-ack",
+ "sim_args": "",
+ "t_total_s": 164.6,
+ "tail": "verify-only",
+ "verify_challenge": "dc84b056f3e5b78d9802ee8a955656c4",
+ "want_reboot": "no-host-ack"
+}

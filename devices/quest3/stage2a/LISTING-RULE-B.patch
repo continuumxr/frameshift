@@ -1,0 +1,91 @@
+diff --git a/devices/quest3/common/src/fs-supervise.c b/devices/quest3/common/src/fs-supervise.c
+index ea15bfa..3a2a3e1 100644
+--- a/devices/quest3/common/src/fs-supervise.c
++++ b/devices/quest3/common/src/fs-supervise.c
+@@ -15,7 +15,10 @@
+  *     PROG is also argv[0]. Each option at most once (-e repeatable).
+  *   - The child environment is EMPTY unless -e KEY=VAL is given. Loader-,
+  *     libc-, malloc- and locale-affecting names are refused (glibc list from
+- *     T1-PINS §3, plus bionic/musl names), as are duplicates.
++ *     T1-PINS §3, plus bionic/musl names), as are duplicates. ONE exception,
++ *     the exact string LD_TRACE_LOADED_OBJECTS=1 (FS-A-009 §4 option B: it
++ *     makes ld.so write mode_trace_program false, so `--list` prints no
++ *     unnamed main-map line). NOT ADOPTED (FS-R-009 §4); design only.
+  *   - The child: new session (setsid: no controlling tty, own process group),
+  *     stdin /dev/null or -i INFILE (a regular file, never a tty), stdout and
+  *     stderr pipes, every other fd closed (close_range, loop fallback),
+@@ -210,6 +213,9 @@ static const char *const refused_exact[] = {
+ 	"POSIXLY_CORRECT", "_POSIX2_VERSION",
+ 	"SCUDO_OPTIONS", "LIBC_DEBUG_MALLOC_OPTIONS", "LIBC_DEBUG_MALLOC_ENABLE",
+ 	"LIBC_HOOKS_ENABLE", "MUSL_LOCPATH", NULL };
++/* Whole KEY=VAL strings accepted despite the lists above (compared in full,
++ * so LD_TRACE_LOADED_OBJECTS=2 or =1x stay refused). FS-A-009 §4 option B. */
++static const char *const allowed_kv[] = { "LD_TRACE_LOADED_OBJECTS=1", NULL };
+ 
+ /* returns NULL if acceptable, else a reason token */
+ static const char *env_check(const char *kv, char *const *seen, int nseen)
+@@ -234,10 +240,14 @@ static const char *env_check(const char *kv, char *const *seen, int nseen)
+ 	for (size_t i = 0; i < vlen; i++)
+ 		if ((unsigned char)val[i] < 0x20 || (unsigned char)val[i] >= 0x7f)
+ 			return "env-syntax";
+-	for (int i = 0; refused_prefix[i]; i++)
++	int allowed = 0;
++	for (int i = 0; allowed_kv[i]; i++)
++		if (strcmp(kv, allowed_kv[i]) == 0)
++			allowed = 1;
++	for (int i = 0; !allowed && refused_prefix[i]; i++)
+ 		if (strncmp(kv, refused_prefix[i], strlen(refused_prefix[i])) == 0)
+ 			return "env-refused";
+-	for (int i = 0; refused_exact[i]; i++)
++	for (int i = 0; !allowed && refused_exact[i]; i++)
+ 		if (strlen(refused_exact[i]) == klen && strncmp(kv, refused_exact[i], klen) == 0)
+ 			return "env-refused";
+ 	for (int i = 0; i < nseen; i++)
+diff --git a/devices/quest3/common/target/fsb1-enc.sh b/devices/quest3/common/target/fsb1-enc.sh
+index 261c84d..a337dee 100644
+--- a/devices/quest3/common/target/fsb1-enc.sh
++++ b/devices/quest3/common/target/fsb1-enc.sh
+@@ -63,18 +63,24 @@ fsb1_step() {  # fsb1_step REC I ID FSUPFILE OUTFILE ERRFILE
+     _fsb1_data "$1" "$2" e "$6"
+ }
+ 
+-fsb1_run() {  # fsb1_run REC I ID DIR TIMEOUT [-i INFILE] -- /ABS/PROG [ARG]...
+-    local rec i id dir t inopt
++fsb1_run() {  # fsb1_run REC I ID DIR TIMEOUT [-i INFILE] [-e KEY=VAL] -- /ABS/PROG [ARG]...
++    local rec i id dir t inopt envopt
+     rec=$1 i=$2 id=$3 dir=$4 t=$5
+     shift 5
+     _fsb1_num "$i" && _fsb1_tok "$id" && _fsb1_num "$t" || return 2
+-    inopt=""
++    inopt="" envopt=""
+     if [ "$1" = "-i" ]; then inopt=$2; shift 2; fi
++    # at most one -e, passed through to fs-supervise (which applies its own refusal list)
++    if [ "$1" = "-e" ]; then envopt=$2; shift 2; [ -n "$envopt" ] || return 2; fi
+     [ "$1" = "--" ] || return 2
+     shift
+     [ -e "$dir/$i.out" ] || [ -e "$dir/$i.err" ] || [ -e "$dir/$i.sup" ] && return 3
+-    if [ -n "$inopt" ]; then
++    if [ -n "$inopt" ] && [ -n "$envopt" ]; then
++        "$FSB1_SUP" -t "$t" -i "$inopt" -e "$envopt" -o "$dir/$i.out" -r "$dir/$i.err" -- "$@" > "$dir/$i.sup" 2>/dev/null
++    elif [ -n "$inopt" ]; then
+         "$FSB1_SUP" -t "$t" -i "$inopt" -o "$dir/$i.out" -r "$dir/$i.err" -- "$@" > "$dir/$i.sup" 2>/dev/null
++    elif [ -n "$envopt" ]; then
++        "$FSB1_SUP" -t "$t" -e "$envopt" -o "$dir/$i.out" -r "$dir/$i.err" -- "$@" > "$dir/$i.sup" 2>/dev/null
+     else
+         "$FSB1_SUP" -t "$t" -o "$dir/$i.out" -r "$dir/$i.err" -- "$@" > "$dir/$i.sup" 2>/dev/null
+     fi
+diff --git a/devices/quest3/stage2a/fs-valve.sh b/devices/quest3/stage2a/fs-valve.sh
+index 8b61d30..eda3cc4 100644
+--- a/devices/quest3/stage2a/fs-valve.sh
++++ b/devices/quest3/stage2a/fs-valve.sh
+@@ -47,7 +47,9 @@ fsb1_run "$REC" 2 absent "$D" $T -- /bin/busybox sh -c 'for p in /etc/ld.so.prel
+                                                                                         || { echo "FSVE1 error=step2 END"; exit 1; }
+ fsb1_run "$REC" 3 diag   "$D" $T -- "$L" --inhibit-cache --library-path "$LP" --list-diagnostics \
+                                                                                         || { echo "FSVE1 error=step3 END"; exit 1; }
+-fsb1_run "$REC" 4 list   "$D" $T -- "$L" --inhibit-cache --library-path "$LP" --list /valve/bin/b2sum \
++# FS-A-009 §4 option B (NOT ADOPTED, FS-R-009 §4): LD_TRACE_LOADED_OBJECTS=1 makes ld.so write
++# mode_trace_program false, so the unnamed main-map line is never printed (qemu 15/15).
++fsb1_run "$REC" 4 list   "$D" $T -e LD_TRACE_LOADED_OBJECTS=1 -- "$L" --inhibit-cache --library-path "$LP" --list /valve/bin/b2sum \
+                                                                                         || { echo "FSVE1 error=step4 END"; exit 1; }
+ fsb1_run "$REC" 5 uname  "$D" $T -- "$L" --inhibit-cache --library-path "$LP" /valve/bin/uname -r \
+                                                                                         || { echo "FSVE1 error=step5 END"; exit 1; }

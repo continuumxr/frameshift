@@ -1,0 +1,116 @@
+fs-rpcd device fixtures: rpcd=<repo>/devices/quest2/channel/build/fs-rpcd.native
+V1-verify PASS 0.08s b'FSV1 nonce=0123456789abcdef resp=7dd9a7f3ebfc011254e0b32311d3a096061b93f43895dcc3336cba05c'
+V2-status-before-ack PASS b'FSS1 nonce=0123456789abcdef stages=INIT_STARTED,SHELL_READY acked=none END\n'
+V3-ack PASS host_ack='ff1bc86a95443e7c\n'
+V4-status-acked PASS b'FSS1 nonce=0123456789abcdef stages=INIT_STARTED,SHELL_READY,HOST_ACK acked=ff1bc86a95443e7c END\n'
+V5-done PASS b'FSD1 queued END\n'
+V6-collect-no-runner PASS b'FSR1 nonce=0123456789abcdef error=no-runner END\n'
+V7-no-unsolicited-bytes PASS None
+V8-status-acked-invalid PASS b'FSS1 nonce=0123456789abcdef stages=INIT_STARTED,SHELL_READY,HOST_ACK acked=invalid END\n'
+V9-log-table-only PASS log ok
+V-stderr-clean PASS b''
+V10-verify-ipv6-loopback PASS b'FSV1 nonce=0123456789abcdef resp=68f9bf9ed72262b258f2fae4384650ba2bb99751687a3f2'
+M01-uppercase-verb PASS b'FS-STATUS 0123456789abcdef\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M02-double-space PASS b'fs-status  0123456789abcdef\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M03-leading-space PASS b' fs-status 0123456789abcdef\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M04-trailing-space PASS b'fs-status 0123456789abcdef \n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M05-crlf PASS b'fs-status 0123456789abcdef\r\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M06-tab PASS b'fs-status\t0123456789abcdef\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M07-nul PASS b'fs-status 0123456789abcdef\x00\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M08-quote PASS b"fs-status '0123456789abcdef'\n" -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M09-semicolon PASS b'fs-status 0123456789abcdef;fs-done 01234' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M10-subst PASS b'fs-status $(reboot)\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M11-backtick PASS b'fs-status `id`\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M12-empty-line PASS b'\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M13-high-bytes PASS b'\xff\xfe\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M14-utf8 PASS b'fs-status \xc3\xa9\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M15-unknown-verb PASS b'fs-reboot 0123456789abcdef\n' -> b'FSR1 nonce=0123456789abcdef error=verb END\n'
+M16-verb-prefix PASS b'fs-statusx 0123456789abcdef\n' -> b'FSR1 nonce=0123456789abcdef error=verb END\n'
+M17-shell PASS b'sh\n' -> b'FSR1 nonce=0123456789abcdef error=verb END\n'
+M18-missing-nonce PASS b'fs-status\n' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M19-verify-no-chal PASS b'fs-verify 0123456789abcdef\n' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M20-verify-short PASS b'fs-verify 0123456789abcdef aaaaaaaaaaaaa' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M21-verify-long PASS b'fs-verify 0123456789abcdef aaaaaaaaaaaaa' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M22-verify-upper-hex PASS b'fs-verify 0123456789abcdef AAAAAAAAAAAAA' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M23-ack-extra PASS b'fs-ack 0123456789abcdef 0123456789abcdef' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M24-status-extra PASS b'fs-status 0123456789abcdef 0123456789abc' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M25-five-tokens PASS b'a b c d e\n' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M26-nonce-short PASS b'fs-status 0123\n' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M27-nonce-nonhex PASS b'fs-status 0123456789abcdeg\n' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M28-done-arg PASS b'fs-done 0123456789abcdef 00\n' -> b'FSR1 nonce=0123456789abcdef error=args END\n'
+M29-hyphens PASS b'-- --\n' -> b'FSR1 nonce=0123456789abcdef error=verb END\n'
+M30-bare-newline-cr PASS b'\r\n' -> b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+M31-no-state-change PASS ['fs.rpc.log', 'fs.stages']
+M32-log-table-only PASS log ok
+O1-64-chars-ok-grammar PASS b'FSR1 nonce=0123456789abcdef error=verb END\n'
+O2-65-chars PASS b'FSR1 nonce=0123456789abcdef error=too-long END\n'
+O3-1000-no-newline PASS 0.00s b'FSR1 nonce=0123456789abcdef error=too-long END\n'
+O4-flood-then-serves PASS b'FSS1 nonce=0123456789abcdef stages=INIT_'
+O5-pipelined-refused PASS b'FSR1 nonce=0123456789abcdef error=trailing END\n'
+S1-silent-client PASS 3.00s b'FSR1 nonce=0123456789abcdef error=timeout END\n'
+S2-no-newline PASS 3.00s b'FSR1 nonce=0123456789abcdef error=timeout END\n'
+S3-trickle-total-bound PASS 4.00s b'FSR1 nonce=0123456789abcdef error=timeout END\n'
+S4-held-conn-then-served PASS 3.18s
+S5-no-half-close PASS 0.08s
+C1-20-sequential PASS 
+C2-5-concurrent-all-served PASS 1.2s [b'FSS1 nonce=0', b'FSS1 nonce=0', b'FSS1 nonce=0', b'FSS1 nonce=0', b'FSS1 nonce=0']
+C3-idle-head-of-line-bounded PASS 3.4s
+C4-maxconn-exits PASS rc=0
+R1-rst-mid-request-then-serves PASS b'FSS1 nonce=0123456789abcdef st'
+R2-rst-mid-record-then-serves PASS got=128000 alive=True
+R3-collect-once PASS b'FSR1 nonce=0123456789abcdef error=collect-already END\n'
+R4-log-records-send-failed PASS ['FSRPC seq=3 verb=fs-collect result=send-failed', 'FSRPC seq=4 verb=fs-status result=ok', 'FSRPC seq=5 verb=fs-collect result=collect-already']
+N1-wrong-nonce-verify PASS b'FSR1 nonce=0123456789abcdef error=nonce END\n'
+N2-wrong-nonce-ack-no-state PASS b'FSR1 nonce=0123456789abcdef error=nonce END\n'
+N3-wrong-nonce-done-no-state PASS b'FSR1 nonce=0123456789abcdef error=nonce END\n'
+P1-replayed-challenge PASS b'FSR1 nonce=0123456789abcdef error=replay END\n'
+P2-second-ack-refused PASS (b'FSR1 nonce=0123456789abcdef error=replay END\n', b'FSR1 nonce=0123456789abcdef error=ack-already END\n')
+P3-ack-after-pid1-consumed PASS b'FSR1 nonce=0123456789abcdef error=ack-already END\n'
+F1-collect-fsb1-valid PASS 0.9s 974 bytes VALID
+F2-collect-other-chal-rejected PASS REJECT chal-mismatch
+F3-runner-exit-1 PASS 0.1s b'FSR1 nonce=0123456789abcdef error=runner-exit END\n'
+F4-runner-binary PASS 0.1s b'FSR1 nonce=0123456789abcdef error=runner-output END\n'
+F5-runner-no-final-lf PASS 0.1s b'FSR1 nonce=0123456789abcdef error=runner-output END\n'
+F6-runner-timeout PASS 3.1s b'FSR1 nonce=0123456789abcdef error=runner-timeout END\n'
+T1-trailing-in-later-segment PASS b'FSR1 nonce=0123456789abcdef error=trailing END\n'
+T2-late-bytes-not-a-request PASS b'FSS1 nonce=0123456789abcdef st'
+T3-half-close-accepted PASS 0.00s
+T4-half-close-verify PASS b'FSV1 nonce=012345678'
+T5-half-close-malformed PASS b'FSR1 nonce=0123456789abcdef error=grammar END\n'
+K1-marker-refuses-collect PASS b'FSR1 nonce=0123456789abcdef error=collect-already END\n'
+K2-collect-once-survives-restart PASS b'ok\n' / b'FSR1 nonce=0123456789abcdef error=collect-already END\n'
+X1-runner-too-large PASS 1.1s b'FSR1 nonce=0123456789abcdef error=runner-too-large END\n'
+X2-exactly-8MiB-delivered PASS 1.5s 8388608 bytes
+X3-stdout-closed-runner-killed PASS 2.1s b'FSR1 nonce=0123456789abcdef error=runner-killed END\n' runner-still-alive=False
+X4-stray-holds-stdout-timeout-and-killed PASS 3.1s b'FSR1 nonce=0123456789abcdef error=runner-timeout END\n' stray-alive=False
+X6-setsid-stray-swept PASS 0.2s b'ok\n' stray-alive=False swept-logged=True
+X7-double-fork-setsid-stray-swept PASS 1.2s b'ok\n' stray-alive=False swept-logged=True
+X5-unreapable-runner-bounded PASS 4.1s b'FSR1 nonce=0123456789abcdef error=runner-unreaped END\n' (2 s + 2 s polls, then give up)
+SIG1-runner-state-reset PASS 'SigBlk: 0000000000000000\nSigIgn: 0000000000000000\n0077\n'
+SIG2-collect-with-sigchld-ignored-by-parent PASS 0.9s b'\nFSB1 BEGIN v=1 exp=fixture nonce=012345'
+V11-long-stages-cut-with-plus PASS len=200 tail='8,STAGE_019+'
+V12-plus-in-data-becomes-question-mark PASS 'INIT_STARTED,A?B,RPC_READY'
+V13-short-stages-unmarked PASS 'INIT_STARTED,RPC_READY'
+V14-file-beyond-read-limit-marked PASS 'INIT_STARTED+'
+V15-exactly-199-unmarked PASS len=199
+V16-exactly-200-unmarked PASS len=200
+V17-201-cut PASS len=200
+V19-only-separators-then-cut-is-marked PASS '-+'
+V20-only-separators-uncut-is-dash PASS '-'
+V18-T-104-accepted PASS b'ok\n'
+U1-linklocal-needs-if PASS rc=2
+U2-ipv4-with-if PASS rc=2
+U3-bad-nonce PASS rc=2
+U4-port-leading-zero PASS rc=2
+U5-relative-rundir PASS rc=2
+U6-runner-without-T PASS rc=2
+U7-T-over-cap-104 PASS rc=2
+U8-duplicate-option PASS rc=2
+U9-extra-arg PASS rc=2
+U10-ipv6-unspecified PASS rc=2
+U11-ipv4-any PASS rc=2
+U12-ipv6-multicast PASS rc=2
+U13-ipv4-multicast PASS rc=2
+U14-ipv4-broadcast PASS rc=2
+U15-v4-mapped PASS rc=2
+TOTAL 114/114 PASS

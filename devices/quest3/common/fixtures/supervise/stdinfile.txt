@@ -1,0 +1,9 @@
+# cmd: fs-supervise -t 5 -i $W/chal.bin -e PATH=$W/bin -o $W/cap/stdinfile.out -r $W/cap/stdinfile.err -- $W/bin/busybox cat
+# report: FSUP1 end=exited code=0 sig=0 errno=0 ms=106 term_ms=-1 kill_ms=-1 out_total=52 out_kept=52 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+# exit=0 wall_ms=248
+# stdout capture: 52 bytes, first 64 as hex:
+#      f   s   -   0   1   2   3   4   5   6   7   8   9   a   b   c
+#      d   e   f   :   0   0   1   1   2   2   3   3   4   4   5   5
+#      6   6   7   7   8   8   9   9   a   a   b   b   c   c   d   d
+#      e   e   f   f
+# stderr capture: 0 bytes, first 64 as hex:

@@ -1,0 +1,6 @@
+candidate <repo>/build/stage3c/20261012T010256Z-b7cf9a0bfb559dcb
+nonce b7cf9a0bfb559dcb stamp 20261012T010256Z
+candidate image 9d3ad98400ac94f42b291a66b0420576df5ad8ee447e831d971fcaba9bd914bd
+rebuilt   image 9d3ad98400ac94f42b291a66b0420576df5ad8ee447e831d971fcaba9bd914bd
+candidate ramdisk.cpio      dfa846d4c98ce6eae033991b50562e1f20c100a623b2933ab16879afd11f8cc2  size=3384320
+rebuilt   ramdisk.cpio      dfa846d4c98ce6eae033991b50562e1f20c100a623b2933ab16879afd11f8cc2  size=3384320

@@ -1,0 +1,80 @@
+{
+ "ack": "3a9189379992332d",
+ "challenge": "c7ca745eb368420ac0db9aa51f289a5c",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=6cf0f15867f14edc resp=2e0f303ff8300e6c7b8585683901b17e0e4f5805aa131fd9f1af75c863434d18 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=194 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "201.49 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "201.49 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "-0.0 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "fake_a fake_b fake_c",
+   "label": "modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)",
+   "ok": true
+  }
+ ],
+ "exp": "stage3b",
+ "expect": {},
+ "image_dir": "<repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc",
+ "kernel": "6.18.33.2-microsoft-standard-WSL2",
+ "mod_notes": [],
+ "mods": [],
+ "nonce": "6cf0f15867f14edc",
+ "ok": true,
+ "pid1": "/usr/bin/qemu-aarch64,/bin/busybox,/bin/busybox,sh,/init",
+ "plan": "verify-done",
+ "reboot_at_T0_plus": 7.5,
+ "reboots": "201.49 final pid=1 arg=collected\n",
+ "scenario": "b-done-early",
+ "stage": "stage3b",
+ "steps": [
+  "hash",
+  "probe1",
+  "pattern1",
+  "probe2",
+  "pattern2"
+ ],
+ "t_total_s": 8.9,
+ "verify_challenge": "971055b7b702760161f2ee112b4bfc41",
+ "want_reboot": "collected"
+}

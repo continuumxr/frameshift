@@ -1,0 +1,2 @@
+-- dmesg: 0 new matching line(s), 0 shown
+-- dmesg: 0 mode-validation line(s) not kept (dsi_conn_mode_valid / dsi_display_find_mode)

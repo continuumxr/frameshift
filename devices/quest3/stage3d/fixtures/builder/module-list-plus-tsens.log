@@ -1,0 +1,1 @@
+BUILD REFUSED: module list (modules.load.v66) hash differs from the pin ($HOME/work/fsbuild-neg/stage3d/modlist-plus-tsens: bf5902ac2afc271ae3a340b42dd503c39221a689da72ae38156e45b12a65ecfc != 1b93d77d029146cf93289be87de51514c6ab7b96987f9c467a7f13f6e2a6463f)

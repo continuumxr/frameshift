@@ -1,0 +1,82 @@
+FSPR1 helper=r2 start up=3662.00
+== backlight-verify node=/sys/class/backlight/panel0-backlight/brightness (read only) up=3662.03
+readback=127
+== point pre run=r2 up=3662.06
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 3662.09
+-- drm connectors
+card0-DSI-1 status=connected enabled=enabled dpms=On
+-- crtc-0
+backlight_timing=55,4828,4828
+backlight_event=BACKLIGHT=7197969,4972614692528,909583
+active_event=ACTIVE=1868543,4972593066018,3315573
+measured_fps=fps: 0.0 duration:1000000 frame_count:0
+vsync_timing=32,2208,2918@90
+-- backlight
+brightness=127 actual_brightness=0 bl_power=0
+-- fan
+hwmon2 name=pwmfan rpm=0 pwm=0
+cooling_device4 type=pwm-tach-fan0 cur_state=0
+-- dmesg: not read at pre (it is read at mods, mid and post)
+== end pre up=3662.53
+== point go+1 run=r2 up=3663.66
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 3663.68
+== end go+1 up=3663.69
+== point mid run=r2 up=3667.73
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 3667.74
+-- irq (+0.5 s)
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 3668.25
+-- drm connectors
+card0-DSI-1 status=connected enabled=enabled dpms=On
+-- crtc-0
+backlight_timing=55,4828,4828
+backlight_event=BACKLIGHT=7197969,4972614692528,909583
+active_event=ACTIVE=1868543,4972593066018,3315573
+measured_fps=fps: 0.0 duration:1000000 frame_count:0
+vsync_timing=32,2208,2918@90
+-- backlight
+brightness=127 actual_brightness=0 bl_power=0
+-- fan
+hwmon2 name=pwmfan rpm=0 pwm=0
+cooling_device4 type=pwm-tach-fan0 cur_state=0
+-- dmesg (new matching lines, last 80, <= 200 bytes each, <= 4096 bytes)
+-- dmesg: 0 new matching line(s), 0 shown
+== end mid up=3668.46
+== point end run=r2 up=3673.19
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 3673.20
+== end end up=3673.21
+== point post run=r2 up=3673.22
+-- irq
+471:      33236          0          0          0          0          0          0          0   msmgpio 110 Edge      te-edge-isr
+472:      33255          0          0          0          0          0          0          0   msmgpio 109 Edge      blu-pwm-isr
+-- at 3673.23
+-- drm connectors
+card0-DSI-1 status=connected enabled=enabled dpms=On
+-- crtc-0
+backlight_timing=55,4828,4828
+backlight_event=BACKLIGHT=7197969,4972614692528,909583
+active_event=ACTIVE=1868543,4972593066018,3315573
+measured_fps=fps: 0.0 duration:1000000 frame_count:0
+vsync_timing=32,2208,2918@90
+-- backlight
+brightness=127 actual_brightness=0 bl_power=0
+-- fan
+hwmon2 name=pwmfan rpm=0 pwm=0
+cooling_device4 type=pwm-tach-fan0 cur_state=0
+-- dmesg (new matching lines, last 80, <= 200 bytes each, <= 4096 bytes)
+-- dmesg: 0 new matching line(s), 0 shown
+== end post up=3673.48
+FSPR1 helper=r2 end up=3673.49

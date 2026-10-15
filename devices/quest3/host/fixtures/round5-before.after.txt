@@ -1,0 +1,8 @@
+== round-5 probes, code under test: <repo>\devices\quest3\host
+PASS  P1 stage 2a: a correct 8-step record (step 8 inv, informational) classifies PASS
+PASS  P2 stage 2a: an inv tool fault does not change PASS
+PASS  P3 the collector accepts the fs-display verb
+PASS  P4 the classifier has a stage-3a function and classifies a committed run as PASS (machine side)
+PASS  P5 the stage-3a replay capture collects COLLECTED-VALID through fs-display
+PASS  P6 the default host give-up follows the image deadline (stage 2a 260 s: 245 000 ms)
+TOTAL: 6 passed, 0 failed

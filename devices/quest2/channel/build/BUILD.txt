@@ -1,0 +1,22 @@
+fs-rpcd build record
+date_utc:   2026-10-10T02:34:41Z
+compiler:   Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+command: $HOME/toolchains/clang-r450784e/bin/clang --target=aarch64-linux-gnu -static -O2 -std=c11 -D_GNU_SOURCE -Wall -Wextra -Werror -fno-ident -fuse-ld=lld -Wl,--build-id=none -Wl,-z,separate-code -s -o build/fs-rpcd src/fs-rpcd.c
+source:     src/fs-rpcd.c sha256=df75cd26a01ee07e47afe26bfa5502e9d593c7bc9311ca1d9b33ffcbd32013f7
+libc:       libc6-dev-arm64-cross 2.43-2ubuntu2cross1 (static glibc)
+binary:     build/fs-rpcd sha256=da19367be1f2d3c73d7476cb203e3109a0af277758ac552aa72bf81bf3cc8c4c size=680968
+elf:        ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, for GNU/Linux 3.7.0, stripped
+checks:     aarch64, ET_EXEC, no INTERP, no NEEDED, bit-identical rebuild, bounds unchanged
+framing:    these gates are defence in depth against ACCIDENTAL or CARELESS changes; a determined source editor with control of the toolchain can defeat any static gate, so human source review of src/fs-rpcd.c remains the control
+gates:      textual (tools/src-gate.sh), on the raw text AND on clang -E output restricted to lines from src/fs-rpcd.c: no asm/__asm/__asm__/svc/hvc/smc token, no ## / _Pragma, no backslash-newline splice outside a directive, no trigraph, no digraph %:, no call of system/popen/posix_spawn*/exec* except one execve, execveat, vfork, clone*, syscall: src-gate: OK (raw + preprocessed: no asm/svc token, no ## / _Pragma / splice / trigraph / digraph, no forbidden call, one execve)
+gates:      object (tools/undef-gate.sh): undef-gate: OK (61 symbols, all allowlisted; allowlist pin matches; one execve call site (R_AARCH64_CALL26); no svc/hvc/smc in the disassembly; obj-scan: OK (one .text, 3221 words, no svc/hvc/smc encoding, no $d in code; 577 relocations, every one in .text an instruction relocation on its instruction class; 103 symbols))
+gates:      object raw scan (tools/obj-scan.py, fail closed): ELF64/LE/AArch64/ET_REL with a sane section table; exactly one code section (PROGBITS .text, SHF_EXECINSTR); no svc/hvc/smc encoding in its raw words; no $d in code; every relocation into .text is an instruction relocation (CALL26 JUMP26 ADR_PREL_PG_HI21[_NC] ADD_ABS_LO12_NC LDST8/16/32/64/128_ABS_LO12_NC CONDBR19 TSTBR14) on a word of its instruction class, so data relocations (ABS*/PREL*) cannot write an svc at link time; RELA only, into .text or a known data section
+gates:      execve: the relocation check limits execve CALL SITES to one direct call; it does not constrain the arguments or how often that site runs (arguments: source review: argv = { -c runner path, validated 32-hex challenge }, env = { PATH=/bin:/sbin })
+gates:      allowlist tools/fs-rpcd.undef.allow sha256=58ceb1e849cf1e519ff896fdcad9c80dc16ebd77539657a1cd8f30d19e0ec701 (pinned in build.sh); crafted-variant and malformed-object rejections: tools/fixtures-build.sh
+link:       -z separate-code; linked binary (tools/seg-check.py): seg-check: OK (one RX PT_LOAD vaddr 0x230000-0x29a0b0, page 64 KiB: pages hold only .fini/.init/.iplt/.text; no other section or segment shares them)
+timing:     tools/check-timing.py CONSISTENT; R3 COLLECT_S_MAX=104 <= T_max(FS_DEADLINE_MAX=299)=104: OK
+gates:      scope: fs-rpcd's own source text, preprocessed text, symbols, relocations and raw code bytes, under the default lld section mapping; not a proof about libc internals
+subreaper:  prctl(PR_SET_CHILD_SUBREAPER) at start; reparented runner orphans are SIGKILLed after each collect (<= 2 s, WNOHANG reaping)
+/bin/sh:    string present in the binary: static glibc links popen/posix_spawn/execvpe (via libio); fs-rpcd's object does not reference them (object gate above).
+fixture:    build/fs-rpcd.native + build/shim-nowait.so (x86_64, fixtures only; LD_PRELOAD waitpid shim for X5)
+fixture:    build/fs-rpcd.asan (gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0; -fsanitize=address,undefined; x86_64, fixtures only)

@@ -1,0 +1,2 @@
+# Quest 2 group "acm" (FS-A-006 (private review record))
+--enable USB_CONFIGFS_ACM

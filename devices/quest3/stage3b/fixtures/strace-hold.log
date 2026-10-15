@@ -1,0 +1,43 @@
+18320 uname(0x7305593fe3e8) = 0
+18320 brk(NULL) = 0x00000000002e0000
+18320 brk(0x00000000002e0ae0) = 0x00000000002e0ae0
+18320 set_tid_address(0x2e0448) = 18320
+18320 set_robust_list(0x2e0100,24) = -1 errno=38 (Function not implemented)
+18320 rseq(0x2e07a0,32,0,0xd428bc00) = -1 errno=38 (Function not implemented)
+18320 prlimit64(0,RLIMIT_STACK,NULL,0x00007305593fe538) = 0 ({rlim_cur=8388608,rlim_max=-1})
+18320 getrandom(0x2deef8,8,1) = 8
+18320 readlinkat(AT_FDCWD,"/proc/self/exe",0x00007305593fd4c0,4096) = 79
+18320 brk(NULL) = 0x00000000002e0ae0
+18320 brk(0x0000000000400000) = 0x0000000000400000
+18320 mprotect(0x00000000002b7000,16384,PROT_READ) = 0
+18320 clock_gettime(CLOCK_MONOTONIC,0x00007305593fe2d0) = 0 ({tv_sec = 465,tv_nsec = 905891910})
+18320 fstat(1,0x00007305593fe2d0) = 0
+18320 rt_sigaction(SIGTERM,0x00007305593fe128,NULL) = 0
+18320 rt_sigaction(SIGINT,0x00007305593fe128,NULL) = 0
+18320 rt_sigaction(SIGHUP,0x00007305593fe128,NULL) = 0
+18320 rt_sigaction(SIGALRM,0x00007305593fe128,NULL) = 0
+18320 rt_sigaction(SIGPIPE,0x00007305593fe128,NULL) = 0
+18320 rt_sigaction(SIGXFSZ,0x00007305593fe128,NULL) = 0
+18320 rt_sigprocmask(SIG_BLOCK,[SIGHUP SIGINT SIGTERM],NULL,8) = 0
+18320 rt_sigprocmask(SIG_UNBLOCK,[SIGALRM],NULL,8) = 0
+18320 setitimer(ITIMER_REAL,{it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 30,tv_usec = 0},},0x00007305593fe238) = 0 (old_value = {it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 0,tv_usec = 0},})
+18320 write(1,0x2ccd70,207) = 207
+18320 rt_sigpending(126466809389520,8,207,0,0,0) = 0
+18320 newfstatat(AT_FDCWD,"/dev/null",0x00007305593fe2d0,0) = 0
+18320 openat(AT_FDCWD,"/dev/null",O_RDONLY|O_NOCTTY|O_CLOEXEC) = 3
+18320 fstat(3,0x00007305593fe368) = 0
+18320 write(1,0x2ccd70,86) = 86
+18320 clock_gettime(CLOCK_MONOTONIC,0x00007305593fe250) = 0 ({tv_sec = 466,tv_nsec = 18588149})
+18320 setitimer(ITIMER_REAL,{it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 6,tv_usec = 0},},0x00007305593fe238) = 0 (old_value = {it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 29,tv_usec = 951073},})
+18320 write(1,0x2ccd70,126) = 126
+18320 clock_gettime(CLOCK_MONOTONIC,0x00007305593fe1f8) = 0 ({tv_sec = 466,tv_nsec = 41252678})
+18320 rt_sigtimedwait(2935984,0,126466809389560,8,0,0) = -1 errno=11 (Resource temporarily unavailable)
+18320 clock_gettime(CLOCK_MONOTONIC,0x00007305593fe1f8) = 0 ({tv_sec = 467,tv_nsec = 31265998})
+18320 clock_gettime(CLOCK_MONOTONIC,0x00007305593fe1f8) = 0 ({tv_sec = 467,tv_nsec = 39549045})
+18320 close(3) = 0
+18320 clock_gettime(CLOCK_MONOTONIC,0x00007305593fe1f8) = 0 ({tv_sec = 467,tv_nsec = 51567714})
+18320 write(1,0x2ccd70,151) = 151
+18320 clock_gettime(CLOCK_MONOTONIC,0x00007305593fe220) = 0 ({tv_sec = 467,tv_nsec = 65771494})
+18320 write(1,0x2ccd70,138) = 138
+18320 write(1,0x2ccd70,132) = 132
+18320 exit_group(0)

@@ -1,0 +1,119 @@
+FSP1 nonce=3c3c0a0b seq=0 step=start rc=0 mode=show-off-solid ver=0.7.1 hold_req=1 hold=1 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/mock/card0 out=file rot=180 roll=21 eyes=swap t0_ms=237461 len=209 crc=f11f053e END
+FSP1 nonce=3c3c0a0b seq=1 step=open rc=0 dev=/mock/card0 major=226 minor=0 len=74 crc=60e7fdb7 END
+FSP1 nonce=3c3c0a0b seq=2 step=version rc=0 drv=msm_drm major=1 minor=4 patch=0 len=79 crc=d4caaffa END
+FSP1 nonce=3c3c0a0b seq=3 step=caps rc=0 universal_rc=0 atomic_rc=0 len=67 crc=c46322f6 END
+FSP1 nonce=3c3c0a0b seq=4 step=resources rc=0 crtcs=3 connectors=3 encoders=3 fbs=0 max_w=20480 max_h=8640 len=106 crc=bf2b70ba END
+FSP1 nonce=3c3c0a0b seq=5 step=connector rc=0 id=33 type=15 type_id=1 status=1 modes=37 encoders=1 encoder=0 mm_w=0 mm_h=0 len=122 crc=b1d40ebc END
+FSP1 nonce=3c3c0a0b seq=6 step=connector rc=0 id=55 type=16 type_id=1 status=1 modes=305 encoders=1 encoder=54 mm_w=0 mm_h=0 len=124 crc=802ff3a6 END
+FSP1 nonce=3c3c0a0b seq=7 step=connector rc=0 id=65 type=10 type_id=1 status=2 modes=0 encoders=1 encoder=0 mm_w=0 mm_h=0 len=121 crc=826a9490 END
+FSP1 nonce=3c3c0a0b seq=8 step=chosen_connector rc=0 id=55 type=16 connected=2 modes=305 encoder=54 len=99 crc=d4394228 END
+FSP1 nonce=3c3c0a0b seq=9 step=mode rc=0 idx=0 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid preferred=1 expected=1 len=213 crc=a364bc4b END
+FSP1 nonce=3c3c0a0b seq=10 step=mode rc=0 idx=1 w=3104 h=1664 vrefresh=90 clock_khz=1393367 hss=3180 hse=3220 htotal=3328 vss=4620 vse=4622 vtotal=4652 flags=0x0 type=0x8 name=3104x1664x90vid preferred=1 expected=0 len=214 crc=8b6dc05c END
+FSP1 nonce=3c3c0a0b seq=11 step=mode rc=0 idx=2 w=4128 h=2208 vrefresh=207 clock_khz=2020637 hss=4204 hse=4244 htotal=4352 vss=2211 vse=2213 vtotal=2243 flags=0x0 type=0x0 name=4128x2208x207vid preferred=0 expected=0 len=216 crc=aa1f40eb END
+FSP1 nonce=3c3c0a0b seq=12 step=mode rc=0 idx=3 w=4128 h=2208 vrefresh=206 clock_khz=2020738 hss=4204 hse=4244 htotal=4352 vss=2222 vse=2224 vtotal=2254 flags=0x0 type=0x0 name=4128x2208x206vid preferred=0 expected=0 len=216 crc=a9b02147 END
+FSP1 nonce=3c3c0a0b seq=13 step=mode rc=0 idx=4 w=4128 h=2208 vrefresh=205 clock_khz=2020742 hss=4204 hse=4244 htotal=4352 vss=2233 vse=2235 vtotal=2265 flags=0x0 type=0x0 name=4128x2208x205vid preferred=0 expected=0 len=216 crc=fb0e199a END
+FSP1 nonce=3c3c0a0b seq=14 step=mode rc=0 idx=5 w=4128 h=2208 vrefresh=204 clock_khz=2020651 hss=4204 hse=4244 htotal=4352 vss=2244 vse=2246 vtotal=2276 flags=0x0 type=0x0 name=4128x2208x204vid preferred=0 expected=0 len=216 crc=958bf3c9 END
+FSP1 nonce=3c3c0a0b seq=15 step=mode rc=0 idx=6 w=4128 h=2208 vrefresh=203 clock_khz=2020463 hss=4204 hse=4244 htotal=4352 vss=2255 vse=2257 vtotal=2287 flags=0x0 type=0x0 name=4128x2208x203vid preferred=0 expected=0 len=216 crc=45038a0f END
+FSP1 nonce=3c3c0a0b seq=16 step=mode rc=0 idx=7 w=4128 h=2208 vrefresh=202 clock_khz=2021060 hss=4204 hse=4244 htotal=4352 vss=2267 vse=2269 vtotal=2299 flags=0x0 type=0x0 name=4128x2208x202vid preferred=0 expected=0 len=216 crc=c48b5577 END
+FSP1 nonce=3c3c0a0b seq=17 step=mode rc=0 idx=8 w=4128 h=2208 vrefresh=201 clock_khz=2020677 hss=4204 hse=4244 htotal=4352 vss=2278 vse=2280 vtotal=2310 flags=0x0 type=0x0 name=4128x2208x201vid preferred=0 expected=0 len=216 crc=51e39c08 END
+FSP1 nonce=3c3c0a0b seq=18 step=mode rc=0 idx=9 w=4128 h=2208 vrefresh=200 clock_khz=2021068 hss=4204 hse=4244 htotal=4352 vss=2290 vse=2292 vtotal=2322 flags=0x0 type=0x0 name=4128x2208x200vid preferred=0 expected=0 len=216 crc=677f648a END
+FSP1 nonce=3c3c0a0b seq=19 step=mode rc=0 idx=10 w=4128 h=2208 vrefresh=199 clock_khz=2020489 hss=4204 hse=4244 htotal=4352 vss=2301 vse=2303 vtotal=2333 flags=0x0 type=0x0 name=4128x2208x199vid preferred=0 expected=0 len=217 crc=c64d281c END
+FSP1 nonce=3c3c0a0b seq=20 step=mode rc=0 idx=11 w=4128 h=2208 vrefresh=198 clock_khz=2020677 hss=4204 hse=4244 htotal=4352 vss=2313 vse=2315 vtotal=2345 flags=0x0 type=0x0 name=4128x2208x198vid preferred=0 expected=0 len=217 crc=355b1718 END
+FSP1 nonce=3c3c0a0b seq=21 step=mode rc=0 idx=12 w=4128 h=2208 vrefresh=197 clock_khz=2020759 hss=4204 hse=4244 htotal=4352 vss=2325 vse=2327 vtotal=2357 flags=0x0 type=0x0 name=4128x2208x197vid preferred=0 expected=0 len=217 crc=02618205 END
+FSP1 nonce=3c3c0a0b seq=22 step=mode rc=0 idx=13 w=4128 h=2208 vrefresh=196 clock_khz=2020738 hss=4204 hse=4244 htotal=4352 vss=2337 vse=2339 vtotal=2369 flags=0x0 type=0x0 name=4128x2208x196vid preferred=0 expected=0 len=217 crc=71cb7c1a END
+FSP1 nonce=3c3c0a0b seq=23 step=mode rc=0 idx=14 w=4128 h=2208 vrefresh=195 clock_khz=2020611 hss=4204 hse=4244 htotal=4352 vss=2349 vse=2351 vtotal=2381 flags=0x0 type=0x0 name=4128x2208x195vid preferred=0 expected=0 len=217 crc=c4759335 END
+FSP1 nonce=3c3c0a0b seq=24 step=mode rc=0 idx=15 w=4128 h=2208 vrefresh=194 clock_khz=2020381 hss=4204 hse=4244 htotal=4352 vss=2361 vse=2363 vtotal=2393 flags=0x0 type=0x0 name=4128x2208x194vid preferred=0 expected=0 len=217 crc=7efecde7 END
+FSP1 nonce=3c3c0a0b seq=25 step=mode rc=0 idx=16 w=4128 h=2208 vrefresh=193 clock_khz=2020886 hss=4204 hse=4244 htotal=4352 vss=2374 vse=2376 vtotal=2406 flags=0x0 type=0x0 name=4128x2208x193vid preferred=0 expected=0 len=217 crc=e3e0a4d5 END
+FSP1 nonce=3c3c0a0b seq=26 step=mode rc=0 idx=17 w=4128 h=2208 vrefresh=192 clock_khz=2020442 hss=4204 hse=4244 htotal=4352 vss=2386 vse=2388 vtotal=2418 flags=0x0 type=0x0 name=4128x2208x192vid preferred=0 expected=0 len=217 crc=b19511d9 END
+FSP1 nonce=3c3c0a0b seq=27 step=mode rc=0 idx=18 w=4128 h=2208 vrefresh=191 clock_khz=2020724 hss=4204 hse=4244 htotal=4352 vss=2399 vse=2401 vtotal=2431 flags=0x0 type=0x0 name=4128x2208x191vid preferred=0 expected=0 len=217 crc=b1074474 END
+FSP1 nonce=3c3c0a0b seq=28 step=mode rc=0 idx=19 w=4128 h=2208 vrefresh=190 clock_khz=2020894 hss=4204 hse=4244 htotal=4352 vss=2412 vse=2414 vtotal=2444 flags=0x0 type=0x0 name=4128x2208x190vid preferred=0 expected=0 len=217 crc=130f9bae END
+FSP1 nonce=3c3c0a0b seq=29 step=mode rc=0 idx=20 w=4128 h=2208 vrefresh=189 clock_khz=2020951 hss=4204 hse=4244 htotal=4352 vss=2425 vse=2427 vtotal=2457 flags=0x0 type=0x0 name=4128x2208x189vid preferred=0 expected=0 len=217 crc=6793251c END
+FSP1 nonce=3c3c0a0b seq=30 step=mode rc=0 idx=21 w=4128 h=2208 vrefresh=188 clock_khz=2020894 hss=4204 hse=4244 htotal=4352 vss=2438 vse=2440 vtotal=2470 flags=0x0 type=0x0 name=4128x2208x188vid preferred=0 expected=0 len=217 crc=c3d43b8c END
+FSP1 nonce=3c3c0a0b seq=31 step=mode rc=0 idx=22 w=4128 h=2208 vrefresh=187 clock_khz=2020724 hss=4204 hse=4244 htotal=4352 vss=2451 vse=2453 vtotal=2483 flags=0x0 type=0x0 name=4128x2208x187vid preferred=0 expected=0 len=217 crc=e48343d0 END
+FSP1 nonce=3c3c0a0b seq=32 step=mode rc=0 idx=23 w=4128 h=2208 vrefresh=186 clock_khz=2020442 hss=4204 hse=4244 htotal=4352 vss=2464 vse=2466 vtotal=2496 flags=0x0 type=0x0 name=4128x2208x186vid preferred=0 expected=0 len=217 crc=99c00403 END
+FSP1 nonce=3c3c0a0b seq=33 step=mode rc=0 idx=24 w=4128 h=2208 vrefresh=185 clock_khz=2020851 hss=4204 hse=4244 htotal=4352 vss=2478 vse=2480 vtotal=2510 flags=0x0 type=0x0 name=4128x2208x185vid preferred=0 expected=0 len=217 crc=02f125e9 END
+FSP1 nonce=3c3c0a0b seq=34 step=mode rc=0 idx=25 w=4128 h=2208 vrefresh=184 clock_khz=2020337 hss=4204 hse=4244 htotal=4352 vss=2491 vse=2493 vtotal=2523 flags=0x0 type=0x0 name=4128x2208x184vid preferred=0 expected=0 len=217 crc=b498d0d2 END
+FSP1 nonce=3c3c0a0b seq=35 step=mode rc=0 idx=26 w=4128 h=2208 vrefresh=183 clock_khz=2020507 hss=4204 hse=4244 htotal=4352 vss=2505 vse=2507 vtotal=2537 flags=0x0 type=0x0 name=4128x2208x183vid preferred=0 expected=0 len=217 crc=c1cd038b END
+FSP1 nonce=3c3c0a0b seq=36 step=mode rc=0 idx=27 w=4128 h=2208 vrefresh=182 clock_khz=2020555 hss=4204 hse=4244 htotal=4352 vss=2519 vse=2521 vtotal=2551 flags=0x0 type=0x0 name=4128x2208x182vid preferred=0 expected=0 len=217 crc=f00b0a6c END
+FSP1 nonce=3c3c0a0b seq=37 step=mode rc=0 idx=28 w=4128 h=2208 vrefresh=181 clock_khz=2020481 hss=4204 hse=4244 htotal=4352 vss=2533 vse=2535 vtotal=2565 flags=0x0 type=0x0 name=4128x2208x181vid preferred=0 expected=0 len=217 crc=4ab839dd END
+FSP1 nonce=3c3c0a0b seq=38 step=mode rc=0 idx=29 w=4128 h=2208 vrefresh=180 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=2547 vse=2549 vtotal=2579 flags=0x0 type=0x0 name=4128x2208x180vid preferred=0 expected=0 len=217 crc=5583fbd3 END
+FSP1 nonce=3c3c0a0b seq=39 step=mode rc=0 idx=30 w=4128 h=2208 vrefresh=179 clock_khz=2020746 hss=4204 hse=4244 htotal=4352 vss=2562 vse=2564 vtotal=2594 flags=0x0 type=0x0 name=4128x2208x179vid preferred=0 expected=0 len=217 crc=91ed041a END
+FSP1 nonce=3c3c0a0b seq=40 step=mode rc=0 idx=31 w=4128 h=2208 vrefresh=178 clock_khz=2020302 hss=4204 hse=4244 htotal=4352 vss=2576 vse=2578 vtotal=2608 flags=0x0 type=0x0 name=4128x2208x178vid preferred=0 expected=0 len=217 crc=18efa6f3 END
+FSP1 nonce=3c3c0a0b seq=41 step=mode rc=0 idx=32 w=4128 h=2208 vrefresh=177 clock_khz=2020507 hss=4204 hse=4244 htotal=4352 vss=2591 vse=2593 vtotal=2623 flags=0x0 type=0x0 name=4128x2208x177vid preferred=0 expected=0 len=217 crc=d78af10f END
+FSP1 nonce=3c3c0a0b seq=42 step=mode rc=0 idx=33 w=4128 h=2208 vrefresh=176 clock_khz=2020581 hss=4204 hse=4244 htotal=4352 vss=2606 vse=2608 vtotal=2638 flags=0x0 type=0x0 name=4128x2208x176vid preferred=0 expected=0 len=217 crc=12004b64 END
+FSP1 nonce=3c3c0a0b seq=43 step=mode rc=0 idx=34 w=4128 h=2208 vrefresh=175 clock_khz=2020524 hss=4204 hse=4244 htotal=4352 vss=2621 vse=2623 vtotal=2653 flags=0x0 type=0x0 name=4128x2208x175vid preferred=0 expected=0 len=217 crc=485833c6 END
+FSP1 nonce=3c3c0a0b seq=44 step=mode rc=0 idx=35 w=4128 h=2208 vrefresh=174 clock_khz=2020337 hss=4204 hse=4244 htotal=4352 vss=2636 vse=2638 vtotal=2668 flags=0x0 type=0x0 name=4128x2208x174vid preferred=0 expected=0 len=217 crc=57ff7b9e END
+FSP1 nonce=3c3c0a0b seq=45 step=mode rc=0 idx=36 w=4128 h=2208 vrefresh=173 clock_khz=2020772 hss=4204 hse=4244 htotal=4352 vss=2652 vse=2654 vtotal=2684 flags=0x0 type=0x0 name=4128x2208x173vid preferred=0 expected=0 len=217 crc=781b695b END
+FSP1 nonce=3c3c0a0b seq=46 step=mode rc=0 idx=37 w=4128 h=2208 vrefresh=172 clock_khz=2020320 hss=4204 hse=4244 htotal=4352 vss=2667 vse=2669 vtotal=2699 flags=0x0 type=0x0 name=4128x2208x172vid preferred=0 expected=0 len=217 crc=65dedf81 END
+FSP1 nonce=3c3c0a0b seq=47 step=mode rc=0 idx=38 w=4128 h=2208 vrefresh=171 clock_khz=2020481 hss=4204 hse=4244 htotal=4352 vss=2683 vse=2685 vtotal=2715 flags=0x0 type=0x0 name=4128x2208x171vid preferred=0 expected=0 len=217 crc=679c7442 END
+FSP1 nonce=3c3c0a0b seq=48 step=mode rc=0 idx=39 w=4128 h=2208 vrefresh=170 clock_khz=2020503 hss=4204 hse=4244 htotal=4352 vss=2699 vse=2701 vtotal=2731 flags=0x0 type=0x0 name=4128x2208x170vid preferred=0 expected=0 len=217 crc=e627d266 END
+FSP1 nonce=3c3c0a0b seq=49 step=mode rc=0 idx=40 w=4128 h=2208 vrefresh=169 clock_khz=2020385 hss=4204 hse=4244 htotal=4352 vss=2715 vse=2717 vtotal=2747 flags=0x0 type=0x0 name=4128x2208x169vid preferred=0 expected=0 len=217 crc=4801d967 END
+FSP1 nonce=3c3c0a0b seq=50 step=mode rc=0 idx=41 w=4128 h=2208 vrefresh=168 clock_khz=2020859 hss=4204 hse=4244 htotal=4352 vss=2732 vse=2734 vtotal=2764 flags=0x0 type=0x0 name=4128x2208x168vid preferred=0 expected=0 len=217 crc=1c65685d END
+FSP1 nonce=3c3c0a0b seq=51 step=mode rc=0 idx=42 w=4128 h=2208 vrefresh=167 clock_khz=2020459 hss=4204 hse=4244 htotal=4352 vss=2748 vse=2750 vtotal=2780 flags=0x0 type=0x0 name=4128x2208x167vid preferred=0 expected=0 len=217 crc=e0d25118 END
+FSP1 nonce=3c3c0a0b seq=52 step=mode rc=0 idx=43 w=4128 h=2208 vrefresh=166 clock_khz=2020642 hss=4204 hse=4244 htotal=4352 vss=2765 vse=2767 vtotal=2797 flags=0x0 type=0x0 name=4128x2208x166vid preferred=0 expected=0 len=217 crc=1b88e204 END
+FSP1 nonce=3c3c0a0b seq=53 step=mode rc=0 idx=44 w=4128 h=2208 vrefresh=165 clock_khz=2020677 hss=4204 hse=4244 htotal=4352 vss=2782 vse=2784 vtotal=2814 flags=0x0 type=0x0 name=4128x2208x165vid preferred=0 expected=0 len=217 crc=0fe995ff END
+FSP1 nonce=3c3c0a0b seq=54 step=mode rc=0 idx=45 w=4128 h=2208 vrefresh=164 clock_khz=2020563 hss=4204 hse=4244 htotal=4352 vss=2799 vse=2801 vtotal=2831 flags=0x0 type=0x0 name=4128x2208x164vid preferred=0 expected=0 len=217 crc=80329e95 END
+FSP1 nonce=3c3c0a0b seq=55 step=mode rc=0 idx=46 w=4128 h=2208 vrefresh=163 clock_khz=2020302 hss=4204 hse=4244 htotal=4352 vss=2816 vse=2818 vtotal=2848 flags=0x0 type=0x0 name=4128x2208x163vid preferred=0 expected=0 len=217 crc=ca5b06da END
+FSP1 nonce=3c3c0a0b seq=56 step=mode rc=0 idx=47 w=4128 h=2208 vrefresh=162 clock_khz=2020598 hss=4204 hse=4244 htotal=4352 vss=2834 vse=2836 vtotal=2866 flags=0x0 type=0x0 name=4128x2208x162vid preferred=0 expected=0 len=217 crc=6d7c9d43 END
+FSP1 nonce=3c3c0a0b seq=57 step=pipeline rc=0 encoder=54 crtc=155 crtc_idx=0 len=76 crc=2524566b END
+FSP1 nonce=3c3c0a0b seq=58 step=crtc_state rc=0 idx=-1 w=0 h=0 vrefresh=0 clock_khz=0 hss=0 hse=0 htotal=0 vss=0 vse=0 vtotal=0 flags=0x0 type=0x0 name=- getcrtc_rc=0 mode_valid=0 fb=0 active_prop=2000 active=0 in_list=0 interlaced=0 expected=0 len=244 crc=a5099526 END
+FSP1 nonce=3c3c0a0b seq=59 step=precondition rc=0 required=crtc_inactive getcrtc_rc=0 active_prop=2000 active=0 len=111 crc=b65de744 END
+FSP1 nonce=3c3c0a0b seq=60 step=chosen_mode rc=0 idx=0 w=4128 h=2208 vrefresh=90 clock_khz=2020285 hss=4204 hse=4244 htotal=4352 vss=5126 vse=5128 vtotal=5158 flags=0x0 type=0x8 name=4128x2208x90vid why=expected_4128x2208_90 expected=1 len=235 crc=4d2bed4d END
+FSP1 nonce=3c3c0a0b seq=61 step=planes rc=0 count=20 len=52 crc=05e13282 END
+FSP1 nonce=3c3c0a0b seq=62 step=plane rc=0 id=71 type=1 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=99 crc=5259b987 END
+FSP1 nonce=3c3c0a0b seq=63 step=plane rc=0 id=97 type=1 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=99 crc=87487ffe END
+FSP1 nonce=3c3c0a0b seq=64 step=plane rc=0 id=100 type=1 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=578a2388 END
+FSP1 nonce=3c3c0a0b seq=65 step=plane rc=0 id=103 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=b217c84e END
+FSP1 nonce=3c3c0a0b seq=66 step=plane rc=0 id=106 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=780b8cd0 END
+FSP1 nonce=3c3c0a0b seq=67 step=plane rc=0 id=109 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=bac755c5 END
+FSP1 nonce=3c3c0a0b seq=68 step=plane rc=0 id=112 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=91f67485 END
+FSP1 nonce=3c3c0a0b seq=69 step=plane rc=0 id=115 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=abbf417a END
+FSP1 nonce=3c3c0a0b seq=70 step=plane rc=0 id=118 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=bb9af4a7 END
+FSP1 nonce=3c3c0a0b seq=71 step=plane rc=0 id=121 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=55e4f31e END
+FSP1 nonce=3c3c0a0b seq=72 step=plane rc=0 id=124 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=9ff8b780 END
+FSP1 nonce=3c3c0a0b seq=73 step=plane rc=0 id=128 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=e7616a82 END
+FSP1 nonce=3c3c0a0b seq=74 step=plane rc=0 id=131 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=90fb9634 END
+FSP1 nonce=3c3c0a0b seq=75 step=plane rc=0 id=134 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=792b5bd1 END
+FSP1 nonce=3c3c0a0b seq=76 step=plane rc=0 id=137 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=1cec1120 END
+FSP1 nonce=3c3c0a0b seq=77 step=plane rc=0 id=140 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=85df3359 END
+FSP1 nonce=3c3c0a0b seq=78 step=plane rc=0 id=143 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=28b34eb2 END
+FSP1 nonce=3c3c0a0b seq=79 step=plane rc=0 id=146 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=c1638357 END
+FSP1 nonce=3c3c0a0b seq=80 step=plane rc=0 id=149 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=3881f8e0 END
+FSP1 nonce=3c3c0a0b seq=81 step=plane rc=0 id=152 type=0 possible=0x7 crtc=0 fb=0 xrgb8888=1 props=1 len=100 crc=f8d767c1 END
+FSP1 nonce=3c3c0a0b seq=82 step=atomic_props rc=0 primary=71 helper=97 crtc_mode_id=2001 crtc_active=2000 conn_crtc_id=1005 len=123 crc=28ec5397 END
+FSP1 nonce=3c3c0a0b seq=83 step=conn_topology rc=0 conn=55 props=22 topology_prop=1019 topology_val=0 topology_name=sde_none control_prop=1020 control_val=0 dsc_mode_prop=1013 dsc_mode_val=0 mode_props_blob=201 len=210 crc=bd21731f END
+FSP1 nonce=3c3c0a0b seq=84 step=blob rc=0 what=mode_properties obj=55 blob=201 read_rc=-27 bytes=70000 len=102 crc=867be63e END
+FSP1 nonce=3c3c0a0b seq=85 step=plane_caps rc=0 plane=71 read_rc=0 caps_bytes=614 max_linewidth=5120 pipe_idx=0 max_upscale=20 smart=none zpos=0 nv12=1 len=151 crc=29b17eb7 END
+FSP1 nonce=3c3c0a0b seq=86 step=plane_caps rc=0 plane=97 read_rc=0 caps_bytes=614 max_linewidth=5120 pipe_idx=1 max_upscale=20 smart=none zpos=0 nv12=1 len=151 crc=60430799 END
+FSP1 nonce=3c3c0a0b seq=87 step=plane_caps rc=0 plane=100 read_rc=0 caps_bytes=614 max_linewidth=5120 pipe_idx=2 max_upscale=20 smart=none zpos=0 nv12=1 len=152 crc=311dfb0e END
+FSP1 nonce=3c3c0a0b seq=88 step=plane_caps rc=0 plane=103 read_rc=0 caps_bytes=614 max_linewidth=5120 pipe_idx=3 max_upscale=20 smart=none zpos=0 nv12=1 len=152 crc=72fb7804 END
+FSP1 nonce=3c3c0a0b seq=89 step=plane_caps rc=0 plane=106 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=0 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=49e04cb2 END
+FSP1 nonce=3c3c0a0b seq=90 step=plane_caps rc=0 plane=109 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=1 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=c1dc9a3f END
+FSP1 nonce=3c3c0a0b seq=91 step=plane_caps rc=0 plane=112 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=2 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=4a6cb538 END
+FSP1 nonce=3c3c0a0b seq=92 step=plane_caps rc=0 plane=115 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=3 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=fe951697 END
+FSP1 nonce=3c3c0a0b seq=93 step=plane_caps rc=0 plane=118 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=4 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=f49ff424 END
+FSP1 nonce=3c3c0a0b seq=94 step=plane_caps rc=0 plane=121 read_rc=0 caps_bytes=414 max_linewidth=5120 pipe_idx=5 max_upscale=1 smart=none zpos=0 nv12=0 len=151 crc=6fda86ea END
+FSP1 nonce=3c3c0a0b seq=95 step=plane_caps rc=0 plane=124 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=0 max_upscale=1 smart=106 zpos=0 nv12=0 len=150 crc=503efdca END
+FSP1 nonce=3c3c0a0b seq=96 step=plane_caps rc=0 plane=128 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=1 max_upscale=1 smart=109 zpos=0 nv12=0 len=150 crc=cdd43797 END
+FSP1 nonce=3c3c0a0b seq=97 step=plane_caps rc=0 plane=131 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=2 max_upscale=1 smart=112 zpos=0 nv12=0 len=150 crc=7bab2016 END
+FSP1 nonce=3c3c0a0b seq=98 step=plane_caps rc=0 plane=134 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=3 max_upscale=1 smart=115 zpos=0 nv12=0 len=150 crc=6cb8e84d END
+FSP1 nonce=3c3c0a0b seq=99 step=plane_caps rc=0 plane=137 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=4 max_upscale=1 smart=118 zpos=0 nv12=0 len=150 crc=8e276400 END
+FSP1 nonce=3c3c0a0b seq=100 step=plane_caps rc=0 plane=140 read_rc=0 caps_bytes=441 max_linewidth=5120 pipe_idx=5 max_upscale=1 smart=121 zpos=0 nv12=0 len=151 crc=e1b224f1 END
+FSP1 nonce=3c3c0a0b seq=101 step=plane_caps rc=0 plane=143 read_rc=0 caps_bytes=640 max_linewidth=5120 pipe_idx=0 max_upscale=20 smart=71 zpos=0 nv12=1 len=151 crc=bdd85e8c END
+FSP1 nonce=3c3c0a0b seq=102 step=plane_caps rc=0 plane=146 read_rc=0 caps_bytes=640 max_linewidth=5120 pipe_idx=1 max_upscale=20 smart=97 zpos=0 nv12=1 len=151 crc=85c9299d END
+FSP1 nonce=3c3c0a0b seq=103 step=plane_caps rc=0 plane=149 read_rc=0 caps_bytes=641 max_linewidth=5120 pipe_idx=2 max_upscale=20 smart=100 zpos=0 nv12=1 len=152 crc=a1ff6406 END
+FSP1 nonce=3c3c0a0b seq=104 step=plane_caps rc=0 plane=152 read_rc=0 caps_bytes=641 max_linewidth=5120 pipe_idx=3 max_upscale=20 smart=103 zpos=0 nv12=1 len=152 crc=827f622c END
+FSP1 nonce=3c3c0a0b seq=105 step=buffer rc=0 w=4128 h=2208 handle=1 pitch=16512 size=36458496 fb=207 mode_blob=208 format=0x34325258 solid=0xff0000 len=147 crc=28445637 END
+FSP1 nonce=3c3c0a0b seq=106 step=plan rc=0 attempts=3 split_probe=1 quad_vig=71.97.100.103 quad_dma=115.134.112.131 pipe_vig=vig-0.vig-1.vig-2.vig-3 pipe_dma=dma-3.dma-3.dma-2.dma-2 max_upscale_vig=20.20.20.20 max_upscale_dma=1.1.1.1 zpos_before_vig=0.0.0.0 zpos_before_dma=0.0.0.0 zpos_set=0.0.1.1 splash_set=match len=315 crc=c88e52b6 END
+FSP1 nonce=3c3c0a0b seq=107 step=test_commit rc=0 attempt=0 modeset=1 layout=split_probe objs=4 props=23 planes_off=0 overflow=0 result=accepted len=144 crc=b9c59358 END
+FSP1 nonce=3c3c0a0b seq=108 step=test_commit rc=0 attempt=1 modeset=1 layout=quad_vig objs=6 props=47 planes_off=0 overflow=0 result=accepted len=141 crc=69d23157 END
+FSP1 nonce=3c3c0a0b seq=109 step=commit rc=0 attempt=1 modeset=1 layout=quad_vig commit_ms=170 len=94 crc=ff45df67 END
+FSP1 nonce=3c3c0a0b seq=110 step=post_state rc=0 conn=55 topology_val=14 topology_name=sde_quadpipe_dsc4hsmerge dsc_mode_val=0 control_val=0 crtc=155 active=1 mode_id=208 core_clk=155011 core_ab=155012 core_ib=155013 llcc_ab=155014 llcc_ib=155015 dram_ab=155016 dram_ib=155017 getcrtc_rc=0 mode_valid=1 fb=207 len=309 crc=e1944496 END
+FSP1 nonce=3c3c0a0b seq=111 step=post_plane rc=0 slot=0 plane=71 crtc_id=155 fb_id=207 crtc_x=0 crtc_y=0 crtc_w=1032 crtc_h=2208 src_x=0 src_y=0 src_w=1032 src_h=2208 src_frac=0 zpos=0 len=184 crc=380f3892 END
+FSP1 nonce=3c3c0a0b seq=112 step=post_plane rc=0 slot=1 plane=97 crtc_id=155 fb_id=207 crtc_x=1032 crtc_y=0 crtc_w=1032 crtc_h=2208 src_x=1032 src_y=0 src_w=1032 src_h=2208 src_frac=0 zpos=0 len=190 crc=54192837 END
+FSP1 nonce=3c3c0a0b seq=113 step=post_plane rc=0 slot=2 plane=100 crtc_id=155 fb_id=207 crtc_x=0 crtc_y=0 crtc_w=1032 crtc_h=2208 src_x=2064 src_y=0 src_w=1032 src_h=2208 src_frac=0 zpos=1 len=188 crc=2028f6a6 END
+FSP1 nonce=3c3c0a0b seq=114 step=post_plane rc=0 slot=3 plane=103 crtc_id=155 fb_id=207 crtc_x=1032 crtc_y=0 crtc_w=1032 crtc_h=2208 src_x=3096 src_y=0 src_w=1032 src_h=2208 src_frac=0 zpos=1 len=191 crc=49d8845f END
+FSP1 nonce=3c3c0a0b seq=115 step=hold_start rc=0 hold_s=1 start_ms=238550 deadline_ms=239550 alarm_s=6 len=102 crc=a6a3d690 END
+FSP1 nonce=3c3c0a0b seq=116 step=hold_end rc=0 reason=deadline sig=0 held_ms=1000 late_ms=0 fd_closed=1 close_rc=0 close_ms=0 len=125 crc=7efc901a END
+FSP1 nonce=3c3c0a0b seq=117 step=exit rc=0 code=0 reason=held_to_deadline shown=1 closed_at_exit=0 elapsed_ms=2097 len=114 crc=b69ef8cb END
+FSP1 nonce=3c3c0a0b seq=118 step=eos rc=0 records=119 dropped=0 overflows=0 out=file opt_bytes=5960 opt_skipped=257 len=115 crc=67fd90f1 END

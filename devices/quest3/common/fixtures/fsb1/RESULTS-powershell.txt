@@ -1,0 +1,40 @@
+valid                        PASS got=VALID/- want=VALID/- (7 steps, payloads = raw captures)
+valid-pty                    PASS got=VALID/- want=VALID/- (7 steps, payloads = raw captures)
+valid-t1                     PASS got=VALID/- want=VALID/- (7 steps, payloads = raw captures)
+valid-crlf                   PASS got=VALID/- want=VALID/- (7 steps, payloads = raw captures)
+valid-crcrlf                 PASS got=VALID/- want=VALID/- (7 steps, payloads = raw captures)
+valid-echo-prompt            PASS got=VALID/- want=VALID/- (7 steps, payloads = raw captures)
+noecho-prompt-emitted        PASS got=VALID/- want=VALID/- (7 steps, payloads = raw captures)
+noecho-prompt-joined         PASS got=REJECT/no-begin want=REJECT/no-begin
+empty                        PASS got=REJECT/no-begin want=REJECT/no-begin
+echo-only                    PASS got=REJECT/no-begin want=REJECT/no-begin
+truncated-no-end             PASS got=REJECT/no-end want=REJECT/no-end
+truncated-mid-line           PASS got=REJECT/no-end want=REJECT/no-end
+truncated-end-unterminated   PASS got=REJECT/no-end want=REJECT/no-end
+truncated-end-line           PASS got=REJECT/bad-end want=REJECT/bad-end
+dropped-char                 PASS got=REJECT/rec-hash want=REJECT/rec-hash
+missing-data-line            PASS got=REJECT/data-order want=REJECT/data-order
+duplicate-record             PASS got=REJECT/multiple-begin want=REJECT/multiple-begin
+stray-fsb1-line              PASS got=REJECT/stray-fsb1-line want=REJECT/stray-fsb1-line
+duplicate-step               PASS got=REJECT/duplicate-step want=REJECT/duplicate-step
+reordered-steps              PASS got=REJECT/step-order want=REJECT/step-order
+reordered-steps-renumbered   PASS got=REJECT/step-id want=REJECT/step-id
+missing-step                 PASS got=REJECT/step-count want=REJECT/step-count
+wrong-nonce                  PASS got=REJECT/nonce-mismatch want=REJECT/nonce-mismatch
+wrong-nonce-end-only         PASS got=REJECT/nonce-mismatch want=REJECT/nonce-mismatch
+wrong-chal                   PASS got=REJECT/chal-mismatch want=REJECT/chal-mismatch
+wrong-exp                    PASS got=REJECT/exp-mismatch want=REJECT/exp-mismatch
+wrong-version                PASS got=REJECT/version want=REJECT/version
+tampered-payload             PASS got=REJECT/payload-hash want=REJECT/payload-hash
+tampered-payload-norehash    PASS got=REJECT/rec-hash want=REJECT/rec-hash
+tampered-step-field          PASS got=REJECT/rec-hash want=REJECT/rec-hash
+length-mismatch              PASS got=REJECT/length-mismatch want=REJECT/length-mismatch
+noncanonical-base64          PASS got=REJECT/bad-data want=REJECT/bad-data
+step-inconsistent            PASS got=REJECT/step-inconsistent want=REJECT/step-inconsistent
+bad-step-extra-key           PASS got=REJECT/bad-step want=REJECT/bad-step
+line-count                   PASS got=REJECT/line-count want=REJECT/line-count
+cr-inside-line               PASS got=REJECT/bad-char want=REJECT/bad-char
+foreign-line-inside          PASS got=REJECT/bad-line want=REJECT/bad-line
+wide-data-line               PASS got=REJECT/bad-data want=REJECT/bad-data
+CROSS-CHECK powershell = python on 38 of 38 cases
+TOTAL pass=38 fail=0

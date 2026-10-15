@@ -1,0 +1,8 @@
+# report: FSUP1 end=exited code=2 sig=0 errno=0 ms=16 term_ms=-1 kill_ms=-1 out_total=6 out_kept=6 err_total=35 err_kept=35 strays=0 pipes=eof why=none END
+# exit=0 wall_ms=172
+# stdout (first 300 B):
+#   0
+#   1
+#   2
+# stderr (first 300 B):
+#   /bin/sh: 1: 7: Bad file descriptor

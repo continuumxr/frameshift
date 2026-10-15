@@ -1,0 +1,126 @@
+== test-host3b  2026-10-11T04:49:59.1480708Z  PowerShell 5.1.26100.9549  scratch=$HOME\AppData\Local\Temp\fs-host3b-5d86a227  python=python
+== C. collector stage spec
+PASS  C1 3b: fs-display, exp stage3b, 5 steps hash,probe1,pattern1,probe2,pattern2, deadline 200, ack 150, RunnerWorst 75, margin 5, cue 3 s, pre-done 10 s, beeps 300/700, 2 fs-status tries
+PASS  C2 3a unchanged: exp stage3a, steps hash,pattern, deadline 170, RunnerWorst 42; 2a unchanged: deadline 260, RunnerWorst 127, 8 steps, 3 tries
+PASS  C3 the stage-3a cue and beep texts are still in the code, unchanged
+PASS  C4 the stage-3b cue: first lit period (about 3 s) about 3.5-6.5 s after the cue, a dark gap of at least 2 s (the guarantee; no "2.5 s" promise), then about 10 s; per eye and per period; keep looking until the second (low) beep (SIGNOFF E), never "until BEEP 1"
+PASS  C5 the stage-3b report prompt gives the FSR1 form for both periods and both eyes, and says no light seen is not zero emitted light or exposure
+== K. stage-3b classifier, machine side (OUTCOMES §9.4)
+PASS  K01 both runs: run 1 accepted commit + clean close; run 2 off->on from an inactive CRTC; pause 3466 ms -> PASS (machine side) (rule 25)
+PASS  K02 stage 1 not PASS -> DEVICE_REJECTED (rule 1)
+PASS  K03 no record -> INCONCLUSIVE (rule 2)
+PASS  K04 FSB1 rejected (line-count) -> INCONCLUSIVE (rule 2)
+PASS  K05 completed after the host deadline -> INCONCLUSIVE (rule 2)
+PASS  K06 the stage-3a step list -> INCONCLUSIVE (rule 3)
+PASS  K07 hash: digest is not the v0.5 pin (e.g. the v0.4 binary) -> INTEGRITY FAULT (rule 4)
+PASS  K08 hash: TOOL FAULT -> INCONCLUSIVE (rule 5)
+PASS  K09 probe1 shows TWO backlight writes -> INCONCLUSIVE (rule 6)
+PASS  K10 probe2 shows a backlight write -> INCONCLUSIVE (rule 6)
+PASS  K11 run 1 step TOOL FAULT (why=strays-alive) -> INCONCLUSIVE (rule 7)
+PASS  K12 run 1 skipped (brightness not verified), run 2 skipped -> INCONCLUSIVE (rule 8)
+PASS  K13 run 1 skipped but run 2 ran: runner inconsistency -> INCONCLUSIVE (rule 6)
+PASS  K14 run 1 timer-kill (hang) -> DISPLAY FAIL (rule 9)
+PASS  K15 run 1 FSP1 CRC wrong -> INCONCLUSIVE (rule 10)
+PASS  K16 run 1 ran but probe1 read back 255 -> INCONCLUSIVE (rule 11)
+PASS  K17 run 1 exit 10 (no device), run 2 skipped -> NO-DISPLAY (rule 12)
+PASS  K18 run 1 exit 60 (the commit failed), run 2 skipped -> DISPLAY FAIL (rule 13)
+PASS  K19 run 1 exit 0 without the commit record, run 2 skipped -> INCONCLUSIVE (rule 14)
+PASS  K20 run 1 close_rc=-5, run 2 skipped -> RUN 1 ONLY (rule 15)
+PASS  K21 run 1 close_rc=-5 but run 2 ran: runner inconsistency -> INCONCLUSIVE (rule 6)
+PASS  K22 run 1 clean, run 2 skipped (brightness not verified before run 2) -> RUN 1 ONLY (rule 16)
+PASS  K23 run 2 step TOOL FAULT -> INCONCLUSIVE (rule 17)
+PASS  K24 run 2 timer-kill (hang) -> DISPLAY FAIL (rule 18)
+PASS  K25 run 2 stream without eos -> INCONCLUSIVE (rule 19)
+PASS  K26 run 2 ran but probe2 has no read-back -> INCONCLUSIVE (rule 20)
+PASS  K27 run 2 found the CRTC active: exit 31, no commit -> PRECONDITION UNMET: CRTC ACTIVE (rule 21)
+PASS  K28 run 2 exit 31 without the precondition record -> INCONCLUSIVE (rule 24)
+PASS  K29 run 2 exit 0 but crtc_state active=1 (no proof of an inactive CRTC) -> INCONCLUSIVE (rule 24)
+PASS  K30 run 2 exit 50 (TEST_ONLY rejected) -> NO-DISPLAY (rule 22)
+PASS  K31 run 2 exit 60 (commit failed) -> DISPLAY FAIL (rule 22)
+PASS  K32 pause 1466 ms (< 2000) -> INCONCLUSIVE (rule 23)
+PASS  K33 run 2 is mode=show, not show-off -> INCONCLUSIVE (rule 20)
+PASS  K34 run 2 exit 0 without hold_end -> INCONCLUSIVE (rule 24)
+PASS  K35 run 2 FSP1 nonce is not chal[0:8] -> INCONCLUSIVE (rule 19)
+PASS  K36 run 1 skip record for a different run number (not a skip record: unsound) -> INCONCLUSIVE (rule 10)
+PASS  K37 probe1 cut at its cap (out_kept < out_total): informational, still PASS (machine side) -> PASS (machine side) (rule 25)
+PASS  K40 PASS reports the pause (3466 ms), both brightness checks and the 5 step classes
+PASS  K42 a record whose probe1 was cut at its cap (out_kept < out_total) decodes VALID with fsb1.ps1 and classifies PASS (machine side)
+PASS  K43 a runner refusal is surfaced in the rule-2 reason (record-too-large lines=N)
+PASS  K44 the rule-25 reason says DRM state, physical panel-off not proven (FS-R-010 §4)
+PASS  K41 malformed decoded steps: INCONCLUSIVE, never a verdict, never a crash
+== R. stage-3b optical side and the registered result (OUTCOMES §9.5, §9.6)
+PASS  R01 run 2: all 8 read correctly in EACH eye (run 1 dark) -> OPTICAL PASS; STAGE PASS
+PASS  R02 run 2 correct in the left eye only -> ONE-EYE ONLY; not a stage PASS
+PASS  R03 lit but garbled in run 2 (lighting finding, not PASS) -> LIT BUT GARBLED (lighting finding, not PASS); not a stage PASS
+PASS  R04 all four dark, both runs committed -> BOTH DARK; not a stage PASS
+PASS  R05 one character wrong in one eye, the other eye correct -> ONE-EYE ONLY; not a stage PASS
+PASS  R06 an unreadable character (?) is not a correct reading -> LIT BUT GARBLED (lighting finding, not PASS); not a stage PASS
+PASS  R07 run 1 correct in both eyes, run 2 skipped (RUN 1 ONLY) -> OPTICAL PASS; STAGE PASS
+PASS  R08 run 2 "read" in both eyes but run 2 committed nothing (precondition unmet): contradiction -> INCONCLUSIVE; not a stage PASS
+PASS  R09 malformed readings line -> INCONCLUSIVE; not a stage PASS
+PASS  R10 a missing period/eye -> INCONCLUSIVE; not a stage PASS
+PASS  R11 a duplicated period/eye -> INCONCLUSIVE; not a stage PASS
+PASS  R12 READ without chars -> INCONCLUSIVE; not a stage PASS
+PASS  R14 one-eye correct in run 2 although run 2 was skipped: contradicts the record (not ONE-EYE ONLY) -> INCONCLUSIVE; not a stage PASS
+PASS  R15 both eyes correct in run 1 but the record is absent -> INCONCLUSIVE; not a stage PASS
+PASS  R16 one-eye correct in run 2 with the record rejected -> INCONCLUSIVE; not a stage PASS
+PASS  R13 lower-case characters are not the uppercase challenge text -> INCONCLUSIVE; not a stage PASS
+PASS  R20 no readings: optical NOT RECORDED; never a stage PASS
+PASS  R21 correct readings with an INTEGRITY FAULT record: not a stage PASS
+== P. harness captures through fs-collect.ps1 -Stage 3b, the classifier and the CLI
+PASS  P1 b-nodrm: replay COLLECTED-VALID, stage 3b, fs-display once, fs-done sent, no divergence
+PASS  P3 b-nodrm: -> NO-DISPLAY (rule 12)
+PASS  P1 b-no-backlight: replay COLLECTED-VALID, stage 3b, fs-display once, fs-done sent, no divergence
+PASS  P3 b-no-backlight: -> INCONCLUSIVE (rule 8)
+PASS  P1 b-probe-hang: replay COLLECTED-VALID, stage 3b, fs-display once, fs-done sent, no divergence
+PASS  P3 b-probe-hang: -> INCONCLUSIVE (rule 8)
+PASS  P1 b-pattern-stopped: replay COLLECTED-VALID, stage 3b, fs-display once, fs-done sent, no divergence
+PASS  P3 b-pattern-stopped: -> DISPLAY FAIL (rule 9)
+PASS  P1 b-hung-pattern: replay COLLECTED-VALID, stage 3b, fs-display once, fs-done sent, no divergence
+PASS  P2 b-hung-pattern: with the v0.5 pin the fixture fs-pattern is an INTEGRITY FAULT (rule 4)
+PASS  P3 b-hung-pattern: -> DISPLAY FAIL (rule 9)
+PASS  P1 b-sim-go: replay COLLECTED-VALID, stage 3b, fs-display once, fs-done sent, no divergence
+PASS  P2 b-sim-go: with the v0.5 pin the fixture fs-pattern is an INTEGRITY FAULT (rule 4)
+PASS  P3 b-sim-go: -> PASS (machine side) (rule 25)
+PASS  P1 b-sim-active: replay COLLECTED-VALID, stage 3b, fs-display once, fs-done sent, no divergence
+PASS  P2 b-sim-active: with the v0.5 pin the fixture fs-pattern is an INTEGRITY FAULT (rule 4)
+PASS  P3 b-sim-active: -> PRECONDITION UNMET: CRTC ACTIVE (rule 21)
+PASS  P1 b-sim-unclean: replay COLLECTED-VALID, stage 3b, fs-display once, fs-done sent, no divergence
+PASS  P2 b-sim-unclean: with the v0.5 pin the fixture fs-pattern is an INTEGRITY FAULT (rule 4)
+PASS  P3 b-sim-unclean: -> RUN 1 ONLY (rule 15)
+PASS  P10 order: N display-cue < W fs-display (>= 3 s later) < N beep-1 < N beep-2 < W fs-done
+PASS  P11 two host beeps (1760 Hz/300 ms, 440 Hz/700 ms), none written to the device
+PASS  P12 fs-classify.ps1 -Stage 3b CLI on a fixture-binary collection: INTEGRITY FAULT, exit 12; OPTICAL NOT RECORDED is printed
+PASS  P13 a stage-3b collection given to the stage-3a classifier: INCONCLUSIVE, exit 14
+PASS  P14 ...with -Readings: the optical line LIT BUT GARBLED and a REGISTERED line
+PASS  P15 -Readings with -Stage 3a: usage, exit 64
+PASS  P16 the b-sim-go capture re-chunked at every paced chunk boundary and mid-line (36 extra cuts, 80 read chunks): COLLECTED-VALID, identical re-capture, same rec_sha256
+PASS  P17 a record cut short mid-emission: INCONCLUSIVE, no record, fs-done NOT sent (the device deadline recovers)
+PASS  P18 runner guard: with < 91 s left (75 + 5 + 11) the runner is not sent; INCONCLUSIVE
+== E. paced vs unpaced emission (PowerShell decoder)
+PASS  E1 representative (876 lines): paced bytes == unpaced bytes; fsb1.ps1 VALID on both; same rec_sha256
+PASS  E1 at-caps (2069 lines): paced bytes == unpaced bytes; fsb1.ps1 VALID on both; same rec_sha256
+PASS  E1 maximum (2070 lines): paced bytes == unpaced bytes; fsb1.ps1 VALID on both; same rec_sha256
+PASS  E2 the maximum record has exactly MAXLINES = 2070 record lines (+ the leading empty line)
+PASS  E3 the at-caps record (every step at its cap, the hash stderr at its cap) has 2069 lines <= MAXLINES 2070
+== D. the damaged trial-(iii) capture
+PASS  D1 fsb1.ps1 still REJECTs the trial-(iii) capture with line-count
+PASS  D2 the unchanged stage-3a classifier reproduces the registered outcome: INCONCLUSIVE, OUTCOMES §8 rule 2, FSB1 rejected: line-count
+PASS  D3 fs-classify.ps1 -Stage 3a CLI on the bundled trial-(iii) directories: STAGE-1 PASS, OUTCOME INCONCLUSIVE rule 2 line-count, exit 14 (the registered result)
+PASS  D4 ...and decoded as stage 3b it is rejected too (line-count is checked before the experiment id)
+== O. fs-observe.ps1 -Stage 3b: the BA dwell gate
+PASS  O1b the dwell result is in observe.json (BaStartUtc, DwellSec 240.3, DwellAtBootStartSec, max 300) and in observe.log
+PASS  O1 BA 240 s before: the dwell gate passes; the attempt is registered and booted (devices, then boot)
+PASS  O2 BA 301 s before: REFUSED before the boot (only the read-only devices query), attempt NOT registered, abandoned-cycle record written
+PASS  O3 the same image with a fresh cycle (BA 299 s before) is then accepted: the nonce was not spent
+PASS  O4 no -BfSummary: refused, no boot, no abandoned record
+PASS  O5 a BF summary of another nonce: refused
+PASS  O6 a BF that did not end OK: refused
+PASS  O7 BF started before BA: refused
+PASS  O8 a BA start in the future: refused (clock step or wrong file)
+PASS  O9 a 3b image built from another fs-probe.sh than the repository's: refused (MANIFEST sources check)
+PASS  O10 a BA summary of another serial: refused
+== T. timing checks
+PASS  T1 stage3b/tools/check-timing-3b.py: TIMING 3B CONSISTENT (W 74.4 s <= B 85 s; guard 91 s; DEADLINE 200; caps consistent with MAXLINES 2070; 20 lines per chunk)
+PASS  T2 stage2a/tools/check-timing.py (stages 2a and 3a, unchanged): TIMING CONSISTENT with the revised collector
+TOTAL: 116 passed, 0 failed, 0 skipped

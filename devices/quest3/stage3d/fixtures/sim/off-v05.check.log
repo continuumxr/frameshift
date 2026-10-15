@@ -1,0 +1,13 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 73 records, 13163 bytes
+CHECK eos_last_after_exit PASS {'records': '73', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '376', 'opt_skipped': '0'}
+CHECK start_mode_ver PASS show-off
+CHECK start_picture_options_roll_21_eyes_swap PASS {'mode': 'show-off', 'ver': '0.7.1', 'hold_req': '1', 'hold': '1', 'hold_max': '10', 'clamped': '0', 'setup_alarm_s': '30', 'close_margin_s': '5', 'dev': '/mock/card0', 'out': 'file', 'rot': '180', 'roll': '21', 'eyes': 'swap', 't0_ms': '171355'}
+CHECK stream_within_the_step_cap PASS 13163 <= 57344 bytes
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=376 measured=376 budget=38912
+INFO essential_bytes=12787 opt_bytes=376 total=13163 cap=57344 (essential + budget = 51699)
+CHECK set_properties_subset_of_v05_set_plus_zpos PASS ['ACTIVE', 'CRTC_H', 'CRTC_ID', 'CRTC_W', 'CRTC_X', 'CRTC_Y', 'FB_ID', 'MODE_ID', 'SRC_H', 'SRC_W', 'SRC_X', 'SRC_Y']
+CHECK zpos_only_in_quad_attempts_on_the_four_planes_values_0011_by_slot PASS
+CHECK at_most_one_real_commit_and_it_equals_the_last_accepted_test PASS [('split+modeset', True)]
+CHECK off_v05_attempts_single_then_split_modeset PASS [('0', '1', 'single', -7), ('1', '1', 'split', 0)]
+CHECK pattern_buffer_two_levels_white_ppm_within_37618 PASS white_ppm=27982

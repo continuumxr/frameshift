@@ -1,0 +1,278 @@
+{
+ "ack": "83b2b94acdb0e9bf",
+ "challenges": {
+  "p0": "82ce5bf111fb110d75ef56b940d46585",
+  "r1": "a70609dbad8bd6584c9e32e2d60d9340",
+  "r2": "5556eb9ac452bf7ce70cb755faa003e1",
+  "r3": "21b4df770cb38262b1e43df1e09359cd"
+ },
+ "checks": [
+  {
+   "detail": "FSV1 nonce=13ed21be49c7b4ba resp=e09105afb66cd41ec2675cf7c57cc8c616c6b94e2d45c43bacf6d45fab3514c1 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=13ed21be49c7b4ba stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=83b2b94acdb0e9bf END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=272 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "idle limit started before SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "472 vs t0=272",
+   "label": "/run/fs.deadline = T0 + DEADLINE",
+   "ok": true
+  },
+  {
+   "detail": "316.55 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "316.55 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "0.9 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase p0 FSB1 VALID (exp s3d_p0, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('hash', 'exited', 0), 2: ('probe0', 'exited', 0)}",
+   "label": "p0 steps in order hash,probe0",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=13ed21be49c7b4ba p=p0 e=begin t=289910 END | FSPM1 n=13ed21be49c7b4ba p=p0 e=rec t=294250 END",
+   "label": "p0 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,rec",
+   "label": "p0 markers in order begin,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "write_rc=0 readback=127",
+   "label": "p0: exactly one backlight write line (value 127), read-back 127",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0: hash step exited 0 (sha256sum of /bin/fs-pattern)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "p0: irq0 sample, mods snapshot with cmdline, dmesg and the fan",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase r1 FSB1 VALID (exp s3d_r1, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('probe1', 'nosup', -1), 2: ('pattern1', 'exited', 0)}",
+   "label": "r1 steps in order probe1,pattern1",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=13ed21be49c7b4ba p=r1 e=begin t=296040 END | FSPM1 n=13ed21be49c7b4ba p=r1 e=skip t=298160 END | FSPM1 n=13ed21be49c7b4ba p=r1 e=rec t=303450 END",
+   "label": "r1 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,skip,rec",
+   "label": "r1 markers in order begin,skip,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r1 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "b'FSK1 run=1 skipped reason=probe-late END\\n'",
+   "label": "r1 step 2 replaced by the skip record (probe-late)",
+   "ok": true
+  },
+  {
+   "detail": "('probe1', 'nosup', -1)",
+   "label": "r1 probe step nosup (supervisor killed after TQ); the record is still VALID",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "phase r2 FSB1 VALID (exp s3d_r2, 2 steps, its own challenge)",
+   "ok": true
+  },
+  {
+   "detail": "{1: ('probe2', 'nosup', -1), 2: ('pattern2', 'exited', 0)}",
+   "label": "r2 steps in order probe2,pattern2",
+   "ok": true
+  },
+  {
+   "detail": "FSPM1 n=13ed21be49c7b4ba p=r2 e=begin t=304990 END | FSPM1 n=13ed21be49c7b4ba p=r2 e=skip t=307100 END | FSPM1 n=13ed21be49c7b4ba p=r2 e=rec t=313690 END",
+   "label": "r2 markers: grammar, <= 64 bytes, nonce, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "begin,skip,rec",
+   "label": "r2 markers in order begin,skip,rec, t non-decreasing",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "r2 rec marker immediately before the record's empty line; no marker inside or after the record",
+   "ok": true
+  },
+  {
+   "detail": "b'FSK1 run=2 skipped reason=run1-not-run END\\n'",
+   "label": "r2 step 2 replaced by the skip record (run1-not-run)",
+   "ok": true
+  },
+  {
+   "detail": "('probe2', 'nosup', -1)",
+   "label": "r2 probe step nosup (supervisor killed after TQ); the record is still VALID",
+   "ok": true
+  },
+  {
+   "detail": "f6f2ed30de2ac468 / f6f2ed30de2ac468",
+   "label": "chain p0: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "be75029830df6ea5 / be75029830df6ea5",
+   "label": "chain r1: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "d9d6db3320e9e9b7 / d9d6db3320e9e9b7",
+   "label": "chain r2: device sha16 (from its END line) = host decode",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "1 write-close event(s): wd=1 mask=0x8 ",
+   "label": "backlight node written exactly 1 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never named the decoy crtc nodes or debugfs",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order (nautilus,cmd-db,gh_msgq); the vendor list (decoy) never used",
+   "ok": true
+  }
+ ],
+ "mod_notes": [],
+ "mods": [],
+ "nonce": "13ed21be49c7b4ba",
+ "ok": true,
+ "phases": {
+  "p0": {
+   "end": "FSB1 END v=1 nonce=13ed21be49c7b4ba chal=82ce5bf111fb110d75ef56b940d46585 lines=40 rec_sha256=f6f2ed30de2ac468cfeec662c9b4e0ee46f803e73133740d9b9703d76bf59d71",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=13ed21be49c7b4ba p=p0 e=begin t=289910 END",
+    "FSPM1 n=13ed21be49c7b4ba p=p0 e=rec t=294250 END"
+   ],
+   "refusal": null,
+   "settled": true
+  },
+  "r1": {
+   "end": "FSB1 END v=1 nonce=13ed21be49c7b4ba chal=a70609dbad8bd6584c9e32e2d60d9340 lines=18 rec_sha256=be75029830df6ea5c39ceef246ef230a6073285aa8df0080488555c3eb293b19",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=13ed21be49c7b4ba p=r1 e=begin t=296040 END",
+    "FSPM1 n=13ed21be49c7b4ba p=r1 e=skip t=298160 END",
+    "FSPM1 n=13ed21be49c7b4ba p=r1 e=rec t=303450 END"
+   ],
+   "refusal": null,
+   "settled": true
+  },
+  "r2": {
+   "end": "FSB1 END v=1 nonce=13ed21be49c7b4ba chal=5556eb9ac452bf7ce70cb755faa003e1 lines=18 rec_sha256=d9d6db3320e9e9b7deef4ab4e336a33a252b3100d4662aa13bf3730f10f03f95",
+   "fsb1": "VALID",
+   "markers": [
+    "FSPM1 n=13ed21be49c7b4ba p=r2 e=begin t=304990 END",
+    "FSPM1 n=13ed21be49c7b4ba p=r2 e=skip t=307100 END",
+    "FSPM1 n=13ed21be49c7b4ba p=r2 e=rec t=313690 END"
+   ],
+   "refusal": null,
+   "settled": true
+  }
+ },
+ "plan": [
+  "p0",
+  "hang-probes",
+  "r1",
+  "r2"
+ ],
+ "reboot_at_T0_plus": 44.6,
+ "reboots": "316.55 final pid=1 arg=collected\n",
+ "scenario": "c-probe-hang",
+ "sim_args": "",
+ "t_total_s": 47.7,
+ "tail": "done",
+ "verify_challenge": "8daa4b42671e2033ac6d7fd7c97d66dd",
+ "want_reboot": "collected"
+}

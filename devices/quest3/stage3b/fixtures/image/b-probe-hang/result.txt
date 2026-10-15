@@ -1,0 +1,25 @@
+# b-probe-hang (stage3b) mods=['probe-hang'] plan=full; image <repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc
+# mod: measured_fps is a FIFO nobody writes: every probe read of it blocks (a hung sysfs read)
+# reboots: 170.30 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=6cf0f15867f14edc resp=189aed3c189d7f65118c3a4d13e84cfbaa8ec35911ab7f541f9df063475061ae kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=6cf0f15867f14edc stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=3a84dfd3124fd9fe END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=6cf0f15867f14edc chal=64f11235c1311477aab9ff7258f30759 lines=43 rec_sha256=f610d312f2b892cead633238c6716c6dd442dbafb634dc585934f036a4f6da2e]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=147 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [170.30 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [170.30 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [-0.1 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  an empty line immediately before FSB1 BEGIN
+PASS  5 steps in order hash,probe1,pattern1,probe2,pattern2  [['hash', 'probe1', 'pattern1', 'probe2', 'pattern2']]
+PASS  step 3 replaced by the skip record (probe1-late)  [b'FSK1 run=1 skipped reason=probe1-late END\n']
+PASS  step 5 replaced by the skip record (run1-not-run)  [b'FSK1 run=2 skipped reason=run1-not-run END\n']
+PASS  hung probes: both probe steps nosup (supervisor killed after TQ), the record is still VALID  [('probe1', 'nosup', -1, 0) ('probe2', 'nosup', -1, 0)]
+PASS  hung probe: no backlight write was attempted before the hang point? (mods snapshot blocked first)
+PASS  paced: the record (44 lines) took 0.5 s on the tty (>= 0.1 s for 2 chunks of 20 lines at 0.1 s)
+SCENARIO b-probe-hang PASS

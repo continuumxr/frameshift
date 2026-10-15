@@ -1,0 +1,4 @@
+CHECK size PASS 4128x2208
+CHECK every_pixel_red_255_0_0 PASS XRGB 0x00FF0000 as R,G,B
+PREVIEW /tmp/tmp.IfrAOVi3Yw/chk-solid-scanout.png 1032x552
+PREVIEW /tmp/tmp.IfrAOVi3Yw/chk-solid-viewer.png 1032x552 (left eye | right eye, viewer orientation, pre-rotation visible)

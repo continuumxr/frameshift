@@ -1,0 +1,42 @@
+7143 uname(0x731402dfe408) = 0
+7143 brk(NULL) = 0x00000000002d0000
+7143 brk(0x00000000002d0ae0) = 0x00000000002d0ae0
+7143 set_tid_address(0x2d0448) = 7143
+7143 set_robust_list(0x2d0100,24) = -1 errno=38 (Function not implemented)
+7143 rseq(0x2d07a0,32,0,0xd428bc00) = -1 errno=38 (Function not implemented)
+7143 prlimit64(0,RLIMIT_STACK,NULL,0x0000731402dfe558) = 0 ({rlim_cur=8388608,rlim_max=-1})
+7143 getrandom(0x2cf7e8,8,1) = 8
+7143 readlinkat(AT_FDCWD,"/proc/self/exe",0x0000731402dfd4e0,4096) = 79
+7143 brk(NULL) = 0x00000000002d0ae0
+7143 brk(0x0000000000400000) = 0x0000000000400000
+7143 mprotect(0x00000000002b0000,20480,PROT_READ) = 0
+7143 clock_gettime(CLOCK_MONOTONIC,0x0000731402dfe2f0) = 0 ({tv_sec = 168,tv_nsec = 212869447})
+7143 fstat(1,0x0000731402dfe2f0) = 0
+7143 rt_sigaction(SIGTERM,0x0000731402dfe148,NULL) = 0
+7143 rt_sigaction(SIGINT,0x0000731402dfe148,NULL) = 0
+7143 rt_sigaction(SIGHUP,0x0000731402dfe148,NULL) = 0
+7143 rt_sigaction(SIGALRM,0x0000731402dfe148,NULL) = 0
+7143 rt_sigaction(SIGPIPE,0x0000731402dfe148,NULL) = 0
+7143 rt_sigaction(SIGXFSZ,0x0000731402dfe148,NULL) = 0
+7143 rt_sigprocmask(SIG_BLOCK,[SIGHUP SIGINT SIGTERM],NULL,8) = 0
+7143 rt_sigprocmask(SIG_UNBLOCK,[SIGALRM],NULL,8) = 0
+7143 setitimer(ITIMER_REAL,{it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 30,tv_usec = 0},},0x0000731402dfe258) = 0 (old_value = {it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 0,tv_usec = 0},})
+7143 write(1,0x2c6068,210) = 210
+7143 rt_sigpending(126529784766960,8,210,0,0,0) = 0
+7143 newfstatat(AT_FDCWD,"/dev/null",0x0000731402dfe2f0,0) = 0
+7143 openat(AT_FDCWD,"/dev/null",O_RDONLY|O_NOCTTY|O_CLOEXEC) = 3
+7143 fstat(3,0x0000731402dfe388) = 0
+7143 write(1,0x2c6068,86) = 86
+7143 clock_gettime(CLOCK_MONOTONIC,0x0000731402dfe270) = 0 ({tv_sec = 168,tv_nsec = 434992435})
+7143 setitimer(ITIMER_REAL,{it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 15,tv_usec = 0},},0x0000731402dfe258) = 0 (old_value = {it_interval={tv_sec = 0,tv_usec = 0},it_value={tv_sec = 29,tv_usec = 891178},})
+7143 write(1,0x2c6068,128) = 128
+7143 clock_gettime(CLOCK_MONOTONIC,0x0000731402dfe218) = 0 ({tv_sec = 168,tv_nsec = 476577789})
+7143 rt_sigtimedwait(2908080,0,126529784767000,8,0,0) = 15
+7143 clock_gettime(CLOCK_MONOTONIC,0x0000731402dfe218) = 0 ({tv_sec = 170,tv_nsec = 71362529})
+7143 close(3) = 0
+7143 clock_gettime(CLOCK_MONOTONIC,0x0000731402dfe218) = 0 ({tv_sec = 170,tv_nsec = 83250226})
+7143 write(1,0x2c6068,153) = 153
+7143 clock_gettime(CLOCK_MONOTONIC,0x0000731402dfe240) = 0 ({tv_sec = 170,tv_nsec = 98984722})
+7143 write(1,0x2c6068,134) = 134
+7143 write(1,0x2c6068,105) = 105
+7143 exit_group(70)

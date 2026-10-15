@@ -1,0 +1,14 @@
+FS[17449af173f0633a] t=863s DEADLINE armed t0=863 deadline=T0+170 ack_window=150 backstop=T0+171 reboot-reasons-not-logged-at-reboot
+FS[17449af173f0633a] t=864s STAGE=INIT_STARTED pid=1 kernel=6.18.33.2-microsoft-standard-WSL2 deadline=T0+170
+FS[17449af173f0633a] t=864s BACKSTOP armed pid=53 in=170s
+FS[17449af173f0633a] t=864s FW_TIMEOUT=1
+FS[17449af173f0633a] t=865s MODULE_FAIL fake_a.ko: insmod: short read
+FS[17449af173f0633a] t=866s MODULE_FAIL fake_b.ko: insmod: short read
+FS[17449af173f0633a] t=867s MODULE_FAIL fake_c.ko: insmod: short read
+FS[17449af173f0633a] t=871s STAGE=MODULES_READY ok=0 fail=3 udc= drm=
+FS[17449af173f0633a] t=871s DRM_NODE sysfs=absent node=absent
+FS[17449af173f0633a] t=871s ROLE mode=peripheral roles=device 
+FS[17449af173f0633a] t=871s STAGE=ACM_SETUP_ATTEMPTED 
+FS[17449af173f0633a] t=873s GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-17449af173f0633a
+FS[17449af173f0633a] t=873s ERROR stage=udc UDC a600000.dwc3 not present
+FS[17449af173f0633a] t=924s REBOOT reason=error-udc

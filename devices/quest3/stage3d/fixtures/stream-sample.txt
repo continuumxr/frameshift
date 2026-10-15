@@ -1,0 +1,5 @@
+FSP1 nonce=0badc0de seq=0 step=crtc_state rc=0 idx=-1 w=0 h=0 vrefresh=0 clock_khz=0 hss=0 hse=0 htotal=0 vss=0 vse=0 vtotal=0 flags=0x0 type=0x0 name=- mode_valid=0 len=165 crc=69bf3e2f END
+FSP1 nonce=0badc0de seq=1 step=version rc=0 drv=- len=49 crc=92287cfb END
+FSP1 nonce=0badc0de seq=2 step=sample rc=0 dash=%2D pct=a%20b%3Dc len=65 crc=1548af96 END
+FSP1 nonce=0badc0de seq=3 step=exit rc=0 code=0 reason=sample shown=0 closed_at_exit=0 elapsed_ms=137308 len=104 crc=2b416584 END
+FSP1 nonce=0badc0de seq=4 step=eos rc=0 records=5 dropped=0 overflows=0 out=file opt_bytes=0 opt_skipped=0 len=106 crc=faa9687d END

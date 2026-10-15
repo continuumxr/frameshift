@@ -1,0 +1,85 @@
+﻿== A. record acceptance (Test-FsVerify / Test-FsAck) ==
+PASS  A1 positive: complete record, all fields match
+PASS  A2 echo-only output cannot pass
+PASS  A3 wrong nonce cannot pass
+PASS  A4 wrong PID 1 cannot pass
+PASS  A5 wrong kernel cannot pass
+PASS  A6 response = challenge (echoed) cannot pass
+PASS  A7 incomplete record (no END) cannot pass
+PASS  A8 truncated record cannot pass
+PASS  A9 record embedded after other text cannot pass
+PASS  A10 CRLF line ending still parses (positive)
+PASS  A11 echo + correct record in same buffer passes
+PASS  A12 ack positive
+PASS  A13 ack without HOST_ACK stage cannot confirm
+PASS  A14 ack with other token cannot confirm
+PASS  A15 echoed fs-ack command cannot confirm
+PASS  A16 lowercase tag is not a record (case-sensitive)
+== B. sessions over fake transports ==
+PASS  B1 positive device: verified and host-ack confirmed
+PASS  B2 record split across reads: verified
+PASS  B3 echo-only device: NOT verified
+PASS  B4 silent device: NOT verified, returns in bounded time
+PASS  B5 disconnect on write: error recorded, NOT verified
+PASS  B6 disconnect before reply: error recorded, NOT verified
+PASS  B7 correct reply after PASS deadline: NOT verified
+PASS  B8 verified but PID 1 never records ack: acked=false
+PASS  B9 disconnect during ack phase: verified, NOT acked, error
+== C. native command wrapper (ErrorActionPreference=Stop in scope) ==
+PASS  C1 stderr status + rc 0: captured, no exception, HANDOFF_ACKNOWLEDGED
+PASS  C2 hung process: killed at timeout, INCONCLUSIVE
+PASS  C3 explicit device refusal: DEVICE_REJECTED
+PASS  C4 link failure: INCONCLUSIVE, not rejected
+PASS  C5 missing executable: error captured, INCONCLUSIVE
+PASS  C6 rc 0 but FAILED in output: not acknowledged
+PASS  C7 rc 0 with no output at all: INCONCLUSIVE (no positive evidence)
+PASS  C8 lowercase "failed" + OKAY + rc 0: HANDOFF_ACKNOWLEDGED
+PASS  C9 status read failed after Booting: INCONCLUSIVE, not rejected
+PASS  C10 failed fastboot query reports Ok=false (absence is not evidence)
+== D. serial transport configuration (no port needed) ==
+PASS  D1 handshake explicitly None
+PASS  D2 DTR and RTS explicitly asserted
+PASS  D3 read/write timeouts bounded (not infinite)
+PASS  D4 nonexistent port: open fails cleanly
+PASS  D5 dispose after failed open does not throw
+== E. gadget association by nonce ==
+PASS  E1 our gadget: serial ok, COM port found on child
+PASS  E2 wrong serial: no association, no port
+PASS  E3 two gadgets: picks the nonce-bearing one
+PASS  E4 instance ID uppercased by Windows still matches
+PASS  E5 default PnP/registry lookups on an absent instance: no throw under Stop/StrictMode
+== F. outcome classes ==
+PASS  F1 rejected handoff stays DEVICE_REJECTED
+PASS  F2 uncertain handoff stays INCONCLUSIVE
+PASS  F3 verified session: PASS
+PASS  F4 nonce gadget, no verification: TRANSPORT/SHELL
+PASS  F5 timing hint only: INCONCLUSIVE
+PASS  F6 uncertain handoff but verified challenge: PASS
+PASS  F7 uncertain handoff, nonce gadget, no verify: TRANSPORT/SHELL
+== G. one-attempt lock ==
+PASS  G1 first registration succeeds
+PASS  G2 same directory again: refused
+PASS  G3 copied image (same nonce, new directory): refused
+PASS  G4 fresh nonce in a new directory: allowed
+PASS  G5 freshness probe sees the used nonce
+PASS  G6 partial registration: refused, reason says the nonce is consumed
+== H. observer pre-boot gates (scratch replica, fastboot/adb replaced by a nonexistent path) ==
+PASS  H0 replica contains no real fastboot/adb path
+PASS  H1 healthy replica: preflight OK (exit 0)
+PASS  H2 init.sh unreadable/missing: ABORT (exit 2), not skipped
+PASS  H3 image cannot be hashed: ABORT (exit 2), not skipped
+PASS  H4 manifest without init.sh binding: ABORT (exit 2)
+PASS  H5 no sign-off: exit 3 and nothing written
+PASS  H6 signed off, no fastboot device: ABORT before registration
+PASS  H7 that abort leaves precheck-*.log, no observe-*.log
+PASS  H8 directory not consumed: preflight still OK
+== I. observer after registration (scratch replica, FAKE fastboot, adb absent) ==
+PASS  I0 replicas use the fake fastboot and no real tool path
+PASS  I1 fault in a watch iteration: logged, observation continues
+PASS  I2 ...and the run still ends with an OUTCOME line
+PASS  I3 ...and the boot command ran exactly once
+PASS  I4 boot wrapper fault: handoff INCONCLUSIVE, observed, OUTCOME logged
+PASS  I5 ...and the boot command was not retried
+PASS  I6 pre-registration error (no such image): exit 2 via trap, no fastboot call
+
+TOTAL: 74 passed, 0 failed

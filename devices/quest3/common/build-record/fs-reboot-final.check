@@ -1,0 +1,10 @@
+exactly 3 svc instructions in the binary                PASS
+4 syscalls simulated (3 + the loop's svc again)         PASS
+svc1 = reboot(0xfee1dead, 0x28121969, 0xa1b2c3d4, p)    PASS
+svc1 p -> 'bootloader\0'                                PASS
+svc2 = reboot(0xfee1dead, 0x28121969, 0x01234567, 0)    PASS
+svc3 = nanosleep(p, NULL)                               PASS
+svc3 p -> {3600, 0}                                     PASS
+loop: b back to before svc3 and after svc2              PASS
+loop: re-entered svc3 has identical arguments           PASS
+no exit/exit_group number (93/94) in any x8             PASS

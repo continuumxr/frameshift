@@ -1,0 +1,7 @@
+# revision-3 device cases run against the a0ab780 source (git show a0ab780:devices/quest2/channel/src/fs-rpcd.c,
+# sha256=654db098fab8127cf1161d7647c2a303e2ce85e29797a0f83c30f150bfd91a33), native gcc build, LD_PRELOAD shim for X5. FAIL lines below are
+# the behaviours revision 3 changes; compare fixtures/device/D-native.txt (same cases, current source).
+X3-stdout-closed-runner-killed FAIL 2.1s b'FSR1 nonce=0123456789abcdef error=runner-unreaped END\n' runner-still-alive=False
+X6-setsid-stray-swept FAIL 0.2s b'ok\n' stray-alive=True swept-logged=False
+X7-double-fork-setsid-stray-swept FAIL 1.2s b'ok\n' stray-alive=True swept-logged=False
+TOTAL 101/104 PASS

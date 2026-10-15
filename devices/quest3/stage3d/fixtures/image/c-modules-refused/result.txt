@@ -1,0 +1,16 @@
+# c-modules-refused mods=['moddep-mismatch'] plan=[] tail=none; image <repo>/build/stage3d/20261014T014738Z-13ed21be49c7b4ba
+# mod: modules.dep differs from init.sh's pin by one line: init must refuse every module and reboot error-modules
+# reboots: 403.90 final pid=1 arg=error-modules
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=343 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  /run/fs.deadline = T0 + DEADLINE  [543 vs t0=343]
+PASS  first reboot reason = error-modules  [403.90 final pid=1 arg=error-modules]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [403.90 final pid=1 arg=error-modules]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  no debugfs access during the scenario (inotify on the fake /sys/kernel/debug tree: 0 events)
+PASS  backlight node written exactly 0 time(s) during the scenario (inotify IN_CLOSE_WRITE on the fake panel0-backlight/brightness)  [0 write-close event(s): ]
+PASS  tty accounting: every byte of the capture belongs to the banner, an echoed command, a record, marker or refusal line, or a prompt (no stray tty output)
+PASS  probes never named the decoy crtc nodes or debugfs
+PASS  index mismatch: MODULES_REFUSED then ERROR_modules, no module attempted, no MODULE_INDEX line, no SHELL_READY  [INIT_STARTED MODULES_REFUSED ERROR_modules]
+PASS  index mismatch: reboot error-modules at T0 + ERR_DELAY 60 (..+4)  [T0+60.9]
+SCENARIO c-modules-refused PASS

@@ -1,0 +1,36 @@
+# b-sim-active (stage3b) mods=['sim-active'] plan=full; image <repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc
+# mod: replaced /bin/fs-pattern by a replay of pre-generated FSP1 streams (sim-active); the hash step measures the replacement
+# reboots: 137.41 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=6cf0f15867f14edc resp=ad31dd138d3a866f43ca5ac3bc863763e2e64df8da061451056c17ae4074a1bb kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=6cf0f15867f14edc stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=d2b1fc3c32fd5a9e END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=6cf0f15867f14edc chal=3b4d855beda5a4ecfca51cad9fb7f939 lines=276 rec_sha256=f1bcac03c990f985881a1624e2324c0498fcc3d0af7d85f167cf5525444cac51]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=116 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [137.41 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [137.41 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [-0.0 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  an empty line immediately before FSB1 BEGIN
+PASS  5 steps in order hash,probe1,pattern1,probe2,pattern2  [['hash', 'probe1', 'pattern1', 'probe2', 'pattern2']]
+PASS  step 3 pattern1 exited code 0  [('pattern1', 'exited', 0, 0)]
+PASS  run 1 FSP1 stream COMPLETE  [STREAM <repo>/build/stage3b-harness/b-sim-active/fsp1-run1.txt COMPLETE 27 records]
+PASS  run 1 every FSP1 nonce = chal[0:8]  [{b'3b4d855b'}]
+PASS  run 1 is fs-pattern show
+PASS  step 5 pattern2 exited code 31  [('pattern2', 'exited', 31, 0)]
+PASS  run 2 FSP1 stream COMPLETE  [STREAM <repo>/build/stage3b-harness/b-sim-active/fsp1-run2.txt COMPLETE 13 records]
+PASS  run 2 every FSP1 nonce = chal[0:8]  [{b'3b4d855b'}]
+PASS  run 2 is fs-pattern show-off
+PASS  probe1: exactly one backlight write line (value 127)  [1]
+PASS  probe1: read-back 127  [readback=127]
+PASS  probe1 points mods,pre1,mid1,post1  [[(b'mods', b'126.39'), (b'pre1', b'126.67'), (b'mid1', b'128.51'), (b'post1', b'130.18')]]
+PASS  probe2 points pre2,post2  [[(b'pre2', b'132.72'), (b'post2', b'133.16')]]
+PASS  probes never read the forbidden crtc nodes (blu_default_duty, fifo_trim, blu_max_overlap_us)
+PASS  probe1 carries init's irq0 sample and the fake te-edge-isr/blu-pwm-isr lines
+PASS  probe1 mods snapshot has the cmdline and the fan (pwmfan, pwm-tach-fan0)
+PASS  paced: the record (277 lines) took 1.7 s on the tty (>= 1.1 s for 13 chunks of 20 lines at 0.1 s)
+SCENARIO b-sim-active PASS

@@ -1,0 +1,5 @@
+FSP1 nonce=0badc0de seq=0 step=start rc=0 mode=propsim-off ver=0.6 len=66 crc=e21fc4ed END
+FSP1 nonce=0badc0de seq=1 step=conn_topology rc=0 conn=55 props=22 topology_prop=1019 topology_val=0 topology_name=sde_none control_prop=1020 control_val=0 dsc_mode_prop=1013 dsc_mode_val=0 mode_props_blob=201 len=209 crc=bf06b564 END
+FSP1 nonce=0badc0de seq=2 step=blob rc=0 what=mode_properties obj=55 blob=201 bytes=185 part=0 parts=1 data=mode_name%3D4128x2208x90vid%0Atopology%3Dsde_quadpipe_dsc4hsmerge%0Acompression%3Ddsc%0Awb_topology%3D0%0Amax_dsc_width%3D2064%0Apanel_mode%3Dvideo%0Abit_clk_rate%3D999999999%0Ahdr_luminance%3D%2D%0Aodd%2Feven%3A%2050%25%20%3C%3E%26%01%FE%0A len=349 crc=fcd1b6df END
+FSP1 nonce=0badc0de seq=3 step=exit rc=0 code=0 reason=propsim shown=0 closed_at_exit=0 elapsed_ms=4798889 len=106 crc=0c931967 END
+FSP1 nonce=0badc0de seq=4 step=eos rc=0 records=5 dropped=0 overflows=0 out=file opt_bytes=375 opt_skipped=0 len=108 crc=6a8fe4b6 END

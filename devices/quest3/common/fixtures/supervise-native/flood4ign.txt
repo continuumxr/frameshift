@@ -1,0 +1,4 @@
+# report: FSUP1 end=timer-kill code=-1 sig=9 errno=0 ms=2007 term_ms=1001 kill_ms=2007 out_total=248135680 out_kept=0 err_total=0 err_kept=0 strays=3 pipes=eof why=none END
+# exit=4 wall_ms=2092
+# stdout (first 300 B):
+# stderr (first 300 B):

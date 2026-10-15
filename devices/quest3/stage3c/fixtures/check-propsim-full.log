@@ -1,0 +1,14 @@
+CHECK ends_with_newline PASS
+CHECK framing_len_crc_seq_gapfree PASS 55 records, 18281 bytes
+CHECK eos_last_after_exit PASS {'records': '55', 'dropped': '0', 'overflows': '0', 'out': 'file', 'opt_bytes': '17683', 'opt_skipped': '0'}
+CHECK no_overflow_or_budget_record PASS
+CHECK opt_bytes_reported_equals_measured_and_within_budget PASS opt_bytes=17683 measured=17683 budget=38912
+CHECK conn_topology_once_essential_sde_none_before_any_commit PASS {'conn': '55', 'props': '22', 'topology_prop': '1019', 'topology_val': '0', 'topology_name': 'sde_none', 'control_prop': '1020', 'control_val': '0', 'dsc_mode_prop': '1013', 'dsc_mode_val': '0', 'mode_props_blob': '201'}
+CHECK mode_properties_blob_roundtrip PASS 185 bytes in 1 parts
+CHECK plane_caps_every_plane_in_order PASS 20 records
+CHECK plane_caps_values_rederived_from_the_mock_blobs (pipe_idx, max_upscale, primary_smart_plane_id, zpos, nv12) PASS
+CHECK primary_capabilities_blob_roundtrip PASS 614 bytes in 3 parts
+CHECK conn_capabilities_blob_roundtrip PASS 120 bytes in 1 parts
+CHECK prop_lists_names_and_types_roundtrip PASS [('conn', 55), ('crtc', 155), ('plane', 71), ('plane', 106)]
+CHECK prop_vals_every_object_roundtrip PASS 22 objects
+CHECK record_order_essential_and_selection_inputs_first PASS

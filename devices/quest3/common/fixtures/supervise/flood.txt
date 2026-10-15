@@ -1,0 +1,9 @@
+# cmd: fs-supervise -t 10 -c 1000 -e PATH=$W/bin -o $W/cap/flood.out -r $W/cap/flood.err -- $W/bin/busybox sh -c yes a | head -c 100000 & yes b | head -c 100000 & yes e | head -c 5000 >&2 & yes f | head -c 5000 >&2 & wait
+# report: FSUP1 end=exited code=0 sig=0 errno=0 ms=505 term_ms=-1 kill_ms=-1 out_total=200000 out_kept=1000 err_total=10000 err_kept=1000 strays=0 pipes=eof why=none END
+# exit=0 wall_ms=774
+# stdout capture: 1000 bytes, first 64 as hex:
+#      a  \n   a  \n   a  \n   a  \n   a  \n   a  \n   a  \n   a  \n
+#   *
+# stderr capture: 1000 bytes, first 64 as hex:
+#      e  \n   e  \n   e  \n   e  \n   e  \n   e  \n   e  \n   e  \n
+#   *

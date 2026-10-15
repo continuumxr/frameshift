@@ -1,0 +1,28 @@
+~ # [6nfs-verify 0f1e2d3c4b5a69788796a5b4c3d2e1f0
+FSV1 nonce=a1b2c3d4e5f60718 resp=37c834bf85f9383b22aadca2c2a86c85fc178fd66077d16c23139f0e43caf0e8 kernel=5.10.198-01402-g1c5986fe21ee pid1=/bin/busybox,sh,/init stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY END
+~ # [6nfs-ack 5a5a0123456789ab
+FSA1 queued END
+~ # [6nfs-status
+FSS1 nonce=a1b2c3d4e5f60718 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=5a5a0123456789ab END
+~ # [6nfs-display c3c3a1b2c3d4e5f60718293a4b5c6d7e
+
+FSB1 BEGIN v=1 exp=stage3a nonce=a1b2c3d4e5f60718 chal=c3c3a1b2c3d4e5f60718293a4b5c6d7e steps=2
+FSB1 STEP i=1 id=hash end=exited code=0 sig=0 errno=0 ms=12 term_ms=-1 kill_ms=-1 out_total=82 out_kept=82 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=82 out_sha256=0b4801b9293013203f2a1563fccf5eb68708b92cbb0b85eeff9f46cfc0f3cf17 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=1 s=o n=0 YzdmMjhjYzcwZjA1Mzg3NDE2YzQ3ZDQ4NzA3YWIzZTIwYmQzYmEyMzA2Y2Y0ODM1
+FSB1 DATA i=1 s=o n=1 MTZlMzUzNzM5NTE5YWQyYSAgL2Jpbi9mcy1wYXR0ZXJuCg==
+FSB1 STEP i=2 id=pattern end=exited code=10 sig=0 errno=0 ms=10200 term_ms=-1 kill_ms=-1 out_total=543 out_kept=543 err_total=0 err_kept=0 strays=0 pipes=eof why=none out_len=543 out_sha256=213b2cc91a7d4100f2f043bd7046ea32aff8bc2bce9f7a0ac56c505033e5f3d0 err_len=0 err_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+FSB1 DATA i=2 s=o n=0 RlNQMSBub25jZT1jM2MzYTFiMiBzZXE9MCBzdGVwPXN0YXJ0IHJjPTAgbW9kZT1z
+FSB1 DATA i=2 s=o n=1 aG93IHZlcj0wLjQgaG9sZF9yZXE9MTAgaG9sZD0xMCBob2xkX21heD0xMCBjbGFt
+FSB1 DATA i=2 s=o n=2 cGVkPTAgc2V0dXBfYWxhcm1fcz0zMCBjbG9zZV9tYXJnaW5fcz01IGRldj0vZGV2
+FSB1 DATA i=2 s=o n=3 L2RyaS9jYXJkMCBvdXQ9cGlwZSByb3Q9MTgwIHQwX21zPTkwMDAgbGVuPTE4MiBj
+FSB1 DATA i=2 s=o n=4 cmM9MTMwYTk4MjUgRU5ECkZTUDEgbm9uY2U9YzNjM2ExYjIgc2VxPTEgc3RlcD1v
+FSB1 DATA i=2 s=o n=5 cGVuIHJjPS0yIGVycm5vPTIgZGV2PS9kZXYvZHJpL2NhcmQwIGF0PXN0YXQgbGVu
+FSB1 DATA i=2 s=o n=6 PTc2IGNyYz03OWIyYzQ3MyBFTkQKRlNQMSBub25jZT1jM2MzYTFiMiBzZXE9MiBz
+FSB1 DATA i=2 s=o n=7 dGVwPWV4aXQgcmM9MCBjb2RlPTEwIHJlYXNvbj1ub19kZXZpY2Ugc2hvd249MCBj
+FSB1 DATA i=2 s=o n=8 bG9zZWRfYXRfZXhpdD0wIGVsYXBzZWRfbXM9OCBsZW49MTAzIGNyYz03NzQ0YTQ3
+FSB1 DATA i=2 s=o n=9 MSBFTkQKRlNQMSBub25jZT1jM2MzYTFiMiBzZXE9MyBzdGVwPWVvcyByYz0wIHJl
+FSB1 DATA i=2 s=o n=10 Y29yZHM9NCBkcm9wcGVkPTAgb3ZlcmZsb3dzPTAgb3V0PXBpcGUgbGVuPTgwIGNy
+FSB1 DATA i=2 s=o n=11 Yz0zZDkyN2Q0MyBFTkQK
+FSB1 END v=1 nonce=a1b2c3d4e5f60718 chal=c3c3a1b2c3d4e5f60718293a4b5c6d7e lines=17 rec_sha256=8b390ba294643ba469a2ad24b6041b6a82b3e2238f4505c4b89be52cf16eb545
+~ # [6nfs-done
+FSD1 queued END

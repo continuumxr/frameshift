@@ -1,0 +1,48 @@
+fs-rpcd      sha256=da19367be1f2d3c73d7476cb203e3109a0af277758ac552aa72bf81bf3cc8c4c (aarch64, under qemu-aarch64)
+fs-rpcd.c    sha256=df75cd26a01ee07e47afe26bfa5502e9d593c7bc9311ca1d9b33ffcbd32013f7
+fs-ncm.sh    sha256=116d938f87438c5b419a6b4f929d4dd0a38112dc0952c88aeb157e171a567a4b
+pid1-hold.sh sha256=4294c9d57f3a94eba9847596aa614f557e7b4278cfeb5a22e38955fdd5b81dc4 (read only)
+busybox      sha256=c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02 (reviewed stage-1 busybox, under qemu-aarch64)
+kernel       6.18.33.2-microsoft-standard-WSL2 (WSL; netns section)
+== D: responder cases
+D-qemu PASS TOTAL 113/113 PASS (fixtures/device/D-qemu.txt)
+D-asan PASS TOTAL 113/113 PASS (fixtures/device/D-asan.txt)
+D-native PASS TOTAL 114/114 PASS (fixtures/device/D-native.txt)
+== G: gadget logic (fake configfs)
+G1-gadget-ok PASS serial, MACs, IAD class, link, bind, default sysctls, ifname usb0
+G2-role-fallback-when-unattached PASS 
+G3-no-role-write-when-attached PASS 
+G4-udc-expect-match PASS 
+G5-udc-expect-mismatch PASS FAIL udc UDC 'a600000.dwc3' is not 'a800000.dwc3'
+G6-no-udc PASS FAIL udc no UDC after 1s
+G7-two-udcs PASS FAIL udc expected one UDC, found: a600000.dwc3 b000000.dwc3 
+G8-unsafe-udc-name PASS FAIL udc unsafe UDC name
+G9-gadget-exists PASS FAIL ncm gadget already exists
+G10-netdev-mac-mismatch PASS FAIL net usb0 does not carry 02:01:23:45:67:89
+G11-bad-ifname PASS FAIL net bad ifname 'usb0;x'
+G12-bad-nonce PASS FAIL ncm bad nonce
+G13-short-nonce PASS FAIL ncm bad nonce length
+G14-no-configfs PASS FAIL ncm no configfs usb_gadget
+G15-write-fails PASS FAIL ncm write /usb_gadget/fs/functions/ncm.fs/dev_addr=02:01:23:45:67:89
+G16-link-readback PASS FAIL ncm readback link
+G17-bad-numeric-setting PASS FAIL ncm bad numeric setting 'abc'
+G18-rpc-exits-before-listening PASS LOG RPC stopped pid=661168 FAIL rpc responder exited before listening  alive=no
+G19-rpc-never-listens-killed PASS LOG RPC stopped pid=661258 FAIL rpc responder not listening after 2s  alive=no
+G20-rpc-other-port-killed PASS LOG RPC stopped pid=661355 FAIL rpc responder not listening after 2s  alive=no
+G21-rpc-listening-ok PASS LOG RPC pid=661452 addr=[fe80::0123:4567:89ab:cdef%usb0]:47101 runner=none listening
+G22-stale-rpc-log PASS FAIL rpc stale fs.rpc.log (responder never started)
+G23-late-listener-killed-before-err-delay PASS LOG RPC stopped pid=661613 FAIL rpc responder not listening after 2s  alive=no
+== L: link-local bring-up in a user+net namespace (veth)
+L1-linklocal-permanent-single PASS fe800000000000000123456789abcdef 03 40 20 80 veth0
+L2-verify-over-scoped-linklocal PASS OK b'FSV1 nonce=0123456789abcdef resp=b9e04d7c97c70a71930910a210345b89db976520e0af1efdd02158c2480b94c5 kernel=6.18.33.2-
+L3-ack-over-linklocal PASS 
+L4-done-over-linklocal PASS 
+L5-not-on-loopback PASS bound to fe80::<nonce>%veth0 only
+L6-refuses-extra-kernel-address PASS FAIL net address state: fe80000000000000fedcba9876543210 05 40 20 80    veth2
+== I: simulated PID 1 (pid1-hold.sh) + fs-rpcd
+I1-ack-recorded-done-reboots PASS first=collected after=0s status=b'FSS1 nonce=0123456789abcdef stages=INIT_STARTED,SHELL_READY,HOST_ACK acked=a1a2a3a4a5a6a7a8 END\n'
+I2-no-ack-window PASS first=no-host-ack at T0+6s
+I3-deadline-under-slowloris PASS first=deadline at T0+14s
+I4-deadline-after-responder-death PASS first=deadline at T0+12s
+I5-wrong-nonce-ack-ignored PASS first=no-host-ack resp=b'FSR1 nonce=0123456789abcdef error=nonce END\n'
+TOTAL sections: 37 PASS, 0 FAIL

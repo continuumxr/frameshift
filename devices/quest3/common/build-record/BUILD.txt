@@ -1,0 +1,13 @@
+fs-supervise build record
+date_utc:   2026-10-09T06:01:44Z
+compiler:   Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+command: $HOME/toolchains/clang-r450784e/bin/clang --target=aarch64-linux-gnu -static -O2 -std=c11 -D_GNU_SOURCE -Wall -Wextra -Werror -fno-ident -fuse-ld=lld -Wl,--build-id=none -s -o build/fs-supervise src/fs-supervise.c
+source:     src/fs-supervise.c sha256=cc1ba7bbe48a9d73356a3a450b72cfa82a55fc39ff248677a5cf798c1ceda910
+libc:       libc6-dev-arm64-cross 2.43-2ubuntu2cross1 (static glibc)
+binary:     build/fs-supervise sha256=77f7a70a7904a7091db8e132b6c8f0ee68e6187f94d4690ec2a42a26f5206a74 size=676952
+elf:        ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, for GNU/Linux 3.7.0, stripped
+limits:     timeout<=60s grace<=10s (default 2) cap<=1MiB (default 64KiB) reap-wait 3s backstop alarm 90s
+checks:     aarch64, ET_EXEC, no INTERP, no NEEDED, bit-identical rebuild, limits unchanged
+final:      src/fs-reboot-final.c sha256=cd657ae3762fc06692ebe1f38e114e10937fe844da5e18538cb09c14d9be9d8e
+final:      build/fs-reboot-final sha256=ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e size=808 (--target=aarch64-linux-gnu -Os -static -nostdlib -ffreestanding -fno-stack-protector -fno-ident -Wall -Wextra -Werror)
+final chk:  aarch64, no INTERP, bit-identical rebuild, no exit in source or code, only mode string 'bootloader'; check_final.py: reboot(0xfee1dead,0x28121969,0xa1b2c3d4,&"bootloader\0"), reboot(...,0x01234567,0), nanosleep(&{3600,0}) in a closed loop, exactly 3 svc

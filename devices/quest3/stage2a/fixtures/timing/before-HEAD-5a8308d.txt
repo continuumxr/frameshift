@@ -1,0 +1,31 @@
+== stage 2a (init.sh DEADLINE=180 ACK_WINDOW=120; runner fs-valve.sh)
+   i   id          -t    -g   worst s
+   1   hash         5     2      15.0
+   2   absent       5     2      15.0
+   3   diag         5     2      15.0
+   4   list         5     2      15.0
+   5   uname        5     2      15.0
+   6   b2kat        5     2      15.0
+   7   b2chal       5     2      15.0
+   runner worst case W = 107.0 s (incl. 2 s emission)
+   host: give-up = handoff + 300 - 15 s; collector start = handoff + 20 s; phases before the runner <= 76.5 s
+   host record budget B = 300 - 15 - 20 - 76.5 = 188.5 s; spare 81.5 s
+   FAIL  collector device deadline (300 s) = image DEADLINE (180 s)
+   PASS  DEADLINE 180 <= 299 (common clamp)
+   PASS  ACK_WINDOW 120 <= DEADLINE 180
+   PASS  every step timeout <= 60 s and grace <= 10 s
+   PASS  runner worst case 107.0 s <= host record budget 188.5 s
+== stage 3a (init.sh DEADLINE=60 ACK_WINDOW=40; runner fs-display.sh)
+   i   id          -t    -g   worst s
+   1   hash         3     2      13.0
+   2   pattern     16     3      27.0
+   runner worst case W = 42.0 s (incl. 2 s emission)
+   host: give-up = handoff + 300 - 15 s; collector start = handoff + 20 s; phases before the runner <= 76.5 s
+   host record budget B = 300 - 15 - 20 - 76.5 = 188.5 s; spare 146.5 s
+   FAIL  collector device deadline (300 s) = image DEADLINE (60 s)
+   PASS  DEADLINE 60 <= 299 (common clamp)
+   PASS  ACK_WINDOW 40 <= DEADLINE 60
+   PASS  every step timeout <= 60 s and grace <= 10 s
+   PASS  runner worst case 42.0 s <= host record budget 188.5 s
+TIMING: INCONSISTENT
+rc=1

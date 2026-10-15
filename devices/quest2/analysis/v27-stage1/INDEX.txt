@@ -1,0 +1,21 @@
+# Quest 2 v2.7 stage-1 offline evidence (2026-10-09; no device touched, nothing downloaded)
+# Inputs: firmware/quest2/v2.7-user_ota/ (gitignored). vbmeta, vbmeta_system and vbmeta_vendor
+# were extracted from firmware/quest2/ota/q2_52242990024200150.zip with the stdlib payload
+# extractor (scratchpad agents/fs006-kernel/payload.py), 2026-10-09.
+# Reproduce (from the repo root):
+#   python -I devices/quest2/analysis/v27-stage1/bootcheck.py firmware/quest2/v2.7-user_ota/boot.img > boot-layout.txt
+#   python -I devices/quest2/analysis/v27-stage1/vbmeta.py firmware/quest2/v2.7-user_ota > vbmeta.txt
+#   (WSL) bash devices/quest2/analysis/v27-stage1/vendor-scan.sh firmware/quest2/v2.7-user_ota/vendor.img > vendor-scan.txt
+# Outputs (withheld from the public copy [removed for publication]; regenerate with the commands above):
+#   boot-layout.txt  header v2 layout, raw arm64 Image, gzip ramdisk (cpio listing, 0 modules), 3 FDTs, AVB footer
+#   vbmeta.txt       descriptors; boot and dtbo hash descriptors MATCH our images; avbtool-style digest [D, not
+#                    cross-checked against avbtool]
+#   vendor-scan.txt  virtual A/B, misc in fstab, USB rc, vendor modules, governor writes, no watchdog references
+# Input hashes (sha256):
+#   eebcbbefe5a165169878d994a3ecbd855fd00f8806dda3409744a64e59bdcb6c  boot.img
+#   515376505b906142a06f0c1a15c642c1f23d3e37cc65b30ad0b4a4c31502e32f  dtbo.img
+#   7492035984ef9030b5a20b580b0c1c23442ae22bbcdcb4f795c23b365d654cc8  vbmeta.img
+#   c691bd57850a4501484b8ebae95ea6fa3bf22c1d2ab0a0e3e023e414f4c46069  vbmeta_system.img
+#   400112feabb58eb940abe33cd2de038b7aaf91963f7760c3d5d54af69de0c682  vbmeta_vendor.img
+#   2e78f4d73721e61825a23cfb56e2ed219be5dc2102e12d3ada1d651095b56272  vendor.img
+#   e1419588ec219dabb102ecdcd336806a1e72274ce5a09eb93c439aaedc2fa88d  kernel.config

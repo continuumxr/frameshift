@@ -1,0 +1,3 @@
+# cmd: (trap '' TERM; fs-supervise -t 2 -g 3 -- busybox sleep 30)
+# report: FSUP1 end=timer-term code=-1 sig=15 errno=0 ms=2016 term_ms=2000 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END
+# exit=3 wall_ms=2315

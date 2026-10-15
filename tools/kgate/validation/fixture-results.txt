@@ -1,0 +1,175 @@
+fixtures: committed fixtures/data matches make_fixtures.py output
+
+case                                                                                 want  got  result
+reference: positive with profile (declared sources, pinned counts)                      0    0  ok
+reference: positive, bootstrap (no profile) is never 0                                  3    3  ok
+reference: profile missing without --bootstrap                                          2    2  ok
+reference: partial sources vs profile (vendor_boot only)                                2    2  ok
+reference: counts differ from profile pins                                              2    2  ok
+reference: device differs from profile                                                  2    2  ok
+reference: empty (vendor_boot without modules)                                          2    2  ok
+reference: empty (only a module-less boot ramdisk)                                      2    2  ok
+reference: failed extraction (not an ext4 image)                                        2    2  ok
+reference: Android sparse image                                                         2    2  ok
+reference: EROFS image                                                                  2    2  ok
+reference: ext4 without /lib/modules                                                    2    2  ok
+reference: redirect to a partition not supplied                                         2    2  ok
+reference: redirect target path not covered                                             2    2  ok
+reference: bad vendor_boot magic                                                        2    2  ok
+reference: truncated gzip ramdisk                                                       2    2  ok
+reference: truncated cpio                                                               2    2  ok
+reference: ramdisk table does not cover section                                         2    2  ok
+reference: missing source file                                                          2    2  ok
+reference: unparseable module (corrupt ELF)                                             2    2  ok
+reference: garbled vermagic                                                             2    2  ok
+reference: module without __versions                                                    2    2  ok
+reference: same-name modules with differing content                                     2    2  ok
+reference: same-name differing, --allow-same-name-differing                             3    3  ok
+reference: same .modinfo name, different files                                          2    2  ok
+reference: same path twice in concatenated cpio archives                                2    2  ok
+reference: conflicting import CRCs for one symbol                                       2    2  ok
+reference: mixed ELF machines                                                           2    2  ok
+reference: modules disagree on vermagic flags                                           2    2  ok
+reference: .ko symlink in ramdisk                                                       2    2  ok
+reference: symlinked directory in ramdisk module tree                                   2    2  ok
+reference: symlinked directory in ext4 module tree                                      2    2  ok
+reference: symlinked directory in --dir source                                          2    2  ok
+reference: compressed .ko                                                               2    2  ok
+reference: modules.load names a module not extracted                                    2    2  ok
+reference: modules.dep names a module not extracted                                     2    2  ok
+reference: export only via ___ksymtab+sym section                                       3    3  ok
+reference: __ksymtab_strings name not recovered                                         2    2  ok
+reference: export table without recoverable names                                       2    2  ok
+reference: stock kernel without BTF                                                     2    2  ok
+reference: --stock-kernel is not a supplied boot image                                  2    2  ok
+reference: no --stock-kernel                                                            2    2  ok
+reference: debugfs writes to stderr                                                     2    2  ok
+reference: debugfs dump shorter than listed size                                        2    2  ok
+reference: modprobe disagrees with __versions parse                                     2    2  ok
+reference: internal exception -> exit 2, stale JSON replaced                            2    2  ok
+reference: other-device reference (for a later check)                                   3    3  ok
+check: positive (all inputs, pinned profile)                                            0    0  ok
+check: positive, --set-val with '#' in the value                                        0    0  ok
+check: positive, Image.gz                                                               0    0  ok
+check: positive, stock build: explicit --none and waived baseline                       0    0  ok
+check: positive, CRLF copy of the stock base config parse-equals the stock IKCONFIG     0    0  ok
+check: positive, allowlisted select fallout (XOR_BLOCKS for BTRFS)                      0    0  ok
+check: positive, no IKCONFIG with explicit waiver                                       0    0  ok
+check: unused --waive-ikconfig is not recorded as a waiver                              0    0  ok
+check: positive, gap between sections is zero in image and vmlinux                      0    0  ok
+check: report-only never exits 0                                                        3    3  ok
+check: wrong module_layout                                                              1    1  ok
+check: missing required symbol                                                          1    1  ok
+check: required symbol only in an in-tree module                                        1    1  ok
+check: CRC mismatch                                                                     1    1  ok
+check: changed baseline export                                                          1    1  ok
+check: removed baseline export                                                          1    1  ok
+check: removed baseline export (baseline has extra; report-only)                        1    1  ok
+check: vmlinux exports a vendor-module symbol                                           1    1  ok
+check: duplicate Module.symvers rows                                                    1    1  ok
+check: namespace not imported by vendor module                                          1    1  ok
+check: GPL-only export to proprietary module                                            1    1  ok
+check: unversioned vendor import missing                                                1    1  ok
+check: requested option dropped (report-only)                                           1    1  ok
+check: requested option wrong value (report-only)                                       1    1  ok
+check: --undefine request but symbol present (report-only)                              1    1  ok
+check: typo in a --disable request (report-only)                                        2    2  ok
+check: stock config entry dropped from the build                                        1    1  ok
+check: compiler version changed (not WARN)                                              1    1  ok
+check: unrequested USER_NS/PID_NS                                                       1    1  ok
+check: unrequested CFI_CLANG off                                                        1    1  ok
+check: select fallout without allowlist (report-only)                                   1    1  ok
+check: malformed 'is not set' line in base config                                       2    2  ok
+check: vermagic flags differ (MODVERSIONS off)                                          1    1  ok
+check: BTF kinds beyond stock                                                           1    1  ok
+check: no BTF                                                                           2    2  ok
+check: no BTF, --allow-no-btf (recorded as a waiver)                                    0    0  ok
+check: malformed BTF (section out of bounds)                                            2    2  ok
+check: malformed BTF (record overruns types)                                            2    2  ok
+check: ambiguous BTF (two blobs)                                                        2    2  ok
+check: decoy BTF header with implausible hdr_len                                        2    2  ok
+check: corrupted hdr_len is malformed, not 'no BTF' (--allow-no-btf)                    2    2  ok
+check: Image.gz with trailing junk                                                      2    2  ok
+check: unparseable Module.symvers                                                       2    2  ok
+check: CRLF Module.symvers                                                              2    2  ok
+check: empty Module.symvers                                                             2    2  ok
+check: Module.symvers without vmlinux rows                                              2    2  ok
+check: missing Module.symvers file                                                      2    2  ok
+check: unparseable .config                                                              2    2  ok
+check: unsupported request syntax (report-only)                                         2    2  ok
+check: empty request list without --none (report-only)                                  2    2  ok
+check: .config not the one embedded in the image                                        2    2  ok
+check: no IKCONFIG and no waiver                                                        2    2  ok
+check: vmlinux __crc_ disagrees with Module.symvers                                     2    2  ok
+check: vmlinux from another build (banner)                                              2    2  ok
+check: image bytes differ from vmlinux (same banner/BTF)                                2    2  ok
+check: stock kernel passed as the build image                                           2    2  ok
+check: truncated vmlinux                                                                2    2  ok
+check: gate mode without --profile                                                      2    2  ok
+check: gate mode without --build                                                        2    2  ok
+check: gate mode without --vmlinux                                                      2    2  ok
+check: gate mode without --requested                                                    2    2  ok
+check: gate mode without --requested-config                                             2    2  ok
+check: gate mode without --baseline-symvers                                             2    2  ok
+check: waiver without a real reason                                                     2    2  ok
+check: --device differs from profile                                                    2    2  ok
+check: reference of another device (report-only)                                        2    2  ok
+check: reference not matching the pinned sha256                                         2    2  ok
+check: hand-edited reference (body hash, report-only)                                   2    2  ok
+check: re-hashed reference with altered vendor_exports                                  2    2  ok
+check: re-hashed reference with altered stock BTF kinds                                 2    2  ok
+check: re-hashed structurally invalid reference                                         2    2  ok
+check: re-hashed reference with no modules                                              2    2  ok
+check: ___ksymtab+ export is not required from vmlinux (report-only)                    3    3  ok
+check: ___ksymtab+ export collides with vmlinux (report-only)                           1    1  ok
+check: base config is not the stock config (gate)                                       2    2  ok
+check: base config is not the stock config (report-only too)                            2    2  ok
+check: request list not the one pinned for the build                                    2    2  ok
+check: allowlist given to a build without a pinned allowlist                            2    2  ok
+check: pinned allowlist missing                                                         2    2  ok
+check: baseline not the pinned stock-build Module.symvers                               2    2  ok
+check: baseline is the build's own Module.symvers                                       2    2  ok
+check: --waive-baseline on an option-group build                                        2    2  ok
+check: stock build given a baseline instead of the pinned waiver                        2    2  ok
+check: --build not pinned in the profile                                                2    2  ok
+check: truncated kernel image                                                           2    2  ok
+check: non-zero bytes in a gap between sections                                         2    2  ok
+check: Image.gz made of two gzip members                                                2    2  ok
+check: export type in Module.symvers differs from vmlinux __ksymtab                     2    2  ok
+check: namespace in Module.symvers differs from vmlinux __ksymtab                       2    2  ok
+check: bare 'Linux version ' text before the banner; namespaces still decoded           0    0  ok
+check: runtime __kcrctab CRC altered in Image+vmlinux (.symtab/Module.symvers unchanged)    2    2  ok
+check: export hidden from .symtab and Module.symvers but present in the Image           2    2  ok
+check: export type forged via .symtab section index                                     2    2  ok
+check: gzip bomb as Image.gz                                                            2    2  ok
+check: stock kernel located via the profile (no --stock-kernel)                         0    0  ok
+check: gate mode requires a committed profile by default                                2    2  ok
+check: uncommitted profile with a recorded waiver                                       0    0  ok
+check: decoy export table (section headers) vs the kernel's own __start___ksymtab       2    2  ok
+check: __ksymtab not sorted (loader binary search)                                      2    2  ok
+check: __ksymtab entry address redirected to another symbol                             2    2  ok
+check: allocated section extends past the kernel's _edata                               2    2  ok
+check: allocated section set differs from the pinned stock-build set                    2    2  ok
+check: 4.19 8-byte __ksymtab layout + 4.19 kallsyms (namespace-free symvers; report-only, no baseline)    3    3  ok
+check: namespace claimed in Module.symvers on a 4.19 (namespace-free) kernel            2    2  ok
+check: 12-byte (namespace) layout under a 4.19 banner                                   2    2  ok
+check: kernel image lacks the module-loader vermagic string                             1    1  ok
+check: committed profile (default requirement)                                          0    0  ok
+check: usage error (no --device) leaves no stale PASS JSON                              2    2  ok
+check: internal exception -> exit 2, stale JSON replaced                                2    2  ok
+btf_kind_scan: positive vs stock kinds                                                  0    0  ok
+btf_kind_scan: kinds beyond stock                                                       1    1  ok
+btf_kind_scan: no allowed set and no --scan-only                                        2    2  ok
+btf_kind_scan: --scan-only is never 0                                                   3    3  ok
+btf_kind_scan: no BTF                                                                   2    2  ok
+btf_kind_scan: no BTF, --allow-missing                                                  0    0  ok
+btf_kind_scan: malformed (bounds)                                                       2    2  ok
+btf_kind_scan: malformed (record)                                                       2    2  ok
+btf_kind_scan: ambiguous                                                                2    2  ok
+btf_kind_scan: decoy hdr_len                                                            2    2  ok
+btf_kind_scan: corrupted hdr_len with --allow-missing                                   2    2  ok
+btf_kind_scan: ELF magic but < 64 bytes                                                 2    2  ok
+btf_kind_scan: unreadable input                                                         2    2  ok
+btf_kind_scan: internal exception -> exit 2, stale JSON replaced                        2    2  ok
+
+170/170 cases behaved as expected (exit code and reason)

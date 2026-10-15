@@ -1,0 +1,19 @@
+# s2-missing-forced (stage2a) mods=['missing-uname'] plan=full; image <repo>/build/stage2a/20261009T085209Z-93a1501f0b1fb692
+# mod: removed /valve/bin/uname
+# reboots: 946.09 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=93a1501f0b1fb692 resp=3972908a7c26de7d5d6b446bf218053e4982d7f7a4fdd32d2f1834388b428f77 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=93a1501f0b1fb692 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=2055966c07195370 END]
+PASS  FSB1 END line received  [FSB1 END v=1 nonce=93a1501f0b1fb692 chal=cb212dfc0305f5a4f20ac4cd1e347ca4 lines=93 rec_sha256=ebc4dabcc8d0c21e46064513b46a8b139bcee488f194fd8c7c8292ddb130b1c5]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values  [DEADLINE armed t0=929 deadline=T0+260 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [946.09 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [946.09 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork) at T0+DEADLINE+1
+PASS  reboot within 3 s of fs-done  [0.6 s]
+PASS  modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)  [fake_a fake_b fake_c]
+PASS  FSB1 VALID (common/tools/fsb1.py)  [VALID]
+PASS  an empty line immediately before FSB1 BEGIN
+SCENARIO s2-missing-forced PASS

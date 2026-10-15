@@ -1,0 +1,7 @@
+FSP1 nonce=a1b2c3d4 seq=0 step=start rc=0 mode=holdtest ver=0.4 hold_req=1 hold=1 hold_max=10 clamped=0 setup_alarm_s=30 close_margin_s=5 dev=/dev/null out=pipe rot=180 t0_ms=157239 len=181 crc=d74787a2 END
+FSP1 nonce=a1b2c3d4 seq=1 step=open rc=0 dev=/dev/null mock=1 len=61 crc=10a7d814 END
+FSP1 nonce=a1b2c3d4 seq=2 step=hold_start rc=0 hold_s=1 start_ms=157248 deadline_ms=158248 alarm_s=6 len=100 crc=20cd62b5 END
+FSP1 nonce=a1b2c3d4 seq=3 step=hold_end rc=0 reason=deadline sig=0 held_ms=1000 late_ms=0 fd_closed=1 close_rc=0 close_ms=0 len=123 crc=8017f76b END
+FSP1 nonce=a1b2c3d4 seq=4 step=exit rc=0 code=0 reason=held_to_deadline shown=0 closed_at_exit=0 elapsed_ms=1011 len=112 crc=be79681d END
+FSP1 nonce=a1b2c3d4 seq=5 step=eos rc=0 records=6 dropped=0 overflows=0 out=pipe len=80 crc=125f54d3 END
+# exit=0

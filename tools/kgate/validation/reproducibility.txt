@@ -1,0 +1,34 @@
+# Reproducibility check (2026-10-09), Quest 2 stock-config build, source 6bde5fc06b25, clang r450784e, AOSP make 4.3
+# Script: validation/repro_q2.sh (fresh object dir; KBUILD_BUILD_TIMESTAMP/USER/HOST/VERSION pinned to the original banner)
+
+## Run 1: pinned rebuild in ~/work/kgateq2/out-repro vs the original FS-A-006 build ~/work/kgateq2/out (unpinned, path out/)
+start 2026-10-09T05:37:51Z
+build rc=0 in 1548s
+.config identical
+DIFFERS   vmlinux orig=47e5a9e5b29425a66c53abfc3fbccb5e79c852fa178ef048e50a82739e74f954 repro=d1a1f4cf847536bceec3da8160d71fa22ee78466ecfcf9d413dae01d10b12d67
+DIFFERS   arch/arm64/boot/Image orig=378ce03c2f37a8cf70b33a634151f32d4192843379c73e83ac39b4f42b8fb8ea repro=31280040526bdf19113d529a9a72ff8ab95d3c759e88b0d75154f1d10fb78adf
+DIFFERS   arch/arm64/boot/Image.gz orig=82de37f71d1a6f8821183c2230ad360e6e45dc98cbd9c8a46c9cdc02305742f6 repro=11638cd5020e9e7c46656fa59199d13207032185ee6d623493228906171bb40e
+IDENTICAL Module.symvers 5698abe2796e310b7e7b85062e1fb24e49b93ff245321d6a188aec625ea9f471
+end 2026-10-09T06:04:00Z
+
+## Run 1 difference analysis: 27 of 30369808 Image bytes differ
+- 24 bytes: three 8-byte GNU build-id notes (vmlinux .notes, vdso, vdso32). The object-directory path (out vs out-repro) is
+  embedded in debug info (38 path strings in vmlinux) and the linker's build-id hashes it; vdso.so differs only in its build-id.
+- 3 bytes: built-in initramfs cpio header mtimes in .init.data (0x6AC80797 original = wall clock at generation, 1 s after the
+  banner time; 0x6AC80796 repro = the pinned KBUILD_BUILD_TIMESTAMP).
+- Module.symvers and .config identical; no code or data difference.
+
+## Run 2: second pinned rebuild at the SAME path (out-repro) vs run 1 (moved to out-repro-1)
+start 2026-10-09T06:06:48Z
+build rc=0 in 1508s
+.config identical
+IDENTICAL vmlinux d1a1f4cf847536bceec3da8160d71fa22ee78466ecfcf9d413dae01d10b12d67
+IDENTICAL arch/arm64/boot/Image 31280040526bdf19113d529a9a72ff8ab95d3c759e88b0d75154f1d10fb78adf
+IDENTICAL arch/arm64/boot/Image.gz 11638cd5020e9e7c46656fa59199d13207032185ee6d623493228906171bb40e
+IDENTICAL Module.symvers 5698abe2796e310b7e7b85062e1fb24e49b93ff245321d6a188aec625ea9f471
+end 2026-10-09T06:32:19Z
+
+## Conclusion
+Meta's 4.19 tree builds bit-reproducibly when the object-directory path is identical (or remapped, e.g. -ffile-prefix-map)
+and KBUILD_BUILD_TIMESTAMP/USER/HOST/VERSION are pinned. The FS-A-006 builds pinned none of these and cannot be matched
+bit-for-bit. The 5.10 (Quest 3/3S) tree was not rebuilt here (~75 min per build); not yet measured.

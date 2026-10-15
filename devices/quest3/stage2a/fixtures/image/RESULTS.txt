@@ -1,0 +1,15 @@
+# stage2a whole-image fixtures  2026-10-09T08:57:35Z
+# image <repo>/build/stage2a/20261009T085209Z-93a1501f0b1fb692/boot-stage2a.img sha256=e8775c893b5a4b3785dbf7e3715820cb3c7aba2e1a1e560567d067c26a2451e5
+# harness sha256=8249077c64908408f97f1fb46877c39eb70ee7015fd7db2c8c6c704fe777519f  test-image.sh sha256=90b4fb3d6b3f32708ec5ce1498aea9e74878786e8f0e23c805961709141a0d29
+# host: Linux 6.18.33.2-microsoft-standard-WSL2; qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2); bwrap 0.11.1
+SCENARIO s2-ack-no-done PASS
+SCENARIO s2-no-ack PASS
+SCENARIO s2-no-udc PASS
+SCENARIO s2-pass PASS
+SCENARIO s2-inv-absent PASS
+SCENARIO s2-tamper-forced PASS
+SCENARIO s2-missing-forced PASS
+SCENARIO s2-preload-forced PASS
+SCENARIO s2-hung-step PASS
+SCENARIO s2-done-early PASS
+TOTAL: 10 scenarios, 0 failed

@@ -1,0 +1,6 @@
+# simulated PID 1 with FS_REBOOT_FINAL = the real build/fs-reboot-final (ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e)
+# deadline+4 s later: pid 4047 alive=yes cmdline: /usr/bin/qemu-aarch64 <repo>/devices/quest3/common/build/fs-reboot-final <repo>/devices/quest3/common/build/fs-reboot-final deadline 
+# fork-path records by PID 1 itself: 0
+# all records (the backstop child's fork path may appear):
+#   209 backstop pid=4066 via=fork
+#   209 fallback pid=4069 via=fork

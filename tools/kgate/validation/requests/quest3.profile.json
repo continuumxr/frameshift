@@ -1,0 +1,80 @@
+{
+ "build_sections": [
+  ".BTF",
+  ".BTF_ids",
+  ".altinstructions",
+  ".bss",
+  ".builtin_fw",
+  ".data",
+  ".data..percpu",
+  ".exit.text",
+  ".head.text",
+  ".init.data",
+  ".init.text",
+  ".mmuoff.data.read",
+  ".mmuoff.data.write",
+  ".notes",
+  ".pci_fixup",
+  ".pecoff_edata_padding",
+  ".rela.dyn",
+  ".relr.dyn",
+  ".rodata",
+  ".rodata1",
+  ".sbss",
+  ".text",
+  "__bug_table",
+  "__ex_table",
+  "__init_rodata",
+  "__kcrctab",
+  "__kcrctab_gpl",
+  "__kcrctab_gpl_future",
+  "__kcrctab_unused",
+  "__kcrctab_unused_gpl",
+  "__ksymtab",
+  "__ksymtab_gpl",
+  "__ksymtab_gpl_future",
+  "__ksymtab_strings",
+  "__ksymtab_unused",
+  "__ksymtab_unused_gpl",
+  "__modver",
+  "__param"
+ ],
+ "builds": {
+  "a": {
+   "allow_sha256": "2244b9e3d781fd098a837ab0476c925b2f5b88d92334251506f1907c66b91e6d",
+   "baseline": "stock-build",
+   "requested_sha256": "9f142f87989919a5115cbe84c344a6bdc64bb17259e776fd0f2f39ca05604fd7"
+  },
+  "a2": {
+   "allow_sha256": "2244b9e3d781fd098a837ab0476c925b2f5b88d92334251506f1907c66b91e6d",
+   "baseline": "stock-build",
+   "requested_sha256": "903a6b21c924c9ba7ab7326e75a8c424fec0d0fb1b231bc883566b6adbab1a61"
+  },
+  "stock": {
+   "allow_sha256": "4bb7bb44ef055ab481e4f975a2a4dfcc82a836d7f04779b54cc78d777c3c8321",
+   "baseline": "waived",
+   "requested_sha256": "e1a84f89f3c569c84e638278fb41841aac869fdb1042497c3aca03f6e9ff99d6"
+  }
+ },
+ "counts": {
+  "module_copies": 403,
+  "required_from_vmlinux": 2601,
+  "unique_modules": 272
+ },
+ "device": "quest3",
+ "note": "counts pinned from FS-A-006 (2601 required; 272 unique modules) and the first kgate inventory (403 copies); reference_sha256 pinned from this project's own deterministic kgate reference build (self-referential; see README 'Pins')",
+ "pins": {
+  "independently_anchored": "required_from_vmlinux (verified by the Chair in FS-R-006 s2: 2601/838/2583/776)",
+  "self_referential": "module_copies, unique_modules, reference_sha256, stock_build_symvers_sha256 and the per-build request/allowlist hashes and build_sections (allocated section names of the stock-config build) were pinned from this project's own outputs/files on 2026-10-09"
+ },
+ "reference_sha256": "daf9546ea2ca4e99a22d67aa9cf1ec67686c0a6d6b6633a38319096ecafb63aa",
+ "sources": {
+  "boot": "boot",
+  "odm_dlkm": "ext4",
+  "vendor": "ext4",
+  "vendor_boot": "vendor_boot",
+  "vendor_dlkm": "ext4"
+ },
+ "stock_build_symvers_sha256": "7b5cfa8f54c41945e38f493196a55bfe1baff454f2c7e82e93d4959aa684b28d",
+ "stock_kernel": "../../../../firmware/quest3/v2.7-user_ota/boot.img"
+}

@@ -1,0 +1,214 @@
+{
+ "ack": "2d340afc71dee3f3",
+ "challenge": "71237226ed2f777097e31f74b4de900d",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=6cf0f15867f14edc resp=14c7e62a862e56a7adcd18f96a34e8ba3ff35c4408c83435474fb693a7e8ba90 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=6cf0f15867f14edc stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=2d340afc71dee3f3 END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSB1 END v=1 nonce=6cf0f15867f14edc chal=71237226ed2f777097e31f74b4de900d lines=149 rec_sha256=9d3784f3ec715da6ade730aa5d402256602dfc61314a72fde767ae755b6471d4",
+   "label": "FSB1 END line received",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=173 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "204.30 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "[11475]",
+   "label": "the genuine fs-pattern was SIGSTOPped from outside (fault injection)",
+   "ok": true
+  },
+  {
+   "detail": "204.30 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork) at T0+DEADLINE+1",
+   "ok": true
+  },
+  {
+   "detail": "0.5 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "fake_a fake_b fake_c",
+   "label": "modules attempted in order fake_a, fake_b, fake_c (insmod EPERM in the sandbox)",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "FSB1 VALID (common/tools/fsb1.py)",
+   "ok": true
+  },
+  {
+   "detail": "('pattern1', 'timer-kill', -1, 9)",
+   "label": "step 3 ended timer-kill sig=9",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "an empty line immediately before FSB1 BEGIN",
+   "ok": true
+  },
+  {
+   "detail": "['hash', 'probe1', 'pattern1', 'probe2', 'pattern2']",
+   "label": "5 steps in order hash,probe1,pattern1,probe2,pattern2",
+   "ok": true
+  },
+  {
+   "detail": "b'FSK1 run=2 skipped reason=run1-supervisor END\\n'",
+   "label": "step 5 replaced by the skip record (run1-supervisor)",
+   "ok": true
+  },
+  {
+   "detail": "1",
+   "label": "probe1: exactly one backlight write line (value 127)",
+   "ok": true
+  },
+  {
+   "detail": "readback=127",
+   "label": "probe1: read-back 127",
+   "ok": true
+  },
+  {
+   "detail": "[(b'mods', b'184.57'), (b'pre1', b'184.87'), (b'mid1', b'186.60'), (b'post1', b'197.20')]",
+   "label": "probe1 points mods,pre1,mid1,post1",
+   "ok": true
+  },
+  {
+   "detail": "[(b'pre2', b'199.96'), (b'post2', b'200.30')]",
+   "label": "probe2 points pre2,post2",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probes never read the forbidden crtc nodes (blu_default_duty, fifo_trim, blu_max_overlap_us)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probe1 carries init's irq0 sample and the fake te-edge-isr/blu-pwm-isr lines",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "probe1 mods snapshot has the cmdline and the fan (pwmfan, pwm-tach-fan0)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "paced: the record (150 lines) took 1.0 s on the tty (>= 0.5 s for 7 chunks of 20 lines at 0.1 s)",
+   "ok": true
+  }
+ ],
+ "exp": "stage3b",
+ "expect": {
+  "bl": "127",
+  "mid": [
+   1
+  ],
+  "p2": "skip:run1-supervisor",
+  "stopped": true,
+  "timer_kill": [
+   3
+  ]
+ },
+ "fsb1_steps": {
+  "1": [
+   "hash",
+   "exited",
+   0,
+   0
+  ],
+  "2": [
+   "probe1",
+   "exited",
+   0,
+   0
+  ],
+  "3": [
+   "pattern1",
+   "timer-kill",
+   -1,
+   9
+  ],
+  "4": [
+   "probe2",
+   "exited",
+   0,
+   0
+  ],
+  "5": [
+   "pattern2",
+   "exited",
+   0,
+   0
+  ]
+ },
+ "image_dir": "<repo>/build/stage3b/20261010T194509Z-6cf0f15867f14edc",
+ "kernel": "6.18.33.2-microsoft-standard-WSL2",
+ "mod_notes": [
+  "the GENUINE /bin/fs-pattern (hash intact) is SIGSTOPped from outside the sandbox as soon as it starts: a hang"
+ ],
+ "mods": [
+  "stop-pattern"
+ ],
+ "nonce": "6cf0f15867f14edc",
+ "ok": true,
+ "pid1": "/usr/bin/qemu-aarch64,/bin/busybox,/bin/busybox,sh,/init",
+ "plan": "full",
+ "reboot_at_T0_plus": 31.3,
+ "reboots": "204.30 final pid=1 arg=collected\n",
+ "record_lines": 150,
+ "record_span_s": 1.02,
+ "runner_ms": 19348,
+ "scenario": "b-pattern-stopped",
+ "stage": "stage3b",
+ "steps": [
+  "hash",
+  "probe1",
+  "pattern1",
+  "probe2",
+  "pattern2"
+ ],
+ "t_total_s": 32.8,
+ "verify_challenge": "3b3db8806658fb17423183e7e5187f14",
+ "want_reboot": "collected"
+}

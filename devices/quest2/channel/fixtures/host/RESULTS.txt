@@ -1,0 +1,102 @@
+fs-transport-tcp.ps1 sha256=7b6429033f82ee13016ee66045853189f3f36a45916d57be00f593dac8b5ae2f
+fs-rpcd sha256=da19367be1f2d3c73d7476cb203e3109a0af277758ac552aa72bf81bf3cc8c4c
+powershell 5.1.26100.9549 on Microsoft Windows NT 10.0.26300.0; device side in WSL (qemu-aarch64) over localhost
+A1-adapter-found PASS if=23 dev=fe80::0123:4567:89ab:cdef mac=True
+A2-other-nonce-ignored PASS no USB\\VID_1D6B&PID_0104\\FS-0123456789abcdef device present
+A3-no-adapter-under-parent PASS expected one network adapter under FS-0123456789abcdef, found 0
+A4-two-adapters-refused PASS expected one network adapter under FS-0123456789abcdef, found 2
+A5-adapter-down-refused PASS adapter ifIndex 23 is 'Disconnected', not Up
+A6-no-ipv6-linklocal-refused PASS adapter ifIndex 23 has no IPv6 link-local address (IPv6 not bound?)
+A7-duplicate-parent-refused PASS two parents carry FS-0123456789abcdef
+A8-mac-mismatch-is-evidence-only PASS MacMatches=False (recorded, not a refusal; host_addr->adapter MAC is [C])
+A9-grandchild-adapter PASS 
+A10-live-needs-adapter-object PASS refused: live mode needs the Find-FsNcmAdapter result (-Adapter)
+A11-live-scope-must-be-adapter-ifindex PASS refused: ScopeId 24 is not the adapter ifIndex 23
+A12-live-wrong-linklocal-refused PASS refused: address differs from the adapter-derived fe80::<nonce>
+A14-live-refused-adapter-refused PASS refused: adapter lookup refused: adapter ifIndex 23 has no IPv6 link-local address (IPv6 not bound?)
+A15-live-adapter-other-nonce PASS refused: adapter was found for another nonce
+A16-live-start-thresholds-fixed PASS refused: live start thresholds cannot be lowered
+A17-live-needs-ready-stage PASS refused: live mode needs -ReadyStage (the init's ready stage, e.g. RPC_READY)
+A18-ready-stage-format PASS refused: ReadyStage must be [A-Z0-9_]{1,32}
+A13-live-address-scope-from-adapter PASS fe80::123:4567:89ab:cdef%23 | FSIDX2 nonce=0123456789abcdef mode=live transport=tcp addr=fe80::0123:4567:89ab:cdef%23 port=47101
+B1-commands-exact PASS 
+B2-command-refusals PASS 11/11 refused
+B3-nonce-refusals PASS 4/4
+B4-d1-one-write-site PASS 
+B5-mutation-second-send-caught PASS socket sends: 2
+B5-mutation-device-bytes-in-request-caught PASS reqBytes assignments: 2
+B5-mutation-cmd-from-arg-caught PASS cmd assignments: 2
+B5-mutation-stream-write-caught PASS other network APIs: 1
+B7-device-bounds-match-fs-rpcd-c PASS ReqMs=3000 TrailMs=75 ReapMs=2000 ReapKillMs=2000 SweepMs=2000 WriteMs=30000 CollectSMax=104
+B6-printable PASS \\x1b]52;c;\\x07 \\\\x41 \\u2028
+C1-deadline-math PASS 2026-10-09T12:04:05.0000000Z 2026-10-09T12:02:15.0000000Z
+C2-local-time-refused PASS 
+C3-preparation-shortens-budget PASS remain=93467 expect~93500 at_ms=1519
+C10-second-conversion-refused PASS 
+C4-future-origin-refused PASS 
+C5-start-refusal-60s-enforced-by-gate PASS refusal=[start refused: only 54 s left before the host give-up] gate=[start refused: only 54 s left before the host give-up]
+C6-start-refusal-ack-window-enforced-by-gate PASS gate=[start refused: only 29 s of the ack window left]
+C7-ack-window-caps-pre-runner-only PASS status=[ack-window give-up reached (BootStartUtc + ACK_WINDOW - margin)] done=[] collect=[]
+C8-give-up-stops-everything PASS host give-up reached (BootStartUtc + DEADLINE - margin)
+C9-runner-guard-min-remaining PASS less than 200000 ms before the host give-up
+C11-collect-needs-runner-guard PASS fs-collect needs a runner guard MinRemainMs >= RunnerWorstMs (54075 ms), got 0
+C13-runner-worst-derived PASS timeout=49075 worst=54075
+C14-guard-below-worst-refused PASS fs-collect needs a runner guard MinRemainMs >= RunnerWorstMs (54075 ms), got 54074
+C15-timeout-below-runner-timeout-refused PASS fs-collect needs TimeoutMs >= RunnerTimeoutMs (49075 ms), got 14000
+C16-derived-guard-accepted PASS gate=[]
+C17-no-runner-limit-no-collect PASS fs-collect refused: this transport has no RunnerLimitSec (the image's fs-rpcd -T)
+C18-runner-limit-above-cap-104-refused PASS 
+C19-invoke-below-guard-not-sent PASS not sent: fs-collect needs a runner guard MinRemainMs >= RunnerWorstMs (54075 ms), got 1000
+C12-start-refusal-only-before-first-send PASS gate=[]
+D0-wsl-device-ready PASS tags hc19284 h40d6ae h4decdc h891ba3
+D1-flow-ipv4-acked-done-reboot PASS verdict=ACKED why= done-queued device-first-reboot=collected
+D2-pid1-recorded-our-ack PASS stages=INIT_STARTED,SHELL_READY,HOST_ACK
+G1-index-wellformed PASS R bytes=319 raw=319
+G2-per-response-sha256 PASS 4 responses
+G3-capture-sha256-recheck PASS 38df1c7d2672da77d1bf1960db1aed6518f1fe2f023ab937ae7904f1de6c0566
+G4-writes-logged-after-send PASS 4 W lines; device log: 4 requests
+D3-flow-ipv6-loopback PASS why=
+D4-fsb1-collect-valid PASS bytes=974 decoder=valid ; other challenge -> chal-mismatch; flow= done-queued
+D5-collect-refusal-is-inconclusive-then-done PASS verdict=INCONCLUSIVE why=collect refused: FSR1 nonce=0123456789abcdef error=runner-exit END done-queued device-first-reboot=collected
+E1-wrong-nonce-stops PASS record nonce 0123456789abcdef is not the attempt nonce
+E2-nothing-after-stop PASS not sent: transport stopped: seq 1 fs-verify: record nonce 0123456789abcdef is not the attempt nonce
+E3-replayed-challenge-refused-by-device PASS FSR1 nonce=0123456789abcdef error=replay END
+E4-refusal-not-verified PASS not an FSV1 (FSR1)
+E5-error-stage-refused PASS boot declared failed: stages carry ERROR_rpc
+E6-ready-stage-required-when-given PASS with=[ready stage RPC_READY absent] without=[]
+E7-truncated-stages-refused PASS stages field truncated by the device (trailing +): an ERROR_ entry could be hidden
+E8-ackstate-error-and-truncation PASS error=failed truncated=invalid clean=ours
+E9-dash-plus-refused-as-truncated PASS -+ => [stages field truncated by the device (trailing +): an ERROR_ entry could be hidden]; - => []
+H1-first-verb-must-be-verify PASS not sent: no verified FSV1 yet: only fs-verify may be sent, not fs-ack; device log lines 9 -> 9
+H2-unconfirmed-record-blocks PASS not sent: previous record (seq 1) not confirmed: device state unknown
+H3-confirm-wrong-seq-stops PASS confirm of a record that is not the pending one
+H4-stopped-is-final PASS 3/3 refused
+H5-no-deadlines-no-send PASS not sent: deadlines not set (BootStartUtc)
+H6-connect-refused-stops PASS response ended: connect-failed
+H7-time-gate-rechecked-before-write PASS gate-before=[] end=gate-late not sent: host give-up reached (BootStartUtc + DEADLINE - margin); device: FSRPC seq=11 verb=- result=empty
+F0-evil-ready PASS e8def10
+F1-silent-timeout PASS response ended: timeout
+F2-partial-record PASS no LF: incomplete record
+F3-no-final-lf PASS no LF: incomplete record
+F4-trailing-bytes PASS more than one line, or bytes after the record
+F5-two-records PASS more than one line, or bytes after the record
+F6-unsolicited-bytes-nothing-sent PASS end=unsolicited device saw: 
+F7-reset-mid-record-via-relay PASS end=eof bytes=10 framing=no LF: incomplete record
+F7b-true-reset-mid-record PASS end=reset bytes=10
+F8-oversize-cap PASS end=cap bytes=4088
+F9-escape-bytes-inert PASS seq 1 fs-verify: not a well-formed single-line record
+F10-record-nonce-mismatch PASS record nonce ffffffffffffffff is not the attempt nonce
+F11-slow-drip-timeout PASS end=timeout bytes=7
+F12-close-without-record PASS empty response
+F13-crlf PASS CR in response
+F14-replayed-fsv1-rejected PASS verify=bad response (not sha256(nonce:challenge) for THIS challenge); connections=1
+F15-foreign-ack-detected PASS ack state foreign
+F16-d1-device-sees-only-host-commands PASS device saw 7 lines; host wrote 7; leaks=0
+F17-d1-every-request-in-grammar PASS fs-verify 0123456789abcdef 4fc94ac9de6dd5a5bd0f53c6adbbf0a6 / fs-ack 0123456789abcdef a3d7bc304203781a / fs-verify 0123456789abcdef 04f4bfe6e688fad1b89dd0cd3e84bc1d / fs-status 0123456789abcdef / fs-status 0123456789abcdef / fs-status 0123456789abcdef / fs-done 0123456789abcdef
+F18-embedded-command-line-stops PASS framing=more than one line, or bytes after the record; connections=1
+F20-failed-boot-not-acked PASS why=verify: boot declared failed: stages carry ERROR_rpc connections=1
+F21-transport-refuses-error-in-fss1 PASS seq 2: boot declared failed: stages carry ERROR_x; connections=2
+F22-transport-refuses-truncated-stages PASS seq 1: stages field truncated by the device (trailing +): an ERROR_ entry could be hidden
+F23-transport-enforces-ready-stage PASS seq 1: ready stage RPC_READY absent
+F19-good-device-control PASS ACKED  done-queued
+TOTAL 98/98 PASS

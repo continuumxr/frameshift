@@ -1,0 +1,22 @@
+source sha256=49df8e340c24e6d3d5867ba70f26259ad9f151ed64602989859bb3511a268bea
+native: gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, binary sha256=e61486b6093cc93c4c7d87ff18b150ec020c19e646290ddd763a5fbc7b876462 (test build only)
+flood1 FAIL 1 writer: timer-term, TERM at 1000..1100 ms, reaped < 1500 ms | FSUP1 end=timer-kill code=-1 sig=15 errno=0 ms=2371 term_ms=2369 kill_ms=2369 out_total=3814531072 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=4 wall=2423
+flood4 FAIL 4 writers: timer-term, TERM at 1000..1100 ms, no KILL, reaped < 1500 ms | FSUP1 end=unreaped code=-1 sig=0 errno=0 ms=11994 term_ms=11994 kill_ms=11994 out_total=891047936 out_kept=0 err_total=0 err_kept=0 strays=3 pipes=eof why=none END rc=6 wall=12048
+flood4ign FAIL 4 TERM-ignoring writers: timer-kill, TERM ~1000 ms, KILL a full grace (1000..1100 ms) after the TERM (gap=0) | FSUP1 end=timer-kill code=-1 sig=9 errno=0 ms=3762 term_ms=3759 kill_ms=3759 out_total=298635264 out_kept=0 err_total=0 err_kept=0 strays=3 pipes=eof why=none END rc=4 wall=3836
+sleeper PASS deadline precision: TERM at 1000..1030 ms
+stopped PASS a stopped child: TERM stays pending, KILL ends it (timer-kill)
+fdleak FAIL caller's fd 7 not inherited; child fds exactly 0 1 2 | FSUP1 end=exited code=0 sig=0 errno=0 ms=6 term_ms=-1 kill_ms=-1 out_total=8 out_kept=8 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=0 wall=117
+session FAIL child is a session leader with no controlling tty (pid=6045 pgrp=6045 sid=6044 tty=34819) | FSUP1 end=exited code=0 sig=0 errno=0 ms=2 term_ms=-1 kill_ms=-1 out_total=38 out_kept=38 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=- wall=-
+sigchld-ignored FAIL caller ignored SIGCHLD: /bin/true still end=exited code=0 at once | FSUP1 end=unreaped code=-1 sig=0 errno=0 ms=7000 term_ms=3000 kill_ms=4000 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=6 wall=7132
+sigalrm-ignored FAIL caller ignored SIGALRM: the supervisor's SigIgn (0000000001003000) has no SIGALRM bit, so its 90 s backstop is armed | FSUP1 end=exited code=0 sig=0 errno=0 ms=4 term_ms=-1 kill_ms=-1 out_total=17 out_kept=17 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=0 wall=122
+escape PASS setsid escapee (setsid=ok asserted) killed via /proc: strays=1 why=none, none left
+hopper PASS fork-hopper in its own session hunted down: none alive 1 s later, why=none (strays=217)
+hopper-marker PASS no hopper instance survived to 5 s (no marker)
+noproc FAIL /proc hidden: the surviving escapee is REPORTED (why=no-proc, exit 7), not strays=0/why=none | FSUP1 end=exited code=0 sig=0 errno=0 ms=2 term_ms=-1 kill_ms=-1 out_total=28 out_kept=28 err_total=0 err_kept=0 strays=0 pipes=open why=none END rc=0 wall=-
+dup-option-g FAIL '-g 1 -g 2' refused | FSUP1 end=exited code=0 sig=0 errno=0 ms=1 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=0 wall=120
+dup-option-c FAIL '-c 10 -c 20' refused | FSUP1 end=exited code=0 sig=0 errno=0 ms=1 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=0 wall=117
+dup-option-i FAIL '-i /dev/null -i /dev/null' refused | FSUP1 end=exited code=0 sig=0 errno=0 ms=1 term_ms=-1 kill_ms=-1 out_total=0 out_kept=0 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=0 wall=119
+env-SCUDO_OPTIONS FAIL -e SCUDO_OPTIONS refused | FSUP1 end=exited code=0 sig=0 errno=0 ms=3 term_ms=-1 kill_ms=-1 out_total=16 out_kept=16 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=0 wall=116
+env-LIBC_DEBUG_MALLOC_OPTIONS FAIL -e LIBC_DEBUG_MALLOC_OPTIONS refused | FSUP1 end=exited code=0 sig=0 errno=0 ms=5 term_ms=-1 kill_ms=-1 out_total=28 out_kept=28 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=0 wall=117
+env-MUSL_LOCPATH FAIL -e MUSL_LOCPATH refused | FSUP1 end=exited code=0 sig=0 errno=0 ms=4 term_ms=-1 kill_ms=-1 out_total=16 out_kept=16 err_total=0 err_kept=0 strays=0 pipes=eof why=none END rc=0 wall=119
+TOTAL pass=5 fail=14

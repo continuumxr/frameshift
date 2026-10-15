@@ -1,0 +1,11 @@
+INFO source boot (boot): 0 modules; boot v2; ramdisk gzip, 9 files, 0 .ko
+INFO source vendor (ext4): 29 modules; ext4 /lib/modules: 34 files listed
+INFO source-empty: boot: generic boot ramdisk has no modules (allowed for boot sources)
+PASS module-lists: all 100 module references in 2 modules.load*/modules.dep file(s) are present in the inventory
+PASS modprobe-crosscheck: __versions of 29 unique modules agree with modprobe --dump-modversions
+INFO same-name-identical: 0 module name(s) present more than once with identical content (deduplicated, all paths kept in inventory)
+PASS import-crc-conflict: no symbol is imported with conflicting CRCs
+PASS stock-btf: stock kernel kinds: ARRAY, CONST, DATASEC, ENUM, ENUM64, FUNC, FUNC_PROTO, FWD, INT, PTR, RESTRICT, STRUCT, TYPEDEF, UNION, VAR, VOLATILE (120536 types)
+PASS profile: device questpro: declared sources and pinned counts (module_copies=29, required_from_vmlinux=776, unique_modules=29) match; reference sha256 matches pin
+PASS reference: 29 module copies, 29 unique; 1093 unique (symbol,CRC) imports; 776 required from vmlinux; 0 unversioned imports; module_layout 0x74b4ebeb; vermagic flags 'SMP preempt mod_unload modversions aarch64'; reference.json sha256 0b75e7571653c094dff8d688c8760b5915e6a5be9524c9f9a84927349f003386 (pin this for check --reference-sha256)
+RESULT: PASS (exit 0) -- reference complete

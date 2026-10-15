@@ -1,0 +1,48 @@
+== stage 3b (init.sh DEADLINE=200 ACK_WINDOW=150; runner fs-display.sh)
+   step        -t   -g      -c   worst s  program
+   hash         2    1     256      10.0  /bin/busybox sha256sum /bin/fs-pattern
+   probe1      26    1   16384      34.0  /bin/busybox sh /lib/fs/fs-probe.sh
+   pattern1     9    3   40960      19.0  /bin/fs-pattern show "$d8"
+   probe2      32    1   12288      40.0  /bin/busybox sh /lib/fs/fs-probe.sh
+   pattern2    16    3   28672      26.0  /bin/fs-pattern show-off "$d8"
+   skip         2    1     256      10.0  /bin/busybox echo "FSK1
+   fs-supervise waits: reap 3 s, strays 3 s, drain 1 s (common/src/fs-supervise.c)
+   W = TW1 3 + pattern1 19.0 + TQ 2 + gate 1 + PAUSE 2 + TW2 2 + pattern2 26.0 + TQ 2 + encode 5 x 1 + EMIT 12.4 = 74.4 s
+   EMIT(MAXLINES=2070) = 1 + ceil(2070 / 20) = 104 chunks x (0.10 + 0.01) s = 12.4 s (maximum permitted record; an expected record of ~880 lines needs ~5.8 s)
+   pacing: 20 lines per chunk (fs-display.sh override; fsb1-pace.sh default 10); a chunk is at most about 3465 bytes (5 STEP lines of <= 420 bytes + DATA lines of <= 91 bytes), below the 12,289-byte first-read boundary of trial (iii)
+   record: stdout caps [256, 16384, 40960, 12288, 28672] -> 2069 lines at most for a record within its caps (7 framing + stdout + the hash's stderr); enforced maximum MAXLINES 2070; (4119 if every stderr were at its cap too); DATA line <= 91 bytes
+   EMIT assumes the host drains the tty promptly; a stalled reader blocks printf, which is safe: both runs have closed and the PID 1 deadline is independent of the runner
+   host: give-up = BootStartUtc + 200 - 15 s; collector start = BootStartUtc + 25 s (planning); phases before the runner (2 fs-status tries) <= 61.0 s
+   display cue 3.0 s; post-record (beep 1 + pre-done pause + beep 2) 11.0 s
+   B = 200 - 15 - 25 - 61.0 - 3.0 - 11.0 = 85.0 s; spare B - W = 10.6 s; guard spare B - RunnerWorst - margin = 5.0 s
+   IMMEDIATE RUNNER GUARD: the collector sends fs-display only with >= RunnerWorstSec 75 + RunnerMarginSec 5 + post 11 = 91 s left before the give-up
+   PASS  collector device deadline (200 s) = image DEADLINE (200 s)
+   PASS  DEADLINE 200 <= 200 (FS-R-010 §6 ceiling; backstop 201 <= 201) and <= 299 (common clamp)
+   PASS  collector ack window (150 s) = image ACK_WINDOW (150 s) <= DEADLINE
+   PASS  collector step list = fs-display's 5 steps hash,probe1,pattern1,probe2,pattern2
+   PASS  every step: -t <= 60, -g <= 10, -c <= 1048576
+   PASS  run 1 hold 3 s and run 2 hold 10 s (FS-R-010 §4), both <= FSP_HOLD_MAX_S 10
+   PASS  pattern1 -t 9 >= hold 3 + close margin 5 + 1; pattern2 -t 16 >= 10 + 5 + 1 (fs-pattern PID 1 contract)
+   PASS  pause PAUSE = 2 s >= 2 s (FS-R-010 §4)
+   PASS  probe1 -t 26 >= its window TW1 + worst(pattern1) + TQ = 24.0 s; probe2 -t 32 >= TW2 + worst(pattern2) + TQ = 30.0 s
+   PASS  the skip step's worst (10.0 s) <= each pattern step's worst (the go path is the worst path)
+   PASS  the concurrent hash step ends inside W: worst(hash) 10.0 s <= W 74.4 s
+   PASS  record-size consistency: 7 + sum(ceil(stdout cap / 48)) + ceil(hash stderr cap / 48) = 2069 <= MAXLINES 2070 (no record within its caps is refused); 869400 bytes max < 8 MiB
+   PASS  pacing burst: a 20-line chunk is at most about 3465 bytes < the 12,289-byte first-read boundary of trial (iii)
+   PASS  stderr basis: fs-probe.sh's first command is exec 2>/dev/null; the device build of fs-pattern has no stderr write (no stdio, no write(2,...))
+   PASS  runner worst case W 74.4 s <= host record budget B 85.0 s
+   PASS  collector RunnerWorstSec (75 s) >= W (74.4 s)
+   PASS  run-time guard fits: B 85.0 s >= RunnerWorstSec + RunnerMarginSec = 80 s
+   PASS  phases before the runner 61.0 s <= ack-window budget 150 - 15 - 25 = 110.0 s
+== clock model, stage 3b (FS-R-007 B1; static source checks and arithmetic, not a device measurement)
+   PASS  M1 fs-observe.ps1: BootStartUtc is taken before the one fastboot boot call (every stage, 3b included)
+   PASS  M1b fs-observe.ps1 stage 3b: the BA dwell gate runs before the attempt is registered and before BootStartUtc/boot
+   PASS  M2 the collector gets -BootStartUtc (origin); no HandoffBasisUtc
+   PASS  M3a fs-collect.ps1 live: both deadlines from BootStartUtc
+   PASS  M3b fresh conversion AFTER the preparation (gadget lookup, transport), used by the collector
+   PASS  M3c start refusals re-checked after the preparation; no remaining time carried over
+   PASS  M3d the live path takes the stage spec from $script:FsStageSpec (3b included) and -Stage accepts 3b
+   PASS  M4a arithmetic grid (stage 3b): with origin BootStartUtc every admitted runner ends by T0 + DEADLINE - margin
+   PASS  M4b Chair counterexample with the 3b numbers (start 0, T0 2, Th 60, collector 80, runner at 144): refused with origin BootStartUtc (41 s left < 91 s)
+   PASS  M4c ...and with origin Th it would be admitted (101 s left) and end at 230 s > T0 + DEADLINE = 202 s
+TIMING 3B: CONSISTENT

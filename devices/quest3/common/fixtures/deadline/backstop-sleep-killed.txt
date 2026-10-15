@@ -1,0 +1,12 @@
+# scenario backstop-sleep-killed (sim.sh, action a_kill_sleep), deadline=8 ack_window=4 
+# T0=185 reboot records (fake syscall; first one counts):
+#   188 backstop pid=2976 via=fork
+#   188 fallback pid=3016 via=fork
+# PID 1 log:
+#   FS t=185s DEADLINE armed t0=185 deadline=T0+8 ack_window=4 backstop=T0+9 reboot-reasons-not-logged-at-reboot
+#   FS t=185s BACKSTOP armed pid=2283 in=9s
+#   FS t=187s STAGE=HOST_ACK ack=0123abcd deadline-unchanged=T0+8
+#   FS REBOOT_RETURNED reason=backstop
+# harness: killed backstop sleep 2293 
+# sim stdout/stderr:
+#   Terminated
