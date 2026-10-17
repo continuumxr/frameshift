@@ -33,8 +33,11 @@ Evidence tags as elsewhere in the project: [M] measured/seen, [D] deduced, [C] c
 4. **Meta interface identifiers** (JSON key names, sensor names, mitigation level names),
    **threshold numbers and hashes** may appear in public material; **file contents never**
    (PM, J-123).
-5. **Behaviour is learned from public interfaces and runtime observation only; no disassembly
-   or decompilation** of Valve, Meta or Qualcomm binaries (J-90, J-120, J-152).
+5. **Clean-room reverse engineering (PM, J-184; replaces the earlier no-disassembly rule):**
+   Valve, Meta and Qualcomm binaries may be studied privately (including disassembly) to learn
+   how they work. Findings are written up as functional facts, never code; our implementations
+   are written from those facts only; disassembly output never enters the public repo and is
+   never redistributed. We never run or ship Meta's tracking software.
 6. **Licence-audited FOSS packages may be shipped** with their notice and source obligations;
    proprietary components are never redistributed (PM D6, J-118; FS-R-011 §7 D6).
 7. **Licence and source review before publication** (FS-R-011 §8): verify the published tree's
@@ -70,9 +73,11 @@ the user and verified against Valve's keys (PROJECT_SETUP §0.0); we host nothin
    documentation, published standards (USB, DRM/KMS, OpenXR), Valve's and Meta's public
    documentation, the behaviour of software running in our own environment (calls made, files
    opened, messages exchanged), and our own measurements.
-2. **No disassembly or decompilation** of third-party binaries, and no use of anyone else's
-   disassembly (J-152: such evidence is discarded and restated as [O]). `strings`-level
-   identifiers and package metadata are allowed (as in `usb-link-design.md`).
+2. **Clean room (J-184).** Private study of third-party binaries (including disassembly) is
+   allowed; its output is a private notes file of functional facts (what a command does, what a
+   field means), never code or listings. Implementation is written only from those notes and the
+   sources in item 1; nothing is copied, translated or paraphrased from disassembly.
+   Disassembly output and RE notes stay private (never exported).
 3. **No paraphrasing of non-free code.** Do not open a non-free source file and rewrite it.
    Facts (an ioctl number, a register offset documented in GPL source, a sysfs path, a JSON key)
    may be used; structure, sequence and expression of non-free code may not.

@@ -1,0 +1,162 @@
+# K1a module-load simulation k1a-perturbed
+kernel: release 5.10.246-gdbc2bc83a2b6, vermagic flags 'SMP preempt mod_unload modversions aarch64', module_layout 0xb1f01218, 14059 vmlinux exports (PERTURBED: kmalloc_caches)
+list: 95 entries -> replay order 95 modules (each once)
+ok   nautilus.ko
+FAIL qcom-scm.ko
+FAIL secure_buffer.ko
+FAIL qcom_iommu_util.ko
+FAIL iommu-logger.ko
+FAIL arm_smmu.ko
+FAIL proxy-consumer.ko
+FAIL gdsc-regulator.ko
+FAIL clk-qcom.ko
+FAIL clk-dummy.ko
+ok   cmd-db.ko
+FAIL qcom_rpmh.ko
+FAIL clk-rpmh.ko
+FAIL tmecom-intf.ko
+FAIL hwkm.ko
+FAIL crypto-qti-hwkm.ko
+FAIL crypto-qti-common.ko
+FAIL dcvs_fp.ko
+FAIL dispcc0-anorak.ko
+FAIL dispcc1-anorak.ko
+FAIL phy-msm-snps-hs.ko
+ok   phy-msm-ssusb-qmp.ko
+FAIL dwc3-msm.ko
+FAIL qrtr.ko
+FAIL qmi_helpers.ko
+FAIL qcom_glink.ko
+FAIL qcom_glink_smem.ko
+FAIL qcom_smd.ko
+FAIL rproc_qcom_common.ko
+FAIL pdr_interface.ko
+FAIL pmic_glink.ko
+FAIL ucsi_glink.ko
+FAIL gcc-anorak.ko
+FAIL gh_msgq.ko
+FAIL gh_rm_drv.ko
+FAIL icc-bcm-voter.ko
+FAIL socinfo.ko
+FAIL icc-rpmh.ko
+ok   kryo_arm64_edac.ko
+ok   llcc-qcom.ko
+FAIL mem_buf_dev.ko
+FAIL msm_dma_iommu_mapping.ko
+FAIL qcom_dma_heaps.ko
+FAIL mem_buf.ko
+ok   mem-hooks.ko
+ok   qcom_aoss.ko
+ok   msm_qmp.ko
+ok   nvmem_qcom-spmi-sdam.ko
+ok   panel_event_notifier.ko
+ok   phy-qcom-ufs.ko
+ok   phy-qcom-ufs-qmp-v4-anarok.ko
+FAIL qcom-pdc.ko
+FAIL pinctrl-msm.ko
+FAIL pinctrl-anorak.ko
+ok   pwm-tach-fan.ko
+ok   qcom-cpufreq-hw.ko
+FAIL qcom-dcvs.ko
+ok   qcom_cpu_vendor_hooks.ko
+FAIL qcom-dload-mode.ko
+ok   qcom_hwspinlock.ko
+ok   qcom_ipcc.ko
+ok   qcom_llcc_pmu.ko
+ok   qcom-reboot-reason.ko
+ok   regmap-spmi.ko
+ok   qcom-spmi-pmic.ko
+FAIL qcom_wdt_core.ko
+ok   qnoc-qos.ko
+FAIL qnoc-anorak.ko
+FAIL qti-fixed-regulator.ko
+FAIL rpmh-regulator.ko
+ok   rtc-pm8xxx.ko
+ok   spmi-pmic-arb.ko
+FAIL ufshcd-crypto-qti.ko
+FAIL ufs_qcom.ko
+FAIL zsmalloc.ko
+FAIL zram.ko
+FAIL altmode-glink.ko
+ok   blu_fw_driver.ko
+FAIL gpi.ko
+FAIL qseecom-mod.ko
+FAIL smcinvoke_mod.ko
+FAIL hdcp.ko
+FAIL i2c-msm-geni.ko
+ok   pwm-qti-lpg.ko
+ok   leds-qti-tri-led.ko
+ok   mp3314.ko
+FAIL msm-mmrm.ko
+FAIL msm_ext_display.ko
+FAIL msm_drm.ko
+FAIL pinctrl-spmi-gpio.ko
+ok   pm8941-pwrkey.ko
+ok   reboot-mode.ko
+ok   qcom-pon.ko
+ok   spi-msm-geni.ko
+ok   tps65132-regulator.ko
+unversioned vmlinux imports accepted with a warning (no symbol version): 0
+FAIL qcom-scm.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL secure_buffer.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qcom_scm_assign_mem_regions
+FAIL qcom_iommu_util.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL iommu-logger.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL arm_smmu.ko: Unknown symbol fast_smmu_init_mapping; Unknown symbol fast_smmu_put_dma_cookie; Unknown symbol hyp_assign_phys; Unknown symbol iommu_logger_register; Unknown symbol iommu_logger_unregister; disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22) (+9 more)
+FAIL proxy-consumer.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL gdsc-regulator.ko: Unknown symbol devm_regulator_proxy_consumer_register; Unknown symbol regulator_proxy_consumer_sync_state
+FAIL clk-qcom.ko: Unknown symbol gdsc_debug_print_regs; disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL clk-dummy.ko: Unknown symbol clk_debug_measure_add
+FAIL qcom_rpmh.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL clk-rpmh.ko: Unknown symbol rpmh_write; Unknown symbol rpmh_write_async
+FAIL tmecom-intf.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL hwkm.ko: Unknown symbol tme_hwkm_master_broadcast_transportkey
+FAIL crypto-qti-hwkm.ko: Unknown symbol qcom_scm_clear_ice_key; Unknown symbol qcom_scm_config_set_ice_key; Unknown symbol qcom_scm_derive_raw_secret; Unknown symbol qtee_shmbridge_allocate_shm; Unknown symbol qtee_shmbridge_flush_shm_buf; Unknown symbol qtee_shmbridge_free_shm (+3 more)
+FAIL crypto-qti-common.ko: Unknown symbol crypto_qti_derive_raw_secret_platform; Unknown symbol crypto_qti_disable_platform; Unknown symbol crypto_qti_invalidate_key; Unknown symbol crypto_qti_program_key
+FAIL dcvs_fp.ko: Unknown symbol rpmh_init_fast_path; Unknown symbol rpmh_update_fast_path; Unknown symbol rpmh_write_async
+FAIL dispcc0-anorak.ko: Unknown symbol clk_alpha_pll_lucid_evo_ops; Unknown symbol clk_alpha_pll_regs; Unknown symbol clk_branch2_aon_ops; Unknown symbol clk_branch2_ops; Unknown symbol clk_byte2_ops; Unknown symbol clk_dp_ops (+11 more)
+FAIL dispcc1-anorak.ko: Unknown symbol clk_alpha_pll_lucid_evo_ops; Unknown symbol clk_alpha_pll_regs; Unknown symbol clk_branch2_aon_ops; Unknown symbol clk_branch2_ops; Unknown symbol clk_byte2_ops; Unknown symbol clk_dp_ops (+11 more)
+FAIL phy-msm-snps-hs.ko: Unknown symbol qcom_scm_io_writel
+FAIL dwc3-msm.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qcom_clk_set_flags
+FAIL qrtr.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL qmi_helpers.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL qcom_glink.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL qcom_glink_smem.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qcom_glink_native_probe; Unknown symbol qcom_glink_native_remove; Unknown symbol qcom_glink_native_start; Unknown symbol qcom_glink_native_unregister
+FAIL qcom_smd.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL rproc_qcom_common.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qcom_glink_early_ssr_notify; Unknown symbol qcom_glink_smem_register; Unknown symbol qcom_glink_smem_start; Unknown symbol qcom_glink_smem_unregister; Unknown symbol qcom_glink_ssr_notify (+2 more)
+FAIL pdr_interface.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qcom_device_shutdown_in_progress; Unknown symbol qmi_add_lookup; Unknown symbol qmi_handle_init; Unknown symbol qmi_handle_release; Unknown symbol qmi_response_type_v01_ei (+4 more)
+FAIL pmic_glink.ko: Unknown symbol __traceiter_rproc_qcom_event; Unknown symbol __tracepoint_rproc_qcom_event; disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol pdr_add_lookup; Unknown symbol pdr_handle_alloc; Unknown symbol pdr_handle_release (+2 more)
+FAIL ucsi_glink.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol pmic_glink_register_client; Unknown symbol pmic_glink_unregister_client; Unknown symbol pmic_glink_write
+FAIL gcc-anorak.ko: Unknown symbol clk_alpha_pll_fixed_lucid_evo_ops; Unknown symbol clk_alpha_pll_postdiv_lucid_evo_ops; Unknown symbol clk_alpha_pll_regs; Unknown symbol clk_branch2_hw_ctl_ops; Unknown symbol clk_branch2_ops; Unknown symbol clk_rcg2_ops (+7 more)
+FAIL gh_msgq.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL gh_rm_drv.ko: Unknown symbol gh_msgq_populate_cap_info; Unknown symbol gh_msgq_probe; Unknown symbol gh_msgq_recv; Unknown symbol gh_msgq_register; Unknown symbol gh_msgq_reset_cap_info; Unknown symbol gh_msgq_send (+2 more)
+FAIL icc-bcm-voter.ko: Unknown symbol rpmh_invalidate; Unknown symbol rpmh_write_batch
+FAIL socinfo.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL icc-rpmh.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol of_bcm_voter_get; Unknown symbol qcom_icc_bcm_voter_add; Unknown symbol qcom_icc_bcm_voter_clear_init; Unknown symbol qcom_icc_bcm_voter_commit; Unknown symbol socinfo_get_part_info
+FAIL mem_buf_dev.ko: Unknown symbol gh_rm_mem_accept; Unknown symbol gh_rm_mem_donate; Unknown symbol gh_rm_mem_lend; Unknown symbol gh_rm_mem_reclaim; Unknown symbol gh_rm_mem_release; Unknown symbol gh_rm_mem_share (+2 more)
+FAIL msm_dma_iommu_mapping.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL qcom_dma_heaps.ko: Unknown symbol hyp_assign_phys; Unknown symbol hyp_assign_table; disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol mem_buf_dma_buf_export; Unknown symbol mem_buf_lend; Unknown symbol mem_buf_vmperm_alloc (+11 more)
+FAIL mem_buf.ko: Unknown symbol __traceiter_mem_buf_alloc_info; Unknown symbol __traceiter_receive_alloc_req; Unknown symbol __traceiter_receive_alloc_resp_msg; Unknown symbol __traceiter_receive_relinquish_msg; Unknown symbol __traceiter_receive_relinquish_resp_msg; Unknown symbol __traceiter_send_alloc_req (+40 more)
+FAIL qcom-pdc.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qcom_scm_io_readl; Unknown symbol qcom_scm_io_writel
+FAIL pinctrl-msm.ko: Unknown symbol qcom_scm_io_readl; Unknown symbol qcom_scm_io_writel
+FAIL pinctrl-anorak.ko: Unknown symbol msm_pinctrl_probe; Unknown symbol msm_pinctrl_remove
+FAIL qcom-dcvs.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol setup_ddrllcc_fp_device
+FAIL qcom-dload-mode.ko: Unknown symbol qcom_scm_disable_sdi; Unknown symbol qcom_scm_force_dload_mode_reboot; Unknown symbol qcom_scm_set_download_mode
+FAIL qcom_wdt_core.ko: Unknown symbol qcom_scm_sec_wdog_deactivate; Unknown symbol qcom_scm_sec_wdog_trigger
+FAIL qnoc-anorak.ko: Unknown symbol qcom_icc_rpmh_probe; Unknown symbol qcom_icc_rpmh_remove; Unknown symbol qcom_icc_rpmh_sync_state
+FAIL qti-fixed-regulator.ko: Unknown symbol devm_regulator_proxy_consumer_register; Unknown symbol regulator_proxy_consumer_sync_state
+FAIL rpmh-regulator.ko: Unknown symbol devm_regulator_proxy_consumer_register; Unknown symbol regulator_proxy_consumer_sync_state; Unknown symbol rpmh_write; Unknown symbol rpmh_write_async
+FAIL ufshcd-crypto-qti.ko: Unknown symbol crypto_qti_derive_raw_secret; Unknown symbol crypto_qti_keyslot_evict; Unknown symbol crypto_qti_keyslot_program
+FAIL ufs_qcom.ko: Unknown symbol crypto_qti_disable; disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qcom_clk_set_flags; Unknown symbol qcom_scm_config_set_ice_key; Unknown symbol qcom_scm_ice_available; Unknown symbol qcom_scm_ice_invalidate_key (+5 more)
+FAIL zsmalloc.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL zram.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol zs_compact; Unknown symbol zs_create_pool; Unknown symbol zs_destroy_pool; Unknown symbol zs_free; Unknown symbol zs_get_total_pages (+5 more)
+FAIL altmode-glink.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol pmic_glink_register_client; Unknown symbol pmic_glink_unregister_client; Unknown symbol pmic_glink_write
+FAIL gpi.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL qseecom-mod.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol mem_buf_dma_buf_copy_vmperm; Unknown symbol mem_buf_dma_buf_exclusive_owner; Unknown symbol mem_buf_dma_buf_set_destructor; Unknown symbol qcom_scm_qseecom_call; Unknown symbol qtee_shmbridge_allocate_shm (+6 more)
+FAIL smcinvoke_mod.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol mem_buf_dma_buf_copy_vmperm; Unknown symbol mem_buf_dma_buf_exclusive_owner; Unknown symbol qcom_scm_invoke_callback_response; Unknown symbol qcom_scm_invoke_smc; Unknown symbol qcom_scm_invoke_smc_legacy (+8 more)
+FAIL hdcp.ko: Unknown symbol firmware_request_from_smcinvoke; Unknown symbol get_client_env_object; disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qseecom_send_command; Unknown symbol qseecom_shutdown_app; Unknown symbol qseecom_start_app (+1 more)
+FAIL i2c-msm-geni.ko: Unknown symbol gpi_dump_for_geni
+FAIL msm-mmrm.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22); Unknown symbol qcom_clk_get_voltage
+FAIL msm_ext_display.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+FAIL msm_drm.ko: Unknown symbol altmode_deregister_client; Unknown symbol altmode_deregister_notifier; Unknown symbol altmode_register_client; Unknown symbol altmode_register_notifier; Unknown symbol altmode_send_data; Unknown symbol dwc3_msm_set_dp_mode (+30 more)
+FAIL pinctrl-spmi-gpio.ko: disagrees about version of symbol kmalloc_caches (module 0xf02d1c23, kernel 0xf02d1c22)
+RESULT FAIL: 33/95 modules pass the loader checks (expected 95)

@@ -4,7 +4,7 @@
 both registered STAGE PASS; both nonces are spent. The status text below is earlier and kept as written.**
 
 **Status (2026-10-14, J-141): fs-pattern v0.7.1 (the mode limit, §3a) and a NEW CANDIDATE image for Unit 1
-(`IMAGE.md` §0: `fcca5ee7…4fb5`, nonce `13ed21be49c7b4ba`; the v0.7 candidate `3d730337…` refused safely on Unit 2 and its nonce is spent; the first v0.7.1 build `96cc15aa…` was superseded before any boot). Earlier status
+(`IMAGE.md` §0: `fcca5ee7…4fb5`, nonce `<attempt nonce withheld>`; the v0.7 candidate `3d730337…` refused safely on Unit 2 and its nonce is spent; the first v0.7.1 build `96cc15aa…` was superseded before any boot). Earlier status
 (2026-10-13): built and fixture-tested offline; CANDIDATE image only. Reviews A (fs-pattern)
 and B (image) of the first candidate (6c7f726) were GO-with-fixes; this rebuild folds in their fixes and
 the PM decisions J-129 (modules, backlight). Nothing was booted; no adb, fastboot or COM port was used.** The image and its
@@ -105,7 +105,7 @@ does not flag dmesg in r1. Whether to drop step A is open (FS-A-012 ask (h) 4).
 
 ## 3a. fs-pattern v0.7.1: the mode limit (J-141)
 
-**What happened [M]** (Unit 2, v2.7, nonce `7a22c3d2ff0fef44`, 2026-10-14 00:51Z): r1's `fs-pattern reset` logged the
+**What happened [M]** (Unit 2, v2.7, nonce `<attempt nonce withheld>`, 2026-10-14 00:51Z): r1's `fs-pattern reset` logged the
 connectors 33 (Virtual, type 15, 37 modes), **55 (DSI, type 16, 305 modes)** and 65 (DP, disconnected, 0 modes), then
 `chosen_connector rc=-7 id=55` and `exit code=30 reason=too_many_modes`: v0.7's `MAXMODES` was 128. Nothing was set or
 committed (a safe refusal); r2 was skipped (`run1-supervisor`).

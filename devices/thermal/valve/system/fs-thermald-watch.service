@@ -1,0 +1,22 @@
+# FrameShift thermal service, Valve layer (emergency-shutdown-design.md §5.4, §6.2;
+# EXEC-SPEC.md §9). The heartbeat watcher: a stale supervisor -> a graceful
+# poweroff by systemd via kill(1, 38); the softdog (owned by fs-thermald) stays the backstop.
+[Unit]
+Description=FrameShift thermal supervisor heartbeat watcher
+DefaultDependencies=no
+Before=sysinit.target
+Conflicts=shutdown.target
+Before=shutdown.target
+
+[Service]
+Type=simple
+ExecStart=/usr/lib/frameshift/fs-thermald-watch watch /run/fs-thermald/hb 1
+Restart=always
+RestartSec=1
+OOMScoreAdjust=-1000
+CapabilityBoundingSet=
+NoNewPrivileges=yes
+RestrictRealtime=yes
+
+[Install]
+WantedBy=sysinit.target

@@ -110,7 +110,7 @@ an unlocked headset (assumed).
 | **Android** directly, with no fastboot visit (the RESTART fallback ran, or an unexpected path was taken) | **AA first, including the misc capture** (before any further reboot writes misc). Then either record AF as INCONCLUSIVE, or make **one** documented extra `adb reboot bootloader` cycle for AF, whose own misc write is outside the attempt's comparison | the attempt's comparison is complete except AF, or AF is taken with the extra cycle on record |
 | gadget never appears, LEDs stuck, no fastboot | the PM cannot see T0. Wait from **Th, the time `fs-observe.ps1` prints** ("fastboot boot returned … Th=…"): until **Th + DEADLINE + 60 s**. That is **Th + 320 s** for stage 2a, **Th + 230 s** for stage 3a and **Th + 260 s** for stage 3b. The 60 s covers however much later than Th PID 1 starts (T0 may also come before Th), plus the backstop. Still nothing: hold the power button about 15–20 s until the device is off [C, typical for Quest; release when the LED goes out], power on; if needed volume-down + power → fastboot → `fastboot -s … reboot` | [C] slot A boots as before |
 | **dark or hung, including a kernel hang** (no SoC watchdog module is loaded; **no software watchdog** by decision J-49) | hold power until off, then power on; if needed volume-down + power → fastboot → reboot | [C] slot A boots as before |
-| dark; USB `05c6:900e` (Qualcomm crash-dump / download mode: a panic with `download_mode=1`, `PANIC_ON_OOPS=y`). To spot it: Windows Device Manager shows a "QUSB_BULK"/"Qualcomm HS-USB" device, or `Get-PnpDevice -PresentOnly | Where-Object InstanceId -match 'VID_05C6&PID_900E'` returns it (read-only) | **do not use any flashing tool.** Hold power until off, then power on | [C] slot A boots. XBL may have written a minidump. That is **not** covered by the after-checks (RPMB/UFS attributes are not partition-visible either) |
+| dark; USB `05c6:900e` (Qualcomm crash-dump / download mode: a panic with `download_mode=1`; the v66 stock kernel of stages 2a, 3a and 3b has `PANIC_ON_OOPS=y` (`firmware/quest3/extracted/v66-*/kernel.config`), while v2.7 and K1a have it off with `PANIC_TIMEOUT=-1`, §4b). To spot it: Windows Device Manager shows a "QUSB_BULK"/"Qualcomm HS-USB" device, or `Get-PnpDevice -PresentOnly | Where-Object InstanceId -match 'VID_05C6&PID_900E'` returns it (read-only) | **do not use any flashing or EDL tool.** Hold power until off, then power on | [C] slot A boots. XBL may have written a minidump. That is **not** covered by the after-checks (RPMB/UFS attributes are not partition-visible either) |
 | stage 3a: panels still lit after the record, at PM-OBS2 | note it; the collector still sends `fs-done` | the reboot ends it, about 1 s later. Without `fs-done`, the pattern may stay displayed until recovery; T0 + 170/171 s are intended reboot times, not guaranteed panel-off times; a hang, suspend or failed reboot leaves it to the manual route [O on v66; FS-R-007 §4]. A lit panel after fs-pattern closed the fd contradicts the source-derived close path [D] (`stage3a/IMAGE.md` §4) and is a finding |
 | stage 3b: panels still lit after the record, at the dark check | note it (which run's pattern, which eye); the collector still sends `fs-done` | as stage 3a: the reboot ends it about 1 s later; without `fs-done` the bright pattern may stay displayed until recovery (T0 + 200/201 s are intended reboot times, not guaranteed panel-off times); a finding (`stage3b/README.md` §5) |
 | back in Android, any route | AA, including `getprop ro.boot.bootreason` | recorded |
@@ -139,12 +139,51 @@ The deadline and backstop are stage 3c's (T0 + 200 s / 201 s). If no `FS-<nonce>
 in fastboot about a minute after the boot, the image refused the device's module index (wrong build?) or init failed:
 nothing ran; `fastboot -s <serial> reboot` and report (`stage3d/HOST.md` §2 item 11). The after-captures use the withheld after-capture tooling (identity and slot; no partition hashes on a user build).
 
+## 4b. K1a (our own kernel; Unit 2 first, then Unit 1)
+
+K1a is the first boot of a **FrameShift-built kernel** (`k1a/README.md`). PID 1 is stage 3d's, so **once our PID 1
+runs** the stage-3d timers apply (T0 + 200 s deadline, T0 + 201 s backstop, the 150 s acknowledgement window) and the
+unit returns to fastboot by itself. **Before PID 1 runs nothing brings it back:** our kernel can hang or panic early
+(before or while loading the stock modules). K1a's config (`k1a/kernel/k1a.config`, as stock) has `PANIC_ON_OOPS`
+**off** (an oops is logged and the task killed; the kernel goes on, and the oops line makes the run a K1A REVIEW if
+the record is read) and `PANIC_TIMEOUT=-1` (a panic **reboots at once**): a panic therefore normally reboots the unit
+**straight into Android** (slot A; `fastboot boot` is one-time), with no fastboot visit [C]. The stock
+`qcom-dload-mode.ko` is loaded from Meta's module list with download mode **off by default**
+(`# CONFIG_POWER_RESET_QCOM_DOWNLOAD_MODE_DEFAULT is not set`; no command-line override known [C]), but the
+Qualcomm crash-dump mode stays **possible**, for example after a panic before that module loads (what the bootloader
+set up then applies) [C]. A hang has no timer at all. Every command names the run's unit (`-Serial <serial>`,
+`fastboot -s <serial>`).
+
+| state the PM sees | action | expected outcome |
+|---|---|---|
+| `fastboot boot` failed (`FAILED (remote: …)`) or still in fastboot | `fastboot -s <serial> reboot` | Android on slot A; nothing ran |
+| **fastboot** again after the attempt | the normal path: AF, `fastboot -s <serial> reboot`, AA | Android on slot A [D] |
+| **Android directly** after the boot, no fastboot visit (a panic rebooted the unit, `PANIC_TIMEOUT=-1`; or another unexpected path) | **AA first** (AA02 `ro.boot.bootreason` records why, e.g. a kernel panic). AF is recorded as **not taken**; no extra reboot is made for it. Then the follow-ups and phase F (F1 = n): the record is not clean | Android on slot A [C]; Unit 1 stays refused (a new package review first) |
+| no `FS-<nonce>` gadget, LED dark or unchanged, no fastboot | the kernel or PID 1 did not start. **Wait until Th + 260 s** (Th = the `Th=` time `fs-observe-k1a.ps1` prints after "fastboot boot returned"; 260 s = the 200 s deadline + 60 s, as for stage 3b), still nothing: **hold the power button about 15–20 s** until the device is off [C], power on; if needed volume-down + power → fastboot → `fastboot -s <serial> reboot` | [C] slot A boots as before |
+| dark; USB `05c6:900e` (Qualcomm crash-dump / download mode after a panic). Spot it read-only: Device Manager "QUSB_BULK"/"Qualcomm HS-USB", or `Get-PnpDevice -PresentOnly \| Where-Object InstanceId -match 'VID_05C6&PID_900E'` | **never use any flashing, EDL or crash-dump collection tool.** Hold power until off, then power on | [C] slot A boots. The bootloader may have written a crash minidump [C] (see "Storage writes" below) |
+| hung later (PID 1 ran, then nothing) | as the "no `FS-<nonce>` gadget" row: Th + 260 s, then hold power | [C] |
+
+**Storage writes during a K1a cycle** (none by FrameShift's own tools, which only read and boot): the cycle's
+`adb reboot bootloader` (BA → BF) makes Android write the bootloader message to **misc**, as in every stage
+(`common/MISC-RULE.md` §3; misc contents are not measured on v2.7, FS-R-012 §6); after a **panic or oops** our
+kernel, like stock (`EFI_VARS_PSTORE=y`, `PSTORE=y`), may write **pstore records** (EFI variables) [C]; after a panic
+in download mode the bootloader may write a **crash minidump** [C]. None of these is a FrameShift write, and none is
+covered by the after-checks (§5).
+
+**Every manual step is recorded:** checklist phase F asks whether the unit came back by itself and whether dump mode
+was seen (the K1a walkthrough (private) step 8). A manual power-off, a §4b step or dump mode makes the attempt's after-session
+record **not clean**, and Unit 1 then stays refused (a new package review first). The battery rules after the attempt
+are those above ("Battery after the attempt"; FS-R-012 §5: follow-ups at +5 and +10 min after AA, then while rising or
+concerning; ≥ 400: shut down at once; never reboot only to read).
+
 ## 5. What is not covered
 
-- **A kernel hang or panic.** No userspace timer covers it, and there is no
-  watchdog. The PM's manual route above is the only recovery. Its outcome
-  is [C], expected, not guaranteed.
+- **A kernel hang or panic** (stock kernel in every stage; **our own kernel in K1a**, §4b). No userspace timer
+  covers a hang, and there is no watchdog: the PM's manual route above (for K1a: §4b, Th + 260 s, then hold power) is
+  the only recovery. In K1a a panic reboots at once (`PANIC_TIMEOUT=-1`), normally into Android, or may land in the
+  crash-dump mode (§4b). Every outcome is [C], expected, not guaranteed.
 - **Persistent effects outside the captured partitions:** RPMB, UFS device
-  attributes, an XBL minidump.
+  attributes, an XBL minidump, pstore records in EFI variables (K1a, §4b), and the misc bootloader message that
+  every `adb reboot bootloader` writes (its content is not measured on v2.7).
 - **Thermal protection** beyond the kernel's own CPU mitigation maps (which
   do not prove adequate protection, FS-R-006 §4).

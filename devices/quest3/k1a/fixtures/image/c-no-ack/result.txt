@@ -1,0 +1,15 @@
+# c-no-ack mods=[] plan=['verify']; image <repo>/build/k1a/20261015T163855Z-ecbcbd4f7b6f43c0
+# reboots: 16485.21 final pid=1 arg=no-host-ack
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=ecbcbd4f7b6f43c0 resp=eff88b10e39a231880e80b25b3c0f31bb543f5b8a0d00bb2dbd9f7ca0052db54 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=16326 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = no-host-ack  [16485.21 final pid=1 arg=no-host-ack]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [16485.21 final pid=1 arg=no-host-ack]
+PASS  any later record is only the backstop (fork)
+PASS  no-ack reboot at SHELL_READY + ACK_WINDOW..+3  [SHELL_READY+150.2]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  ACM-only gadget (J-179): no NCM function made, UDC bound, shell up  [INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY]
+SCENARIO c-no-ack PASS

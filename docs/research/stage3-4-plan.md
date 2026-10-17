@@ -249,6 +249,14 @@ supported safety claim**. R-1 either:
 
 PD-7 decides between them.
 
+**Follow-up readings after AA (FS-R-012 §5, binding; 2026-10-15).** Every stage 3/4 run keeps
+**at least one scheduled temperature reading about 5 minutes after AA**, continued while the
+temperature rises or is concerning, with the ≥ 40 °C procedure applied immediately; a physical
+shutdown and unplug-to-cool takes precedence, and the unit is never rebooted only to obtain a
+reading. This overrides J-145's "follow-ups end in Android"; only J-145's charging rule (a
+reading while charging accepted below 30.0 °C) is carried. The stage-3d form is
+`devices/quest3/stage3d/STANDING-REPEATS.md` §4.2.
+
 ### 4.3 Boot flow (accepted architecture: `valve-image-slot-in.md` §5.1, D1)
 
 1. Our kernel and initramfs.

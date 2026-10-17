@@ -33,10 +33,10 @@ GPL-3). It stays in the gitignored `build/` and with the PM and the Chair.
 
 | | |
 |---|---|
-| file | `build/stage2a/20261009T085209Z-93a1501f0b1fb692/boot-stage2a.img` (gitignored) |
+| file | `build/stage2a/20261009T085209Z-<attempt nonce withheld>/boot-stage2a.img` (gitignored) |
 | SHA-256 | **`e8775c893b5a4b3785dbf7e3715820cb3c7aba2e1a1e560567d067c26a2451e5`** |
 | size | 43,823,104 B |
-| nonce | `93a1501f0b1fb692` (USB serial `FS-93a1501f0b1fb692`). **One attempt only**; `fs-observe.ps1` enforces it through the ledger `build/stage2a/attempted` |
+| nonce | `<attempt nonce withheld>` (USB serial `FS-<attempt nonce withheld>`). **One attempt only**; `fs-observe.ps1` enforces it through the ledger `build/stage2a/attempted` |
 | builder | `stage2a/build-image.sh` `e5ce736603263ef8697dfa2ea95dbb2dde657e9d9d1a235d18260a32fbaeb456`. Its records sit beside the image: `MANIFEST.txt`, `elfpin-check.txt`, `ramdisk-scan.txt`, `gitcheck.txt`, `header-diff.txt`, `ramdisk.sha256` |
 | stock boot | `49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50` |
 | kernel | `f34165b35a826052ce5b520d9313387c96970b498733f1a7b141dcf4afc94e7b`, byte-identical to stock (AOSP re-unpack) |

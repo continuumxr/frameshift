@@ -257,7 +257,7 @@ fixtures (`exit143`, `term143`).
     missing.
 - **Applets used:** `sh cat printf base64 awk sha256sum cut wc sed grep tr`.
   All are in the stage-1 busybox applet table
-  (`build/stage1/20261008T024856Z-112740d1bd6a4ecf/applets.txt`). A stage-2a
+  (`build/stage1/20261008T024856Z-<attempt nonce withheld>/applets.txt`). A stage-2a
   builder must add `base64 awk wc head` to its required-applet list (stage
   1 did not need them).
 

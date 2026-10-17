@@ -5,14 +5,14 @@ candidate, branch `fix/stage3d-modes`; not yet reviewed). *Later (2026-10-14): t
 (J-136..J-138, J-142); the candidate below ran on Unit 1 and its nonce is spent; a nonce-only rebuild ran on Unit 2
 (J-144, J-146). 2026-10-14 branch `feat/host-carryover`: the standing phase A and the carry-over of the sound check and
 rehearsals (J-143), a reading while charging accepted below 300 (J-145); not yet reviewed.*** The image is the stage-3d CANDIDATE
-(`build\stage3d\20261014T014738Z-13ed21be49c7b4ba\`, `boot-stage3d.img` SHA-256
-`fcca5ee791ee6e9dcf696eba16c676de1c26ab60ce82211c49a457e9cca24fb5`, nonce `13ed21be49c7b4ba`, unspent then (spent 2026-10-14 on Unit 1, J-144; the
-rebuild `3581faf87b8706eb` spent on Unit 2, J-146), still the reference of every nonce-only rebuild; fs-pattern v0.7.1
+(`build\stage3d\20261014T014738Z-<attempt nonce withheld>\`, `boot-stage3d.img` SHA-256
+`fcca5ee791ee6e9dcf696eba16c676de1c26ab60ce82211c49a457e9cca24fb5`, nonce `<attempt nonce withheld>`, unspent then (spent 2026-10-14 on Unit 1, J-144; the
+rebuild `<attempt nonce withheld>` spent on Unit 2, J-146), still the reference of every nonce-only rebuild; fs-pattern v0.7.1
 `bfafad97c7ca11ef4e41a6be8aae4fde5ca529d8955d9b77d6fc603495049a9a` (the MAXMODES fix, J-141), built into
 `fs-classify3d.ps1`; `fs-probe.sh` `f0fda865...7173` (the v2.7 mode-validation dmesg lines counted, not kept); builder `build-image.sh`
 `b90c0fbb...6c34` with `module-list-check.py` `402525cd...f4c8`). The first v0.7.1 build (`96cc15aa...3fad`, nonce
 `2b2596964c0812b1`) was superseded before any boot and is withdrawn. The first
-candidate (`20261013T065151Z-7a22c3d2ff0fef44`, `3d730337...c224`, fs-pattern v0.7 `7c9fa98c...0674`) is WITHDRAWN: its
+candidate (`20261013T065151Z-<attempt nonce withheld>`, `3d730337...c224`, fs-pattern v0.7 `7c9fa98c...0674`) is WITHDRAWN: its
 nonce was spent on Unit 2 (J-141, a safe refusal: v0.7 allowed 128 modes, v2.7 has 305); the tools refuse it.
 **Both units** run the same v2.7 build (J-131/J-133): **Unit 1** (`QUEST3UNIT1`) and **Unit 2**
 (`QUEST3UNIT2`) both passed (J-144, J-146); the image fits both (its MANIFEST says so). Each

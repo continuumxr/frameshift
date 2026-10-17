@@ -2,7 +2,7 @@
 
 > **Status update (2026-10-10):** the status line below is historical. Stage 3a
 > was proposed in FS-A-007, concurred in FS-R-008, and **run as trial (iii)** on
-> 2026-10-10 (nonce `17449af173f0633a`). The registered outcome is
+> 2026-10-10 (nonce `<attempt nonce withheld>`). The registered outcome is
 > INCONCLUSIVE, and no light was seen (FS-A-010, FS-R-010, J-73). The image is
 > **spent**. Its successor is `../stage3b/` (trial (iii-b)). See also the
 > backlight correction in the JOURNAL Corrections table.

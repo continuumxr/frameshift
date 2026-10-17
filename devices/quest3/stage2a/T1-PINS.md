@@ -331,7 +331,7 @@ Python `hashlib.blake2b` agree exactly. The b2sum stdout is 132 bytes:
 
 ## 6. No other BLAKE2 in the stage-1 image
 
-**Image scanned:** `build/stage1/20261008T024856Z-112740d1bd6a4ecf`. Both
+**Image scanned:** `build/stage1/20261008T024856Z-<attempt nonce withheld>`. Both
 ramdisks were unpacked from the images themselves
 (`tools/t1-ramdisk-scan.sh`, `evidence/ramdisk-scan.txt`):
 - `boot-stage1.img`, SHA-256 `efefe10d…7250`;
@@ -415,5 +415,5 @@ T=<repo>/devices/quest3/stage2a
 bash $T/tools/t1-pin.sh $T/evidence --hash-image      # provenance, cross-check, T1-pins.json
 bash $T/tools/t1-qemu-fixture.sh $T/evidence/fixture  # stages ~/work/t1pin/stage, runs qemu steps + controls
 bash $T/tools/t1-pin-negative.sh                      # gate negatives (needs the staged tree)
-bash $T/tools/t1-ramdisk-scan.sh <repo>/build/stage1/20261008T024856Z-112740d1bd6a4ecf $T/evidence
+bash $T/tools/t1-ramdisk-scan.sh <repo>/build/stage1/20261008T024856Z-<attempt nonce withheld> $T/evidence
 ```

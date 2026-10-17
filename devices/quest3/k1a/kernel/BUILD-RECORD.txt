@@ -1,0 +1,32 @@
+# K1a kernel: build record (summary; the full per-run records are record/run1, record/run2, record/run3)
+# Source: Meta's public v2.7 kernel source, commit dbc2bc83a2b673f5d1c24ee9dadb0cd708ffda3f (0 dirty files), Linux 5.10.246
+# Config: olddefconfig of the CRLF-stripped stock v2.7 kernel.config plus tools/kgate/validation/requests/quest3-k1a.txt
+#         (sha256 d812a76d...); result kernel/k1a.config sha256 4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b
+# Toolchain: AOSP clang/LLD r450784e (14.0.7, "Android (8508608, based on r450784e)"), AOSP GNU Make 4.3, pahole v1.31
+#   pinned and checked by build-kernel.sh before any make (run 3 onward):
+#     toolchain.sha256           16 files (clang tools, make, pahole and its libraries, vmlinux.profdata)  32d5a271...
+#     toolchain-clanglib.sha256  716 files (clang's resource dir)                                         a73651ce...
+#     toolchain.links            9 tool names resolve to their pinned files                               bd414fea...
+# Build identity: KBUILD_BUILD_USER=frameshift KBUILD_BUILD_HOST=k1a KBUILD_BUILD_VERSION=1
+#   KBUILD_BUILD_TIMESTAMP="Wed Oct 14 00:00:00 UTC 2026"; TZ=UTC LANG=C.UTF-8 umask 022; every make under setarch x86_64 -R
+#   (ASLR off: clang's sample-PGO annotation is address-dependent); object path ~/work/kgate27/out-k1a for every run
+
+banner (= /proc/version on the device):
+Linux version 5.10.246-gdbc2bc83a2b6 (frameshift@k1a) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #1 SMP PREEMPT Wed Oct 14 00:00:00 UTC 2026
+kernelrelease: 5.10.246-gdbc2bc83a2b6
+
+outputs (identical in all three runs):
+4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b  .config
+8686b77c44ae1ebffa8f3844b3ef0162c30a332b379b2075aec9698e930fb8ca  vmlinux
+087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840  arch/arm64/boot/Image (42967552 bytes)
+0ce513c3af499dff91fd634f0ac940c50f9b5fe84f3bf6867776fe27d5ded621  Module.symvers
+ee48a288fea6aa9aa170626289aaa10026ddd9d6a28c62b62ea5802527155931  System.map
+.ko: 278 (list sha256 f2fbdb1bb86b6e662bf88aee03e33abc97fe95fb0b8def8bf00b161930fc3602)
+
+runs:
+run 1  2026-10-15T03:50Z..07:06Z  first build; build-kernel.sh with the 10-binary toolchain pin; gated (kgate 2.3 PASS)
+run 2  2026-10-15T14:25Z..16:49Z  same script, same path: BIT-IDENTICAL to run 1 (record/compare-run1-run2.txt)
+run 3  2026-10-15T16:50Z..18:12Z  the final build-kernel.sh (sha256 604ba1e17afbdc795bf032a92be5fcc7fb48cdab3604a999dbe7ace20deb5db5,
+                                   pipefail, all three pin files checked first): BIT-IDENTICAL to run 1 (record/compare-run1-run3.txt)
+
+config delta against stock: see record/run1/build-record.txt ("config delta vs stock") and README §2.1

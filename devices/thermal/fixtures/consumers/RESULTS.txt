@@ -1,0 +1,48 @@
+PASS noticed: normal leaves the LEDs alone
+PASS noticed: warn = amber 1 Hz
+PASS noticed: shutdown = red 4 Hz
+PASS noticed: shutdown stays red even when the record is stale
+PASS noticed: stale record = slow white
+PASS noticed: live run blinks red on a shutdown notice
+PASS noticed: an invalid/stale record -> the white "not reporting" blink
+PASS warnscreen frame shutdown:battery-overheating:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:skin-temperature-high:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:soc-temperature-high:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:usb-connector-hot:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:pmic-hot:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:fan-failure:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:battery-sensor-lost:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:sensor-fault:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:sensor-anomaly:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:battery-empty:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:cap-write-failed:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:self-test-failed:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:battery-low:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:charging-too-warm:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame shutdown:shutdown-requested:55 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame warn:fan-failure:90 last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame warn:battery-low last=-: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen frame - last=fan-failure:52000: levels 0x80/0xff, text in both eyes, eyes rolled apart, reproducible
+PASS warnscreen: every reason gives a distinct frame
+PASS warnscreen: a malformed notice draws nothing (exit 2)
+PASS warnscreen watch: reset once, then one show-off-quad per display (warn, then shutdown), then exit
+PASS warnscreen watch: every attempt refused at open on a non-DRM path (no ioctl)
+  frame shutdown:battery-overheating:55 last=- sha256=dc3fccb58d9a800b66a65d80abbd8c6747a6c01632f889546b308040f3701efe
+  frame shutdown:skin-temperature-high:55 last=- sha256=742a08bf89fab36f7c4d197ee2bcdd83326726161753e6255a9c6a1c2c81d195
+  frame shutdown:soc-temperature-high:55 last=- sha256=4f8e2abe12a30c4a3ba8d4725cb3fd2c90bec35c69da63bd5383b3b689e18ce8
+  frame shutdown:usb-connector-hot:55 last=- sha256=35f8535aac84615e7e5295246d5ee9fce68f066a4e79752c59e94b170a4744bb
+  frame shutdown:pmic-hot:55 last=- sha256=4c87d160c6fd2a18de90e4453db529cb40664962dba28ef4e51b0c3092ffdb12
+  frame shutdown:fan-failure:55 last=- sha256=7ec99f1534f7f2e2143701acc30c4f2b02ce7020a78c2d81793c82da12d86d96
+  frame shutdown:battery-sensor-lost:55 last=- sha256=5814f6bab0e1683962239fae42943c0db00e9c24bde454293fbdd2514bbfeb8c
+  frame shutdown:sensor-fault:55 last=- sha256=b79f2e25d3a56c7e9f9d021fb88dcc5bf29a2b057220086d6cef99e4e6429be3
+  frame shutdown:sensor-anomaly:55 last=- sha256=e9683f49f0b2b7a1b80a786f637a3f681ea035700dc5f28e31f3e1594258f708
+  frame shutdown:battery-empty:55 last=- sha256=d9c4df34a47a9a90c957c9154001fcb8449802300024c90e90c2eb305038acbc
+  frame shutdown:cap-write-failed:55 last=- sha256=7abbe88d6947813e809a47134d41b160b4ff69669a5c042cbf44cc55672c876e
+  frame shutdown:self-test-failed:55 last=- sha256=34c9db5664fc60ccc34dd5c82310318c1268340927bf268d2b73ed24a751f073
+  frame shutdown:battery-low:55 last=- sha256=31c1addb1db5ecc15b626c4c271af70dbb29532e45b0c33e94319720d26737b4
+  frame shutdown:charging-too-warm:55 last=- sha256=08d87d70620b7969c556dc9bc68b9b7494436cf28a16a3a7b07931ab2b1caff8
+  frame shutdown:shutdown-requested:55 last=- sha256=c1cd3623027d49eebe345f55ef70c5e84fe75b1f587aa4682de8dcc1869a17ea
+  frame warn:fan-failure:90 last=- sha256=2fe58fb9c7ac9760c4a45e8a623d2b0bccca39236d8801da74bb077b0764c2ff
+  frame warn:battery-low last=- sha256=0df8462596441508d3f1597bfcd2e43b6ee594f6ae781fb0c8252d6d9445460b
+  frame - last=fan-failure:52000 sha256=b452856b44cc4b683e4c72e0bf3d175efe05d2a1fc7e19e8246137a9a0d5aae0
+notice consumers: 29/29 pass

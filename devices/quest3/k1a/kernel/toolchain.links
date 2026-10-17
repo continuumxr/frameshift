@@ -1,0 +1,9 @@
+clang $HOME/toolchains/clang-r450784e/bin/clang
+ld.lld $HOME/toolchains/clang-r450784e/bin/lld
+llvm-ar $HOME/toolchains/clang-r450784e/bin/llvm-ar
+llvm-nm $HOME/toolchains/clang-r450784e/bin/llvm-nm
+llvm-objcopy $HOME/toolchains/clang-r450784e/bin/llvm-objcopy
+llvm-objdump $HOME/toolchains/clang-r450784e/bin/llvm-objdump
+llvm-readelf $HOME/toolchains/clang-r450784e/bin/llvm-readobj
+llvm-size $HOME/toolchains/clang-r450784e/bin/llvm-size
+llvm-strip $HOME/toolchains/clang-r450784e/bin/llvm-objcopy

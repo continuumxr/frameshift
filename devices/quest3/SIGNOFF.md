@@ -20,13 +20,13 @@ sheet per trial; a copy goes into the attempt log.
       thermal-zone drivers are loaded and the fan is not commanded by us;
       protection is the short hold and my attendance (PROJECT_SETUP §6A).
 
-## Trial (i) — stage 2a, nonce `93a1501f0b1fb692`
+## Trial (i) — stage 2a, nonce `<attempt nonce withheld>`
 
 - [ ] The device should reboot by itself at the latest at about T0 + 260 s
       (backstop 261 s). These are intended times, not guarantees; if
       nothing happens by Th + 320 s, I use the manual route.
 
-## Trial (iii) — stage 3a, nonce `17449af173f0633a`
+## Trial (iii) — stage 3a, nonce `<attempt nonce withheld>`
 
 - [ ] **Retained-frame exposure (FS-R-007 §4):** the client requests a
       10 s hold of a dark static pattern (alarm scheduled at 15 s). Whether
@@ -57,7 +57,7 @@ Signed (PM): ____________________  UTC: ____________________
 ## Trial (iii-b) — stage 3b (FS-R-010 §4–§6), image `boot-stage3b.img`
 
 Image `ea60d6cddb2d14d16e208d16f6aef0ebc8798c1e9e74c223d73438bd92705841`,
-nonce `6cf0f15867f14edc` (`stage3b/IMAGE.md`). **Concurred to execute by FS-R-011 §1**
+nonce `<attempt nonce withheld>` (`stage3b/IMAGE.md`). **Concurred to execute by FS-R-011 §1**
 (read with its clarifications A and B, recorded below); both earlier nonces are spent. One temporary boot,
 no retry, same unit (Unit 1, `QUEST3UNIT1`) and slot (A).
 
@@ -165,7 +165,7 @@ no retry, same unit (Unit 1, `QUEST3UNIT1`) and slot (A).
       cue and keep looking until the second (low) beep, and I can reach the power
       button for the manual route.
 
-Then: `fs-observe.ps1 -Stage 3b -Image <...> -ConfirmNonce 6cf0f15867f14edc -BaSummary <BA\SUMMARY.txt> -BfSummary <BF\SUMMARY.txt> -ThenCollect`.
+Then: `fs-observe.ps1 -Stage 3b -Image <...> -ConfirmNonce <attempt nonce withheld> -BaSummary <BA\SUMMARY.txt> -BfSummary <BF\SUMMARY.txt> -ThenCollect`.
 
 Signed (PM): ____________________  UTC: ____________________
 

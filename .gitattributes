@@ -38,3 +38,22 @@ devices/quest3/stage3d/fixtures/** -text
 devices/quest3/stage3d/provenance/** -text
 # The stage-3d module list is pinned by hash and read by the device: LF in the blob and in every working copy.
 devices/quest3/stage3d/modules.load.v66 text eol=lf
+# fs-thermald / fs-metacfg (devices/thermal, 2026-10-14): sources and tools run on Linux: LF everywhere.
+devices/thermal/** text eol=lf
+# Their fixture and result directories carry exact bytes compared by hash: never converted.
+devices/thermal/fixtures/** -text
+devices/thermal/tables/** -text
+# K1a (2026-10-14): the kernel config, toolchain pins and build records are pinned by hash; the fixtures carry raw
+# bytes (captures, FSB1 slices) compared by hash; the kgate result is read by the builder. Never convert.
+devices/quest3/k1a/kernel/** -text
+devices/quest3/k1a/fixtures/** -text
+tools/kgate/validation/quest3/check-k1a.* -text
+devices/quest3/RECOVERY.md text eol=lf
+# Thermal part 2: the warnscreen patch is applied by patch(1) in WSL and pinned by its result hash.
+devices/thermal/src/warnscreen/warn.patch text eol=lf
+devices/thermal/src/*.h text eol=lf
+devices/thermal/src/warnscreen/*.h text eol=lf
+devices/thermal/valve/** text eol=lf
+# TS packages: pinned by hash; LF in the blob and in every working copy.
+devices/quest3/ts/** text eol=lf
+devices/quest3/host/*.ps1 text eol=lf

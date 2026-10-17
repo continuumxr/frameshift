@@ -299,7 +299,7 @@ The fix must keep FSB1 a single-shot record with the existing rules.
   ```
   - That is 10 lines (≈ 890 bytes) every 100 ms ≈ 9 KB/s.
   - `awk` is already an applet the encoder uses. `usleep` is in the busybox
-    applet table [M-static `build/stage2a/20261009T085209Z-93a1501f0b1fb692/applets.txt:258`].
+    applet table [M-static `build/stage2a/20261009T085209Z-<attempt nonce withheld>/applets.txt:258`].
   - An equivalent `while IFS= read -r` loop works too. Whichever form is chosen,
     byte identity with `cat` must be proven by fixture, not assumed.
 - **Why it removes the failure mode** [D]:

@@ -86,7 +86,7 @@ reference quest3 "$OLD/kernel-gate/v27-core-syms-needed.txt" "$OLD/kernel-gate/v
   --vendor-boot "$D/vendor_boot.img" --boot "$D/boot.img" \
   --ext4 "vendor_dlkm=$X/vendor_dlkm.img" --ext4 "odm_dlkm=$X/odm_dlkm.img" --ext4 "vendor=$X/vendor.img" --stock-kernel "$D/boot.img"
 stock quest3 $B/out arch/arm64/boot/Image $C
-for g in a a2; do group quest3 $g $B/out-$g $B/out arch/arm64/boot/Image $C; done
+for g in a a2 k1a; do group quest3 $g $B/out-$g $B/out arch/arm64/boot/Image $C; done   # k1a: devices/quest3/k1a (2026-10-14)
 
 # ---------------- Quest 2
 D=$FW/quest2/v2.7-user_ota; B=~/work/kgateq2

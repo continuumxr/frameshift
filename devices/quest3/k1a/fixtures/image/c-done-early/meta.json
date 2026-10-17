@@ -1,0 +1,91 @@
+{
+ "ack": "7bf4ae2a30aaa12d",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=ecbcbd4f7b6f43c0 resp=d64eb720d2583c099ab029bd979df338fdc7c8ca37fa06445bcfc05c7847e84a kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=16492 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "16503.58 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "16503.58 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "0.8 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY",
+   "label": "ACM-only gadget (J-179): no NCM function made, UDC bound, shell up",
+   "ok": true
+  }
+ ],
+ "kernel_fake_counts": {
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 326,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0
+ },
+ "mods": [],
+ "nonce": "ecbcbd4f7b6f43c0",
+ "ok": true,
+ "plan": [
+  "verify",
+  "done"
+ ],
+ "reboot_at_T0_plus": 11.6,
+ "runner_challenge": "3c76e9455877a3d2a7fc313c0625f82e",
+ "scenario": "c-done-early",
+ "t_total_s": 13.8,
+ "verify_challenge": "ca48fe10aba439799aadbfba75e979c3",
+ "want_reboot": "collected"
+}

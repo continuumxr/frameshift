@@ -9,10 +9,10 @@ questions; single temperature reading 2026-10-13, PM J-125: step 6 takes one rea
 time: the Arbiter gives the next step only after checking the result of the current one. Every
 command runs on the host in a `powershell.exe` console window from the repository root
 (`<repo>`). Placeholders: `<cycle>` = `captures\<nonce>`, this cycle's
-capture directory (today `captures\b7cf9a0bfb559dcb`; `<withheld capture tool>` without `-CapturesRoot`
+capture directory (today `captures\<attempt nonce withheld>`; `<withheld capture tool>` without `-CapturesRoot`
 writes its phases into `<cycle>\BA`, `<cycle>\BF`, `<cycle>\AF`, and the checklist and the rehearsal
 live there too), `<img>` = the build directory of the candidate image, `<nonce>` = its 16-hex nonce (the
-CANDIDATE today: `build\stage3c\20261012T010256Z-b7cf9a0bfb559dcb`, nonce `b7cf9a0bfb559dcb`,
+CANDIDATE today: `build\stage3c\20261012T010256Z-<attempt nonce withheld>`, nonce `<attempt nonce withheld>`,
 SHA-256 `9d3ad984...9bd914bd`; SIGNOFF-3c.md has the full values; a later rebuild gives a new
 nonce). The fs-pattern v0.6 pin (`066bdc3e...27bc`) is built into `fs-collect3c.ps1`'s integrity
 check and `fs-classify3c.ps1`; `-C3cPatternPin` is not needed.

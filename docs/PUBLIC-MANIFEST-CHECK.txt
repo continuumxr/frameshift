@@ -11,6 +11,8 @@
 devices/quest2/analysis/v27-dt/SHA256SUMS: SANITISED 1, WITHHELD 3
     SANITISED   devices/quest2/analysis/v27-dt/INDEX.txt
 devices/quest3/host/fixtures/replay/MANIFEST.sha256: OK 89
+devices/quest3/k1a/kernel/toolchain-clanglib.sha256: NOT-TRACKED 716
+devices/quest3/k1a/kernel/toolchain.sha256: NOT-TRACKED 16
 tools/kgate/fixtures/data/MANIFEST.sha256: OK 183
 
-TOTAL: OK 272, EOL-ONLY 0, SANITISED 1, CHANGED 0, WITHHELD 3, NOT-TRACKED 0
+TOTAL: OK 272, EOL-ONLY 0, SANITISED 1, CHANGED 0, WITHHELD 3, NOT-TRACKED 732

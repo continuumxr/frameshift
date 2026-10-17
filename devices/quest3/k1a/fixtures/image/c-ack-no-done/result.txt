@@ -1,0 +1,17 @@
+# c-ack-no-done mods=[] plan=['verify', 'ack']; image <repo>/build/k1a/20261015T163855Z-ecbcbd4f7b6f43c0
+# reboots: 16526.47 final pid=1 arg=deadline | 16528.09 fork pid=452 arg=backstop
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=ecbcbd4f7b6f43c0 resp=0a74ac2cae0520f56d21378f47ca3379461327722376c8decaf3a192b1955317 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=ecbcbd4f7b6f43c0 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=96a535e0d86d2cca END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=16326 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = deadline  [16526.47 final pid=1 arg=deadline]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [16526.47 final pid=1 arg=deadline]
+PASS  any later record is only the backstop (fork)  [16528.09 fork pid=452 arg=backstop]
+PASS  deadline reboot at T0+DEADLINE..+3 (HOST_ACK did not cancel it)  [T0+200.5]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  ACM-only gadget (J-179): no NCM function made, UDC bound, shell up  [INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK]
+SCENARIO c-ack-no-done PASS

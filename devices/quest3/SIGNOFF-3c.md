@@ -10,8 +10,8 @@ pins). The fs-pattern v0.6 pin is recorded in `host/fs-classify3c.ps1` (`$script
 section "Common to all trials" of `SIGNOFF.md` applies as well.
 
 Image `boot-stage3c.img` SHA-256
-`9d3ad98400ac94f42b291a66b0420576df5ad8ee447e831d971fcaba9bd914bd`, nonce `b7cf9a0bfb559dcb`
-- **CANDIDATE** (`build\stage3c\20261012T010256Z-b7cf9a0bfb559dcb\`, `stage3c/IMAGE.md`; fixture-tested offline only; the
+`9d3ad98400ac94f42b291a66b0420576df5ad8ee447e831d971fcaba9bd914bd`, nonce `<attempt nonce withheld>`
+- **CANDIDATE** (`build\stage3c\20261012T010256Z-<attempt nonce withheld>\`, `stage3c/IMAGE.md`; fixture-tested offline only; the
 build-review rebuild, which withdraws `e1856cd2...0aad90` / `3296cd623cc7da0f`). fs-pattern v0.6
 binary (`/bin/fs-pattern` in the image, `stage3c/build/fs-pattern`): `066bdc3ee01e5974518f96e8311c071c8f3aed302cadefa42c1273d5196b27bc`. One temporary boot (`fastboot boot`), no retry, Unit 1
 (`QUEST3UNIT1`), slot A. Results go to the Chair afterwards in FS-A-012.
@@ -97,7 +97,7 @@ The PM runs these first (WALKTHROUGH steps 1 to 4), then the checklist verifies 
   `s`, `s`, `y`; then `s`), must hold the line `REHEARSAL: run-1 plus run-2 answers ... s; go/no-go
   (SIGNOFF-3c A, Q7): GO (<= 40 s)` (≈ 6 s planning slack of DESIGN §9.4) and the Q7 note `not asked
   (Q7 fallback)`, which only the pinned (Q7 fallback) files write. The first rehearsal (2026-10-12,
-  `captures\b7cf9a0bfb559dcb\rehearsal\`: 66.6 s) was NO-GO; it does not count.
+  `captures\<attempt nonce withheld>\rehearsal\`: 66.6 s) was NO-GO; it does not count.
 - **Previews present** (check `previews`): the six files below exist.
 
 Then it prints and asks (each answer `y` or `n`; another key is ignored; keys pressed before the

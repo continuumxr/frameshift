@@ -28,10 +28,10 @@ machine side; a lit-but-garbled image is a lighting finding, not a PASS.
 
 | | |
 |---|---|
-| file | `build/stage3b/20261010T194509Z-6cf0f15867f14edc/boot-stage3b.img` (gitignored) |
+| file | `build/stage3b/20261010T194509Z-<attempt nonce withheld>/boot-stage3b.img` (gitignored) |
 | SHA-256 | **`ea60d6cddb2d14d16e208d16f6aef0ebc8798c1e9e74c223d73438bd92705841`** |
 | size | 43,151,360 B |
-| nonce | `6cf0f15867f14edc` (USB serial `FS-6cf0f15867f14edc`), fresh from the builder (`openssl rand -hex 8`). One attempt only; ledger `build/stage3b/attempted` |
+| nonce | `<attempt nonce withheld>` (USB serial `FS-<attempt nonce withheld>`), fresh from the builder (`openssl rand -hex 8`). One attempt only; ledger `build/stage3b/attempted` |
 | builder | `stage3b/build-image.sh` `49b2a8f14492703467278be2a69029c51098ed796a0ca229e2fc2ea3727af11e`; records in the build directory (MANIFEST.txt, ramdisk.list, ramdisk.sha256, applets.txt, header-diff.txt, ramdisk-scan.txt, gitcheck.txt) |
 | stock boot | `49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50` |
 | kernel | `f34165b35a826052ce5b520d9313387c96970b498733f1a7b141dcf4afc94e7b`, byte-identical (AOSP re-unpack) |

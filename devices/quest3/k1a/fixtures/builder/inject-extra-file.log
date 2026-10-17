@@ -1,0 +1,4 @@
+9a10,11
+> etc
+> etc/ld.so.preload
+BUILD REFUSED: ramdisk contents differ from the expected list

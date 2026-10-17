@@ -428,6 +428,36 @@ nothing [D].
     (a stall freezes the reading); thresholds validated in T3a;
   - F6 hwmon missing, or any write/read error;
   - F7 kmsg "Fan stall recovery attempt" (v2.7 `:798-799`) → immediate F-check.
+- **Implementation refinements** (fs-thermald part 1,
+  `devices/thermal/CORE-SPEC.md` K-24…K-49; a false shutdown on a healthy
+  fan counts as a defect like a missed one):
+  - checks also run inside the ramp allowance against a continuous
+    expected minimum speed `x` that follows the driver's ramp (K-36,
+    K-43); the credit for a fan already ahead of `x` on a target change
+    uses the median of the last three readings (K-46);
+  - an F3 episode inside the allowance ends when the fan reads the level
+    it missed (K-47); a stuck or slow fan never does, so its timer runs on
+    across back-to-back allowances, while a healthy fan's noise or lag
+    cannot keep one alive;
+  - F6 is a rate: the read/write/absence condition on 5 of the last 20
+    ticks (K-44); a tick without the readings a check needs holds that
+    check's timer (K-45), so a dead fan with flaky reads still reaches
+    trip 2 at once; the start-up self-test retries a failed fan read on
+    the next two ticks (K-48); F9's noise floor is 25 % (K-49);
+  - healthy envelope (assumed, swept in simulation, to be checked by
+    T3a): ramp 0-2000 rpm/s, rotor lag ≤ 1 s and ≥ 900 rpm/s, tach noise
+    ≤ ±10 %, ≤ 2 % failed reads, demand alternating every 3-6 s; outside
+    it a false trip-2 shutdown was seen (2 s lag, round-5 review), so T3a
+    measures the rotor lag on both units and a lag above 1 s means these
+    rules are revisited before TS;
+  - **declared limit:** while demand alternates faster than the ramp, a
+    fan stuck at any speed between the alternating targets is not an F3
+    (half-periods up to about 7 s without tach noise, about 8-10 s with
+    ±2-5 % noise, since a noisy high reading can end an early episode);
+    the tier floors (SoC 89/92/95 °C → 4500/5000/5500) end the
+    alternation at LIGHT and the fan is then caught (sustained full load:
+    F3 and trip 2 about 53 s after the load starts); F2/F5/F9 apply
+    throughout.
 - **On a fan fault:** P8.
 - **Daemon exit/crash:** `ExecStopPost` writes `rpm` = top level and the
   minimum CPU/GPU caps.
@@ -525,7 +555,11 @@ point at all). Quest 2/Pro: the built-in 4.19 driver keeps S2 (§0.9).
 - *(2026-10-12, PM decision J-118: Meta's thresholds are read from the
   user's own headset at runtime, and the values here become the built-in
   fallback; see `emergency-shutdown-design.md` §4.5, revision 4. Text kept
-  as written.)*
+  as written. **PM decision 2026-10-15:** on Virtual A/B devices, every
+  v2.7 unit included, the values here are always used, never Meta's
+  runtime values; the runtime path stays for non-Virtual-A/B firmware
+  (v66). The built-in Quest 3 set equals the reviewed v66 file; v2.7
+  differs only in `usb-conn` LIGHT 70 °C, covered by P5.)*
 - **Per-device config file**: zones, trips, hysteresis, fan levels, top
   level, virtual-sensor coefficients, thresholds, each annotated with its
   source line. A test asserts every value against the cited sources, and at

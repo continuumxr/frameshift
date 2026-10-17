@@ -1,0 +1,13 @@
+# c-bind-fail mods=['bind-fail'] plan=[]; image <repo>/build/k1a/20261015T163855Z-ecbcbd4f7b6f43c0
+# reboots: 16438.98 final pid=1 arg=error-udc
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=16378 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = error-udc  [16438.98 final pid=1 arg=error-udc]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [16438.98 final pid=1 arg=error-udc]
+PASS  any later record is only the backstop (fork)
+PASS  bind failure: reboot error-udc at T0 + ERR_DELAY 60 (..+4)  [T0+61.0]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  bind failure: ERROR_udc ('bind failed'), no UDC_BOUND, no shell  [INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED ERROR_udc]
+SCENARIO c-bind-fail PASS

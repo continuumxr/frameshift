@@ -1,0 +1,9 @@
+# K1a module-load simulation  2026-10-15T07:44:29Z
+# tool 0b1e6816224c795caf71b8db2adf5dbb8159af2c95adadff745a654bff5623b5; vendor_boot bc0dd14de41834a601513123b2225a677fa4212dfa4505bf964228cea40d2f5b; list 1b93d77d029146cf93289be87de51514c6ab7b96987f9c467a7f13f6e2a6463f (stage3d/modules.load.v66)
+# K1a build: Module.symvers 0ce513c3af499dff91fd634f0ac940c50f9b5fe84f3bf6867776fe27d5ded621, Image 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840
+# stock-config build: Module.symvers 7b5cfa8f54c41945e38f493196a55bfe1baff454f2c7e82e93d4959aa684b28d
+PASS  k1a  rc=0  RESULT PASS: 95/95 modules pass the loader checks (expected 95)
+PASS  stock-build  rc=0  RESULT PASS: 95/95 modules pass the loader checks (expected 95)
+PASS  k1a-perturbed  rc=1  RESULT FAIL: 33/95 modules pass the loader checks (expected 95)
+PASS  k1a-list-plus  rc=1  RESULT FAIL: 101/101 modules pass the loader checks (expected 95)
+TOTAL: 4 cases, 0 failed

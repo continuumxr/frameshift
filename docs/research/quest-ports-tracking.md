@@ -1,6 +1,7 @@
 # Quest Linux/SteamOS ports: how far tracking got, and how to validate without a rig
 
-**Status:** research only, rev 0, 2026-10-14 (J-167). No device was touched. Nothing was built,
+**Status:** research only, rev 0.1, 2026-10-15 (rev 0: 2026-10-14, J-167; rev 0.1 adds the
+Chair survey cross-check addendum at the end). No device was touched. Nothing was built,
 run, downloaded (no binaries or models) or disassembled. Companion to `tracking-input-route.md`
 rev 2.2 and `oss-tracking-survey.md` rev 1, which are **not** edited here (corrections are listed
 in §3 for the next revision).
@@ -34,7 +35,7 @@ reached 6DoF on a Quest.
   - reddit.com is not reachable by our tools, so Reddit posts were not read.
   - The Nura (postmarketOS) wiki is behind a bot check; we did not try to get around it.
   - FXR was not searched (not public).
-  - XDA only through search snippets: unlock and root threads, nothing on tracking.
+  - XDA only through search snippets: device threads, nothing on tracking.
 - Several repos record reverse engineering of Meta binaries (disassembly, symbol dumps, Frida
   injection). Those parts are named here as **pointers only** (D-T10). We did no reverse
   engineering ourselves, and nothing from them goes into our code.
@@ -371,3 +372,57 @@ OpenHMD and xr-hardware have no Quest tracking [C].
   (Claude). It states authorship and contains no instruction.
 - **Web pages fetched** (Hackaday, the Steam Community thread, the pretalx talk, GitLab MR texts):
   none found.
+
+---
+
+## Addendum 2026-10-15: Chair survey cross-check
+
+**Method:** read-only. GitHub REST API (`gh api`: repo metadata, branches, commits, raw file
+text), the Nura GitLab API, web search, and WebFetch. Nothing was cloned, downloaded, built or
+run, and no binary was opened. **Verdicts:** **[C]** confirmed from the primary source ·
+**[R]** reported or secondhand only · **[U]** could not verify. (These are this addendum's own
+verdict tags; the [C] of FS-R-001 in the sections above means "unconfirmed claim".)
+**Blocked:**
+- reddit.com refuses our fetch tool;
+- the Nura wiki (`wiki.postmarketos.org` now 301-redirects to `wiki.nura.eco`) serves an Anubis
+  bot check.
+We did not try to get around either one (no login, no scrapers).
+
+| # | Chair claim | Verdict | What is new against §1–§2 | Source |
+|---|---|---|---|---|
+| 1 | nicolas-riera/Quest1-SteamOS: native capture from all 4 tracking cameras through libsyncboss + libqcameraoculushal (libhybris); Basalt planned, not working; controllers 3DoF + arm model | **[C]** | **Nothing changed since our pin.** HEAD is still `b7467ff15` (2026-10-07), `main` is the only branch, and there is still **no licence** (API `license: null`). Detail beyond §1.3, from `docs/tracking-6dof.md` "Update 2026-10-06 evening" (author's claims, which we did not check): 4 × 640×480 Y8 at 2 × 30 Hz, alternating HEADSET (4 ms) and CONTROLLER (~38 µs) exposures; ISP timestamps on CLOCK_MONOTONIC; the cameras run only while Monado is stopped. Basalt is "next step 2" and not built (README: "There is no 6DoF yet"; `docs/controllers-native.md:275` arm model). Small correction to the Chair: `docs/syncboss-imu.md` covers the IMU and SyncBoss only; the camera claim comes from `tracking-6dof.md` and `src/qcam/qcam.c` | [repo](https://github.com/nicolas-riera/Quest1-SteamOS), [tracking-6dof.md](https://github.com/nicolas-riera/Quest1-SteamOS/blob/b7467ff15/docs/tracking-6dof.md) |
+| 2 | machachu56/quest-kexec-q2 `quest2-port`: README says tracking unfinished; `docs/QUEST2_PORT.md` "Status 2026-10-07: first VR (Monado, 3DoF)" reports 3DoF head + controllers; `q2_cameras.c` replays recorded Meta HAL transactions | **[C]** | **Nothing changed since our pin.** `quest2-port` HEAD is still `9c96c192d` (2026-10-07). New: the branch's **README status table is stale**: it lists head and controller tracking (3DoF/6DoF), tracking cameras and OpenXR under "Not yet", while `QUEST2_PORT.md:388-406` reports 3DoF working, user-confirmed. The file header of `q2_cameras.c:4-15` confirms that the camera start-up done by Meta's HAL is recorded on Android (`qkx_camtrace`) and replayed. No Meta library is loaded at runtime, but the start-up sequence itself comes from Meta's HAL. `main` (`e61edbd7f`) is the Quest Pro tree from §1.5 | [QUEST2_PORT.md](https://github.com/machachu56/quest-kexec-q2/blob/quest2-port/docs/QUEST2_PORT.md), [q2_cameras.c](https://github.com/machachu56/quest-kexec-q2/blob/quest2-port/monado/drivers/quest2/q2_cameras.c) |
+| 3 | Producdevity/reframed-vr: Basalt results are Pico replay only; no Quest hardware | **[C]** | **12 commits after our pin.** HEAD is `a92da3b54` (2026-10-15 00:01Z); our pin `c704df762` is in the history (compare: ahead 12, behind 0). Commit `4684ce2e5`, "run continuous stereo capture and native 6DoF", adds the Pico live-capture path (`src/pico-slam-live.c`). It is tested only on replays and simulated kernel events: `docs/pico-slam.md:138-143` says physical sensor identities, calibration and capture timing "are still required". README `:23`: physical 6DoF is not done; Quest only in QEMU. Still **no licence** | [repo](https://github.com/Producdevity/reframed-vr), [pico-slam.md](https://github.com/Producdevity/reframed-vr/blob/master/docs/pico-slam.md) |
+| 4 | r/QuestPro `1wy3vxr` "SteamOS on Quest Pro" (demo, tracking does not work; original on X by marquina_osu) | **[U]** | Reddit is blocked to us. Web search finds no trace of the post or the X handle. No GitHub user `marquina_osu`. Chair-reported only | — |
+| 5 | r/OculusQuest `1x44bad` "Quest 2 boots Arch Linux", Cool-gamer19393, 2026-10-12, repo promised | **[U]** | Reddit is blocked to us. No GitHub user `Cool-gamer19393` (API 404). A GitHub repo search (Quest + Arch/kexec/Basalt/SyncBoss/SLAM, pushed after 2026-10-01) finds nothing new. Treat it as an unreleased claim with no tracking stated | — |
+| 6 | r/SteamFrame `1wz3bhq` "Steam Frame OS on the Quest 2 for real" = an APK on Horizon, not a native OS | **[U]** | Reddit is blocked to us; search finds nothing. If the Chair is right, it is Horizon's tracking and out of scope, as with §1.5 | — |
+| 7 | FreeXR/Nura wiki, Quest 3S (`panther`): "Not booting", kernel pending | **[R]** | The wiki is behind the Anubis bot check. This agrees with the PM's earlier screenshot (J-75: status "not booting"). Supporting evidence, our own check: Nura's pmaports (GitLab API, `gitlab.postmarketos.org`) has **no** `device-meta-panther` or `linux-meta-panther` package under `device/testing` or `device/downstream`, and no MR mentions it | [wiki (blocked)](https://wiki.nura.eco/wiki/Meta_Quest_3S_(meta-panther)) |
+
+**Overall claim (wording per FS-R-013 §12):** "No validated native 6DoF head-and-controller implementation was
+found in the inspected public sources." A research result, not proof that none exists. **Supported**, with these limits:
+- Items 4–6 were not readable.
+- The only live native 6DoF is still cstahly's rejected experiment on Quest 1, head only (§1.1).
+  Its HEAD is unchanged at `18532a5` (pushed 2026-10-05).
+- No project shows 6DoF controllers on any Quest.
+
+**AI-directed text:** none found in the pages and files read. One pointer only:
+`Quest1-SteamOS/docs/tracking-6dof.md:10` cites "`%TEMP%\claude\...\scratchpad\t6\`" (a trace
+that an AI wrote it, as noted in §6). It contains no instruction.
+
+**What this means for our route** (our own Basalt fork, our own drivers, no Meta tracking
+binaries, Q3 Touch Plus first) [D]:
+- **No precedent to borrow.** Every Quest camera path found so far depends on Meta at some
+  level:
+  - Q1: Meta's HAL, loaded through libhybris;
+  - Q2: replaying a recorded sequence from Meta's HAL.
+  Neither fits D-T10, and neither applies to the Q3 camera stack. Our own Q3 capture driver stays
+  first-of-kind work.
+- **Two design inputs, both unchecked on Q3 [O]:**
+  - Q1 interleaves HEADSET and CONTROLLER exposures in a single camera schedule. Expect a
+    similar split for Touch Plus IR sensing.
+  - Q1 clocks: camera timestamps are on CLOCK_MONOTONIC, but SyncBoss shutter records use
+    SyncBoss time. Expect the same clock-domain problem (§1.1 lessons).
+- **reframed-vr is the closest structural analogue** (live Basalt fed through Monado's VIT path),
+  but it has no licence and has never run on hardware. Pointer only.
+- **Touch Plus 6DoF has no open precedent anywhere.** The nearest is Monado !2941 (Rift CV1
+  constellation, §1.7). Budget for it as research, not as a port.

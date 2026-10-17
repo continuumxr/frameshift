@@ -27,6 +27,17 @@
 > Meta's is copied into the repo, and fixed values are used only as a
 > fallback. Designed in §4.5 (revisions 4 and 5).
 >
+> **Decided by the PM (2026-10-15), superseding J-118's runtime values for
+> these devices for now:** on a **Virtual A/B device** the thermal service
+> always uses the built-in table, never Meta's runtime values (option B:
+> the reader refuses any device whose vendor `build.prop` enables Virtual
+> A/B, `reason=vab-policy`, and an unreadable `build.prop`; the §4.5.2
+> deny-list stays). Every Quest 3 and Quest 2 on v2.7 therefore runs on the
+> built-in table. J-118's runtime path stays implemented for
+> non-Virtual-A/B firmware (Quest 3 v66). Proving the update state from
+> `metadata` is a possible later step, not planned
+> (`devices/thermal/METACFG-SPEC.md` M-21a).
+>
 > **Decided (O28, PM 2026-10-12, J-123):** the public document may name Meta's
 > interface identifiers (JSON keys such as `HotThreshold`, sensor names,
 > mitigation token names), threshold numbers and hashes; never file contents.
@@ -480,7 +491,10 @@ that class goes from T1 straight to T3.
 
 Unchanged from `thermal-control-design.md` §3.3: temperature-driven from
 the device's own Meta zones; **display state is not a cooling control**;
-tach failure (F1–F7) → SEVERE now → T4 after 120 s (P8). Additions:
+tach failure (F1–F7) → SEVERE now → T4 after 120 s (P8). (Implementation,
+`devices/thermal/CORE-SPEC.md` §19: an isolated failed read is not a
+fault; F6 needs failures on 5 of the last 20 ticks, and the timed checks
+hold through a failed read instead of resetting.) Additions:
 - **T4 and T5 set the fan to the top level first** and leave it there; the
   LPG is expected to hold that duty while the kernel finishes [C, O6].
 - **Quest 2 headless phases:** the fan driver does not exist until a DRM
@@ -586,7 +600,7 @@ bytes: it computes the file hashes and the parse digest **itself** (m5).
 |---|---|---|
 | locate | the one block device whose sysfs `uevent` has `PARTNAME=super`, with size equal to `getvar`'s (Quest 3 `0x200000000`, Quest 2 `0x180000000`, F35; Unit 2 measured, F35); anything else → fallback. **Revision 5 (m4):** the storage driver (UFS on the Quest 3: `sda7` on Unit 2) may still be probing when the initramfs starts, so the helper first scans `/sys/class/block`, and if `super` is not yet there, listens on a `NETLINK_KOBJECT_UEVENT` socket for an `add` event with `PARTNAME=super`, inside the same 2 s budget (event-driven, no sleep loop); not found in time → fallback (`reason=no-super`) | same |
 | open | `O_RDONLY \| O_CLOEXEC` only; `pread` and **one** ioctl, `BLKGETSIZE64` (revision 5: `BLKSSZGET` dropped, because LP sectors are 512 bytes whatever the device's logical block size, which is 4096 on UFS [C, liblp]); seccomp filter after the open (below); never `O_RDWR`, no other ioctl, no `BLKRRPART` | `O_RDONLY` for the LP read, then device-mapper ioctls |
-| logical partition | parse the LP geometry and the metadata for the active slot (F37) [C, liblp format], within the **limits** below: magic, header and table SHA-256 checksums, partition `vendor<suffix>`, every extent `LINEAR` and inside `super`; **no `*-cow` partition** (Virtual A/B, below) | same parse, then a transient dm-linear device `fs-vendor-ro` created with the read-only flag (`BLK_DEV_DM=y` on both kernels: v66 `kernel.config:1997`, Quest 2 `kernel.config:1694`) |
+| logical partition | parse the LP geometry and the metadata for the active slot (F37) [C, liblp format], within the **limits** below: magic, header and table SHA-256 checksums, partition `vendor<suffix>`, every extent `LINEAR` and inside `super`; **no `*-cow` partition** (Virtual A/B, below); **revision 6: a deny-list of signals visible in `super`, plus the M-21a Virtual A/B policy** (no Virtual A/B header flag, no `UPDATED` or unknown attribute on `vendor<suffix>`, no `cow` group, no `scratch` overlay, no unknown header flag; below) | same parse, then a transient dm-linear device `fs-vendor-ro` created with the read-only flag (`BLK_DEV_DM=y` on both kernels: v66 `kernel.config:1997`, Quest 2 `kernel.config:1694`) |
 | filesystem | our own bounded ext4 reader, within the **checks** below: superblock magic, block size 4096, **feature set exactly as F34** (a journal or any other feature → fallback); path walk `/` → `etc` → name by a linear scan of directory blocks (valid with `dir_index` [C]); regular file, not a symlink; extent depth ≤ 2; size ≤ 64 KiB. **ext4 only:** a future vendor image in another format (for example EROFS) fails the superblock check and falls back (`reason=fs-type`) until a reader for it is designed and reviewed | kernel ext4 (`EXT4_FS=y`, v66 `:6375`, Quest 2 `:4998`), `mount -o ro,noload,nosuid,nodev,noexec`; read the three files; `umount`; remove the dm device |
 | kernel state changed | **none** | a transient dm device and a mount (volatile) |
 | integrity | no dm-verity in either option: integrity comes from the hash table (§4.5.3); verifying through Meta's vbmeta hashtree is a later option (O26) | same |
@@ -629,6 +643,38 @@ declared (R25, O27). Two further LP signals, the header flag
 `LP_HEADER_FLAG_VIRTUAL_AB_DEVICE` and the partition attribute `UPDATED`,
 are **logged only** until their meaning after a finished merge is
 settled (O27) [C, liblp].
+
+**Revision 6 (2026-10-15, FS-R-012 §8; implementation round-4 review
+MAJOR): a deny-list of signals visible in `super`, plus the M-21a
+Virtual A/B policy (PM 2026-10-15); any signal → fallback.** The Chair ruled: identify the active logical view,
+slot/snapshot state and bounds, fail safely on unsupported layouts, and
+do not substitute "read `vendor_<slot>`" for establishing the active view.
+The reader cannot see the snapshot state (it lives on `metadata`, with
+COW possibly in files on `userdata`), so it no longer logs the signals it
+can see: it refuses on them (`METACFG-SPEC.md` M-11, M-12 rev 2), and the
+supervisor runs on the built-in table with the reason logged
+(`limits=builtin reason=reader:<code>`, P18 behaviour). Refused: the
+header flag `VIRTUAL_AB_DEVICE` (`vab-device`) and any other header flag
+(`lp-flags`); a `-cow` partition (`vab-merge`, unchanged); a partition
+group named `cow` (`vab-cow-group`); a partition named `scratch`, the
+adb-remount overlay storage of debuggable builds (`overlay`); on the
+active `vendor<suffix>`, the attribute `UPDATED` (`vab-updated`), set on
+the partitions an update wrote [C, liblp/libsnapshot], and any attribute
+bit other than `READONLY` and `SLOT_SUFFIXED` (`lp-attr`). Accepted only
+when none holds: then the slot's metadata maps `vendor<suffix>` by linear
+extents inside `super` and nothing in `super` shows a snapshot, a COW
+store or an overlay. Remainder (R25, narrowed): a Virtual A/B update whose
+LP metadata carries none of these signals (a retrofit device without the
+header flag, COW wholly on `userdata`, and no `UPDATED` attribute); whether
+that can occur is O27. **PM decision 2026-10-15 (implemented, M-21a):**
+every device whose vendor `build.prop` enables Virtual A/B (F38: the
+Quest 3 v2.7 and Quest 2 v2.7 files do, v66 does not), or whose
+`build.prop` cannot be read, is refused (`vab-policy`): every v2.7 unit
+runs on the built-in table, which closes R25 for those devices. A device
+without the property is accepted when the deny-list is clean: it is
+non-Virtual-A/B firmware, and acceptance applies only reviewed rows. **Consequence:** a Virtual A/B unit that shows the
+flag or `UPDATED` (likely on Unit 2 after its OTA, F38) runs on the
+built-in table until a reviewed merge-state reader exists (O27).
 
 **ext4 reader checks (revision 5, m2).** There is no `metadata_csum`
 (F34), so nothing in the filesystem is authenticated and every field is
@@ -681,7 +727,10 @@ code.
    valid and every LP limit holds (§4.5.2); a `vendor<suffix>` partition
    exists for the slot read from `/proc/bootconfig` (Quest 3; its
    cmdline has no `androidboot.*`, F37) or `/proc/cmdline` (Quest 2);
-   **no `-cow` partition is listed (Virtual A/B, F38, `reason=vab-merge`)**.
+   **no `-cow` partition is listed (Virtual A/B, F38, `reason=vab-merge`)**;
+   revision 6: nor any other signal of a non-plain view (§4.5.2:
+   `vab-device`, `lp-flags`, `vab-cow-group`, `overlay`, `vab-updated`,
+   `lp-attr`).
    `ro.product.vendor.device` must equal the running device (Quest 3
    `eureka`, Quest 2 `hollywood`), which is checked against the DT
    `model` our image reads at start-up.
@@ -692,7 +741,13 @@ code.
    (the sha256 of *our* canonical record of the values we extracted:
    sensor name; the seven slots in m°C or unset; hysteresis; multiplier,
    sorted by name) and, **new in revision 5, the sha256 of the VR-runtime
-   list** of the same firmware. **`fs-thermald` computes all three
+   list** of the same firmware. **Row-adding condition (PM 2026-10-15,
+   METACFG-SPEC M-21a):** whoever adds a row records the firmware's
+   Virtual A/B status from every partition's properties (`vendor`, `odm`,
+   `system`) and the unit's `lpdump` output, and adds rows only for
+   non-Virtual-A/B firmware; for the v66 row, F38 checked only the vendor
+   `build.prop` (system properties not checked): open until T0.
+   **`fs-thermald` computes all three
    itself** (review 4 m5): the sha256 of the raw JSON bytes the helper
    shipped (≤ 64 KiB, §4.5.2 framing), the sha256 of the canonical record
    as received, and the sha256 of the raw VR-runtime list; the helper
@@ -797,7 +852,10 @@ not actuate.
   row `c9301ff5…` is **expected** to match; that is confirmed only by the
   read-only `sha256sum` probe (§7.2). Virtual A/B is enabled on it
   (F38): if a merge is still pending when FrameShift boots, the reader
-  falls back (`vab-merge`).
+  falls back (`vab-merge`). Revision 6: it also falls back when its LP
+  header carries the Virtual A/B flag or its `vendor_a` the `UPDATED`
+  attribute (`vab-device`, `vab-updated`), which is likely after its OTA;
+  the read-only `lpdump` probe (O22) settles which applies.
 - **Mixed versions:** a `fastboot boot` image carries its own kernel and
   DTB, while `vendor` is whatever the slot holds (for example a v66 image
   on a v2.7 slot). Thresholds follow `vendor` (hardware policy); trips
@@ -816,7 +874,8 @@ not actuate.
 - **Quest 2 v2.7:** file `cc3e5137…` (a known row; F12 values). The unit's
   own build must still be confirmed equal to the OTA's (§7.2 probe); if
   it differs, the unit uses the fallback. Virtual A/B is enabled in its
-  vendor `build.prop` (F38), so the `vab-merge` rule applies. Many
+  vendor `build.prop` (F38), so the `vab-merge` rule and the revision 6
+  rules of §4.5.2 apply. Many
   Quest 2 zones use the `user_space` governor (`thermal-control-design.md`
   §8), and Meta's userspace action for them is [O] (O29; §4.5.4 layer
   2a). Our tiers cover them through the JSON severities; the
@@ -1237,7 +1296,9 @@ into Steam is [O11]; display dimming is a further mitigation Meta may use
   3; header size 200; a short `entry_size`; tables beyond `tables_size`;
   4 slots; two block devices; a block-device size ≠ the device;
   `target_source` 1; an extent end that overflows 64 bits; an
-  unterminated 36-byte name; a `DISABLED` vendor partition); each ext4
+  unterminated 36-byte name; a `DISABLED` vendor partition; revision 6:
+  the Virtual A/B header flag, an unknown header flag, a `cow` group, a
+  `scratch` partition, an `UPDATED` or unknown vendor attribute); each ext4
   check of §4.5.2 broken once (log block size 3, `64bit` or
   `metadata_csum` set, inode 0 or beyond `s_inodes_count`, bad extent
   magic, `eh_entries` > `eh_max`, an uninitialised extent, a hole, a
@@ -1486,7 +1547,11 @@ own** thresholds, fans and sensors (§6A.3); nothing is inherited.
     would make P18 option (b) safer to consider. **Revision 5:** it would
     also detect a stale raw read during a Virtual A/B merge (R25), since
     the old blocks would not match the new root hash [D].
-27. **(new, revision 5)** Virtual A/B on each unit (F38): where the COW
+27. **(new, revision 5; revision 6: the LP signals now refuse instead of
+    being logged, §4.5.2; PM 2026-10-15: Virtual A/B devices always use the
+    built-in table, so this question matters only if proving the update
+    state from `metadata` is ever taken up, a possible later step, not
+    planned)** Virtual A/B on each unit (F38): where the COW
     data of an update lives (`-cow` partitions in `super` or images on
     `userdata`), how long the merge takes after the first Android boot,
     and whether the LP header flag or the `UPDATED` attribute
@@ -1582,7 +1647,9 @@ own** thresholds, fans and sensors (§6A.3); nothing is inherited.
   runs on our fallback values even if Meta has made them **stricter** there
   → the user is told; the hash is logged for review; adding a row is a
   small offline change. P18 (b) would close it for stricter files only.
-- **R25 (new, revision 5):** a Virtual A/B update whose merge has not
+- **R25 (new, revision 5; narrowed in revision 6, §4.5.2: every LP
+  signal of a snapshot, COW or overlay now falls back, so only an update
+  whose LP metadata shows none of them remains):** a Virtual A/B update whose merge has not
   finished, with its COW data wholly on `userdata` (no `-cow` entry in
   `super`, F38), leaves the raw `vendor` extents consistently at the
   **older** version; the reader can then match the older version's

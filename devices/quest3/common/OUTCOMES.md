@@ -32,7 +32,7 @@ FS-A-006 §5.3** where they differ. Changes:
 **Revision 5** (FS-R-009 §3 and §4, 2026-10-09):
 - The step-4 `list` content rule is **versioned** (§5):
   - **v1** (registered): applies to the runs registered under it (trial (i),
-    nonce `93a1501f0b1fb692`), which therefore keep their registered result;
+    nonce `<attempt nonce withheld>`), which therefore keep their registered result;
   - **v2A** (amended rule A, `stage2a/LISTING-RULE-A.md`): applies to every
     later run.
 - **Selection.** `fs-classify.ps1 -ListRule v1|v2A` (CLI; the functions take

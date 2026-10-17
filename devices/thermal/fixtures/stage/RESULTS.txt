@@ -1,0 +1,20 @@
+pid1-hold-ts.sh sha256=885f23f3ef25ae0a44ec83b2c14f4a419cecb60e832d2c70e62c865bceb049d0
+busybox         sha256=c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02 (reviewed stage-1 binary, under qemu-aarch64)
+PASS trip_basic: first='75628 trip pid=808880 via=poweroff' t-T0=4 (want trip via=poweroff in 3..6)
+PASS trip_missing_helper: records='' exit=1
+PASS trip_symlink_helper: records='' exit=1
+PASS trip_forged_no_guard: first='75639 trip pid=809346 via=poweroff' t-T0=3 (want trip via=poweroff in 3..6)
+PASS no_guard_deadline: first='75656 deadline pid=809417 via=final' t-T0=16 (want deadline via=final in 16..18)
+PASS hb_fifo_ignored: first='75672 deadline pid=809985 via=final' t-T0=16 (want deadline via=final in 16..18)
+PASS req_never_ready: first='75677 guard-not-ready pid=810403 via=final' t-T0=4 (want guard-not-ready via=final in 4..6)
+PASS req_ready_holds: first='75693 deadline pid=810552 via=final' t-T0=16 (want deadline via=final in 16..18)
+PASS req_ready_then_trip: first='75696 trip pid=810894 via=poweroff' t-T0=3 (want trip via=poweroff in 3..6)
+PASS req_stale_record: first='75705 guard-stale pid=811063 via=final' t-T0=8 (want guard-stale via=final in 8..11)
+PASS req_seq_frozen: first='75714 guard-stale-seq pid=811254 via=final' t-T0=8 (want guard-stale-seq via=final in 7..13)
+PASS req_garbled_state: first='75723 guard-stale-seq pid=811484 via=final' t-T0=8 (want guard-stale-seq via=final in 7..13)
+PASS req_frozen_boottime: first='75733 guard-stale pid=811754 via=final' t-T0=9 (want guard-stale via=final in 8..11)
+PASS req_guard_dead: first='75738 guard-dead pid=811991 via=final' t-T0=5 (want guard-dead via=final in 3..6)
+PASS req_forged_ready: first='75742 guard-not-ready pid=812156 via=final' t-T0=4 (want guard-not-ready via=final in 4..6)
+pid1-hold-ts TRIP branch: 15/15 pass
+rst='75742 guard-not-ready pid=812156 via=final' t-T0=4 (want guard-not-ready via=final in 4..6)
+pid1-hold-ts TRIP branch: 15/15 pass

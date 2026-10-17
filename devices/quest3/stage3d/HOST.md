@@ -3,8 +3,8 @@
 **Status: DRAFT (2026-10-13, branch `feat/stage3d-host`, built on `feat/single-reading-userbuild`; offline only;
 adversarial review GO-with-fixes, the fixes in §7; re-pointed 2026-10-14 on `fix/stage3d-modes`, §8; the standing
 phase A, the carry-over and charging below 30.0 °C on `feat/host-carryover`, §9, not yet reviewed).** No device, adb, fastboot or COM port was used. It implements `README.md` §6 for the candidate
-`build\stage3d\20261014T014738Z-13ed21be49c7b4ba` (`fcca5ee7…4fb5`, nonce `13ed21be49c7b4ba`, unspent then; spent on Unit 1 2026-10-14, J-144; fs-pattern
-v0.7.1 `bfafad97…9a9a`). The first candidate (`20261013T065151Z-7a22c3d2ff0fef44`, `3d730337…c224`, fs-pattern v0.7)
+`build\stage3d\20261014T014738Z-<attempt nonce withheld>` (`fcca5ee7…4fb5`, nonce `<attempt nonce withheld>`, unspent then; spent on Unit 1 2026-10-14, J-144; fs-pattern
+v0.7.1 `bfafad97…9a9a`). The first candidate (`20261013T065151Z-<attempt nonce withheld>`, `3d730337…c224`, fs-pattern v0.7)
 is withdrawn (J-141: its nonce spent on Unit 2; v0.7 refused v2.7's 305 modes, MAXMODES 128). The PM's
 steps: `WALKTHROUGH.md`; what the console asks and records, and the host pins: `../SIGNOFF-3d.md`.
 
@@ -123,7 +123,7 @@ characters in each eye in run 2).
   in its own image; and, as before, every MANIFEST line and record file equal except the build time, the nonce, the
   hashes and the lz4 size. The reference must be a reviewed image (`-ReferenceSha`, default the current `fcca5ee7…4fb5`).
   **`fs-observe3d.ps1` requires it** (it dot-sources the tool): any image other than the reviewed candidate is refused,
-  also at `-Preflight`, unless `Test-FsNonceOnly` against `build\stage3d\20261014T014738Z-13ed21be49c7b4ba` passes;
+  also at `-Preflight`, unless `Test-FsNonceOnly` against `build\stage3d\20261014T014738Z-<attempt nonce withheld>` passes;
   `observe.json` records `NonceOnly` (K3). Tested on real bytes (K1-K3): the candidate unpacked here equals its
   MANIFEST (cpio `23a7a95f…`, lz4 `c67d0d80…`); WSL `lz4 -l -9` reproduces its lz4 bytes; rebuilds made from it pass
   (only the nonce changed) or are refused (a changed busybox, module list, fs-supervise, fs-pattern, `/init` beyond the
@@ -141,7 +141,7 @@ characters in each eye in run 2).
   accepts only its own builder (`b90c0fbb…6c34` with `402525cd…f4c8`). With the one `TEST OVERRIDES` line that `FS_TEST_OUTBASE` adds removed from a copy, the real rebuild passes
   `fs-nonceonly3d` and `fs-observe3d -Preflight` (test-host3d K4: a new real build in every run, about 35 s).
 - **Delta review MINOR-1:** an image that hashes to the reviewed candidate is accepted as such only in the reviewed
-  directory (`20261014T014738Z-13ed21be49c7b4ba`) with the reviewed nonce; a copy elsewhere (its MANIFEST nonce
+  directory (`20261014T014738Z-<attempt nonce withheld>`) with the reviewed nonce; a copy elsewhere (its MANIFEST nonce
   edited) or under another stamp is refused (K3).
 - **The BA/BF must-be rows are machine-checked** (review 2 MINOR-1, `Test-FsObsMustBe`, before any device query):
   BA04 `_a`, BA16 `66b76196…f12a`, BA20 `user`, BA23 the unit's serial, BF02 `current-slot: a`, each row exit 0 with its
@@ -254,7 +254,7 @@ fs-pattern v0.7.1 (`bfafad97…9a9a`) fixes it, and `fs-probe.sh` (`f0fda865…7
 the 66 v2.7 mode-validation dmesg lines per probe point instead of keeping them, so the real panel/DSI lines stay within
 the 80-line / 4096-byte budget. `build-image.sh` (`b90c0fbb…6c34`, with `module-list-check.py` `402525cd…f4c8`,
 unchanged) pins fs-pattern and writes the both-units MANIFEST sentence. The new candidate is
-`build\stage3d\20261014T014738Z-13ed21be49c7b4ba` (`fcca5ee7…4fb5`, 44,875,776 bytes, nonce `13ed21be49c7b4ba`; cpio
+`build\stage3d\20261014T014738Z-<attempt nonce withheld>` (`fcca5ee7…4fb5`, 44,875,776 bytes, nonce `<attempt nonce withheld>`; cpio
 `23a7a95f…` (3,414,016 B), lz4 `c67d0d80…` (1,963,122 B); `/init` 15,973 bytes as before). It serves Unit 1 next;
 Unit 2 then gets a nonce-only rebuild of it. The first v0.7.1 build `20261014T012519Z-2b2596964c0812b1` (`96cc15aa…3fad`,
 builder `8870bbce…012c`, the stage-3c fs-probe.sh) was superseded before any boot (never booted; its nonce never used)
@@ -266,7 +266,7 @@ and is withdrawn.
   history, its CLI comparison never exits 0. A pair of another candidate is "not a reviewed builder version" (K2).
 - `fs-observe3d.ps1` refuses a withdrawn candidate as the image or as the reviewed reference (G9); the first candidate
   is refused earlier anyway: its MANIFEST `/bin/fs-pattern` is v0.7 (G6b), and its nonce is in the ledger
-  (`build\stage3d\attempted\7a22c3d2ff0fef44.attempted`, `attempt.lock`). The new nonce is not, so it is free.
+  (`build\stage3d\attempted\<attempt nonce withheld>.attempted`, `attempt.lock`). The new nonce is not, so it is free.
 - `fs-classify3d.ps1` and `fs-observe3d.ps1` carry the v0.7.1 pin; `fs-collect3d.ps1` takes it from the classifier.
   The SIGNOFF-3d pins of these three files are re-computed.
 - test-host3d: G3 refuses the v0.7 pin; G6 the new candidate (unspent); G6b the withdrawn one; G9 the table;

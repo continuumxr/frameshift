@@ -1,0 +1,13 @@
+# Waits (bounded) for the supervisor's published READY in its heartbeat record.
+[Unit]
+Description=FrameShift thermal supervisor READY gate
+DefaultDependencies=no
+Before=fs-thermald-ready.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'for i in $(seq 1 60); do read -r s b st < /run/fs-thermald/hb 2>/dev/null; [ "$st" = READY ] && exit 0; sleep 1; done; exit 1'
+TimeoutStartSec=70
+CapabilityBoundingSet=
+NoNewPrivileges=yes

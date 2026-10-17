@@ -56,9 +56,9 @@ device-enforced, DEADLINE 200 + backstop 201, no lit-phase retry.
 | R-C NITs a–g | red SAFE FINISH banner; rule numbering (§5.8 rules 1–5 used everywhere); LAYOUT DIFFERS only when r3 was shown; a distinct dark-check banner; ASCII dashes in the PM documents; key-source failures logged; "y = yes, n = no" | §8.2, §11.3; host files, docs |
 
 **Q7 fallback and PM rehearsal feedback (2026-10-12; host only, no device change: image
-`9d3ad984…`, nonce `b7cf9a0bfb559dcb` unchanged; made on branch `wip/q7-prompt-fallback`;
+`9d3ad984…`, nonce `<attempt nonce withheld>` unchanged; made on branch `wip/q7-prompt-fallback`;
 reviewed (GO) and merged, `a5c1651`, J-114).** The PM rehearsal
-(replay transport, garbled path; `captures/b7cf9a0bfb559dcb/rehearsal/`) gave run-1 answers
+(replay transport, garbled path; `captures/<attempt nonce withheld>/rehearsal/`) gave run-1 answers
 16.4 s and run-2 answers 50.2 s, of which the two bar-count prompts took ≈ 48 s:
 66.6 s, **NO-GO** against 40 s. The reviewed fallback of §15 Q7 is applied: **no bar
 counts on the run-3 path** (§8.2). Run 2 on that path is then left, right, dark (the
@@ -78,7 +78,7 @@ path, explains itself.
 | tests | test-host3c: the garbled-path key scripts drop the bars (canonical `garbled-r3/keys.txt` regenerated, capture unchanged); bars/n cases moved off the run-3 path; new A3b, A8b, D4-D6, G5, Q3b | §12.3 |
 
 **Console checklist (J-118; 2026-10-12; host and PM documents only, no device change: image
-`9d3ad984…`, nonce `b7cf9a0bfb559dcb` unchanged; branch `feat/console-checklist`, not yet
+`9d3ad984…`, nonce `<attempt nonce withheld>` unchanged; branch `feat/console-checklist`, not yet
 reviewed).** PM decision: the SIGNOFF-3c sheet is replaced by a checklist in the console. The new
 `host/fs-checklist3c.ps1` (no device command, no network) runs three times per cycle and appends
 each run, with UTC timestamps and the exact question text, to `<cycle>\checklist3c.json` and
@@ -1716,7 +1716,7 @@ timing.
 | Q4 | Linear XR24 at ≈ 3.3 GB/s average, ≈ 7.6 GB/s line-burst peak, against the 16 GB/s default vote [D]. Underruns are not observable in this run (no debugfs); only a dmesg `underrun` line or the optical result would show them. | [C] |
 | Q5 | The garble's cause: per-rect throughput (E9) is the leading explanation [D, strong], and the precedent (E12) agrees. Run 2 tests it. A quad layout that still garbles means the mechanism is wrong or incomplete; run 3 then discriminates content-dependence, it does not prove a mechanism. | [D]/[C] |
 | Q6 | Does a second off→on cycle (r3) behave like the first? A DARK run 3 is itself a finding. | [O] |
-| Q7 | Human time: run 3 is admitted only if the run-1 plus run-2 prompts take ≤ ≈ 48 s; with run 3's 5 s hold and the DoneReserve in every guard the planning slack is ≈ 8 s (§9.4). **Go/no-go:** the PM rehearsal (replay transport, real keys, garbled path) must show run-1 plus run-2 answers ≤ 40 s (SIGNOFF A). If it does not: drop the run-1 per-eye prompts to a single both-eyes key, or drop `bars` on the run-3 path, reviewed before sign-off; a deadline change would need its own justification (not done here). **Resolved (2026-10-12): fallback applied.** The PM rehearsal 2026-10-12 (`captures/b7cf9a0bfb559dcb/rehearsal/`) gave r1 answers 16.4 s, r2 answers 50.2 s (the two LEFT/RIGHT EYE BARS prompts ≈ 48 s): 66.6 s, NO-GO. **`bars` is dropped on the run-3 path** (§8.2; host files only, the image and nonce unchanged); the run-1 prompts are kept. With the rehearsal's own answer stamps run 2 becomes 18.0 s (left, right, dark), r1 + r2 = 34.4 s ≤ 40 s. The rehearsal is repeated on the changed host files (SIGNOFF-3c A) and the change is reviewed before sign-off. | resolved: fallback applied; re-rehearsal (SIGNOFF A) |
+| Q7 | Human time: run 3 is admitted only if the run-1 plus run-2 prompts take ≤ ≈ 48 s; with run 3's 5 s hold and the DoneReserve in every guard the planning slack is ≈ 8 s (§9.4). **Go/no-go:** the PM rehearsal (replay transport, real keys, garbled path) must show run-1 plus run-2 answers ≤ 40 s (SIGNOFF A). If it does not: drop the run-1 per-eye prompts to a single both-eyes key, or drop `bars` on the run-3 path, reviewed before sign-off; a deadline change would need its own justification (not done here). **Resolved (2026-10-12): fallback applied.** The PM rehearsal 2026-10-12 (`captures/<attempt nonce withheld>/rehearsal/`) gave r1 answers 16.4 s, r2 answers 50.2 s (the two LEFT/RIGHT EYE BARS prompts ≈ 48 s): 66.6 s, NO-GO. **`bars` is dropped on the run-3 path** (§8.2; host files only, the image and nonce unchanged); the run-1 prompts are kept. With the rehearsal's own answer stamps run 2 becomes 18.0 s (left, right, dark), r1 + r2 = 34.4 s ≤ 40 s. The rehearsal is repeated on the changed host files (SIGNOFF-3c A) and the change is reviewed before sign-off. | resolved: fallback applied; re-rehearsal (SIGNOFF A) |
 | Q8 | Write class: zpos is decided as part of the reviewed commit (PM J-109 #1). The quad layout and the solid frame use the existing properties. FS-R-010 §4's "keep the plane layout unchanged" governed trial (iii-b); changing the layout is the point of this run and is disclosed in FS-A-012. | decided / [D] |
 | Q9 | Can the PM press keys one-handed with the headset held to the face (J-108 open item), now including digits? The key-reach test answers this; a foot pedal or numpad is the fallback. | [O] |
 | Q10 | Sound audibility over room noise and the headset fan: the preflight proves audibility at that moment only. | [M] at preflight |
