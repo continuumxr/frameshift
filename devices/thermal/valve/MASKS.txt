@@ -1,0 +1,10 @@
+# FrameShift Valve layer: units masked (emergency-shutdown-design.md §6.2 rev 3, P10)
+soft-reboot.target
+systemd-soft-reboot.service
+halt.target
+systemd-halt.service
+sleep.target
+suspend.target
+hibernate.target
+hybrid-sleep.target
+suspend-then-hibernate.target

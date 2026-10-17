@@ -30,13 +30,13 @@ does not update it. Before any rebuild, check that its SHA-256 is the one in `st
 and check again. The builder refuses a wrong binary anyway, but the refusal blocks the run (J-142).
 
 **0. A fresh nonce for this run (the Arbiter).** Each run uses its own one-time image. The reviewed candidate
-`build\stage3d\20261014T014738Z-13ed21be49c7b4ba` (fs-pattern v0.7.1) is the reference; its nonce was spent on Unit 1
-(J-144), and the rebuild `20261014T062407Z-3581faf87b8706eb` on Unit 2 (J-146). The first candidate
-`20261013T065151Z-7a22c3d2ff0fef44` is withdrawn (its nonce spent, J-141), and so is the first v0.7.1 build
+`build\stage3d\20261014T014738Z-<attempt nonce withheld>` (fs-pattern v0.7.1) is the reference; its nonce was spent on Unit 1
+(J-144), and the rebuild `20261014T062407Z-<attempt nonce withheld>` on Unit 2 (J-146). The first candidate
+`20261013T065151Z-<attempt nonce withheld>` is withdrawn (its nonce spent, J-141), and so is the first v0.7.1 build
 `20261014T012519Z-2b2596964c0812b1` (superseded, never booted): never use either. For each run the Arbiter rebuilds in
 WSL (`wsl.exe -e bash <repo>/devices/quest3/stage3d/build-image.sh`)
 and checks that only the nonce changed:
-`powershell.exe -NoProfile -ExecutionPolicy Bypass -File devices\quest3\host\fs-nonceonly3d.ps1 -Reference build\stage3d\20261014T014738Z-13ed21be49c7b4ba -Candidate <img>`
+`powershell.exe -NoProfile -ExecutionPolicy Bypass -File devices\quest3\host\fs-nonceonly3d.ps1 -Reference build\stage3d\20261014T014738Z-<attempt nonce withheld> -Candidate <img>`
 It must print `NONCE-ONLY REBUILD: OK` (it opens both images and both ramdisks: only the nonce in `/init` may differ).
 `fs-observe3d.ps1` runs the same check itself and refuses any image that is neither the reviewed candidate nor a
 nonce-only rebuild of it (also at `-Preflight`). If it reports that the image sizes differ, rebuild once more.

@@ -1,0 +1,67 @@
+# c-kmsg-findings mods=['kmsg-findings'] plan=['verify', 'ack', 'run', 'done']; image <repo>/build/k1a/20261015T163855Z-ecbcbd4f7b6f43c0
+# reboots: 16375.23 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=ecbcbd4f7b6f43c0 resp=7d96d6995c0f886613c9269c106e999ac1e4e619faff9285121cb10d227c274d kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=ecbcbd4f7b6f43c0 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=8ecbb881eab42a52 END]
+PASS  runner completed with a settled prompt  [FSB1 END v=1 nonce=ecbcbd4f7b6f43c0 chal=b91430e74d7fea2af355ce1790286d2f lines=109 rec_sha256=dfba52300aa0952c16337803225699d7957c94a2ad19938f52fbf8a0abb641f9]
+PASS  FSB1 VALID (exp k1a, 8 steps kernel..log, this nonce and challenge)  [VALID]
+PASS  every step exited 0  [[('1', 'kernel', 'exited', '0'), ('2', 'config', 'exited', '0'), ('3', 'mem', 'exited', '0'), ('4', 'modules', 'exited', '0'), ('5', 'kmsg', 'exited', '0'), ('6', 'fs', 'exited', '0'), ('7', 'usb', 'exited', '0'), ('8', 'log', 'exited', '0')]]
+PASS  no step wrote stderr  [[]]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=16353 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [16375.23 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [16375.23 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork)
+PASS  reboot within 3 s of fs-done  [0.8 s]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  ACM-only gadget (J-179): no NCM function made, UDC bound, shell up  [INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK]
+PASS  kernel step: /proc/version = the pinned K1a banner (bind-mounted fake; uname is the host's)  [== uname-r 6.18.33.2-microsoft-standard-WSL2
+== uname-v #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026
+== proc-version
+Linux version 5.10.246-gdbc2bc83a2b6]
+PASS  config step: config_sha256 = sha256(k1a.config) and the K1a option lines present  [== config_gz_bytes 43148
+== config_sha256 4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b
+== k1a-options
+CONFIG_LOCALVERSION_AUTO=y
+# CONFIG_SYSVIPC is not set
+# CONFIG_POSIX_MQUEUE i]
+PASS  mem step: MemTotal reported  [MemTotal:       11683848 kB
+MemFree:        10900000 kB
+MemAvailable:   11000000]
+PASS  modules step: loader lines (MODULE_INDEX, MODLIST, MODULES_READY) and /proc/modules section  [== loaded 2
+== tainted 0
+== loader
+FS[ecbcbd4f7b6f43c0] t=16354s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f]
+PASS  kmsg findings (canned 5.10 lines): modver-matches 4 (disagrees, Unknown symbol, no symbol version, version magic), taint-lines 1 (not a modver match), warnings 1 WARNING / 0 BUG / 3 lines (cut here, WARNING, Call trace)  [== kmsg-lines 12 first=[    0.000000] B
+== modver-matches 4
+[   10.000001] msm_drm: disagrees about version of symbol kmalloc_caches
+[   10.000002] msm_drm: Unknown symbol kmalloc_caches (err -22)
+[   10.000003] spmi_pmic_arb: no symbol version for module_layout
+[   10.000004] fake_mod: version magic '5.10.246 SMP preempt mod_unload aarch64' should be '5.10.246-gdbc2bc83a2b6 SMP preempt mod_unload]
+PASS  fs step: exactly the faked /proc/filesystems and /proc/mounts (no host data)  [== filesystems
+nodev	sysfs
+nodev	tmpfs
+nodev	proc
+nodev	devtmpfs
+nodev	configfs
+== mounts
+rootfs / rootfs rw 0 0
+proc /proc proc rw 0 0
+]
+PASS  kernel log and /proc/mounts came from KernelFake (syslog read and /proc/mounts open answered, no listener errors)  [{'syslog-read': 1, 'syslog-size': 1, 'syslog-other': 0, 'mounts-open': 2, 'open-continue': 700, 'errors': 0}]
+PASS  kmsg step: the log line count, the modver count and the WARNING/BUG counts (FS-R-012 §3)  [== kmsg-lines 12 first=[    0.000000] B
+== modver-matches 4
+[   10.000001] msm_drm: disagrees about version of symbol kmalloc_caches
+[   10.000002] msm_drm: Unknown symbol kmalloc_caches (err -22)
+[  ]
+PASS  fs step: /proc/filesystems and /proc/mounts sections
+PASS  usb step: UDC a600000.dwc3, config functions 'acm.gs0' only, product FrameShift K1a, serial FS-<nonce>  [== udc a600000.dwc3 state=configured
+== config-functions acm.gs0 
+== product FrameShift K1a serial=FS-ecbcbd4f7b6f43c0
+]
+PASS  log step: /run/fs.log with SHELL_READY
+SCENARIO c-kmsg-findings PASS

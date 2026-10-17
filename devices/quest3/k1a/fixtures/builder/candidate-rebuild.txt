@@ -1,0 +1,6 @@
+candidate 20261015T163855Z-ecbcbd4f7b6f43c0
+nonce ecbcbd4f7b6f43c0 stamp 20261015T163855Z
+candidate image 42cda89e9db47c548759a549ab00dabed8879925c47d70f74e4be5107237e79c
+rebuilt   image 42cda89e9db47c548759a549ab00dabed8879925c47d70f74e4be5107237e79c
+candidate ramdisk.cpio      6efe099e625d1ecfa48affdfd8cd153e64f81934b1f6657017a23d4035e09eab  size=2704384
+rebuilt   ramdisk.cpio      6efe099e625d1ecfa48affdfd8cd153e64f81934b1f6657017a23d4035e09eab  size=2704384

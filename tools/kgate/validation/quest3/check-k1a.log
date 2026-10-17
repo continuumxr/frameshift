@@ -1,0 +1,29 @@
+PASS reference-integrity: device quest3; reference sha256 daf9546ea2ca4e99a22d67aa9cf1ec67686c0a6d6b6633a38319096ecafb63aa matches the profile pin; all derived fields re-derived from 272 module records; stock BTF kinds re-scanned
+PASS profile-committed: profile equals its committed git blob f18d8e5756547e65b03110146c29b2377f1f244d
+PASS build-pins: build 'k1a': request list, allowlist and baseline match the profile pins
+PASS base-config: requested base config equals the IKCONFIG of the device's pinned stock kernel
+PASS symvers-duplicates: no duplicate rows (15931 rows, 14059 vmlinux)
+PASS crc: 2601/2601 vendor-required (symbol, CRC) pairs match vmlinux
+PASS module-layout: module_layout 0xb1f01218 matches
+PASS unversioned-imports: 0 unversioned vendor import(s) present in vmlinux
+PASS export-collision: none of the 1860 vendor-exported symbols is exported by vmlinux
+PASS namespace: no vendor import needs a symbol namespace it does not declare
+PASS gpl-only: no GPL-only export is used by a non-GPL-compatible vendor module
+PASS baseline: 0 of 14059 baseline vmlinux exports changed or removed; 0 added
+PASS requested-options: all 8 requested option(s) satisfied
+WARN requested-config-toolchain: 1 difference(s) in CONFIG_PAHOLE_VERSION (host pahole probe; justified in README)
+   warn requested-config-toolchain: CONFIG_PAHOLE_VERSION: base 0, resulting .config 131
+WARN requested-config-allowlisted: 6 unrequested change(s) accepted by the explicit allowlist $HOME/AppData/Local/Temp/fs-k1a/tools/kgate/validation/requests/quest3-k1a.allow
+   warn requested-config-allowlisted: CONFIG_CC_CAN_LINK: base not set, resulting .config y
+   warn requested-config-allowlisted: CONFIG_CC_CAN_LINK_STATIC: base not set, resulting .config y
+   warn requested-config-allowlisted: CONFIG_CRYPTO_XXHASH: base not set, resulting .config m
+   warn requested-config-allowlisted: CONFIG_RAID6_PQ: base not set, resulting .config m
+   warn requested-config-allowlisted: CONFIG_RAID6_PQ_BENCHMARK: base not set, resulting .config y
+   warn requested-config-allowlisted: CONFIG_XOR_BLOCKS: base not set, resulting .config m
+PASS requested-config: .config equals base <repo>/firmware/quest3/extracted/v2.7-user_ota/kernel.config + requests, except the allowlisted/toolchain entries reported above
+PASS vermagic-image: kernel image carries the module-loader vermagic '5.10.246-gdbc2bc83a2b6 SMP preempt mod_unload modversions aarch64'
+PASS vermagic: vermagic flags 'SMP preempt mod_unload modversions aarch64' match (release string not compared under modversions)
+PASS btf-kinds: 111694 types; no kinds beyond stock (ARRAY, CONST, DATASEC, ENUM, FUNC, FUNC_PROTO, FWD, INT, PTR, RESTRICT, STRUCT, TYPEDEF, UNION, VAR, VOLATILE) -- kind scan only, not BTF validation
+PASS config-binding: supplied .config is byte-identical to the image's embedded IKCONFIG (196932 bytes)
+PASS input-binding: Module.symvers vmlinux rows equal the 14059 decoded entries of the __ksymtab*/__kcrctab* tables (name, CRC, type, namespace; both ways); kernel image equals objcopy -O binary of vmlinux (exact length, gaps zero); in the Image's own kallsyms, __start/__stop___ksymtab* and __start___kcrctab* equal the decoded tables' bounds and every entry's address equals its symbol's kallsyms address; tables sorted; sections end before _edata and match the pinned section set; .symtab agrees (cross-check); banner, IKCONFIG and BTF blob match
+RESULT: PASS (exit 0) -- build ACCEPTED -- matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open

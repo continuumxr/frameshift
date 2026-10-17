@@ -1,0 +1,48 @@
+# k1a builder negatives  2026-10-15T19:14:48Z; build-image.sh sha256=10b5d399f47087ab267fc77c4ec76935d3a5cebf9b4c5891868e6a8b46c4153b
+PASS  kernel-tampered  rc=1  BUILD REFUSED: K1a kernel hash differs from the pin ($HOME/work/fsbuild-neg/k1a/Image-flip: e932303f55026113ccf7a71a667ba99899781c39e2820783c32d328f78651794 != 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840)
+PASS  kernel-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/Image
+PASS  kernel-stock-v27  rc=1  BUILD REFUSED: K1a kernel hash differs from the pin (<repo>/firmware/quest3/extracted/v2.7-user_ota/Image: db61c073962bf1df38cbb09cbb01f03e5595822754ffea1dc75166555f7d545e != 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840)
+PASS  kernel-group-a-build  rc=1  BUILD REFUSED: K1a kernel hash differs from the pin ($HOME/work/kgate27/out-a/arch/arm64/boot/Image: 786468a6f04fcc5c4df017ea5474af4cc71ce3c7d819352f2602eb0516aba851 != 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840)
+PASS  kernel-symlink  rc=1  BUILD REFUSED: input missing or not a regular file: $HOME/work/fsbuild-neg/k1a/Image-link
+PASS  config-tampered  rc=1  BUILD REFUSED: K1a config (k1a/kernel/k1a.config) hash differs from the pin ($HOME/work/fsbuild-neg/k1a/k1a.config: 0fa0db569359a34cf84e52728eb95ec4973aea9dfec46cdc4fa4d3eecd4ce127 != 4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b)
+PASS  gate-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/check-k1a.json
+PASS  gate-result-fail  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: result FAIL exit 1
+PASS  gate-waived  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: waivers {'committed-profile': 'pending commit'}
+PASS  gate-crc-mismatch  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: required_result {'match': 2600, 'mismatch': 1, 'missing': 0, 'required': 2601}
+PASS  gate-report-only  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: mode report-only
+PASS  gate-check-missing  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: gate checks not present exactly once as PASS: ['input-binding']
+PASS  gate-other-reference  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: gated reference 0000000000000000000000000000000000000000000000000000000000000000 is not daf9546ea2ca4e99a22d67aa9cf1ec67686c0a6d6b6633a38319096ecafb63aa
+PASS  gate-baseline-changed  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: baseline_result {'changed': 1, 'removed': 0, 'type_or_ns_changed': 0}
+PASS  gate-extra-check  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: unexpected gate checks ['unknown-new-check']
+PASS  gate-other-vmlinux  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: gated vmlinux 1111111111111111111111111111111111111111111111111111111111111111 is not 8686b77c44ae1ebffa8f3844b3ef0162c30a332b379b2075aec9698e930fb8ca
+PASS  gate-tool-version  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: kgate tool_version 2.2 (2.3 expected; review m1)
+PASS  gate-other-build  rc=1  BUILD REFUSED: K1a kernel check: kgate result is not a gate PASS for this Image: build a; gated kernel 786468a6f04fcc5c4df017ea5474af4cc71ce3c7d819352f2602eb0516aba851 is not this Image 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840; gated config is not k1a.config; gated vmlinux 34eb01b646433582e736e53380cdce88e6256e12fd31a25432098c3a9d77f901 is not 8686b77c44ae1ebffa8f3844b3ef0162c30a332b379b2075aec9698e930fb8ca; gated requested 9f142f87989919a5115cbe84c344a6bdc64bb17259e776fd0f2f39ca05604fd7 is not d812a76dc1be4c550bb51154622fdb5d548aeccf03352674eea7a945ff0fb53e; gated profile 692d26fb8fafcda2d76b16ed5b7fca1697c4a632249da00a3d9d7956929be13e is not 07b6274ee192c47813d9d93a71cd95c37db69ae5f79d98661f50eccfc52fcb52
+PASS  busybox-tampered  rc=1  BUILD REFUSED: busybox hash differs from the pin ($HOME/work/fsbuild-neg/k1a/busybox: 05cb73694524f673df60bff68a5bb4ef98af6e884eb2a3559b41b51b3d7c9dd2 != c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02)
+PASS  fs-supervise-missing  rc=1  BUILD REFUSED: input missing or not a regular file: /nonexistent/fs-supervise
+PASS  fs-reboot-final-tampered  rc=1  BUILD REFUSED: fs-reboot-final hash differs from the pin ($HOME/work/fsbuild-neg/k1a/fs-reboot-final: 8537deba91e392661567c6169237465e10958e4a9365b1de8fd9c927aac7d0a0 != ec52c93441012bf00f9717f2bdbb2ea3dba98703a7babab8ad3e26a0f60cf08e)
+PASS  fs-reboot-tampered  rc=1  BUILD REFUSED: fs-reboot hash differs from the pin ($HOME/work/fsbuild-neg/k1a/fs-reboot: 9c07d261923702124f8b6e256658afc5fa2d277991ffda8b4f86f926dc038747 != c393eef56e387f03148f6d919f788d9b3af605d571f4f54f60c2061122491f29)
+PASS  fsb1-pace-tampered  rc=1  BUILD REFUSED: common fsb1-pace.sh hash differs from the pin ($HOME/work/fsbuild-neg/k1a/fsb1-pace.sh: c4eec3279a0e5c68a69ce34a55a59d2e73c35a87356b4c95806551d233f5b938 != 71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c)
+PASS  stock-boot-v66  rc=1  BUILD REFUSED: AVB check: the stock inputs do not reproduce Unit 2's runtime vbmeta digest and hash descriptors
+PASS  stock-vboot-v66  rc=1  BUILD REFUSED: AVB check: the stock inputs do not reproduce Unit 2's runtime vbmeta digest and hash descriptors
+PASS  vbmeta-v66  rc=1  BUILD REFUSED: vbmeta hash differs from the pin (<repo>/firmware/quest3/v66_unit1_slotA/vbmeta.img)
+PASS  module-list-plus-tsens  rc=1  BUILD REFUSED: module list (modules.load.v66) hash differs from the pin ($HOME/work/fsbuild-neg/k1a/modlist-plus-tsens: bf5902ac2afc271ae3a340b42dd503c39221a689da72ae38156e45b12a65ecfc != 1b93d77d029146cf93289be87de51514c6ab7b96987f9c467a7f13f6e2a6463f)
+PASS  init-moddep-pin-wrong  rc=1  BUILD REFUSED: init.sh MODDEP_SHA is not the pinned vendor_boot's modules.dep
+PASS  inject-extra-file  rc=1  BUILD REFUSED: ramdisk contents differ from the expected list
+PASS  nonce-not-hex  rc=1  BUILD REFUSED: nonce is not lowercase hex
+PASS  nonce-short  rc=1  BUILD REFUSED: nonce is not 16 characters
+PASS  init-crlf  rc=1  BUILD REFUSED: CR characters in $HOME/work/fsbuild-neg/k1a/init-crlf.sh (must be LF only)
+PASS  init-debugfs-mount  rc=1  BUILD REFUSED: debugfs in a non-comment line of $HOME/work/fsbuild-neg/k1a/init-debugfs.sh
+PASS  init-extra-mount  rc=1  BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/k1a/init-devtmpfs.sh: $BB mount -t devtmpfs devtmpfs /dev
+PASS  init-drm-node  rc=1  BUILD REFUSED: a DRM, backlight or panel path in a non-comment line of $HOME/work/fsbuild-neg/k1a/init-dri.sh
+PASS  runner-backlight-write  rc=1  BUILD REFUSED: a DRM, backlight or panel path in a non-comment line of $HOME/work/fsbuild-neg/k1a/runner-bl.sh
+PASS  info-redirect-write  rc=1  BUILD REFUSED: fs-k1a-info.sh redirects output into a file
+PASS  info-insmod  rc=1  BUILD REFUSED: fs-k1a-info.sh calls a writing command
+PASS  info-backlight-blocked  rc=1  BUILD REFUSED: backlight_changes_blocked in a non-comment line of $HOME/work/fsbuild-neg/k1a/info-blbc.sh
+PASS  checkout-dirty  rc=1  BUILD REFUSED: the checkout has uncommitted changes in the image's sources: ?? devices/quest3/k1a/kernel/dirty-probe
+PASS  repro-same-nonce  two builds, nonce 0123456789abcdef: image 9dd5246ca95e36b289a1a9aa957bd119d7c8c9bb3550f41f7bee915a264a2094 both times; ramdisk.cpio      f924be71be16356156cf33fafba71bd8bf30eb2fd6ec78d27ef664a8f39ba63e  size=2704384
+PASS  nonce-only  kernel bytes identical: 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840 (42967552 bytes); ramdisk: 21 entries, only /init differs, only at the nonce
+PASS  nonce-only-negative  NONCE-ONLY REBUILD: REFUSED: the cpio archives differ beyond the nonce in /init
+PASS  nonce-only-same-nonce  NONCE-ONLY REBUILD: REFUSED: the nonces are equal (0123456789abcdef): a nonce is single-use
+PASS  candidate-rebuild  nonce ecbcbd4f7b6f43c0 stamp 20261015T163855Z: image 42cda89e9db47c548759a549ab00dabed8879925c47d70f74e4be5107237e79c again; identical cpio
+PASS  candidate-nonce-only  the candidate vs a rebuild with nonce fedcba9876543210: NONCE-ONLY REBUILD: OK
+TOTAL: 46 cases, 0 failed

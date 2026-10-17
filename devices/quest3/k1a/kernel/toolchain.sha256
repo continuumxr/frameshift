@@ -1,0 +1,16 @@
+41131b03d674645836c23635a7e2ae478bd869b3b3da98204365c06610ec5438  $HOME/toolchains/clang-r450784e/bin/clang
+858eaed0308ad1da1d21ff1df1616130cfe4b96f2502fd7099086f9cd48dbb41  $HOME/toolchains/clang-r450784e/bin/lld
+4cc0e1b230346004052c966781aafefd1f3feb9a019222ce2221154802c6972b  $HOME/toolchains/clang-r450784e/bin/llvm-ar
+8ef2bb1edcf34922b01ca4dcba2e527c253a9f76e20470336769851d89e09348  $HOME/toolchains/clang-r450784e/bin/llvm-nm
+611dc046eb2bb98d7ec80918355b977540399d38fca972b9d73309ab62fc5512  $HOME/toolchains/clang-r450784e/bin/llvm-objcopy
+b0dd32c68313b01d47206a5c727c1c84b12dfe9824cd84af0fd988efd04211e6  $HOME/toolchains/clang-r450784e/bin/llvm-objdump
+2f71a6cf3e506d86fb84aa18c4ff908929ac963d7a6696cf27fa607adcc6b59f  $HOME/toolchains/clang-r450784e/bin/llvm-readobj
+343c3432ca9519678bc815b38bb27e731b3a0758644c8cfc8427f9966eda0820  $HOME/toolchains/clang-r450784e/bin/llvm-size
+cc48e73b8c841db6cacf53bd822a1bd1864ebaaa342bbfb2de0bb6c97dec30de  $HOME/toolchains/build-tools/bin/make
+8641cad0cda54800debbf800a29b34309bc857f1450d84195ff83e23ec7ec1ca  /usr/bin/pahole
+90800ff93118a11d544273bc31a629587395f0d51d98465beb9cab67d85e183a  /usr/lib/x86_64-linux-gnu/libdw-0.194.so
+8e42dd7ace6d521b6b10994e10273056ba1db99d36b2ff4ec2b22c15e746f32d  /usr/lib/x86_64-linux-gnu/libdwarves.so.1.0.0
+cd2e9bd1a83f51cf5ea1ba189a5cd105b6a960aeb7d2299baa59d7b1e8692ceb  /usr/lib/x86_64-linux-gnu/libdwarves_emit.so.1.0.0
+1f166f2b192bf5ce4803fa596fe259eab6aca53ddfdf79b23d3388870b4afe7b  /usr/lib/x86_64-linux-gnu/libdwarves_reorganize.so.1.0.0
+f77db7b4cfa02c98aa5918caf1f02b6cf37a5998e2e5cc8e43e664dbb72c87fa  /usr/lib/x86_64-linux-gnu/libelf-0.194.so
+c254ba50a58163446cdb18cd44ec7a87cdc8b7c8e311a0047fdede6b8cc68f8b  $HOME/work/kgate27/src/vmlinux.profdata

@@ -1,0 +1,31 @@
+PASS eureka-v66: digest = sha256(canonical record of the derived table)
+PASS eureka-v66: compiled-in row equals known-firmware.tsv
+PASS eureka-v66: label -> json/VR hash, size, incremental, device as cited by the design (F31, F40)
+PASS eureka-v27: digest = sha256(canonical record of the derived table)
+PASS eureka-v27: compiled-in row equals known-firmware.tsv
+PASS eureka-v27: label -> json/VR hash, size, incremental, device as cited by the design (F31, F40)
+PASS hollywood-v27: digest = sha256(canonical record of the derived table)
+PASS hollywood-v27: compiled-in row equals known-firmware.tsv
+PASS hollywood-v27: label -> json/VR hash, size, incremental, device as cited by the design (F31, F40)
+PASS eureka: built-in fallback = reviewed file eureka-v66, sensor by sensor
+PASS eureka: built-in fallback = design §4.1 / F12 numbers
+PASS hollywood: built-in fallback = reviewed file hollywood-v27, sensor by sensor
+PASS hollywood: built-in fallback = design §4.1 / F12 numbers
+PASS v2.7 differs from v66 only in usb-conn (LIGHT 70, hyst 45)
+PASS Quest 3 caps: NORMAL = L4 1.92 GHz / 545 MHz (P11 rejected), P3 LIGHT..SEVERE, T4/T5 minimum
+PASS Quest 3 fan: levels 0/3700/4500/5000/5500, P1 3700, P4 4500/5000/5500, top 5500
+PASS Quest 3 fan rules: 28 zones (12 cpu, 2 cpuss, 8 gpuss, 3 nspss, soc, batt-virt, surf-virt)
+PASS P5 usb-conn 70 °C
+PASS Quest 2 (J-172): CPU caps none at T0-T2, min at T3-T5; policies 0/4/7; no fan rules -> READY only headless
+PASS Quest 3: soc-usr is the only weak sensor; ddr monitored; DT max-rpm 8500; policies 0/2
+PASS Quest Pro (no built-in set): refused, never READY (A-9)
+PASS fs-thermald: no forbidden write target in the binary
+PASS fs-metacfg: no forbidden write target in the binary
+PASS fs-metacfg.a64: no forbidden write target in the binary
+PASS fs-thermald-sim.a64: no forbidden write target in the binary
+PASS fs-thermald.a64: no forbidden write target in the binary
+PASS fs-thermald-trial.a64: no forbidden write target in the binary
+PASS fs-thermald-logonly.a64: no forbidden write target in the binary
+PASS fs-thermald-logonly-trial.a64: no forbidden write target in the binary
+PASS fs-poweroff-final.a64: no forbidden write target in the binary
+tables and static checks: 30/30 pass

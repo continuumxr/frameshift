@@ -329,7 +329,7 @@ temporary (`fastboot boot` or no boot at all).
   kernel console**: ramoops is active (`serial-session3…:214-216`).
 - Read-only commands, for the Arbiter and PM to decide on: *[removed for
   publication]*.
-- Identify the record by its `FS[17449af173f0633a]` lines.
+- Identify the record by its `FS[<attempt nonce withheld>]` lines.
 - The headset was cold-booted since the trial, so survival is uncertain.
 - Every further reboot lowers the odds.
 

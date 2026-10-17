@@ -1,0 +1,75 @@
+{
+ "ack": "a32fab4dc62aef6b",
+ "checks": [
+  {
+   "detail": "DEADLINE armed t0=16378 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "16438.98 final pid=1 arg=error-udc",
+   "label": "first reboot reason = error-udc",
+   "ok": true
+  },
+  {
+   "detail": "16438.98 final pid=1 arg=error-udc",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "T0+61.0",
+   "label": "bind failure: reboot error-udc at T0 + ERR_DELAY 60 (..+4)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED ERROR_udc",
+   "label": "bind failure: ERROR_udc ('bind failed'), no UDC_BOUND, no shell",
+   "ok": true
+  }
+ ],
+ "kernel_fake_counts": {
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 372,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0
+ },
+ "mods": [
+  "bind-fail"
+ ],
+ "nonce": "ecbcbd4f7b6f43c0",
+ "ok": true,
+ "plan": [],
+ "reboot_at_T0_plus": 61.0,
+ "runner_challenge": "4286092395e435ad35aa8a87846b0032",
+ "scenario": "c-bind-fail",
+ "t_total_s": 62.2,
+ "verify_challenge": "577db4269c53474547ee507f059fa69e",
+ "want_reboot": "error-udc"
+}

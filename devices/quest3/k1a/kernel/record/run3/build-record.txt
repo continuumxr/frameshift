@@ -1,0 +1,59 @@
+# K1a kernel build record
+start: 2026-10-15T16:50:51Z
+outdir: $HOME/work/kgate27/out-k1a
+host: Linux 6.18.33.2-microsoft-standard-WSL2 x86_64; nproc 12; make -j12
+source: dbc2bc83a2b673f5d1c24ee9dadb0cd708ffda3f (dirty files: 0)
+make: GNU Make 4.3
+clang: Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+ld.lld: LLD 14.0.7 (compatible with GNU linkers)
+pahole: v1.31
+recorded, not pinned: python3 3.14.4; perl v5.40.1; tar (GNU tar) 1.35; xz (XZ Utils) 5.8.3; glibc 2.43
+locale: LANG=C.UTF-8 TZ=UTC umask 0022; randomize_va_space 2; make prefix: setarch x86_64 -R
+KBUILD_BUILD_HOST=k1a
+KBUILD_BUILD_TIMESTAMP=Wed Oct 14 00:00:00 UTC 2026
+KBUILD_BUILD_USER=frameshift
+KBUILD_BUILD_VERSION=1
+make vars: ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CLANG_TRIPLE=aarch64-linux-gnu- REAL_CC=$HOME/toolchains/clang-r450784e/bin/clang LLVM=1 LLVM_IAS=1 LD=$HOME/toolchains/clang-r450784e/bin/ld.lld AR=$HOME/toolchains/clang-r450784e/bin/llvm-ar NM=$HOME/toolchains/clang-r450784e/bin/llvm-nm OBJCOPY=$HOME/toolchains/clang-r450784e/bin/llvm-objcopy OBJDUMP=$HOME/toolchains/clang-r450784e/bin/llvm-objdump READELF=$HOME/toolchains/clang-r450784e/bin/llvm-readelf OBJSIZE=$HOME/toolchains/clang-r450784e/bin/llvm-size STRIP=$HOME/toolchains/clang-r450784e/bin/llvm-strip HOSTCC=$HOME/toolchains/clang-r450784e/bin/clang HOSTAR=$HOME/toolchains/clang-r450784e/bin/llvm-ar HOSTLD=$HOME/toolchains/clang-r450784e/bin/ld.lld HOSTLDFLAGS=-fuse-ld=lld PYTHON=python3
+request list: $HOME/AppData/Local/Temp/fs-k1a/tools/kgate/validation/requests/quest3-k1a.txt sha256 d812a76dc1be4c550bb51154622fdb5d548aeccf03352674eea7a945ff0fb53e
+stock config: <repo>/firmware/quest3/extracted/v2.7-user_ota/kernel.config sha256 87eb12925ec09e7e2ec85e1c09162849f29e3642f9cb8c410d6459d7979ed823 (CRLF-stripped fa0342f1b1dc12d2a723ecb1e390877b31f729480ad8328a89c1b5ae6b1f9a99)
+build-kernel.sh: 604ba1e17afbdc795bf032a92be5fcc7fb48cdab3604a999dbe7ace20deb5db5
+toolchain: matches toolchain.sha256 (16 files; pin file sha256 32d5a27124298d999912fba57363be00a82c299c89c9958d5ddb6e155f1abf83)
+toolchain: matches toolchain-clanglib.sha256 (716 files; pin file sha256 a73651cebc8e76c1318115692f527dc37abfb98b387a7762d5fc6ce9dd261af1)
+toolchain: every tool name resolves to its pinned file (toolchain.links, 9 names)
+requests: --enable DEVTMPFS --enable DEVTMPFS_MOUNT --enable FHANDLE --module AUTOFS_FS --module BTRFS_FS --enable BTRFS_FS_POSIX_ACL --enable TMPFS_XATTR --enable TMPFS_POSIX_ACL
+== config delta vs stock (olddefconfig of stock.config = the step-2 build's .config):
+< # CONFIG_AUTOFS_FS is not set
+> # CONFIG_BCM_SBA_RAID is not set
+< # CONFIG_BTRFS_FS is not set
+> # CONFIG_BTRFS_ASSERT is not set
+> # CONFIG_BTRFS_DEBUG is not set
+> # CONFIG_BTRFS_FS_CHECK_INTEGRITY is not set
+> # CONFIG_BTRFS_FS_REF_VERIFY is not set
+> # CONFIG_BTRFS_FS_RUN_SANITY_TESTS is not set
+< # CONFIG_CRYPTO_XXHASH is not set
+< # CONFIG_DEVTMPFS is not set
+< # CONFIG_FHANDLE is not set
+< # CONFIG_TMPFS_POSIX_ACL is not set
+< # CONFIG_TMPFS_XATTR is not set
+> CONFIG_AUTOFS_FS=m
+> CONFIG_BTRFS_FS=m
+> CONFIG_BTRFS_FS_POSIX_ACL=y
+> CONFIG_CRYPTO_XXHASH=m
+> CONFIG_DEVTMPFS=y
+> CONFIG_DEVTMPFS_MOUNT=y
+> CONFIG_FHANDLE=y
+> CONFIG_RAID6_PQ=m
+> CONFIG_RAID6_PQ_BENCHMARK=y
+> CONFIG_TMPFS_POSIX_ACL=y
+> CONFIG_TMPFS_XATTR=y
+> CONFIG_XOR_BLOCKS=m
+build rc=0 in 4858s
+banner: Linux version 5.10.246-gdbc2bc83a2b6 (frameshift@k1a) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #1 SMP PREEMPT Wed Oct 14 00:00:00 UTC 2026
+kernelrelease: 5.10.246-gdbc2bc83a2b6
+4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b  .config
+8686b77c44ae1ebffa8f3844b3ef0162c30a332b379b2075aec9698e930fb8ca  vmlinux
+087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840  arch/arm64/boot/Image
+0ce513c3af499dff91fd634f0ac940c50f9b5fe84f3bf6867776fe27d5ded621  Module.symvers
+ee48a288fea6aa9aa170626289aaa10026ddd9d6a28c62b62ea5802527155931  System.map
+.ko: 278 (list sha256 f2fbdb1bb86b6e662bf88aee03e33abc97fe95fb0b8def8bf00b161930fc3602)
+end: 2026-10-15T18:12:58Z

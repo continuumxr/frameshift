@@ -21,10 +21,10 @@ Execution needs the PM's executive decision (J-107 decision 3) with every condit
 
 | | |
 |---|---|
-| file | `build/stage3c/20261012T010256Z-b7cf9a0bfb559dcb/boot-stage3c.img` (gitignored) |
+| file | `build/stage3c/20261012T010256Z-<attempt nonce withheld>/boot-stage3c.img` (gitignored) |
 | SHA-256 | **`9d3ad98400ac94f42b291a66b0420576df5ad8ee447e831d971fcaba9bd914bd`** (CANDIDATE) |
 | size | 43,167,744 B |
-| nonce | `b7cf9a0bfb559dcb` (USB serial `FS-b7cf9a0bfb559dcb`), fresh from the builder (`openssl rand -hex 8`). One attempt only |
+| nonce | `<attempt nonce withheld>` (USB serial `FS-<attempt nonce withheld>`), fresh from the builder (`openssl rand -hex 8`). One attempt only |
 | builder | `stage3c/build-image.sh` `25b4a0094805d0e11279ea64a3f0ced1e39297b40647461b0c343816441688da`; records in the build directory (MANIFEST.txt, ramdisk.list, ramdisk.sha256, applets.txt, header-diff.txt, ramdisk-scan.txt, gitcheck.txt) |
 | stock boot | `49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50` |
 | kernel | `f34165b35a826052ce5b520d9313387c96970b498733f1a7b141dcf4afc94e7b`, byte-identical (AOSP re-unpack) |

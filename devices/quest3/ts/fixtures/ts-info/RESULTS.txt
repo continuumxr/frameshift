@@ -1,0 +1,16 @@
+PASS no output redirection other than 2>/dev/null
+PASS no writing command
+PASS mem: MemTotal and MemAvailable
+PASS zones: type and temp, ERR for an unreadable temp
+PASS iio: device name and the PMIC channel
+PASS rproc: the v2.7 ADSP name and state
+PASS fan: pwmfan attributes, ERR when absent
+PASS cpufreq: per policy
+PASS dload: the raw text
+PASS dload: ABSENT when the module is not loaded
+PASS leds
+PASS modules: names and count
+PASS model
+PASS unknown role refused
+PASS the tree is unchanged after every role
+fs-ts-info: 15/15 pass

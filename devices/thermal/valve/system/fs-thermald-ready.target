@@ -1,0 +1,8 @@
+# FrameShift thermal service, Valve layer (emergency-shutdown-design.md §6.2;
+# EXEC-SPEC.md §9): reached only when fs-thermald publishes READY (core READY,
+# fan class included, and the executor's preconditions), through
+# fs-thermald-ready.service. Load-producing units Require= and After= it.
+[Unit]
+Description=FrameShift thermal supervisor READY
+Requires=fs-thermald-ready.service
+After=fs-thermald-ready.service

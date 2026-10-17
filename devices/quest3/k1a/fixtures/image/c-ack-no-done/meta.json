@@ -1,0 +1,96 @@
+{
+ "ack": "96a535e0d86d2cca",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=ecbcbd4f7b6f43c0 resp=0a74ac2cae0520f56d21378f47ca3379461327722376c8decaf3a192b1955317 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=ecbcbd4f7b6f43c0 stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=96a535e0d86d2cca END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=16326 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "16526.47 final pid=1 arg=deadline",
+   "label": "first reboot reason = deadline",
+   "ok": true
+  },
+  {
+   "detail": "16526.47 final pid=1 arg=deadline",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "16528.09 fork pid=452 arg=backstop",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "T0+200.5",
+   "label": "deadline reboot at T0+DEADLINE..+3 (HOST_ACK did not cancel it)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK",
+   "label": "ACM-only gadget (J-179): no NCM function made, UDC bound, shell up",
+   "ok": true
+  }
+ ],
+ "kernel_fake_counts": {
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 1098,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0
+ },
+ "mods": [],
+ "nonce": "ecbcbd4f7b6f43c0",
+ "ok": true,
+ "plan": [
+  "verify",
+  "ack"
+ ],
+ "reboot_at_T0_plus": 200.5,
+ "runner_challenge": "6a3fa10cd0760ae6658eba12ae57a42c",
+ "scenario": "c-ack-no-done",
+ "t_total_s": 202.8,
+ "verify_challenge": "2f560e0a6f6cb5488c1ec804999962d9",
+ "want_reboot": "deadline"
+}

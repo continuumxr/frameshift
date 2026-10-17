@@ -195,7 +195,7 @@ userspace.
 **Responder:**
 - The image runs `while :; do nc -l -p <port> -e /bin/fs-rpc; done`.
 - The reviewed busybox (sha256 `c2f279d1…`) has `nc` and `udhcpd` in its
-  applet table (`build/stage1/20261008T024856Z-112740d1bd6a4ecf/applets.txt:151,244`).
+  applet table (`build/stage1/20261008T024856Z-<attempt nonce withheld>/applets.txt:151,244`).
 - Its `nc` option string `lp:w:i:f:e:` is present in the binary, so `-l`,
   `-p` and `-e` are compiled in [M-static]. Their runtime behaviour is [O]
   (qemu-user, Q2-P0).

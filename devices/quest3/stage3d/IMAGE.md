@@ -1,12 +1,12 @@
 # Stage 3d boot image: the stage-3c display test on Unit 2's own v2.7
 
-**Status (2026-10-14, J-144/J-146): `fcca5ee7…4fb5` was booted once on Unit 1 (nonce `13ed21be49c7b4ba`) and its
-nonce-only rebuild `46b28f01…c06b` once on Unit 2 (nonce `3581faf87b8706eb`); both registered STAGE PASS and both nonces
+**Status (2026-10-14, J-144/J-146): `fcca5ee7…4fb5` was booted once on Unit 1 (nonce `<attempt nonce withheld>`) and its
+nonce-only rebuild `46b28f01…c06b` once on Unit 2 (nonce `<attempt nonce withheld>`); both registered STAGE PASS and both nonces
 are spent. The status text below is earlier and is kept as written.**
 
-**Status (2026-10-14, J-141): NEW CANDIDATE `fcca5ee7…4fb5` (nonce `13ed21be49c7b4ba`), fs-pattern v0.7.1 and the
+**Status (2026-10-14, J-141): NEW CANDIDATE `fcca5ee7…4fb5` (nonce `<attempt nonce withheld>`), fs-pattern v0.7.1 and the
 fs-probe.sh dmesg filter, for Unit 1 first (PM: fix first, then Unit 1, then Unit 2 with a nonce-only rebuild). The
-previous candidate `3d730337…c224` (nonce `7a22c3d2ff0fef44`, fs-pattern v0.7) ran on Unit 2: r1 refused safely with
+previous candidate `3d730337…c224` (nonce `<attempt nonce withheld>`, fs-pattern v0.7) ran on Unit 2: r1 refused safely with
 exit 30 `too_many_modes` before any commit (v2.7's DSI connector lists 305 modes, v0.7's limit was 128; README §3a); its
 nonce is spent and it is withdrawn. The first v0.7.1 build `96cc15aa…3fad` (nonce `2b2596964c0812b1`, the stage-3c
 fs-probe.sh) was superseded before any boot (never booted, nonce never used) and is withdrawn too. Offline only; the new
@@ -16,10 +16,10 @@ image has not been booted.** The rest of this section is the 2026-10-13 status o
 
 | | |
 |---|---|
-| file | `build/stage3d/20261014T014738Z-13ed21be49c7b4ba/boot-stage3d.img` (gitignored) |
+| file | `build/stage3d/20261014T014738Z-<attempt nonce withheld>/boot-stage3d.img` (gitignored) |
 | SHA-256 | **`fcca5ee791ee6e9dcf696eba16c676de1c26ab60ce82211c49a457e9cca24fb5`** (CANDIDATE) |
 | size | 44,875,776 B (as before) |
-| nonce | **`13ed21be49c7b4ba`** (USB serial `FS-13ed21be49c7b4ba`), fresh from the builder (`openssl rand -hex 8`). One attempt only |
+| nonce | **`<attempt nonce withheld>`** (USB serial `FS-<attempt nonce withheld>`), fresh from the builder (`openssl rand -hex 8`). One attempt only |
 | builder | `stage3d/build-image.sh` `b90c0fbb7e874f798f2dd56fc2f9c25c73b94f82f1b4472c5087abefd7286c34` (the fs-pattern pin; the MANIFEST title says v0.7.1 and its second line "For the Quest 3 units on Horizon OS v2.7 (…; both units, J-131)", review 2 MINOR-6 fixed; the fs-probe.sh source label); `tools/module-list-check.py` `402525cd…` (unchanged) |
 | how built | from the fix branch's `devices/quest3/stage3d` bound (bwrap, WSL) over the main checkout's path, so every MANIFEST path is the main checkout's (as a later nonce-only rebuild from master will write it); output in the main checkout's `build/stage3d/` only |
 | ramdisk | `ramdisk.lz4` `c67d0d8019039616283cb147122eb5cf19766113bf5a2dd78ce004399d35e236` (1,963,122 B); cpio `23a7a95fcbb34dacdadcaffec83853de697c0d551c1e6aaa9fed490649cde417` (3,414,016 B, `--reproducible`); header: only `ramdisk size` (18,697,289 → 1,963,122) |
@@ -49,10 +49,10 @@ level (the swap and roll corrections confirmed).
 
 | | |
 |---|---|
-| file | `build/stage3d/20261013T065151Z-7a22c3d2ff0fef44/boot-stage3d.img` (gitignored) |
+| file | `build/stage3d/20261013T065151Z-<attempt nonce withheld>/boot-stage3d.img` (gitignored) |
 | SHA-256 | **`3d730337c6fa9e0b5aa6dbbe9da382770ad7b104de0399887b7bfd1c30fcc224`** (WITHDRAWN: nonce spent in the J-141 run; fs-pattern v0.7) |
 | size | 44,875,776 B |
-| nonce | **`7a22c3d2ff0fef44`** (USB serial `FS-7a22c3d2ff0fef44`), fresh from the builder (`openssl rand -hex 8`). One attempt only |
+| nonce | **`<attempt nonce withheld>`** (USB serial `FS-<attempt nonce withheld>`), fresh from the builder (`openssl rand -hex 8`). One attempt only |
 | builder | `stage3d/build-image.sh` `605da89e5486aadd01d93c9925ea7f852dc14a27ed94c494bf1f0fb1bf7561f7`; records in the build directory (MANIFEST.txt, avb-check.txt, module-list-check.txt, ramdisk.list, ramdisk.sha256, applets.txt, header-diff.txt, ramdisk-scan.txt, gitcheck.txt) |
 | stock boot | `e32f98c74bcce5c25b098393f7804e19fbba2f0c2034c49a4fcf6aa9a8cdc024` (v2.7 OTA) |
 | kernel | `db61c073962bf1df38cbb09cbb01f03e5595822754ffea1dc75166555f7d545e` (`5.10.246-gd7102a837402`), byte-identical (AOSP re-unpack) |

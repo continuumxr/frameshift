@@ -1,0 +1,60 @@
+PASS watch: DefaultDependencies=no, Before=sysinit.target
+PASS watch: Restart=always
+PASS watch: OOMScoreAdjust=-1000
+PASS watch: heartbeat path and PID 1 given (kill(1, 38), review m4)
+PASS fs-thermald-ready.service: started by something ([Install] WantedBy= or Requires=/Wants=)
+PASS fs-thermald-ready.target: started by something ([Install] WantedBy= or Requires=/Wants=)
+PASS fs-thermald-shutdown.service: started by something ([Install] WantedBy= or Requires=/Wants=)
+PASS fs-thermald-watch.service: started by something ([Install] WantedBy= or Requires=/Wants=)
+PASS shutdown: [Unit] DefaultDependencies=no
+PASS shutdown: [Unit] Conflicts=shutdown.target
+PASS shutdown: [Unit] Before=shutdown.target
+PASS shutdown: [Unit] IgnoreOnIsolate=yes
+PASS shutdown: [Unit] RefuseManualStop=yes
+PASS shutdown: only Before=shutdown.target ordering (rev 3)
+PASS shutdown: [Service] Type=oneshot
+PASS shutdown: [Service] RemainAfterExit=yes
+PASS shutdown: ExecStop sends the byte
+PASS system.conf: RuntimeWatchdogSec=off
+PASS system.conf: RebootWatchdogSec=off
+PASS system.conf: KExecWatchdogSec=off
+PASS system.conf: DefaultTimeoutStopSec=10s
+PASS system.conf: DefaultLimitRTPRIO=49
+PASS poweroff.target: JobTimeoutSec=35s poweroff-force
+PASS reboot.target: JobTimeoutSec=35s with its own force action
+PASS kexec.target: JobTimeoutSec=35s with its own force action
+PASS every service: CapabilityBoundingSet=~CAP_SYS_BOOT, RestrictRealtime=yes
+PASS masked: soft-reboot.target
+PASS masked: systemd-soft-reboot.service
+PASS masked: halt.target
+PASS masked: systemd-halt.service
+PASS masked: sleep.target
+PASS masked: suspend.target
+PASS logind: suspend key ignored, power key powers off
+PASS MASKS.txt: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS kexec.target.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS service.d/50-frameshift-caps.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS service.d/50-frameshift-ro.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS poweroff.target.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS system.conf.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS system/fs-thermald-watch.service: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS system/fs-thermald-ready.service: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS system/fs-thermald-shutdown.service: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS system/fs-thermald-ready.target: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS logind.conf.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS reboot.target.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS check: fresh READY record ok
+PASS check: boottime 6 s behind -> stale-age
+PASS check: boottime 5 s behind -> ok (boundary)
+PASS check: seq unchanged for the 5th tick -> stale-seq
+PASS check: seq unchanged 4 ticks -> ok
+PASS check: missing -> garbled
+PASS check: short record -> garbled
+PASS check: unknown state -> garbled
+PASS send-shutdown: one S byte to a reading supervisor
+PASS send-shutdown: FIFO without a reader -> exit 0 at once (never blocks a stop job)
+PASS send-shutdown: no FIFO -> exit 0
+PASS send-shutdown: a regular file is not written
+PASS watch: a frozen heartbeat -> exactly one signal 38 to PID 1 (graceful T4, no polkit)
+PASS watch: an advancing heartbeat -> no signal (negative control)
+valve layer: 59/59 pass (static unit checks + fs-thermald-watch; NOT the systemd QEMU suite)

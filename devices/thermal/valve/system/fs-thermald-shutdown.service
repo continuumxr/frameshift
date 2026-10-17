@@ -1,0 +1,24 @@
+# FrameShift thermal service, Valve layer (emergency-shutdown-design.md §6.2 rev 3,
+# review 2 item 1; EXEC-SPEC.md §9). Started at boot; stopped early in EVERY
+# systemd shutdown (Conflicts=/Before=shutdown.target), when its ExecStop=
+# writes one SHUTDOWN byte to the supervisor's control FIFO: the supervisor
+# then runs A1 at + 45 s and the final pet + A2 at + 55 s (§5.1).
+[Unit]
+Description=FrameShift thermal supervisor shutdown detector
+DefaultDependencies=no
+Conflicts=shutdown.target
+Before=shutdown.target
+IgnoreOnIsolate=yes
+RefuseManualStop=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/usr/lib/frameshift/fs-thermald-watch send-shutdown /run/fs-thermald/ctl
+CapabilityBoundingSet=
+NoNewPrivileges=yes
+RestrictRealtime=yes
+
+[Install]
+WantedBy=sysinit.target

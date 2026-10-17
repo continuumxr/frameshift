@@ -1,0 +1,4 @@
+PASS eureka-v27: C record == Python record, status vab-policy; json c9301ff553f65255f7e204da9988345a0ecf1a5305099889db43ce1ab5473cd4 == table row; built-in table
+PASS eureka-v66: C record == Python record; json e49b49fe2920cd8300a45598a8cc608ad31360a0eb3010092960cc5d4d294a89 == debugfs; digest 4e03bdb5cedf27dd3d7ac4b03653a940f9b80b5ad733457f548eeb3a4c0606ca == table; accepted
+PASS hollywood-v27: C record == Python record, status vab-policy; json cc3e513784a468d2c322c2aa945a902850aedb354704d3ffb97cd9c697865147 == table row; built-in table
+real images (local only): 3 pass, 0 fail, 0 skipped

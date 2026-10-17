@@ -1,0 +1,10 @@
+PASS  steps = kernel,config,mem,modules,kmsg,fs,usb,log  [kernel,config,mem,modules,kmsg,fs,usb,log]
+PASS  every step runs under fs-supervise with grace 1 s
+PASS  fs-supervise limits: t <= 60, cap <= 1 MiB  [t=[3, 8, 2, 5, 4, 3, 5, 2] cap=[4096, 2048, 256, 8192, 16384, 1024, 2048, 16384]]
+PASS  MAXLINES = 10 + 2 x 1055 = 2120  [runner has 2120]
+PASS  RUNNER_WORST >= steps 100.0 + emission 10.6 s + 2 s writes, rounded up, + 2 = 115  [runner has 115]
+PASS  the time rule is in the runner (now + RUNNER_WORST <= /run/fs.deadline)
+PASS  init.sh DEADLINE 200, ACK_WINDOW 150 (stage 3d values)  [200/150]
+PASS  init.sh writes /run/fs.deadline = T0 + DEADLINE
+PASS  RUNNER_WORST fits the deadline with room for the host steps (< DEADLINE - 60)  [115]
+RESULT PASS

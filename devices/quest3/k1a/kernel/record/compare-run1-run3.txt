@@ -1,0 +1,10 @@
+IDENTICAL .config 4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b
+IDENTICAL vmlinux 8686b77c44ae1ebffa8f3844b3ef0162c30a332b379b2075aec9698e930fb8ca
+IDENTICAL arch/arm64/boot/Image 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840
+IDENTICAL Module.symvers 0ce513c3af499dff91fd634f0ac940c50f9b5fe84f3bf6867776fe27d5ded621
+IDENTICAL System.map ee48a288fea6aa9aa170626289aaa10026ddd9d6a28c62b62ea5802527155931
+.ko: A=278 B=278 differing-lines=0 (list sha256 A f2fbdb1bb86b6e66 B f2fbdb1bb86b6e66)
+Images byte-identical (cmp): 42967552 bytes
+PINS OK   $HOME/AppData/Local/Temp/fs-k1a/devices/quest3/k1a/kernel/record/run1/manifest.txt: Image and .config = build-image.sh's pins
+PINS OK   $HOME/AppData/Local/Temp/fs-k1a/devices/quest3/k1a/kernel/record/run3/manifest.txt: Image and .config = build-image.sh's pins
+RESULT: BIT-IDENTICAL REBUILD

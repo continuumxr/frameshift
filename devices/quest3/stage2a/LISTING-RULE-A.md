@@ -7,7 +7,7 @@ adopted** (FS-R-009 §4).
 
 ## 1. Why
 
-On trial (i) (Quest 3, nonce `93a1501f0b1fb692`) step 4,
+On trial (i) (Quest 3, nonce `<attempt nonce withheld>`) step 4,
 `ld.so --list /valve/bin/b2sum`, printed four lines where the registered
 rule (T1-PINS §3, OUTCOMES §5) allows exactly three. The extra first line,
 `\t (0x0000007fb78d0000)`, is the main program's own map. Its name is
@@ -87,7 +87,7 @@ recorded SHA-256.
 | qemu 4-line, unnamed map **above** the loader (B-a72-b2sum run 3; B-a72-uname run 5) | FAILED | OK |
 | synthetic: above the loader / above the vDSO / address 0x…01 | — | OK |
 | 33 negatives (L14.01–33): duplicate optional line; two optional lines; 5 lines (extra unnamed or named mapping); named first or last line; optional line 2nd/3rd/last; duplicate address (libc, loader, vDSO); zero address; upper-case, 15- and 17-digit, no-`0x` address; malformed required address; two spaces / no tab / trailing space; altered paths (libc `/usr/lib`, loader target `/lib`, interpreter `/XYZ`, 3-line libc); missing vDSO; CRLF; unterminated (4- and 3-line); empty; optional line alone | FAILED | FAILED |
-| whole record: the default is v1 for nonce `93a1501f0b1fb692` and v2A for any other; v2A masks no other failure (L15–L17) | | |
+| whole record: the default is v1 for nonce `<attempt nonce withheld>` and v2A for any other; v2A masks no other failure (L15–L17) | | |
 | registered-run lock: v2A on trial (i) refused by the CLI (exit 64) and the functions (INCONCLUSIVE rule 0) (L18a–c) | allowed | refused |
 
 ## 5. What a re-run of trial (i) needs
@@ -95,7 +95,7 @@ recorded SHA-256.
 Rule A is **host-side only**. The image content (`fs-valve.sh`,
 `fs-supervise`, `/init`) does not change. Even so, **the current image
 cannot be reused**:
-- Its nonce `93a1501f0b1fb692` is spent. The attempt ledger
+- Its nonce `<attempt nonce withheld>` is spent. The attempt ledger
   `build/stage2a/attempted` refuses it (one attempt per nonce; IMAGE.md),
   and FS-A-009 (private review record) records it.
 - A re-run therefore needs a **rebuild with a fresh nonce**

@@ -4,6 +4,7 @@
 run.
 - **Rev 0:** 6256d02.
 - **Rev 1:** ed0f28d (review GO-with-fixes; J-160).
+- **Rev 2.4:** 2026-10-15. **J-183:** D-T3 decided (the product reads the user's own tracking calibration; self-calibration fallback; no reverse engineering of Meta's tracking).
 - **Rev 2.3:** 2026-10-14. **J-170** and `quest-ports-tracking.md` rev 0 (dbeda68):
   - Quest prior art corrected: no reliable 6DoF on any Quest; cstahly's rejected Basalt experiment
     is added (§5.4).
@@ -342,7 +343,7 @@ accuracy. Polished controllers are **new work** [survey §0].
 
 ### 5.4 Quest-port prior art and reusable items (rev 2.3, J-170)
 
-**Corrected prior art [C]:** **there is no reliable 6DoF on any Quest** (head or controllers).
+**Corrected prior art [C]:** **no validated native 6DoF head-and-controller implementation was found in the inspected public sources** (FS-R-013 §12 wording; a research result, not proof that none exists).
 - **cstahly/quest1-bootloader-to-VR** (Quest 1, Nura; MIT, with patches keeping their upstream
   licences) ran **live Basalt 6DoF** in wearer trials:
   - Basalt in a separate process, fed to Monado through an opt-in pose mailbox;
@@ -778,7 +779,7 @@ Quest 1) was rejected for lock loss and lag (§5.4).
 |---|---|---|
 | D-T1 | Architecture | **Decided (J-162):** two layers. P-open the default and only plan; P-valve only via Valve; **no Meta provider** |
 | D-T2 | Order (revised, J-165) | **Bundled controllers first. Q3: 3DoF → 6DoF head → Touch Plus (inputs, then 6DoF) → hands → ring Touch on Q3 → Frame/other controllers later. Q2 port: head → its bundled ring Touch right after → hands → others** |
-| D-T3 | Calibration source (**open, pending PM**) | **Recommendation, pending PM: an export made under Horizon (method [O]); self-calibration fallback; never mount `/persist`** |
+| D-T3 | Calibration source (**decided, PM 2026-10-15, J-183**) | **The product reads each user's own headset's tracking calibration (camera intrinsics/extrinsics, IMU bias and noise, time offset; plus proximity and IPD, see `device-health-design.md` fs-calread) from `/persist`: read-only, at runtime, values stay on the device, never logged or exported, `/persist` never modified or remounted; converted to Basalt's format by our converter. Needs its own Chair-reviewed package. Self-calibration is the fallback for a missing or invalid file. The format is worked out only from the PM's own offline backups (read-only); no development reads on the headsets. No reverse engineering of Meta's tracking software (J-183)** |
 | D-T4 | SyncBoss safety | **The kernel filter of §8.1–8.2; each new command (camera, pairing) is a PM approval** |
 | D-T5 | Pairing (revised, J-165) | **Bundled controllers (Touch Plus on Q3, ring Touch on Q2): reuse the pairing made under Horizon, which fits the owned-controllers priority. Then our own pairing for cross-compatibility (ring Touch on Q3), from observation on our own Q2; stop at C-R if crypto keys or Q3 firmware block it** |
 | D-T6 | Hands (and every NN we ship) | **Trained from scratch by us on clean data (own consented + licensed/synthetic): one camera-agnostic hand model (`mercury_train`/MMPose); MediaPipe as prototype only; Mercury's current models not shipped (J-163)** |

@@ -1,0 +1,17 @@
+# k1a whole-image fixtures  2026-10-15T18:58:52Z
+# image 20261015T163855Z-ecbcbd4f7b6f43c0/boot-k1a.img sha256=42cda89e9db47c548759a549ab00dabed8879925c47d70f74e4be5107237e79c
+# harness sha256=ac55f7aa044140ccb0f20481ed75ab0d1c59bfb61ff139d1cdb22cafc11b3e37  test-image.sh sha256=b45f9e1c704967a44630fc49e7260767f850ef953b1b169702b684a69df1fdf1
+# host: Linux 6.18.33.2-microsoft-standard-WSL2; qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2); bwrap 0.11.1
+# NOT shown here: the K1a kernel booting (no QEMU model of the Quest 3); see tools/image-harness-k1a.py
+SCENARIO c-ack-no-done PASS
+SCENARIO c-no-ack PASS
+SCENARIO c-full PASS
+SCENARIO c-kmsg-findings PASS
+SCENARIO c-bind-fail PASS
+SCENARIO c-repeat PASS
+SCENARIO c-bad-challenge PASS
+SCENARIO c-time PASS
+SCENARIO c-done-early PASS
+SCENARIO c-modules-real PASS
+SCENARIO c-modules-refused PASS
+TOTAL: 11 scenarios, 0 failed

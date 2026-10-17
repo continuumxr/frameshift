@@ -4,7 +4,7 @@
 by FS-R-011 §1 (J-104); NOT yet run on any device.** FS-R-010 concurred with
 *preparing* trial (iii-b) under its §4–§6 decisions; this package was the
 promised pre-trial return (§9), reviewed in FS-R-011. The concurrence is for
-exactly this image (SHA-256 `ea60d6cd…5841`, nonce `6cf0f15867f14edc`) on
+exactly this image (SHA-256 `ea60d6cd…5841`, nonce `<attempt nonce withheld>`) on
 Unit 1 (v66, slot A): one temporary boot, no flash, no retry,
 DEADLINE 200 s / backstop 201 s, the 91 s runner guard, the PM physically
 present with the attended sign-off (`devices/quest3/SIGNOFF.md`, trial

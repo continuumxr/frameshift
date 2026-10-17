@@ -31,10 +31,10 @@ bwrap, WSL kernel), not [M].
 
 | | |
 |---|---|
-| file | `build/stage3a/20261009T085209Z-17449af173f0633a/boot-stage3a.img` (gitignored) |
+| file | `build/stage3a/20261009T085209Z-<attempt nonce withheld>/boot-stage3a.img` (gitignored) |
 | SHA-256 | **`d2bb28f742db12385287568808326d55b459f82af69ab0fc41192363fecccc23`** |
 | size | 43,130,880 B |
-| nonce | `17449af173f0633a` (USB serial `FS-17449af173f0633a`). One attempt only; ledger `build/stage3a/attempted` |
+| nonce | `<attempt nonce withheld>` (USB serial `FS-<attempt nonce withheld>`). One attempt only; ledger `build/stage3a/attempted` |
 | builder | `stage3a/build-image.sh` `da789a3008329f526cfef2472d30d21dc6cdad7bde7e8cc82c200b1ed3c9d73d`; records in the build directory |
 | stock boot | `49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50` |
 | kernel | `f34165b35a826052ce5b520d9313387c96970b498733f1a7b141dcf4afc94e7b`, byte-identical |

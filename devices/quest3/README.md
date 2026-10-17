@@ -17,7 +17,7 @@ v2.7 platform (J-69).
 COMPATIBILITY FAIL at step 4, a listing-rule defect (FS-R-009). Trial (iii)
 (stage 3a display) registered INCONCLUSIVE, with no light seen (FS-R-010;
 kept INCONCLUSIVE by FS-R-011 §3). **Trial (iii-b)** (`stage3b/`, image
-`ea60d6cd…5841`, nonce `6cf0f15867f14edc`) is **concurred to execute by
+`ea60d6cd…5841`, nonce `<attempt nonce withheld>`) is **concurred to execute by
 FS-R-011 §1 (J-104)**: Unit 1, v66 slot A, one temporary boot, no
 flash, no retry, DEADLINE 200 s / backstop 201 s, the 91 s runner guard, the
 PM physically present with the reviewed sign-off, recovery procedure and
@@ -66,6 +66,11 @@ Builder and observer in `stage1/`. Result: FS-A-005 (private review record).
   but garbled; cause analysed in J-108/J-109.
 - `stage3c/`: the rerun, in design (`stage3c/DESIGN.md`, J-109): interactive
   per-phase flow, 4 × 1032 planes with explicit zpos, optional run 3.
+- `stage3d/`: the display test on v2.7, both units STAGE PASS (J-144, J-146;
+  display milestone accepted by FS-R-012). **Standing repeats** of this fixed
+  package follow `stage3d/STANDING-REPEATS.md` (FS-R-012 §3-§6: the warning
+  review before each repeat, the mandatory follow-up reading after AA, the
+  persistent-state statement), alongside `stage3d/WALKTHROUGH.md`.
 - Shared PID 1 infrastructure is in `common/`, host tools in `host/`, and
   procedures in `RECOVERY.md` and `SIGNOFF.md`.
 

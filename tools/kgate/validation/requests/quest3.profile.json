@@ -50,6 +50,11 @@
    "baseline": "stock-build",
    "requested_sha256": "903a6b21c924c9ba7ab7326e75a8c424fec0d0fb1b231bc883566b6adbab1a61"
   },
+  "k1a": {
+   "allow_sha256": "2244b9e3d781fd098a837ab0476c925b2f5b88d92334251506f1907c66b91e6d",
+   "baseline": "stock-build",
+   "requested_sha256": "d812a76dc1be4c550bb51154622fdb5d548aeccf03352674eea7a945ff0fb53e"
+  },
   "stock": {
    "allow_sha256": "4bb7bb44ef055ab481e4f975a2a4dfcc82a836d7f04779b54cc78d777c3c8321",
    "baseline": "waived",
