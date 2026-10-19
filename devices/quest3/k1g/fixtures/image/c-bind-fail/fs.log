@@ -1,0 +1,17 @@
+FS[1c8ade5c6ec2b063] t=71609s DEADLINE armed t0=71609 deadline=T0+200 ack_window=150 backstop=T0+201 reboot-reasons-not-logged-at-reboot
+FS[1c8ade5c6ec2b063] t=71610s STAGE=INIT_STARTED pid=1 kernel=6.18.33.2-microsoft-standard-WSL2 deadline=T0+200
+FS[1c8ade5c6ec2b063] t=71610s BACKSTOP armed pid=53 in=200s
+FS[1c8ade5c6ec2b063] t=71610s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62 (= the pinned v2.7 index)
+FS[1c8ade5c6ec2b063] t=71610s FW_TIMEOUT=1
+FS[1c8ade5c6ec2b063] t=71610s MODLIST /lib/fs/modules.load entries=3
+FS[1c8ade5c6ec2b063] t=71611s MODULE_FAIL nautilus.ko: insmod: can't insert '/lib/modules/nautilus.ko': No such file or directory
+FS[1c8ade5c6ec2b063] t=71612s MODULE_FAIL cmd-db.ko: insmod: can't insert '/lib/modules/cmd-db.ko': No such file or directory
+FS[1c8ade5c6ec2b063] t=71613s MODULE_FAIL gh_msgq.ko: insmod: can't insert '/lib/modules/gh_msgq.ko': No such file or directory
+FS[1c8ade5c6ec2b063] t=71617s STAGE=MODULES_READY ok=0 fail=3 udc=a600000.dwc3  drm=card0 
+FS[1c8ade5c6ec2b063] t=71617s STAGE=BLKGUARD_STARTED 
+FS[1c8ade5c6ec2b063] t=71618s STAGE=BLKGUARD_DONE result=ABORT
+FS[1c8ade5c6ec2b063] t=71618s ROLE mode=peripheral roles=device 
+FS[1c8ade5c6ec2b063] t=71618s STAGE=ACM_SETUP_ATTEMPTED 
+FS[1c8ade5c6ec2b063] t=71620s GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-1c8ade5c6ec2b063
+FS[1c8ade5c6ec2b063] t=71620s ERROR stage=udc bind failed
+FS[1c8ade5c6ec2b063] t=71670s REBOOT reason=error-udc

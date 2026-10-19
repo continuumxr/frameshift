@@ -1,0 +1,13 @@
+# c-bind-fail mods=['bind-fail'] plan=[] client=None; image <repo>/build/n1/20261018T005854Z-b1ba58d65e7ffa1a
+# reboots: 147.86 final pid=1 arg=error-udc
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=87 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = error-udc  [147.86 final pid=1 arg=error-udc]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [147.86 final pid=1 arg=error-udc]
+PASS  any later record is only the backstop (fork)
+PASS  error-udc: reboot at T0 + ERR_DELAY 60 (..+4)  [T0+60.9]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  both binds fail: NCM linked, NCM_DROPPED, the ACM-only retry fails: ERROR_udc ('bind failed (ACM-only retry)'), no shell  [INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED ERROR_udc]
+SCENARIO c-bind-fail PASS

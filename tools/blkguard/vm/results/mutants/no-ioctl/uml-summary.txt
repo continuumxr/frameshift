@@ -1,0 +1,19 @@
+# fs-blkguard UML VM test 2026-10-19T03:53:57Z
+# kernel: fcb67c8980e614a5 out-um/linux; c5803bfd7 TEST ONLY (QEMU): bind ufshcd-pci to the QEMU UFS host (1b36:0013) for the K1g VM tests; never in a device kernel|cd3993fd4 TEST ONLY (UML build): guard CONFIG_SMP / CONFIG_RT_THROTTLING_SYSCTL (ARM64-only) uses and make two !WALT stubs static inline in Meta sched code|
+# probe:  7226f45b2742b755 fsbg-probe.c
+[device-mode] cmdline: fsbg.testkernel fsbg.forceq
+[device-mode] FSBG-PROBE RESULT: FAIL nonce=bd5b1be657a2 cases=21 pass=11 fail=10 mode=device testkernel forceq (uml exit 0)
+[device-mode] fresh nonce bd5b1be657a2 seen
+[device-mode] host decoy unchanged (e91e9aac21ed74f855f2db7d6863d806fec69f7421cfe8bf306bb32df001db6b)
+   [device-mode] CASE N3    /dev/ram1              discard   rc=-9   EBADF    d=0 other=0 -> FAIL
+   [device-mode] CASE N4    /dev/ram1              discard   rc=-9   EBADF    d=0 other=0 -> FAIL
+   [device-mode] CASE N5    /dev/ram1              zeroout   rc=-9   EBADF    d=0 other=0 -> FAIL
+   [device-mode] CASE N6    /dev/ram1              roset     rc=0    OK       d=0 other=0 -> FAIL
+   [device-mode] STOP: an operation that must be refused succeeded on /dev/ram1
+   [device-mode] CASE Q1    /dev/sda               discard   rc=-9   EBADF    d=0 other=0 -> FAIL
+   [device-mode] CASE Q2    /dev/sda               zeroout   rc=-9   EBADF    d=0 other=0 -> FAIL
+   [device-mode] CASE Q3    /dev/sda               roset     rc=-13  EACCES   d=0 other=0 -> FAIL
+   [device-mode] CASE Q4    /dev/sda               blkpg     rc=-13  EACCES   d=0 other=0 -> FAIL
+   [device-mode] CASE Q5    /dev/sda               rrpart    rc=-13  EACCES   d=0 other=0 -> FAIL
+   [device-mode] CASE Q13   /dev/sda               pr        rc=-1   EPERM    d=0 other=0 -> FAIL
+# end 2026-10-19T03:54:05Z

@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------
-Ran 215 tests in 6.453s
+Ran 215 tests in 6.369s
 
 OK (expected failures=1)
 204/204 cases as expected (CASES.tsv)

@@ -1,0 +1,188 @@
+# fs-blkguard UML mutation test 2026-10-19T03:50:11Z; base c5803bfd7 TEST ONLY (QEMU): bind ufshcd-pci to the QEMU UFS host (1b36:0013) for the K1g VM tests; never in a device kernel
+[no-bio/strict-bootoff] FSBG-PROBE RESULT: FAIL nonce=8d7a2898db24 cases=212 pass=207 fail=6 mode=vm
+    [strict-bootoff] HOST DECOY CHANGED: 52128576258ef6a7907c367b90a673bc8b5e46f747f3f6721ca4a7b2efe14d30 -> a98df3eb036f7b439ace76d60f99920dd4476ed5cd0809d5f319024568840822
+      1     HASH verify: 23 nodes, 1 failed or changed
+      1     CASE S2    /dev/dm-201            bio       rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE S1    /dev/dm-200            bio       rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P11   /dev/ram1              bio       rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P11   /dev/loop6p1           bio       rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P11   /dev/loop5p1           bio       rc=0    OK       d=0 other=0 -> FAIL
+[no-bio/device-mode] FSBG-PROBE RESULT: FAIL nonce=abb99520da8c cases=76 pass=75 fail=2 mode=device testkernel forceq
+    [device-mode] host decoy unchanged (ee65f821473d751d2bbfac2c1ae51da1c2393ffa0cf3276d1995cd96314044c4)
+      1     STOP: an operation that must be refused succeeded on /dev/ram1
+      1     HASH verify: 7 nodes, 1 failed or changed
+      1     CASE P11   /dev/ram1              bio       rc=0    OK       d=0 other=0 -> FAIL
+[no-open/strict-bootoff] FSBG-PROBE RESULT: FAIL nonce=1fdb243062f8 cases=212 pass=164 fail=48 mode=vm
+    [strict-bootoff] host decoy unchanged (4f62ef55d64f134cbb739722de95c3584ad7084dd1717e711b243fd8461bfcfb)
+      1     HASH verify: 23 nodes, 0 failed or changed
+      1     CASE S3    dm-202->loop6p2        open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/sda6              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/sda5              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/sda4              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/sda3              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/sda2              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/sda1              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/sda               open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/ram1              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop6p6           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop6p4           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop6p3           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop6p2           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop6p1           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop6             open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5p8           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5p7           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5p6           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5p5           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5p4           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5p3           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5p2           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5p1           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N2    /dev/loop5             open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N11   /dev/loop6p2           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/sda6              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/sda5              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/sda4              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/sda3              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/sda2              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/sda1              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/sda               open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/ram1              open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/loop6p6           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/loop6p4           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/loop6p3           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/loop6p2           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/loop6p1           open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/loop6             open      rc=0    OK       d=0 other=0 -> FAIL
+[no-open/device-mode] FSBG-PROBE RESULT: FAIL nonce=a8fc69ab90a2 cases=15 pass=13 fail=2 mode=device testkernel forceq
+    [device-mode] host decoy unchanged (b6ebd38efb934ac0738dfff113d1cb0c49c940cae81e33033846bcd8cb89ea87)
+      1     STOP: an operation that must be refused succeeded on /dev/sda
+      1     STOP: an operation that must be refused succeeded on /dev/ram1
+      1     HASH verify: 7 nodes, 0 failed or changed
+      1     CASE Q11   /dev/sda               open      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N1    /dev/ram1              open      rc=0    OK       d=0 other=0 -> FAIL
+[no-write/strict-bootoff] FSBG-PROBE RESULT: FAIL nonce=083edbc0a600 cases=212 pass=196 fail=16 mode=vm
+    [strict-bootoff] host decoy unchanged (e4a15746cc7c4b36409fad5a87cdc128feb611216f7c734ff355e4eccb9bb283)
+      1     HASH verify: 23 nodes, 0 failed or changed
+      1     CASE S4    /dev/loop7             write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P5    /dev/ram1              write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P5    /dev/loop6p1           write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P5    /dev/loop5p1           write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P4    /dev/ram1              write     rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE P4    /dev/loop6p1           write     rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE P4    /dev/loop5p1           write     rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE P3    /dev/ram1              write     rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE P3    /dev/loop6p1           write     rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE P3    /dev/loop5p1           write     rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE P2    /dev/ram1              write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P2    /dev/loop6p1           write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P2    /dev/loop5p1           write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P1    /dev/ram1              write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P1    /dev/loop6p1           write     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE P1    /dev/loop5p1           write     rc=0    OK       d=0 other=0 -> FAIL
+[no-write/device-mode] FSBG-PROBE RESULT: FAIL nonce=11c297bf035d cases=67 pass=66 fail=1 mode=device testkernel forceq
+    [device-mode] host decoy unchanged (a167d7e28461c38f64f3b83efb601d4b282118f063e44b427a89c3be7005b4e5)
+      1     STOP: an operation that must be refused succeeded on /dev/ram1
+      1     HASH verify: 7 nodes, 0 failed or changed
+      1     CASE P1    /dev/ram1              write     rc=0    OK       d=0 other=0 -> FAIL
+[no-ioctl/strict-bootoff] FSBG-PROBE RESULT: FAIL nonce=aadb6f42ce9e cases=212 pass=97 fail=115 mode=vm
+    [strict-bootoff] host decoy unchanged (dbb470378ea5f755053ccce337324f4d2c97d3782838f901c73530892a27e39e)
+      1     HASH verify: 23 nodes, 0 failed or changed
+      1     CASE P9    /dev/ram1              discard   rc=-95  EOPNOTSUPP d=0 other=0 -> FAIL
+      1     CASE P9    /dev/loop6p1           discard   rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE P9    /dev/loop5p1           discard   rc=-95  EOPNOTSUPP d=0 other=0 -> FAIL
+      1     CASE P10   /dev/ram1              zeroout   rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE P10   /dev/loop6p1           zeroout   rc=-5   EIO      d=0 other=2 -> FAIL
+      1     CASE P10   /dev/loop5p1           zeroout   rc=-5   EIO      d=0 other=1 -> FAIL
+      1     CASE N9    /dev/sda               blkpg     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N9    /dev/ram1              blkpg     rc=-6   ENXIO    d=0 other=0 -> FAIL
+      1     CASE N9    /dev/loop6             blkpg     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N9    /dev/loop5             blkpg     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N8    /dev/sda               blkpg     rc=-16  EBUSY    d=0 other=0 -> FAIL
+      1     CASE N8    /dev/ram1              blkpg     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N8    /dev/loop6             blkpg     rc=-16  EBUSY    d=0 other=0 -> FAIL
+      1     CASE N8    /dev/loop5             blkpg     rc=-16  EBUSY    d=0 other=0 -> FAIL
+      1     CASE N7    /dev/sda               blkpg     rc=-6   ENXIO    d=0 other=0 -> FAIL
+      1     CASE N7    /dev/ram1              blkpg     rc=-6   ENXIO    d=0 other=0 -> FAIL
+      1     CASE N7    /dev/loop6             blkpg     rc=-6   ENXIO    d=0 other=0 -> FAIL
+      1     CASE N7    /dev/loop5             blkpg     rc=-6   ENXIO    d=0 other=0 -> FAIL
+      1     CASE N6    /dev/sda6              roset     rc=-1   EPERM    d=0 other=1 -> FAIL
+      1     CASE N6    /dev/sda5              roset     rc=-1   EPERM    d=0 other=1 -> FAIL
+      1     CASE N6    /dev/sda4              roset     rc=-1   EPERM    d=0 other=1 -> FAIL
+      1     CASE N6    /dev/sda3              roset     rc=-1   EPERM    d=0 other=1 -> FAIL
+      1     CASE N6    /dev/sda2              roset     rc=-1   EPERM    d=0 other=1 -> FAIL
+      1     CASE N6    /dev/sda1              roset     rc=-1   EPERM    d=0 other=1 -> FAIL
+      1     CASE N6    /dev/sda               roset     rc=-1   EPERM    d=0 other=1 -> FAIL
+      1     CASE N6    /dev/ram1              roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop6p6           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop6p4           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop6p3           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop6p2           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop6p1           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop6             roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop5p8           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop5p7           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop5p6           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop5p5           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop5p4           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop5p3           roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N6    /dev/loop5p2           roset     rc=0    OK       d=0 other=0 -> FAIL
+[no-ioctl/device-mode] FSBG-PROBE RESULT: FAIL nonce=bd5b1be657a2 cases=21 pass=11 fail=10 mode=device testkernel forceq
+    [device-mode] host decoy unchanged (e91e9aac21ed74f855f2db7d6863d806fec69f7421cfe8bf306bb32df001db6b)
+      1     STOP: an operation that must be refused succeeded on /dev/ram1
+      1     HASH verify: 7 nodes, 0 failed or changed
+      1     CASE Q5    /dev/sda               rrpart    rc=-13  EACCES   d=0 other=0 -> FAIL
+      1     CASE Q4    /dev/sda               blkpg     rc=-13  EACCES   d=0 other=0 -> FAIL
+      1     CASE Q3    /dev/sda               roset     rc=-13  EACCES   d=0 other=0 -> FAIL
+      1     CASE Q2    /dev/sda               zeroout   rc=-9   EBADF    d=0 other=0 -> FAIL
+      1     CASE Q13   /dev/sda               pr        rc=-1   EPERM    d=0 other=0 -> FAIL
+      1     CASE Q1    /dev/sda               discard   rc=-9   EBADF    d=0 other=0 -> FAIL
+      1     CASE N6    /dev/ram1              roset     rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE N5    /dev/ram1              zeroout   rc=-9   EBADF    d=0 other=0 -> FAIL
+      1     CASE N4    /dev/ram1              discard   rc=-9   EBADF    d=0 other=0 -> FAIL
+      1     CASE N3    /dev/ram1              discard   rc=-9   EBADF    d=0 other=0 -> FAIL
+[no-scsi/strict-bootoff] FSBG-PROBE RESULT: FAIL nonce=ee550cfbe0f1 cases=212 pass=202 fail=11 mode=vm
+    [strict-bootoff] host decoy unchanged (df100bf1124e0fab1e1ae20bee8de1f0856ba9f9b5556bf5b156ce97764bff49)
+      1     HASH verify: 23 nodes, 1 failed or changed
+      1     CASE C9    /dev/sda               scsi      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE C8    /dev/sda               scsi      rc=-121 EREMOTEIO d=0 other=0 -> FAIL
+      1     CASE C7    /dev/sda               scsi      rc=-121 EREMOTEIO d=0 other=0 -> FAIL
+      1     CASE C6    /dev/sda               scsi      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE C5    /dev/sda               scsi      rc=-121 EREMOTEIO d=0 other=0 -> FAIL
+      1     CASE C4    /dev/sda               scsi      rc=-121 EREMOTEIO d=0 other=0 -> FAIL
+      1     CASE C3    /dev/sda               scsi      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE C2    /dev/sda               scsi      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE C12   /dev/bsg/0:0:0:0       scsi      rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE C1    /dev/sda               scsi      rc=0    OK       d=0 other=0 -> FAIL
+[no-scsi/device-mode] FSBG-PROBE RESULT: FAIL nonce=745e1d77819e cases=82 pass=79 fail=3 mode=device testkernel forceq
+    [device-mode] host decoy unchanged (cbc9cc69c626dd1d1d4d82dd669e2c7bafb20d335d3e93df6dec5d9d7e170cdd)
+      1     HASH verify: 7 nodes, 0 failed or changed
+      1     CASE Q9    /dev/bsg/0:0:0:0       scsi      rc=-1   EPERM    d=0 other=0 -> FAIL
+      1     CASE Q7    /dev/sda               scsi      rc=-1   EPERM    d=0 other=0 -> FAIL
+      1     CASE Q6    /dev/sda               scsi      rc=-1   EPERM    d=0 other=0 -> FAIL
+[no-sg/strict-bootoff] FSBG-PROBE RESULT: FAIL nonce=4f0c8d2f40b7 cases=212 pass=210 fail=3 mode=vm
+    [strict-bootoff] host decoy unchanged (020dbf55c532d3ebd0ecad0067a2dbd42d4b6c7fc9fa08910633cb3027e90afd)
+      1     HASH verify: 23 nodes, 1 failed or changed
+      1     CASE C11   /dev/sg0               sg        rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE C10   /dev/sg0               sg        rc=0    OK       d=0 other=0 -> FAIL
+[no-sg/device-mode] FSBG-PROBE RESULT: FAIL nonce=ce57a5de5d6a cases=82 pass=81 fail=1 mode=device testkernel forceq
+    [device-mode] host decoy unchanged (1cc8f9ac573906ffdb6791272f8ca49c7b0bbe6ac5ba42cebf50796d5fe67601)
+      1     HASH verify: 7 nodes, 0 failed or changed
+      1     CASE Q8    /dev/sg0               sg        rc=-1   EPERM    d=0 other=1 -> FAIL
+[no-scsi-ioctl/strict-bootoff] FSBG-PROBE RESULT: FAIL nonce=173026497fa5 cases=212 pass=209 fail=3 mode=vm
+    [strict-bootoff] host decoy unchanged (967e31b6b81f51415d3e9e4eecd12f0f6436cd2982636b4d12fade47b17e06d8)
+      1     HASH verify: 23 nodes, 0 failed or changed
+      1     CASE C16   /dev/sda               scsi-ioctl rc=-22  EINVAL   d=0 other=0 -> FAIL
+      1     CASE C14   /dev/sda               scsi-ioctl rc=0    OK       d=0 other=0 -> FAIL
+      1     CASE C13   /dev/sda               scsi-ioctl rc=0    OK       d=0 other=0 -> FAIL
+[no-scsi-ioctl/device-mode] FSBG-PROBE RESULT: FAIL nonce=028d9958dd3e cases=82 pass=81 fail=1 mode=device testkernel forceq
+    [device-mode] host decoy unchanged (f7d2dbb6f2c2693a7d20f0b17471c3a3c349f61732e8e79c13736629ecdfe7b2)
+      1     HASH verify: 7 nodes, 0 failed or changed
+      1     CASE Q12   /dev/sda               scsi-ioctl rc=-22  EINVAL   d=0 other=0 -> FAIL
+[no-sticky/protect] FSBG-PROBE RESULT: FAIL nonce=0d301b29ed16 cases=170 pass=169 fail=1 mode=vm
+    [protect] host decoy unchanged (28e68cbc1dad413382beeb993daa7ee43043b2bb6fb6434cdc8b194b4d227a6f)
+      1     HASH verify: 23 nodes, 0 failed or changed
+      1     CASE S5    /dev/loop4             open      rc=0    OK       d=0 other=0 -> FAIL
+# test tree restored
+# restored kernel rebuilt: 1fb6458f0d25c055
+# end 2026-10-19T03:59:13Z

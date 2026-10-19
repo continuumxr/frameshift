@@ -1,0 +1,4 @@
+state=up
+if=usb0
+ll=fe80::b1ba:58d6:5e7f:fa1a
+port=47201

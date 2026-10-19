@@ -1,0 +1,10 @@
+  11492 ms  W fs-verify 9770fc55d7d4528d4549a5ae6ab03eeb
+  12738 ms  R FSV1 nonce=1c8ade5c6ec2b063 resp=d99a14880e41b57eb6a06d3f7d59d2398e6b5737102dc4fb1fcd87dbecf8770f kernel=6.18.33.2-microsoft-standard-WSL2 pid1=/usr/b
+  12739 ms  W fs-ack 860042fe9c1dc951
+  13091 ms  R FSA1 queued END
+  15592 ms  W fs-status
+  15993 ms  R FSS1 nonce=1c8ade5c6ec2b063 stages=INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=
+  15994 ms  W fs-k1g nothex
+  16295 ms  R FSDE1 error=bad-challenge END
+  16302 ms  W fs-done
+  16603 ms  R FSD1 queued END

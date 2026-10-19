@@ -1,0 +1,176 @@
+[    0.000000] Linux version 5.10.246-gc5803bfd72f9 (<build-user>@<build-host>) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #4 SMP PREEMPT Fri Oct 16 01:17:19 PDT 2026
+[    0.000000] random: crng init done
+[    0.000000] Kernel command line: console=ttyAMA0 loglevel=3 rdinit=/init panic=-1 fsbg.nonce=b06597c3d699 fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact loglevel=6
+[    0.440262] /cpus/cpu-map: empty cluster
+[    2.233656] audit: type=2000 audit(1.616:1): state=initialized audit_enabled=0 res=1
+[    4.900974] clk_debug_init: unable to find root clk debugfs directory, ret=-19
+[    5.259626] SCSI subsystem initialized
+[    5.684439] VFS: Disk quotas dquot_6.6.0
+[    6.151247] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    6.505035] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    7.329664] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    7.548437] hrtimer: interrupt took 153269536 ns
+[    7.696657] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    8.095107] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    8.538558] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    9.274528] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #282!!!
+[    9.812388] Initialise system trusted keyrings
+[   10.494637] NFS: Registering the id_resolver key type
+[   10.759394] Key type id_resolver registered
+[   10.952649] Key type id_legacy registered
+[   11.513313] Key type asymmetric registered
+[   11.696853] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[   11.700540] Asymmetric key parser 'x509' registered
+[   13.570450] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[   13.951212] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #82!!!
+[   14.733187] cacheinfo: Unable to detect cache hierarchy for CPU 0
+[   15.963642] virtio_blk virtio0: [vda] 4096 4096-byte logical blocks (16.8 MB/16.0 MiB)
+[   17.007113] virtio_blk virtio1: [vdb] 20480 4096-byte logical blocks (83.9 MB/80.0 MiB)
+[   17.697446] virtio_blk virtio3: [vdc] 32768 512-byte logical blocks (16.8 MB/16.0 MiB)
+[   18.268706] RTI_MD: rtimd_dev_init(): 
+[   18.418724] RTI_MD: rtimd_probe(): Enter
+[   18.514641] RTI_MD: rtimd_probe(): register_chrdev() failed (Major:240).
+[   18.664775] rtimd-i2c: probe of rtimd-i2c failed with error -22
+[   18.898559] scsi 0:0:0:0: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[   41.370703] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+[   41.968713] rcu: 	0-...!: (1 ticks this GP) idle=d50/0/0x0 softirq=257/257 fqs=0  (false positive?)
+[   42.545848] 	(detected by 1, t=5252 jiffies, g=-399, q=9)
+[   42.940693] rcu: rcu_preempt kthread starved for 5252 jiffies! g-399 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=0
+[   43.617174] rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+[   44.358390] rcu: RCU grace-period kthread stack dump:
+[   45.155214] sd 0:0:0:0: Attached scsi generic sg0 type 0
+[   45.555970] sd 0:0:0:0: Power-on or device reset occurred
+[   46.123558] sd 0:0:0:0: [sda] 32768 512-byte logical blocks: (16.8 MB/16.0 MiB)
+[   46.453677] sd 0:0:0:0: [sda] Write Protect is off
+[   46.775590] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[   47.095433] physmap-flash 0.flash: physmap platform flash device: [mem 0x00000000-0x03ffffff]
+[   47.578446] physmap-flash 0.flash: physmap platform flash device: [mem 0x04000000-0x07ffffff]
+[   47.904789] Concatenating MTD devices:
+[   48.088466] (0): "0.flash"
+[   48.185315] (1): "0.flash"
+[   48.288149] into device "0.flash"
+[   48.584854] sd 0:0:0:0: [sda] Attached SCSI disk
+[   50.437604] Key type dns_resolver registered
+[   50.598677] Loading compiled-in X.509 certificates
+fsbg-probe: nonce=b06597c3d699 mode=device arm=strict boot=protect
+PRE guard: mode=protect sealed=0 modules_disabled=0 hazards=modules mmc-ioctl nvme-passthru mtd
+WARN: hazards 'modules mmc-ioctl nvme-passthru mtd' accepted (fsbg.testkernel: test kernels only)
+PRE boot storage visible: 40 block nodes
+PRE scope: content reads only R1-R5, R6, R7d (misc), R8 (devinfo); never opened: /dev/vda5 /dev/vdc3 /dev/sda3
+ROW H   /dev/vdb1              bytes=61607936/61607936 sha256=7fe59729491b40b6 (expected value) -> PASS
+ROW H   /dev/vdb2              bytes=5058560/5058560 sha256=7e0cfe93e0e9867a (expected value) -> PASS
+ROW H   /dev/vdb3              bytes=12564/12564 sha256=a02fdeede1c1466f (expected value) -> PASS
+ROW H   /dev/vdb4              bytes=5632/5632 sha256=1674552357aa0ca1 (expected value) -> PASS
+ROW H   /dev/vdb5              bytes=3136/3136 sha256=a462b6dab7e67a72 (expected value) -> PASS
+ROW R6  /dev/vdb6              misc size=1048576 expect=1048576
+ROW R6  /dev/vdb7              devinfo size=4096 expect=4096
+PRE pace: sha256=armv8-ce before-pass=32.66 s budget=120 s hashed=79 MiB cpu0=? kHz cpu1=? kHz governor=?
+[   85.057269] fs_blkguard: armed: mode strict, 5 allowlist entries, sealed by init[95]
+ARMED: strict allow=disk:ram0,disk:dm-200,disk:dm-201,disk:loop7,part:fsbg_decoy_rw
+SEAL: re-arming refused (EPERM) -> PASS
+[   85.951176] fs_blkguard: denied open on ram1 (-) [deny-strict] by init[95]
+[   86.180755] fs_blkguard: denied open on ram1 (-) [deny-strict] by init[95]
+[   86.467877] fs_blkguard: denied discard on ram1 (-) [deny-strict] by init[95]
+[   86.859473] fs_blkguard: denied discard on ram1 (-) [deny-strict] by init[95]
+[   87.105370] fs_blkguard: denied zeroout on ram1 (-) [deny-strict] by init[95]
+[   87.251136] fs_blkguard: denied roset on ram1 (-) [deny-strict] by init[95]
+[   87.394944] fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[95]
+[   87.552538] fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[95]
+[   87.715128] fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[95]
+[   87.973679] fs_blkguard: denied rrpart on ram1 (-) [deny-strict] by init[95]
+[   89.904851] Buffer I/O error on dev ram1, logical block 0, lost async page write
+[   90.247539] loop: Write error at byte offset 0, length 4096.
+[   90.364138] blk_update_request: I/O error, dev loop7, sector 0 op 0x1:(WRITE) flags 0x8800 phys_seg 1 prio class 0
+[   90.631813] device-mapper: table: 253:202: linear: Device lookup failed
+[   90.786737] device-mapper: ioctl: error adding target to table
+[   91.393123] fsbg_record: 55 callbacks suppressed
+[   91.543836] fs_blkguard: denied discard on vda4 (abl_a) [deny-protected] by init[95]
+[   91.774478] fs_blkguard: denied zeroout on vda4 (abl_a) [deny-protected] by init[95]
+[   91.989378] fs_blkguard: denied roset on vda4 (abl_a) [deny-protected] by init[115]
+[   92.183074] fs_blkguard: denied discard on sda4 (recovery_a) [deny-protected] by init[95]
+[   92.376834] fs_blkguard: denied zeroout on sda4 (recovery_a) [deny-protected] by init[95]
+[   92.556786] fs_blkguard: denied roset on sda4 (recovery_a) [deny-protected] by init[116]
+[   92.740604] fs_blkguard: denied discard on vdc2 (tz_a) [deny-protected] by init[95]
+[   92.894686] fs_blkguard: denied zeroout on vdc2 (tz_a) [deny-protected] by init[95]
+[   93.139193] fs_blkguard: denied roset on vdc2 (tz_a) [deny-protected] by init[117]
+[   93.372385] fs_blkguard: denied discard on vdb2 (vendor_boot_a) [deny-protected] by init[95]
+SKIP  Q*    /dev/vda5              persist: never opened (FS-R-014 s.3.1)
+SKIP  Q*    /dev/vdc3              persist: never opened (FS-R-014 s.3.1)
+[   96.432638] fsbg_record: 48 callbacks suppressed
+[   96.432721] fs_blkguard: denied discard on vda3 (tz_b) [deny-protected] by init[95]
+[   97.109513] fs_blkguard: denied zeroout on vda3 (tz_b) [deny-protected] by init[95]
+[   97.466025] fs_blkguard: denied roset on vda3 (tz_b) [deny-protected] by init[137]
+SKIP  Q*    /dev/sda3              persist: never opened (FS-R-014 s.3.1)
+[   97.859399] fs_blkguard: denied discard on vda11 (ddr) [deny-protected] by init[95]
+[   98.061293] fs_blkguard: denied zeroout on vda11 (ddr) [deny-protected] by init[95]
+[   98.252799] fs_blkguard: denied roset on vda11 (ddr) [deny-protected] by init[138]
+[   98.468942] fs_blkguard: denied discard on vdc1 (xbl_a) [deny-protected] by init[95]
+[   98.685042] fs_blkguard: denied zeroout on vdc1 (xbl_a) [deny-protected] by init[95]
+[   98.960669] fs_blkguard: denied roset on vdc1 (xbl_a) [deny-protected] by init[139]
+[   99.152674] fs_blkguard: denied discard on vdb1 (boot_a) [deny-protected] by init[95]
+SKIP  Q12   /dev/sda               the SCSI host has no driver ioctl
+[  101.441687] fsbg_record: 47 callbacks suppressed
+[  101.792906] fs_blkguard: denied roset on vda6 (frp) [deny-protected] by init[162]
+[  102.127217] fs_blkguard: denied discard on sda6 (modemst1) [deny-protected] by init[95]
+[  102.348050] fs_blkguard: denied zeroout on sda6 (modemst1) [deny-protected] by init[95]
+[  102.538457] fs_blkguard: denied roset on sda6 (modemst1) [deny-protected] by init[163]
+[  102.736596] fs_blkguard: denied discard on vdc4 (recovery_a) [deny-protected] by init[95]
+[  102.968294] fs_blkguard: denied zeroout on vdc4 (recovery_a) [deny-protected] by init[95]
+[  103.186743] fs_blkguard: denied roset on vdc4 (recovery_a) [deny-protected] by init[164]
+[  103.575528] fs_blkguard: denied discard on vdb4 (vbmeta_a) [deny-protected] by init[95]
+[  103.787376] fs_blkguard: denied zeroout on vdb4 (vbmeta_a) [deny-protected] by init[95]
+[  103.944448] fs_blkguard: denied roset on vdb4 (vbmeta_a) [deny-protected] by init[165]
+ROW H'  /dev/vdb1              bytes=61607936/61607936 sha256=7fe59729491b40b6 (expected value) -> PASS
+ROW H'  /dev/vdb2              bytes=5058560/5058560 sha256=7e0cfe93e0e9867a (expected value) -> PASS
+ROW H'  /dev/vdb3              bytes=12564/12564 sha256=a02fdeede1c1466f (expected value) -> PASS
+ROW H'  /dev/vdb4              bytes=5632/5632 sha256=1674552357aa0ca1 (expected value) -> PASS
+ROW H'  /dev/vdb5              bytes=3136/3136 sha256=a462b6dab7e67a72 (expected value) -> PASS
+HASH verify: 14 nodes, 0 failed or changed
+POST guard counters: total=192
+SERIES H     pass=14 fail=0
+SERIES N1    pass=7 fail=0
+SERIES N2    pass=7 fail=0
+SERIES N3    pass=7 fail=0
+SERIES N4    pass=7 fail=0
+SERIES N5    pass=7 fail=0
+SERIES N6    pass=7 fail=0
+SERIES N7    pass=2 fail=0
+SERIES N8    pass=2 fail=0
+SERIES N9    pass=2 fail=0
+SERIES N10   pass=2 fail=0
+SERIES N11   pass=1 fail=0
+SERIES P1    pass=1 fail=0
+SERIES P2    pass=1 fail=0
+SERIES P3    pass=1 fail=0
+SERIES P4    pass=1 fail=0
+SERIES P5    pass=1 fail=0
+SERIES P7    pass=1 fail=0
+SERIES P8    pass=1 fail=0
+SERIES P9    pass=1 fail=0
+SERIES P10   pass=1 fail=0
+SERIES P11   pass=1 fail=0
+SERIES S1    pass=1 fail=0
+SERIES S2    pass=1 fail=0
+SERIES S4    pass=1 fail=0
+SERIES S3    pass=1 fail=0
+SERIES A1    pass=1 fail=0
+SERIES A2    pass=1 fail=0
+SERIES Q1    pass=37 fail=0
+SERIES Q2    pass=37 fail=0
+SERIES Q3    pass=37 fail=0
+SERIES Q4    pass=5 fail=0
+SERIES Q5    pass=5 fail=0
+SERIES Q13   pass=1 fail=0
+SERIES Q14   pass=1 fail=0
+SERIES Q6    pass=1 fail=0
+SERIES Q7    pass=1 fail=0
+SERIES Q8    pass=1 fail=0
+SERIES Q9    pass=1 fail=0
+SERIES A3    pass=1 fail=0
+SERIES H'    pass=14 fail=0
+HASHDIGEST before=670e5f66f11ee2343420f2174a9e5f6c after=670e5f66f11ee2343420f2174a9e5f6c
+FSBG-PROBE RESULT: PASS nonce=b06597c3d699 cases=196 pass=196 fail=0 mode=device devicesim
+[  119.587124] sd 0:0:0:0: [sda] Synchronizing SCSI cache
+[  119.699781] Flash device refused suspend due to active operation (state 20)
+[  119.820843] Flash device refused suspend due to active operation (state 20)
+[  119.948666] reboot: Power down

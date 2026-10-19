@@ -1,0 +1,30 @@
+# n1 whole-image fixtures  2026-10-18T01:33:07Z
+# image 20261018T005854Z-b1ba58d65e7ffa1a/boot-n1.img sha256=82eefa8a7d263bbe0a36370070149418820a155e35fc906ff6377ecc1f480436
+# harness sha256=5ca744826cd54a2b713b10b006dff626c2b0709abeb02b06663f0b7a992ece19  test-image.sh sha256=fa63dea6ca6796250a0cc42e36b15ec1c29c6ae87e72afff270d4879f9a7e1b8
+# host: Linux 6.18.33.2-microsoft-standard-WSL2; qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2); bwrap 0.11.1
+# NOT shown here: the kernel booting (no QEMU model of the Quest 3), f_ncm, the UDC, USB enumeration and Windows; see tools/image-harness-n1.py
+SCENARIO c-ack-no-done PASS
+SCENARIO c-no-ack PASS
+SCENARIO c-full PASS
+SCENARIO c-ncm-fallback PASS
+SCENARIO c-ncm-unattached PASS
+SCENARIO c-ncm-bind-fail PASS
+SCENARIO c-bind-fail PASS
+SCENARIO c-ncm-skip PASS
+SCENARIO c-ncm-ifname PASS
+SCENARIO c-ncm-no-host PASS
+SCENARIO c-xfer-bad-header PASS
+SCENARIO c-xfer-short PASS
+SCENARIO c-listener-decoy PASS
+SCENARIO c-no-memtotal PASS
+SCENARIO c-kmsg-findings PASS
+SCENARIO c-kmsg-post PASS
+SCENARIO c-kmsg-post-unreadable PASS
+SCENARIO c-kmsg-post-wrapped PASS
+SCENARIO c-repeat PASS
+SCENARIO c-bad-challenge PASS
+SCENARIO c-time PASS
+SCENARIO c-done-early PASS
+SCENARIO c-modules-real PASS
+SCENARIO c-modules-refused PASS
+TOTAL: 24 scenarios, 0 failed

@@ -1,0 +1,1 @@
+BUILD REFUSED: K1g kernel hash differs from the pin ($HOME/work/kgate27/out-k1a/arch/arm64/boot/Image: 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840 != 65740722b532b4235e2d35b517bf70d7753e63f42b7b7ee5c869117d999042d3)

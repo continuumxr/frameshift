@@ -1,0 +1,71 @@
+[    0.000000] Linux version 5.10.246-gc5803bfd72f9 (<build-user>@<build-host>) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #4 SMP PREEMPT Fri Oct 16 01:17:19 PDT 2026
+[    0.000000] random: crng init done
+[    0.000000] Kernel command line: console=ttyAMA0 loglevel=3 rdinit=/init panic=-1 fsbg.nonce=92cf1f1fde8e fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact loglevel=6
+[    0.275261] /cpus/cpu-map: empty cluster
+[    1.676983] audit: type=2000 audit(1.304:1): state=initialized audit_enabled=0 res=1
+[    3.228349] clk_debug_init: unable to find root clk debugfs directory, ret=-19
+[    3.389349] SCSI subsystem initialized
+[    3.554275] VFS: Disk quotas dquot_6.6.0
+[    4.077412] Initialise system trusted keyrings
+[    4.258209] NFS: Registering the id_resolver key type
+[    4.368499] Key type id_resolver registered
+[    4.440405] Key type id_legacy registered
+[    4.579803] Key type asymmetric registered
+[    4.640272] Asymmetric key parser 'x509' registered
+[    5.071682] cacheinfo: Unable to detect cache hierarchy for CPU 0
+[    5.364298] virtio_blk virtio0: [vda] 4096 4096-byte logical blocks (16.8 MB/16.0 MiB)
+[    5.652373] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    5.812712] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    5.948401] virtio_blk virtio1: [vdb] 20480 4096-byte logical blocks (83.9 MB/80.0 MiB)
+[    6.103844] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    6.249219] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    6.468005] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    6.627008] hrtimer: interrupt took 61000416 ns
+[    6.772745] virtio_blk virtio3: [vdc] 32768 512-byte logical blocks (16.8 MB/16.0 MiB)
+[    7.025022] RTI_MD: rtimd_dev_init(): 
+[    7.112429] RTI_MD: rtimd_probe(): Enter
+[    7.195462] RTI_MD: rtimd_probe(): register_chrdev() failed (Major:240).
+[    7.322221] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    7.322253] rtimd-i2c: probe of rtimd-i2c failed with error -22
+[    7.632081] scsi 0:0:0:0: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    7.839946] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    7.999854] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    8.123293] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #282!!!
+[    8.264060] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
+[    9.169663] sd 0:0:0:0: Attached scsi generic sg0 type 0
+[    9.266319] sd 0:0:0:0: Power-on or device reset occurred
+[    9.396803] sd 0:0:0:0: [sda] 32768 512-byte logical blocks: (16.8 MB/16.0 MiB)
+[    9.531906] physmap-flash 0.flash: physmap platform flash device: [mem 0x00000000-0x03ffffff]
+[    9.700522] sd 0:0:0:0: [sda] Write Protect is off
+[    9.819747] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[   10.018469] physmap-flash 0.flash: physmap platform flash device: [mem 0x04000000-0x07ffffff]
+[   10.233800] Concatenating MTD devices:
+[   10.322737] (0): "0.flash"
+[   10.398290] (1): "0.flash"
+[   10.460063] into device "0.flash"
+[   10.644388] sd 0:0:0:0: [sda] Attached SCSI disk
+[   11.130435] Key type dns_resolver registered
+[   11.197519] Loading compiled-in X.509 certificates
+fsbg-probe: nonce=92cf1f1fde8e mode=device arm=strict boot=protect
+PRE guard: mode=protect sealed=0 modules_disabled=0 hazards=modules mmc-ioctl nvme-passthru mtd
+WARN: hazards 'modules mmc-ioctl nvme-passthru mtd' accepted (fsbg.testkernel: test kernels only)
+PRE boot storage visible: 40 block nodes
+PRE scope: content reads only R1-R5, R6, R7d (misc), R8 (devinfo); never opened: /dev/vda5 /dev/vdc3 /dev/sda3
+ROW H   /dev/vdb1              bytes=61607936/61607936 sha256=7fe59729491b40b6 (expected value) -> PASS
+ROW H   /dev/vdb2              bytes=5058560/5058560 sha256=7e0cfe93e0e9867a (expected value) -> PASS
+ROW H   /dev/vdb3              bytes=12564/12564 sha256=a02fdeede1c1466f (expected value) -> PASS
+ROW H   /dev/vdb4              bytes=5632/5632 sha256=90b1ce2c940db886 (expected value) -> content differs from the expected v2.7 image
+ROW H   vbmeta_system_a        -> not read (stopped after an earlier failure)
+ROW R6  misc                   -> not read (stopped after an earlier failure)
+ROW R6  devinfo                -> not read (stopped after an earlier failure)
+ROW H   misc                   -> not read (stopped after an earlier failure)
+ROW H   devinfo                -> not read (stopped after an earlier failure)
+PRE pace: sha256=armv8-ce before-pass=16.21 s budget=120 s hashed=78 MiB cpu0=? kHz cpu1=? kHz governor=?
+ABORT: 1 hashing row(s) failed closed before arming (5 later row(s) not read); no armed guard test case attempted
+SERIES H     pass=10 fail=4
+HASHDIGEST before=23c23fbcc0073bfa5faf715759d08b30 after=e3b0c44298fc1c149afbf4c8996fb924
+FSBG-PROBE RESULT: ABORT nonce=92cf1f1fde8e cases=0 pass=0 fail=0 mode=device devicesim
+[   28.764606] sd 0:0:0:0: [sda] Synchronizing SCSI cache
+[   28.898567] Flash device refused suspend due to active operation (state 20)
+[   29.054368] Flash device refused suspend due to active operation (state 20)
+[   29.332250] reboot: Power down

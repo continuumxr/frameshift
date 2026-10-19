@@ -1,0 +1,18 @@
+PASS  steps = kernel,config,mem,modules,kmsg,fs,usb,log,blkguard  [kernel,config,mem,modules,kmsg,fs,usb,log,blkguard]
+PASS  every step runs under fs-supervise with grace 1 s
+PASS  fs-supervise limits: t <= 60, cap <= 1 MiB  [t=[3, 8, 2, 5, 4, 3, 5, 2, 2] cap=[4096, 2048, 256, 8192, 16384, 1024, 2048, 16384, 8192]]
+PASS  MAXLINES = 11 + 2 x 1226 = 2463  [runner has 2463]
+PASS  RUNNER_WORST >= steps 110.5 + emission 12.4 s + 2 s writes, rounded up, + 2 = 127  [runner has 127]
+PASS  the time rule is in the runner (now + RUNNER_WORST <= /run/fs.deadline)
+PASS  init.sh DEADLINE 200, ACK_WINDOW 150 (stage 3d values)  [200/150]
+PASS  init.sh writes /run/fs.deadline = T0 + DEADLINE
+PASS  RUNNER_WORST fits the deadline with room for the host steps (< DEADLINE - 60)  [127]
+PASS  init.sh runs the probe once under fs-supervise (t <= 60, cap <= 1 MiB)  [t=25 g=2 cap=65536]
+INFO  the probe's worst case in PID 1 (before SHELL_READY): 34.5 s; the runner must start by T0 + 73
+PASS  the probe's time budget is set (PRE_BUDGET, AFTER_END, the per-row cap)  [pre_budget=8.0 after_end=20.0 row cap=10]
+PASS  a row is bounded by the time left in its pass, at most 10 s (+5 s KILL)
+PASS  before-pass + cases + after-pass (about the before-pass again) end by AFTER_END: 2 x 8 + 3 = 19 <= 20
+PASS  AFTER_END + a row's KILL fits fs-supervise's -t 25: 20 + 5 <= 25
+PASS  no after-row starts with less than 1 s left before AFTER_END (its bound <= the time left, so it ends by AFTER_END + KILL)
+INFO  start limits: device T0 + 73 (deadline 200 - RUNNER_WORST 127); host BootStartUtc + 53 (deadline - 15 s give-up - 127 - 5 s margin)
+RESULT PASS

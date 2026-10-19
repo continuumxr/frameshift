@@ -1,0 +1,227 @@
+{
+ "ack": "e0546b8b199f1a63",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=b1ba58d65e7ffa1a resp=f231b175b132e5112d5831e2911f210d71eeafef082da4180f99fd0748b403f3 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=b1ba58d65e7ffa1a stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=e0546b8b199f1a63 END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSB1 END v=1 nonce=b1ba58d65e7ffa1a chal=a2a40d6d53fd3c907a39ab646dbf7615 lines=187 rec_sha256=654d0e693404f08812218b2407ded99012e34e12b1056387148e305a65afa3ef",
+   "label": "runner completed with a settled prompt",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "FSB1 VALID (exp n1, 6 steps kernel..log, this nonce and challenge)",
+   "ok": true
+  },
+  {
+   "detail": "[('1', 'kernel', 'exited', '0'), ('2', 'mem', 'exited', '0'), ('3', 'modules', 'exited', '0'), ('4', 'net', 'exited', '0'), ('5', 'xfer', 'exited', '0'), ('6', 'log', 'exited', '0')]",
+   "label": "every step exited 0",
+   "ok": true
+  },
+  {
+   "detail": "[]",
+   "label": "no step wrote stderr",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=56 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "83.18 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "83.18 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "0.4 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "NCM function=linked dev_addr=02:b1:ba:58:d6:5e host_addr=06:b1:ba:58:d6:5e ll=fe80::b1ba:58d6:5e7f:fa1a port=47201",
+   "label": "NCM ids from the nonce: dev_addr 02:<nonce 0-4>, host_addr 06:<nonce 0-4>, ll fe80::<nonce>, port 47201",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK",
+   "label": "the ACM console came up in every NCM case: UDC_BOUND and SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "enodev=1 udc=a600000.dwc3 fs.ncm=state=dropped if=none ll=fe80::b1ba:58d6:5e7f:fa1a port=47201 ",
+   "label": "NCM bind failure: NCM_DROPPED, the link removed, ONE ACM-only retry succeeded (UDC a600000.dwc3), console up; fs.ncm state=dropped",
+   "ok": true
+  },
+  {
+   "detail": "== uname-r 6.18.33.2-microsoft-standard-WSL2\n== uname-v #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026\n== proc-version\nLinux version 5.10.246-gdbc2bc83a2b6 (frameshift@k1a) (Android (8508608, bas",
+   "label": "kernel step: /proc/version = the pinned K1a banner; config_sha256 = sha256(k1a.config); K1a and N1 option lines",
+   "ok": true
+  },
+  {
+   "detail": "MemTotal:       11683848 kB\nMemFree:        10900000 kB\nMemAvailable:   11000000",
+   "label": "mem step: MemTotal reported",
+   "ok": true
+  },
+  {
+   "detail": "== loaded 2\n== tainted 0\n== loader\nFS[b1ba58d65e7ffa1a] t=56s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65",
+   "label": "modules step: loader lines, /proc/modules and the kmsg section",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "kmsg clean: modver-matches 0, taint-lines 0, warnings 0",
+   "ok": true
+  },
+  {
+   "detail": "{'UDC': 'a600000.dwc3', 'state': 'configured'}{'product': 'FrameShift N1', 'serialnumber': 'FS-b1ba58d65e7ffa1a', 'configuration': 'acm'}",
+   "label": "net step: UDC a600000.dwc3 (state as faked), config functions 'acm.gs0', product FrameShift N1, serial FS-<nonce>",
+   "ok": true
+  },
+  {
+   "detail": "before ['packet', 'raw', 'raw6', 'tcp', 'tcp6', 'udp', 'udp6', 'udplite', 'udplite6'] after ['packet', 'raw', 'raw6', 'tcp', 'tcp6', 'udp', 'udp6', 'udplite', 'udplite6']",
+   "label": "net and log steps: every socket table was read (tcp, tcp6, udp, udp6, raw, raw6, packet)",
+   "ok": true
+  },
+  {
+   "detail": "{'tcp': 0, 'tcp6': 0, 'udp': 0, 'udp6': 0, 'udplite': 0, 'udplite6': 0, 'raw': 0, 'raw6': 0, 'packet': 0}",
+   "label": "no unintended listener BEFORE the transfer: no TCP LISTEN row; no udp, udplite, raw or packet socket",
+   "ok": true
+  },
+  {
+   "detail": "{'tcp': 0, 'tcp6': 0, 'udp': 0, 'udp6': 0, 'udplite': 0, 'udplite6': 0, 'raw': 0, 'raw6': 0, 'packet': 0}",
+   "label": "no listener AFTER the transfer: no TCP LISTEN row; no udp, udplite, raw or packet socket",
+   "ok": true
+  },
+  {
+   "detail": "FSX1 start port=- if=none ifindex=0 addr=- h2d=8388608 d2h=8388608\nFSX1 result=no-ncm t_ms=7\n",
+   "label": "xfer step: fs-xfer result=no-ncm",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "log step: /run/fs.log with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "== kmsg-post read=ok rc=0 bytes=233\n== kmsg-post-lines 4\n== kmsg-post-first [   ",
+   "label": "log step: the post-transfer kernel-log check comes FIRST and is closed by its end marker",
+   "ok": true
+  },
+  {
+   "detail": "== kmsg-post read=ok rc=0 bytes=233\n== kmsg-post-lines 4\n== kmsg-post-first [    0.000000] B\n== kmsg-post-last [    9.500000] m\n== kmsg-post-modver 0\n== kmsg-post-taint 0\n== kmsg-post-warnings 0 warni",
+   "label": "kmsg-post: read=ok; lines, first, last, modver, taint, warnings and ncm lines reported",
+   "ok": true
+  },
+  {
+   "detail": "4/[    0.000000] B vs 4/[    0.000000] B",
+   "label": "kmsg-post: the post read extends step 3's (same first line, no fewer lines)",
+   "ok": true
+  },
+  {
+   "detail": "('0', '0', '0', '0')",
+   "label": "kmsg-post: 0 WARNING, 0 BUG, 0 matching lines after the transfer",
+   "ok": true
+  },
+  {
+   "detail": "{'syslog-read': 2, 'syslog-size': 2, 'syslog-other': 0, 'mounts-open': 1, 'open-continue': 765, 'udc-enodev': 1, 'addr-ebusy': 0, 'errors': 0}",
+   "label": "kernel log came from KernelFake (syslog read answered, no listener errors)",
+   "ok": true
+  },
+  {
+   "detail": "connect-timeout",
+   "label": "host client (mode no-connect): result connect-timeout",
+   "ok": true
+  }
+ ],
+ "client_mode": "no-connect",
+ "host_xfer": {
+  "ConnectAttempts": 0,
+  "ConnectRefused": 0,
+  "ConnectedAfterMs": null,
+  "Result": "connect-timeout"
+ },
+ "inet6_before_host": "",
+ "kernel_fake_counts": {
+  "addr-ebusy": 0,
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 765,
+  "syslog-other": 0,
+  "syslog-read": 2,
+  "syslog-size": 2,
+  "udc-enodev": 1
+ },
+ "mods": [
+  "ncm-bind-fail"
+ ],
+ "nonce": "b1ba58d65e7ffa1a",
+ "ok": true,
+ "plan": [
+  "verify",
+  "ack",
+  "run",
+  "done"
+ ],
+ "reboot_at_T0_plus": 27.2,
+ "runner_challenge": "a2a40d6d53fd3c907a39ab646dbf7615",
+ "scenario": "c-ncm-bind-fail",
+ "t_total_s": 32.0,
+ "verify_challenge": "ba59062e1f5a620e3c2862698dc49b17",
+ "want_ncm": "dropped",
+ "want_reboot": "collected",
+ "want_xfer": "no-ncm"
+}

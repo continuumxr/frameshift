@@ -1,0 +1,19 @@
+# test-identity.c, 2026-10-19T03:12:50Z; fsbg-probe.c 7226f45b2742b755; host gcc and aarch64 (qemu-aarch64)
+PASS  Quest DT compatible meta,eureka + qcom SoC                 quest=1 vm=0 flags:refused
+PASS  DT compatible qcom only                                    quest=1 vm=0 flags:refused
+PASS  DT compatible oculus only                                  quest=1 vm=0 flags:refused
+PASS  DT model 'Meta Quest 3' (compatible unreadable)            quest=1 vm=0 flags:refused
+PASS  DT model 'Qualcomm Technologies, Inc. ...'                 quest=1 vm=0 flags:refused
+PASS  no DT, the Quest's stock boot arguments                    quest=1 vm=0 flags:refused
+PASS  no DT, qcom_dload_mode alone                               quest=1 vm=0 flags:refused
+PASS  dummy-virt compatible but a Quest boot argument            quest=1 vm=0 flags:refused
+PASS  dummy-virt next to qcom in the compatible list             quest=1 vm=0 flags:refused
+PASS  UML cpuinfo but a Quest DT                                 quest=1 vm=0 flags:refused
+PASS  no DT, no identity at all                                  quest=0 vm=0 flags:refused
+PASS  another DT (not dummy-virt)                                quest=0 vm=0 flags:refused
+PASS  a DT that says nothing                                     quest=0 vm=0 flags:refused
+PASS  QEMU virt (linux,dummy-virt)                               quest=0 vm=1 flags:allowed
+PASS  User-Mode Linux (no DT)                                    quest=0 vm=1 flags:allowed
+TOTAL: 15 cases, 0 failed
+# exit 0
+# aarch64: TOTAL: 15 cases, 0 failed

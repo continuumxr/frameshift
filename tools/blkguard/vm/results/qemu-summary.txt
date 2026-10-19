@@ -1,0 +1,133 @@
+# fs-blkguard QEMU VM test 2026-10-19T03:16:22Z; QEMU emulator version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2)
+# kernel: ecad5da0e2b8aeee out-qemu Image
+# probe:  7226f45b2742b755 fsbg-probe.c (built here for the VM; the device binary is k1g/build-probe.sh's)
+[strict-bootprotect] cmdline: fsbg.vm
+[strict-bootprotect] FSBG-PROBE RESULT: PASS nonce=4eddb48cb40c cases=213 pass=213 fail=0 mode=vm (qemu exit 0)
+[strict-bootprotect] fresh nonce 4eddb48cb40c seen
+[strict-bootprotect] virtio-blk decoy unchanged
+[strict-bootprotect] virtio-scsi decoy unchanged
+[strict-bootoff] cmdline: fsbg.vm fs_blkguard=off
+[strict-bootoff] FSBG-PROBE RESULT: PASS nonce=ac0c42836bd9 cases=223 pass=223 fail=0 mode=vm (qemu exit 0)
+[strict-bootoff] fresh nonce ac0c42836bd9 seen
+[strict-bootoff] virtio-blk decoy unchanged
+[strict-bootoff] virtio-scsi decoy unchanged
+[protect] cmdline: fsbg.vm fsbg.protect
+[protect] FSBG-PROBE RESULT: PASS nonce=2c19ae27e72b cases=181 pass=181 fail=0 mode=vm (qemu exit 0)
+[protect] fresh nonce 2c19ae27e72b seen
+[protect] virtio-blk decoy unchanged
+[protect] virtio-scsi decoy unchanged
+[device-mode] cmdline: fsbg.testkernel
+[device-mode] FSBG-PROBE RESULT: PASS nonce=2668744a01e5 cases=149 pass=149 fail=0 mode=device testkernel (qemu exit 0)
+[device-mode] fresh nonce 2668744a01e5 seen
+[device-mode] virtio-blk decoy unchanged
+[device-mode] virtio-scsi decoy unchanged
+[k1g-layout] cmdline: fsbg.testkernel fsbg.tmpfsdev fsbg.child fsbg.compact
+[k1g-layout] FSBG-PROBE RESULT: PASS nonce=7d7cccf82764 cases=149 pass=149 fail=0 mode=device testkernel (qemu exit 0)
+[k1g-layout] fresh nonce 7d7cccf82764 seen
+[k1g-layout] virtio-blk decoy unchanged
+[k1g-layout] virtio-scsi decoy unchanged
+[quest-ident] cmdline: fsbg.testkernel qcom_dload_mode.download_mode=1 msm_drm.dsi_display0=meta,eureka_panel_sharp:
+[quest-ident] FSBG-PROBE RESULT: ABORT nonce=85820e0a3944 cases=0 pass=0 fail=0 mode=device testkernel (qemu exit 0)
+[quest-ident] fresh nonce 85820e0a3944 seen
+[quest-ident] virtio-blk decoy unchanged
+[quest-ident] virtio-scsi decoy unchanged
+   [quest-ident] ABORT: VM-only mode(s) testkernel refused: this platform identifies as a Quest/Qualcomm device (device tree or boot arguments); no armed guard test case attempted
+[ufs-strict] cmdline: fsbg.vm
+[ufs-strict] FSBG-PROBE RESULT: PASS nonce=3789377f7500 cases=224 pass=224 fail=0 mode=vm (qemu exit 0)
+[ufs-strict] fresh nonce 3789377f7500 seen
+[ufs-strict] virtio-blk decoy unchanged
+[ufs-strict] virtio-scsi decoy unchanged
+[ufs-strict] UFS LU unchanged
+   [ufs-strict] CASE C19   /dev/bsg/ufs-bsg0      bsg       rc=-1   EPERM    d=1 other=0 -> PASS
+[ufs-device] cmdline: fsbg.testkernel
+[ufs-device] FSBG-PROBE RESULT: PASS nonce=ddae3fa6733e cases=169 pass=169 fail=0 mode=device testkernel (qemu exit 0)
+[ufs-device] fresh nonce ddae3fa6733e seen
+[ufs-device] virtio-blk decoy unchanged
+[ufs-device] virtio-scsi decoy unchanged
+[ufs-device] UFS LU unchanged
+   [ufs-device] SKIP  Q12   /dev/sdb               the SCSI host has no driver ioctl
+   [ufs-device] SKIP  Q12   /dev/sda               the SCSI host has no driver ioctl
+   [ufs-device] CASE Q10   /dev/bsg/ufs-bsg0      bsg       rc=-1   EPERM    d=1 other=0 -> PASS
+[devicesim] cmdline: fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact
+[devicesim] FSBG-PROBE RESULT: PASS nonce=27bd01f614e9 cases=196 pass=196 fail=0 mode=device devicesim (qemu exit 0)
+[devicesim] fresh nonce 27bd01f614e9 seen
+[devicesim] virtio-blk decoy unchanged
+[devicesim] virtio-scsi decoy unchanged
+[devicesim] Quest-named disks unchanged (a046a831ba5a751b8a09cba4975cc1ca5c0b8c01b56bd56abb04182b43d1f4d4)
+[devicesim-dupname] cmdline: fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact
+[devicesim-dupname] FSBG-PROBE RESULT: ABORT nonce=9fc4d8ffdfa0 cases=0 pass=0 fail=0 mode=device devicesim (qemu exit 0)
+[devicesim-dupname] fresh nonce 9fc4d8ffdfa0 seen
+[devicesim-dupname] virtio-blk decoy unchanged
+[devicesim-dupname] virtio-scsi decoy unchanged
+   [devicesim-dupname] ABORT: 1 hashing row(s) failed closed before arming (8 later row(s) not read); no armed guard test case attempted
+[devicesim-dupname] Quest-named disks unchanged (098d6d556a6b3c7836477a42e8c0fb0a4902f97f6bb8b42d43958306aae6a0e1)
+[devicesim-timeout] cmdline: fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact fsbg.prebudget=1
+[devicesim-timeout] FSBG-PROBE RESULT: ABORT nonce=ec8e8fc327b1 cases=0 pass=0 fail=0 mode=device devicesim (qemu exit 0)
+[devicesim-timeout] fresh nonce ec8e8fc327b1 seen
+[devicesim-timeout] virtio-blk decoy unchanged
+[devicesim-timeout] virtio-scsi decoy unchanged
+   [devicesim-timeout] ABORT: time: the before-hash pass took 33.22 s (budget 1 s): the proof would not fit its time; no armed guard test case attempted
+[devicesim-timeout] Quest-named disks unchanged (dda859b70c466659374a7162d52b3a1b74942ce764848576263bbf8e0911b1b9)
+[devicesim-mismatch] cmdline: fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact
+[devicesim-mismatch] FSBG-PROBE RESULT: ABORT nonce=3a2529fa3217 cases=0 pass=0 fail=0 mode=device devicesim (qemu exit 0)
+[devicesim-mismatch] fresh nonce 3a2529fa3217 seen
+[devicesim-mismatch] virtio-blk decoy unchanged
+[devicesim-mismatch] virtio-scsi decoy unchanged
+   [devicesim-mismatch] ABORT: 1 hashing row(s) failed closed before arming (5 later row(s) not read); no armed guard test case attempted
+[devicesim-mismatch] Quest-named disks unchanged (60f54806b287b8170719b19c1b1e40995ce81b5bedb0bfc6dd6f2c883bb79b6c)
+[devicesim-4k] cmdline: fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact loglevel=6
+[devicesim-4k] FSBG-PROBE RESULT: PASS nonce=b06597c3d699 cases=196 pass=196 fail=0 mode=device devicesim (qemu exit 0)
+[devicesim-4k] fresh nonce b06597c3d699 seen
+[devicesim-4k] virtio-blk decoy unchanged
+[devicesim-4k] virtio-scsi decoy unchanged
+   [devicesim-4k] [   15.963642] virtio_blk virtio0: [vda] 4096 4096-byte logical blocks (16.8 MB/16.0 MiB)
+   [devicesim-4k] [   17.007113] virtio_blk virtio1: [vdb] 20480 4096-byte logical blocks (83.9 MB/80.0 MiB)
+   [devicesim-4k] [   17.697446] virtio_blk virtio3: [vdc] 32768 512-byte logical blocks (16.8 MB/16.0 MiB)
+   [devicesim-4k] ROW H   /dev/vdb1              bytes=61607936/61607936 sha256=7fe59729491b40b6 (expected value) -> PASS
+   [devicesim-4k] ROW H   /dev/vdb2              bytes=5058560/5058560 sha256=7e0cfe93e0e9867a (expected value) -> PASS
+   [devicesim-4k] ROW H   /dev/vdb3              bytes=12564/12564 sha256=a02fdeede1c1466f (expected value) -> PASS
+   [devicesim-4k] ROW H   /dev/vdb4              bytes=5632/5632 sha256=1674552357aa0ca1 (expected value) -> PASS
+   [devicesim-4k] ROW H   /dev/vdb5              bytes=3136/3136 sha256=a462b6dab7e67a72 (expected value) -> PASS
+   [devicesim-4k] ROW R6  /dev/vdb6              misc size=1048576 expect=1048576
+   [devicesim-4k] ROW R6  /dev/vdb7              devinfo size=4096 expect=4096
+[devicesim-4k] Quest-named disks unchanged (81b6ec83e687caa229a448404d45c07c76f60997219c60b95e8b5481d5e12d35)
+[devicesim-4k-mismatch] cmdline: fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact loglevel=6
+[devicesim-4k-mismatch] FSBG-PROBE RESULT: ABORT nonce=92cf1f1fde8e cases=0 pass=0 fail=0 mode=device devicesim (qemu exit 0)
+[devicesim-4k-mismatch] fresh nonce 92cf1f1fde8e seen
+[devicesim-4k-mismatch] virtio-blk decoy unchanged
+[devicesim-4k-mismatch] virtio-scsi decoy unchanged
+   [devicesim-4k-mismatch] ABORT: 1 hashing row(s) failed closed before arming (5 later row(s) not read); no armed guard test case attempted
+   [devicesim-4k-mismatch] [    5.364298] virtio_blk virtio0: [vda] 4096 4096-byte logical blocks (16.8 MB/16.0 MiB)
+   [devicesim-4k-mismatch] [    5.948401] virtio_blk virtio1: [vdb] 20480 4096-byte logical blocks (83.9 MB/80.0 MiB)
+   [devicesim-4k-mismatch] [    6.772745] virtio_blk virtio3: [vdc] 32768 512-byte logical blocks (16.8 MB/16.0 MiB)
+   [devicesim-4k-mismatch] ROW H   /dev/vdb1              bytes=61607936/61607936 sha256=7fe59729491b40b6 (expected value) -> PASS
+   [devicesim-4k-mismatch] ROW H   /dev/vdb2              bytes=5058560/5058560 sha256=7e0cfe93e0e9867a (expected value) -> PASS
+   [devicesim-4k-mismatch] ROW H   /dev/vdb3              bytes=12564/12564 sha256=a02fdeede1c1466f (expected value) -> PASS
+   [devicesim-4k-mismatch] ROW H   /dev/vdb4              bytes=5632/5632 sha256=90b1ce2c940db886 (expected value) -> content differs from the expected v2.7 image
+   [devicesim-4k-mismatch] ROW H   vbmeta_system_a        -> not read (stopped after an earlier failure)
+   [devicesim-4k-mismatch] ROW R6  misc                   -> not read (stopped after an earlier failure)
+   [devicesim-4k-mismatch] ROW R6  devinfo                -> not read (stopped after an earlier failure)
+   [devicesim-4k-mismatch] ROW H   misc                   -> not read (stopped after an earlier failure)
+   [devicesim-4k-mismatch] ROW H   devinfo                -> not read (stopped after an earlier failure)
+[devicesim-4k-mismatch] Quest-named disks unchanged (660b056478012f2dfb861ff96377eb093c066b3c5060ae6de81bdb886a0d2941)
+# devicesim-4k-r2code probe: 37f1177789ed3fcf fsbg-probe.c at a537251e (the r2 code)
+[devicesim-4k-r2code] cmdline: fsbg.devicesim fsbg.tmpfsdev fsbg.child fsbg.compact loglevel=6
+[devicesim-4k-r2code] FSBG-PROBE RESULT: ABORT nonce=c31a4ea1cf24 cases=0 pass=0 fail=0 mode=device devicesim (qemu exit 0)
+[devicesim-4k-r2code] fresh nonce c31a4ea1cf24 seen
+[devicesim-4k-r2code] virtio-blk decoy unchanged
+[devicesim-4k-r2code] virtio-scsi decoy unchanged
+   [devicesim-4k-r2code] ABORT: 1 hashing row(s) failed closed before arming (6 later row(s) not read); no armed guard test case attempted
+   [devicesim-4k-r2code] [    6.425515] virtio_blk virtio0: [vda] 4096 4096-byte logical blocks (16.8 MB/16.0 MiB)
+   [devicesim-4k-r2code] [    7.159583] virtio_blk virtio1: [vdb] 20480 4096-byte logical blocks (83.9 MB/80.0 MiB)
+   [devicesim-4k-r2code] [    7.545562] virtio_blk virtio3: [vdc] 32768 512-byte logical blocks (16.8 MB/16.0 MiB)
+   [devicesim-4k-r2code] ROW H   /dev/vdb1              bytes=61607936/61607936 sha256=7fe59729491b40b6 (expected value) -> PASS[   30.790631] hrtimer: interrupt took 496430016 ns
+   [devicesim-4k-r2code] ROW H   /dev/vdb2              bytes=5058560/5058560 sha256=7e0cfe93e0e9867a (expected value) -> PASS
+   [devicesim-4k-r2code] ROW H   /dev/vdb3              bytes=0/12564 sha256= (expected value) -> Invalid argument
+   [devicesim-4k-r2code] ROW H   vbmeta_a               -> not read (stopped after an earlier failure)
+   [devicesim-4k-r2code] ROW H   vbmeta_system_a        -> not read (stopped after an earlier failure)
+   [devicesim-4k-r2code] ROW R6  misc                   -> not read (stopped after an earlier failure)
+   [devicesim-4k-r2code] ROW R6  devinfo                -> not read (stopped after an earlier failure)
+   [devicesim-4k-r2code] ROW H   misc                   -> not read (stopped after an earlier failure)
+   [devicesim-4k-r2code] ROW H   devinfo                -> not read (stopped after an earlier failure)
+[devicesim-4k-r2code] Quest-named disks unchanged (0d6c8b20253185204b92c21e41fa28aa7b2e9a4b3d58f3c9170fb68f218a67c0)
+# end 2026-10-19T03:41:52Z

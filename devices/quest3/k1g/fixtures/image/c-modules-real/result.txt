@@ -1,0 +1,18 @@
+# c-modules-real mods=['modules-real'] plan=['verify', 'done']; image <repo>/build/k1g/20261019T031348Z-1c8ade5c6ec2b063
+# reboots: 71725.51 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=1c8ade5c6ec2b063 resp=db919ba92eb5af218b655059a9d618255f65433a8e853316e98e9bf08f563761 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=71680 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [71725.51 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [71725.51 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork)
+PASS  reboot within 3 s of fs-done  [-0.0 s]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  modules attempted = the image's 95-entry list, each once, nothing else (the vendor decoy list unused)  [attempted 95]
+PASS  guard proof ran once between MODULES_READY and ACM_SETUP_ATTEMPTED: BLKGUARD_STARTED, BLKGUARD_DONE result=ABORT  [INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY]
+PASS  the ABORTed probe created nothing but its own log: /run/fsbg = [full.log], no loop/ram/dm/sg/bsg node in /dev  [run/fsbg=['full.log'] dev=[]]
+PASS  ACM-only gadget (J-179): no NCM function made, UDC bound, shell up  [INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY]
+SCENARIO c-modules-real PASS

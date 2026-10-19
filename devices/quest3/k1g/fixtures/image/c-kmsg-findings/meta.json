@@ -1,0 +1,195 @@
+{
+ "ack": "c91c658620b3eec2",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=1c8ade5c6ec2b063 resp=fff3695a5b137f62e1c38879e1074bd438f30e7a363da638fc5665df2a37a99c kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=1c8ade5c6ec2b063 stages=INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=c91c658620b3eec2 END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSB1 END v=1 nonce=1c8ade5c6ec2b063 chal=6d621bb62072d8f739508e8ca5d01d69 lines=127 rec_sha256=5a1cbd3031ca7dbe8661d86401bfe109f98c96d46929f7ad6eb8c23be0d4cbbd",
+   "label": "runner completed with a settled prompt",
+   "ok": true
+  },
+  {
+   "detail": "VALID",
+   "label": "FSB1 VALID (exp k1g, 9 steps kernel..blkguard, this nonce and challenge)",
+   "ok": true
+  },
+  {
+   "detail": "[('1', 'kernel', 'exited', '0'), ('2', 'config', 'exited', '0'), ('3', 'mem', 'exited', '0'), ('4', 'modules', 'exited', '0'), ('5', 'kmsg', 'exited', '0'), ('6', 'fs', 'exited', '0'), ('7', 'usb', 'exited', '0'), ('8', 'log', 'exited', '0'), ('9', 'blkguard', 'exited', '0')]",
+   "label": "every step exited 0",
+   "ok": true
+  },
+  {
+   "detail": "[]",
+   "label": "no step wrote stderr",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=71609 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "71641.25 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "71641.25 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "-0.1 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK",
+   "label": "guard proof ran once between MODULES_READY and ACM_SETUP_ATTEMPTED: BLKGUARD_STARTED, BLKGUARD_DONE result=ABORT",
+   "ok": true
+  },
+  {
+   "detail": "run/fsbg=['full.log'] dev=[]",
+   "label": "the ABORTed probe created nothing but its own log: /run/fsbg = [full.log], no loop/ram/dm/sg/bsg node in /dev",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK",
+   "label": "ACM-only gadget (J-179): no NCM function made, UDC bound, shell up",
+   "ok": true
+  },
+  {
+   "detail": "== uname-r 6.18.33.2-microsoft-standard-WSL2\n== uname-v #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026\n== proc-version\nLinux version 5.10.246-ga9c63e24cb76",
+   "label": "kernel step: /proc/version = the pinned K1g banner (bind-mounted fake; uname is the host's)",
+   "ok": true
+  },
+  {
+   "detail": "== config_gz_bytes 43148\n== config_sha256 4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b\n== k1a-options\nCONFIG_LOCALVERSION_AUTO=y\n# CONFIG_SYSVIPC is not set\n# CONFIG_POSIX_MQUEUE i",
+   "label": "config step: config_sha256 = sha256(k1a.config) and the K1a option lines present",
+   "ok": true
+  },
+  {
+   "detail": "MemTotal:       11683848 kB\nMemFree:        10900000 kB\nMemAvailable:   11000000",
+   "label": "mem step: MemTotal reported",
+   "ok": true
+  },
+  {
+   "detail": "== loaded 2\n== tainted 0\n== loader\nFS[1c8ade5c6ec2b063] t=71610s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f",
+   "label": "modules step: loader lines (MODULE_INDEX, MODLIST, MODULES_READY) and /proc/modules section",
+   "ok": true
+  },
+  {
+   "detail": "== kmsg-lines 12 first=[    0.000000] B\n== modver-matches 4\n[   10.000001] msm_drm: disagrees about version of symbol kmalloc_caches\n[   10.000002] msm_drm: Unknown symbol kmalloc_caches (err -22)\n[   10.000003] spmi_pmic_arb: no symbol version for module_layout\n[   10.000004] fake_mod: version magic '5.10.246 SMP preempt mod_unload aarch64' should be '5.10.246-gdbc2bc83a2b6 SMP preempt mod_unload",
+   "label": "kmsg findings (canned 5.10 lines): modver-matches 4 (disagrees, Unknown symbol, no symbol version, version magic), taint-lines 1 (not a modver match), warnings 1 WARNING / 0 BUG / 3 lines (cut here, WARNING, Call trace)",
+   "ok": true
+  },
+  {
+   "detail": "== filesystems\nnodev\tsysfs\nnodev\ttmpfs\nnodev\tproc\nnodev\tdevtmpfs\nnodev\tconfigfs\n== mounts\nrootfs / rootfs rw 0 0\nproc /proc proc rw 0 0\n",
+   "label": "fs step: exactly the faked /proc/filesystems and /proc/mounts (no host data)",
+   "ok": true
+  },
+  {
+   "detail": "{'syslog-read': 1, 'syslog-size': 1, 'syslog-other': 0, 'mounts-open': 2, 'open-continue': 794, 'errors': 0}",
+   "label": "kernel log and /proc/mounts came from KernelFake (syslog read and /proc/mounts open answered, no listener errors)",
+   "ok": true
+  },
+  {
+   "detail": "== kmsg-lines 12 first=[    0.000000] B\n== modver-matches 4\n[   10.000001] msm_drm: disagrees about version of symbol kmalloc_caches\n[   10.000002] msm_drm: Unknown symbol kmalloc_caches (err -22)\n[  ",
+   "label": "kmsg step: the log line count, the modver count and the WARNING/BUG counts (FS-R-012 \u00a73)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "fs step: /proc/filesystems and /proc/mounts sections",
+   "ok": true
+  },
+  {
+   "detail": "== udc a600000.dwc3 state=configured\n== config-functions acm.gs0 \n== product FrameShift K1g serial=FS-1c8ade5c6ec2b063\n",
+   "label": "usb step: UDC a600000.dwc3, config functions 'acm.gs0' only, product FrameShift K1g, serial FS-<nonce>",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "log step: /run/fs.log with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "== result FSBG-PROBE RESULT: ABORT nonce=1c8ade5c6ec2b063 cases=0 pass=0 fail=0 mode=device\n== supervise\nFSUP1 end=exited code=2 sig=0 errno=0 ms=150 term_ms=-1 kill_ms=-1 out_total=323 out_kept=323 err_total=0 err_kept=0 strays=0 pipes=eof why=none END\n== err-bytes 0\n== probe\nfsbg-probe: nonce=1c8ade5c6ec2b063 mode=device arm=strict boot=protect\nABORT: /proc/fs_blkguard missing or unreadable: the",
+   "label": "blkguard step: the probe ABORTed at its first check (no guard in this kernel), its result line first, fs-supervise reports exited code=2, no stderr, no guard lines",
+   "ok": true
+  }
+ ],
+ "kernel_fake_counts": {
+  "errors": 0,
+  "mounts-open": 2,
+  "open-continue": 794,
+  "syslog-other": 0,
+  "syslog-read": 1,
+  "syslog-size": 1
+ },
+ "mods": [
+  "kmsg-findings"
+ ],
+ "nonce": "1c8ade5c6ec2b063",
+ "ok": true,
+ "plan": [
+  "verify",
+  "ack",
+  "run",
+  "done"
+ ],
+ "reboot_at_T0_plus": 32.2,
+ "runner_challenge": "6d621bb62072d8f739508e8ca5d01d69",
+ "scenario": "c-kmsg-findings",
+ "t_total_s": 35.7,
+ "verify_challenge": "041e91c7803c4a3a1303b4d1df4367dc",
+ "want_reboot": "collected"
+}

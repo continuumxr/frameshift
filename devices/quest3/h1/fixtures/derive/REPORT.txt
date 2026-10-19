@@ -1,0 +1,426 @@
+== profile k1i: 94 modules  S=21 E=1 e=43 F=29
+S proxy-consumer.ko                  live                                     modules.dep of rpmh-regulator.ko
+S cmd-db.ko                          live                                     modules.dep of qcom_rpmh.ko
+S qcom_rpmh.ko                       live                                     modules.dep of rpmh-regulator.ko
+S rpmh-regulator.ko                  live                                     DT vdd-supply of pwm-tach-fan@0 -> rpmh-regulator-bobb1 (qcom,rpmh-vrm-regulator)
+S gdsc-regulator.ko                  live                                     modules.dep of clk-qcom.ko
+S clk-qcom.ko                        live                                     modules.dep of gcc-anorak.ko
+S clk-rpmh.ko                        live                                     DT clocks of qcom,cpufreq-hw -> qcom,rpmhclk (qcom,anorak-rpmh-clk)
+S gcc-anorak.ko                      live                                     DT clocks of qcom,cpufreq-hw -> clock-controller@100000 (qcom,anorak-gcc)
+S panel_event_notifier.ko            live                                     modules.dep of pwm-tach-fan.ko
+S qcom-scm.ko                        live                                     modules.dep of pinctrl-msm.ko
+S qcom-pdc.ko                        live                                     softdep pre of pinctrl-msm.ko
+S pinctrl-msm.ko                     live                                     modules.dep of pinctrl-anorak.ko
+S pinctrl-anorak.ko                  live                                     DT interrupt-parent of pwm-tach-fan@0 -> pinctrl@f000000 (qcom,anorak-pinctrl)
+S regmap-spmi.ko                     live                                     modules.dep of qcom-spmi-pmic.ko
+S spmi-pmic-arb.ko                   live                                     DT parent bus of qcom,pmxr2230@1 (qcom,spmi-pmic-arb)
+S qcom-spmi-pmic.ko                  live                                     DT parent bus of pinctrl@8800 (qcom,spmi-pmic)
+S pinctrl-spmi-gpio.ko               live                                     DT pinctrl-0 of pwm-tach-fan@0 -> pinctrl@8800 (qcom,pmxr2230-gpio)
+S pwm-qti-lpg.ko                     live                                     DT pwms of pwm-tach-fan@0 -> pwms@eb00 (qcom,pwm-lpg)
+S pwm-tach-fan.ko                    hwmon:pwmfan                             ROOT: fan actuator and tach: hwmon pwmfan rpm/pwm/rpm_per_sec/silent_rpm, cdev pwm-tach-fan0 (PLAN §1.1, TCD §3.3)
+S qcom-cpufreq-hw.ko                 cpufreq:policy0,cpufreq:policy2          ROOT: CPU cap actuator: cpufreq policy0/policy2 scaling_max_freq, governor (PLAN §1.1, TCD §4.1)
+S qcom-dload-mode.ko                 bound:1,param:qcom_dload_mode/download_mode ROOT: softdog precondition (EXEC-SPEC E-2): the probe disables dump mode/SDI (qcom-dload-mode.c:306-340), so the device must be bound; the supervisor itself checks that download_mode reads 0
+e iommu-logger.ko                    auto                                     modules.dep of arm_smmu.ko
+e qcom_iommu_util.ko                 auto                                     modules.dep of arm_smmu.ko
+e secure_buffer.ko                   auto                                     modules.dep of arm_smmu.ko
+e icc-bcm-voter.ko                   auto                                     modules.dep of icc-rpmh.ko
+e socinfo.ko                         auto                                     modules.dep of icc-rpmh.ko
+e qcom_hwspinlock.ko                 auto                                     by-name lookup in icc-rpmh.ko (socinfo part info via SMEM, which needs its hwlock)
+e icc-rpmh.ko                        auto                                     modules.dep of qnoc-anorak.ko
+e qnoc-qos.ko                        auto                                     modules.dep of qnoc-anorak.ko
+e qnoc-anorak.ko                     auto                                     DT interconnects of ssusb@a600000 -> interconnect@16e0000 (qcom,anorak-aggre1_noc)
+e arm_smmu.ko                        auto                                     DT iommus of dwc3@a600000 -> apps-smmu@15000000 (qcom,qsmmu-v500)
+e dispcc0-anorak.ko                  auto                                     DT clocks of qcom,mdss_mdp@ae00000 -> clock-controller@af00000 (qcom,anorak-dispcc0)
+e dispcc1-anorak.ko                  auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e phy-msm-snps-hs.ko                 auto                                     softdep pre of dwc3-msm.ko
+e phy-msm-ssusb-qmp.ko               auto                                     softdep pre of dwc3-msm.ko
+E dwc3-msm.ko                        udc:a600000.dwc3                         ROOT: USB-C data: the development host link (the ACM gadget binds a600000.dwc3; row 16: E in development images)
+e gh_msgq.ko                         auto                                     modules.dep of gh_rm_drv.ko
+e gh_rm_drv.ko                       auto                                     modules.dep of mem_buf_dev.ko
+e llcc-qcom.ko                       auto                                     modules.dep of msm_drm.ko
+e mem_buf_dev.ko                     auto                                     modules.dep of qseecom-mod.ko
+e msm_dma_iommu_mapping.ko           auto                                     modules.dep of msm_drm.ko
+e nvmem_qcom-spmi-sdam.ko            auto                                     DT nvmem of pwms@e800 -> sdam@8400 (qcom,spmi-sdam)
+e qcom_glink.ko                      auto                                     modules.dep of qcom_glink_smem.ko
+e qcom_glink_smem.ko                 auto                                     modules.dep of rproc_qcom_common.ko
+e qcom_smd.ko                        auto                                     modules.dep of rproc_qcom_common.ko
+e qrtr.ko                            auto                                     softdep pre of qmi_helpers.ko
+e qmi_helpers.ko                     auto                                     modules.dep of pdr_interface.ko
+e rproc_qcom_common.ko               auto                                     modules.dep of pdr_interface.ko
+e pdr_interface.ko                   auto                                     modules.dep of pmic_glink.ko
+e pmic_glink.ko                      auto                                     modules.dep of altmode-glink.ko
+e qti-fixed-regulator.ko             auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e altmode-glink.ko                   auto                                     modules.dep of msm_drm.ko
+e blu_fw_driver.ko                   auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e gpi.ko                             auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e qseecom-mod.ko                     auto                                     modules.dep of smcinvoke_mod.ko
+e smcinvoke_mod.ko                   auto                                     modules.dep of hdcp.ko
+e hdcp.ko                            auto                                     modules.dep of msm_drm.ko
+e i2c-msm-geni.ko                    auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e leds-qti-tri-led.ko                led:red,led:green,led:blue               ROOT: status LED: the thermal LED notice consumer and the stage LEDs (row 22; fs-noticed)
+e mp3314.ko                          auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e msm-mmrm.ko                        auto                                     modules.dep of msm_drm.ko
+e msm_ext_display.ko                 auto                                     modules.dep of msm_drm.ko
+e msm_drm.ko                         path:/sys/class/drm/card0                ROOT: display (row 7) and the static KMS warning frame consumer (PLAN §1.1 notice consumers)
+e spi-msm-geni.ko                    auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e tps65132-regulator.ko              auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+F clk-dummy.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F tmecom-intf.ko                     auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F hwkm.ko                            auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F crypto-qti-hwkm.ko                 auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F crypto-qti-common.ko               auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F dcvs_fp.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F kryo_arm64_edac.ko                 auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_dma_heaps.ko                  auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F mem_buf.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F mem-hooks.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_aoss.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F msm_qmp.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F phy-qcom-ufs.ko                    auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F phy-qcom-ufs-qmp-v4-anarok.ko      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-dcvs.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_cpu_vendor_hooks.ko           auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_ipcc.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_llcc_pmu.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-reboot-reason.ko              auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_wdt_core.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F rtc-pm8xxx.ko                      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F ucsi_glink.ko                      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F ufshcd-crypto-qti.ko               auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F ufs_qcom.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F zsmalloc.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F zram.ko                            auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F pm8941-pwrkey.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F reboot-mode.ko                     auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-pon.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+NOTE k1i: DT supplier nvmem_qcom-spmi-sdam.ko of pwm-qti-lpg.ko loads after it (that device's probe defers until then)
+CHECK k1i: committed list equals the derived list
+== profile ts-t1: 97 modules  S=42 E=1 e=33 F=21
+S iommu-logger.ko                    live                                     modules.dep of arm_smmu.ko
+S qcom_iommu_util.ko                 live                                     modules.dep of arm_smmu.ko
+S qcom-scm.ko                        live                                     modules.dep of pinctrl-msm.ko
+S secure_buffer.ko                   live                                     modules.dep of arm_smmu.ko
+S proxy-consumer.ko                  live                                     modules.dep of rpmh-regulator.ko
+S cmd-db.ko                          live                                     modules.dep of qcom_rpmh.ko
+S qcom_rpmh.ko                       live                                     modules.dep of rpmh-regulator.ko
+S rpmh-regulator.ko                  live                                     DT vdd-supply of pwm-tach-fan@0 -> rpmh-regulator-bobb1 (qcom,rpmh-vrm-regulator)
+S gdsc-regulator.ko                  live                                     modules.dep of clk-qcom.ko
+S clk-qcom.ko                        live                                     modules.dep of gcc-anorak.ko
+S clk-rpmh.ko                        live                                     DT clocks of qcom,cpufreq-hw -> qcom,rpmhclk (qcom,anorak-rpmh-clk)
+S gcc-anorak.ko                      live                                     DT clocks of qcom,cpufreq-hw -> clock-controller@100000 (qcom,anorak-gcc)
+S icc-bcm-voter.ko                   live                                     modules.dep of icc-rpmh.ko
+S socinfo.ko                         live                                     modules.dep of icc-rpmh.ko
+S qcom_hwspinlock.ko                 live                                     by-name lookup in icc-rpmh.ko (socinfo part info via SMEM, which needs its hwlock)
+S icc-rpmh.ko                        live                                     modules.dep of qnoc-anorak.ko
+S qnoc-qos.ko                        live                                     modules.dep of qnoc-anorak.ko
+S qnoc-anorak.ko                     live                                     DT interconnects of ufshc@1d84000 -> interconnect@16e0000 (qcom,anorak-aggre1_noc)
+S arm_smmu.ko                        live                                     DT iommus of ufshc@1d84000 -> apps-smmu@15000000 (qcom,qsmmu-v500)
+S tmecom-intf.ko                     live                                     modules.dep of hwkm.ko
+S hwkm.ko                            live                                     modules.dep of crypto-qti-hwkm.ko
+S crypto-qti-hwkm.ko                 live                                     modules.dep of crypto-qti-common.ko
+S crypto-qti-common.ko               live                                     modules.dep of ufshcd-crypto-qti.ko
+S panel_event_notifier.ko            live                                     modules.dep of pwm-tach-fan.ko
+S phy-qcom-ufs.ko                    live                                     modules.dep of ufs_qcom.ko
+S ufshcd-crypto-qti.ko               live                                     modules.dep of ufs_qcom.ko
+S qcom-pdc.ko                        live                                     softdep pre of pinctrl-msm.ko
+S pinctrl-msm.ko                     live                                     modules.dep of pinctrl-anorak.ko
+S pinctrl-anorak.ko                  live                                     DT interrupt-parent of pwm-tach-fan@0 -> pinctrl@f000000 (qcom,anorak-pinctrl)
+S ufs_qcom.ko                        bound:1                                  ROOT: fs-metacfg reads Meta's thermal config from super (T1 on; design §2.7: ufs_qcom in phase S whenever the image reads super)
+S phy-qcom-ufs-qmp-v4-anarok.ko      live                                     DT phys of ufshc@1d84000 -> ufsphy_mem@1d87000 (qcom,ufs-phy-qmp-v4-anarok)
+S regmap-spmi.ko                     live                                     modules.dep of qcom-spmi-pmic.ko
+S spmi-pmic-arb.ko                   live                                     DT parent bus of qcom,pmxr2230@1 (qcom,spmi-pmic-arb)
+S qcom-spmi-pmic.ko                  live                                     DT parent bus of pinctrl@8800 (qcom,spmi-pmic)
+S pinctrl-spmi-gpio.ko               live                                     DT pinctrl-0 of pwm-tach-fan@0 -> pinctrl@8800 (qcom,pmxr2230-gpio)
+S pwm-qti-lpg.ko                     live                                     DT pwms of pwm-tach-fan@0 -> pwms@eb00 (qcom,pwm-lpg)
+S pwm-tach-fan.ko                    hwmon:pwmfan                             ROOT: fan actuator and tach: hwmon pwmfan rpm/pwm/rpm_per_sec/silent_rpm, cdev pwm-tach-fan0 (PLAN §1.1, TCD §3.3)
+S qcom-cpufreq-hw.ko                 cpufreq:policy0,cpufreq:policy2          ROOT: CPU cap actuator: cpufreq policy0/policy2 scaling_max_freq, governor (PLAN §1.1, TCD §4.1)
+S qcom-dload-mode.ko                 bound:1,param:qcom_dload_mode/download_mode ROOT: softdog precondition (EXEC-SPEC E-2): the probe disables dump mode/SDI (qcom-dload-mode.c:306-340), so the device must be bound; the supervisor itself checks that download_mode reads 0
+S qcom_tsens.ko                      bound:2                                  ROOT: SoC thermal zones (cpu-*, cpuss-*, gpuss-*, nspss-*, ddr): two tsens controllers (SENSORS SOC; v27.dts thermal-sensor@c263000, @c265000)
+S qcom-vadc-common.ko                live                                     modules.dep of qcom-spmi-adc5-gen3.ko
+S qcom-spmi-adc5-gen3.ko             iiochan:pmk8550_die_temp                 ROOT: PMIC ADC: soc-usr, pcb/pogo/usb-conn zones and the seven PMIC die channels (P7, J-171) (SENSORS PMIC)
+e dispcc0-anorak.ko                  auto                                     DT clocks of qcom,mdss_mdp@ae00000 -> clock-controller@af00000 (qcom,anorak-dispcc0)
+e dispcc1-anorak.ko                  auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e phy-msm-snps-hs.ko                 auto                                     softdep pre of dwc3-msm.ko
+e phy-msm-ssusb-qmp.ko               auto                                     softdep pre of dwc3-msm.ko
+E dwc3-msm.ko                        udc:a600000.dwc3                         ROOT: USB-C data: the development host link (the ACM gadget binds a600000.dwc3; row 16: E in development images)
+e gh_msgq.ko                         auto                                     modules.dep of gh_rm_drv.ko
+e gh_rm_drv.ko                       auto                                     modules.dep of mem_buf_dev.ko
+e llcc-qcom.ko                       auto                                     modules.dep of msm_drm.ko
+e mem_buf_dev.ko                     auto                                     modules.dep of qseecom-mod.ko
+e msm_dma_iommu_mapping.ko           auto                                     modules.dep of msm_drm.ko
+e nvmem_qcom-spmi-sdam.ko            auto                                     DT nvmem of pwms@e800 -> sdam@8400 (qcom,spmi-sdam)
+e qcom_glink.ko                      auto                                     modules.dep of qcom_glink_smem.ko
+e qcom_glink_smem.ko                 auto                                     modules.dep of rproc_qcom_common.ko
+e qcom_smd.ko                        auto                                     modules.dep of rproc_qcom_common.ko
+e qrtr.ko                            auto                                     softdep pre of qmi_helpers.ko
+e qmi_helpers.ko                     auto                                     modules.dep of pdr_interface.ko
+e rproc_qcom_common.ko               auto                                     modules.dep of pdr_interface.ko
+e pdr_interface.ko                   auto                                     modules.dep of pmic_glink.ko
+e pmic_glink.ko                      auto                                     modules.dep of altmode-glink.ko
+e qti-fixed-regulator.ko             auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e altmode-glink.ko                   auto                                     modules.dep of msm_drm.ko
+e blu_fw_driver.ko                   auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e gpi.ko                             auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e qseecom-mod.ko                     auto                                     modules.dep of smcinvoke_mod.ko
+e smcinvoke_mod.ko                   auto                                     modules.dep of hdcp.ko
+e hdcp.ko                            auto                                     modules.dep of msm_drm.ko
+e i2c-msm-geni.ko                    auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e leds-qti-tri-led.ko                led:red,led:green,led:blue               ROOT: status LED: the thermal LED notice consumer and the stage LEDs (row 22; fs-noticed)
+e mp3314.ko                          auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e msm-mmrm.ko                        auto                                     modules.dep of msm_drm.ko
+e msm_ext_display.ko                 auto                                     modules.dep of msm_drm.ko
+e msm_drm.ko                         path:/sys/class/drm/card0                ROOT: display (row 7) and the static KMS warning frame consumer (PLAN §1.1 notice consumers)
+e spi-msm-geni.ko                    auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e tps65132-regulator.ko              auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+F clk-dummy.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F dcvs_fp.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F kryo_arm64_edac.ko                 auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_dma_heaps.ko                  auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F mem_buf.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F mem-hooks.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_aoss.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F msm_qmp.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-dcvs.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_cpu_vendor_hooks.ko           auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_ipcc.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_llcc_pmu.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-reboot-reason.ko              auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_wdt_core.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F rtc-pm8xxx.ko                      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F ucsi_glink.ko                      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F zsmalloc.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F zram.ko                            auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F pm8941-pwrkey.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F reboot-mode.ko                     auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-pon.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+NOTE ts-t1: DT supplier phy-qcom-ufs-qmp-v4-anarok.ko of ufs_qcom.ko loads after it (that device's probe defers until then)
+NOTE ts-t1: DT supplier nvmem_qcom-spmi-sdam.ko of pwm-qti-lpg.ko loads after it (that device's probe defers until then)
+CHECK ts-t1: committed list equals the derived list
+== profile ts-t2: 102 modules  S=42 E=1 e=41 F=18
+S iommu-logger.ko                    live                                     modules.dep of arm_smmu.ko
+S qcom_iommu_util.ko                 live                                     modules.dep of arm_smmu.ko
+S qcom-scm.ko                        live                                     modules.dep of pinctrl-msm.ko
+S secure_buffer.ko                   live                                     modules.dep of arm_smmu.ko
+S proxy-consumer.ko                  live                                     modules.dep of rpmh-regulator.ko
+S cmd-db.ko                          live                                     modules.dep of qcom_rpmh.ko
+S qcom_rpmh.ko                       live                                     modules.dep of rpmh-regulator.ko
+S rpmh-regulator.ko                  live                                     DT vdd-supply of pwm-tach-fan@0 -> rpmh-regulator-bobb1 (qcom,rpmh-vrm-regulator)
+S gdsc-regulator.ko                  live                                     modules.dep of clk-qcom.ko
+S clk-qcom.ko                        live                                     modules.dep of gcc-anorak.ko
+S clk-rpmh.ko                        live                                     DT clocks of qcom,cpufreq-hw -> qcom,rpmhclk (qcom,anorak-rpmh-clk)
+S gcc-anorak.ko                      live                                     DT clocks of qcom,cpufreq-hw -> clock-controller@100000 (qcom,anorak-gcc)
+S icc-bcm-voter.ko                   live                                     modules.dep of icc-rpmh.ko
+S socinfo.ko                         live                                     modules.dep of icc-rpmh.ko
+S qcom_hwspinlock.ko                 live                                     by-name lookup in icc-rpmh.ko (socinfo part info via SMEM, which needs its hwlock)
+S icc-rpmh.ko                        live                                     modules.dep of qnoc-anorak.ko
+S qnoc-qos.ko                        live                                     modules.dep of qnoc-anorak.ko
+S qnoc-anorak.ko                     live                                     DT interconnects of ufshc@1d84000 -> interconnect@16e0000 (qcom,anorak-aggre1_noc)
+S arm_smmu.ko                        live                                     DT iommus of ufshc@1d84000 -> apps-smmu@15000000 (qcom,qsmmu-v500)
+S tmecom-intf.ko                     live                                     modules.dep of hwkm.ko
+S hwkm.ko                            live                                     modules.dep of crypto-qti-hwkm.ko
+S crypto-qti-hwkm.ko                 live                                     modules.dep of crypto-qti-common.ko
+S crypto-qti-common.ko               live                                     modules.dep of ufshcd-crypto-qti.ko
+S panel_event_notifier.ko            live                                     modules.dep of pwm-tach-fan.ko
+S phy-qcom-ufs.ko                    live                                     modules.dep of ufs_qcom.ko
+S ufshcd-crypto-qti.ko               live                                     modules.dep of ufs_qcom.ko
+S qcom-pdc.ko                        live                                     softdep pre of pinctrl-msm.ko
+S pinctrl-msm.ko                     live                                     modules.dep of pinctrl-anorak.ko
+S pinctrl-anorak.ko                  live                                     DT interrupt-parent of pwm-tach-fan@0 -> pinctrl@f000000 (qcom,anorak-pinctrl)
+S ufs_qcom.ko                        bound:1                                  ROOT: fs-metacfg reads Meta's thermal config from super (T1 on; design §2.7: ufs_qcom in phase S whenever the image reads super)
+S phy-qcom-ufs-qmp-v4-anarok.ko      live                                     DT phys of ufshc@1d84000 -> ufsphy_mem@1d87000 (qcom,ufs-phy-qmp-v4-anarok)
+S regmap-spmi.ko                     live                                     modules.dep of qcom-spmi-pmic.ko
+S spmi-pmic-arb.ko                   live                                     DT parent bus of qcom,pmxr2230@1 (qcom,spmi-pmic-arb)
+S qcom-spmi-pmic.ko                  live                                     DT parent bus of pinctrl@8800 (qcom,spmi-pmic)
+S pinctrl-spmi-gpio.ko               live                                     DT pinctrl-0 of pwm-tach-fan@0 -> pinctrl@8800 (qcom,pmxr2230-gpio)
+S pwm-qti-lpg.ko                     live                                     DT pwms of pwm-tach-fan@0 -> pwms@eb00 (qcom,pwm-lpg)
+S pwm-tach-fan.ko                    hwmon:pwmfan                             ROOT: fan actuator and tach: hwmon pwmfan rpm/pwm/rpm_per_sec/silent_rpm, cdev pwm-tach-fan0 (PLAN §1.1, TCD §3.3)
+S qcom-cpufreq-hw.ko                 cpufreq:policy0,cpufreq:policy2          ROOT: CPU cap actuator: cpufreq policy0/policy2 scaling_max_freq, governor (PLAN §1.1, TCD §4.1)
+S qcom-dload-mode.ko                 bound:1,param:qcom_dload_mode/download_mode ROOT: softdog precondition (EXEC-SPEC E-2): the probe disables dump mode/SDI (qcom-dload-mode.c:306-340), so the device must be bound; the supervisor itself checks that download_mode reads 0
+S qcom_tsens.ko                      bound:2                                  ROOT: SoC thermal zones (cpu-*, cpuss-*, gpuss-*, nspss-*, ddr): two tsens controllers (SENSORS SOC; v27.dts thermal-sensor@c263000, @c265000)
+S qcom-vadc-common.ko                live                                     modules.dep of qcom-spmi-adc5-gen3.ko
+S qcom-spmi-adc5-gen3.ko             iiochan:pmk8550_die_temp                 ROOT: PMIC ADC: soc-usr, pcb/pogo/usb-conn zones and the seven PMIC die channels (P7, J-171) (SENSORS PMIC)
+e dispcc0-anorak.ko                  auto                                     DT clocks of qcom,mdss_mdp@ae00000 -> clock-controller@af00000 (qcom,anorak-dispcc0)
+e dispcc1-anorak.ko                  auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e phy-msm-snps-hs.ko                 auto                                     softdep pre of dwc3-msm.ko
+e phy-msm-ssusb-qmp.ko               auto                                     softdep pre of dwc3-msm.ko
+E dwc3-msm.ko                        udc:a600000.dwc3                         ROOT: USB-C data: the development host link (the ACM gadget binds a600000.dwc3; row 16: E in development images)
+e gh_msgq.ko                         auto                                     modules.dep of gh_rm_drv.ko
+e gh_rm_drv.ko                       auto                                     modules.dep of mem_buf_dev.ko
+e llcc-qcom.ko                       auto                                     modules.dep of msm_drm.ko
+e mem_buf_dev.ko                     auto                                     modules.dep of qseecom-mod.ko
+e msm_dma_iommu_mapping.ko           auto                                     modules.dep of msm_drm.ko
+e qcom_ipcc.ko                       auto                                     DT interrupt-parent of power-controller@c300000 -> qcom,ipcc@ed18000 (qcom,ipcc)
+e qcom_aoss.ko                       auto                                     DT clocks of qcom,kgsl-3d0@3d00000 -> power-controller@c300000 (qcom,anorak-aoss-qmp)
+e msm_qmp.ko                         auto                                     DT mboxes of qcom,gmu@3d69000 -> qcom,qmp-aop (qcom,qmp-mbox)
+e nvmem_qcom-spmi-sdam.ko            auto                                     DT nvmem of pwms@e800 -> sdam@8400 (qcom,spmi-sdam)
+e qcom_glink.ko                      auto                                     modules.dep of qcom_glink_smem.ko
+e qcom_glink_smem.ko                 auto                                     modules.dep of rproc_qcom_common.ko
+e qcom_smd.ko                        auto                                     modules.dep of rproc_qcom_common.ko
+e qrtr.ko                            auto                                     softdep pre of qmi_helpers.ko
+e qmi_helpers.ko                     auto                                     modules.dep of pdr_interface.ko
+e rproc_qcom_common.ko               auto                                     modules.dep of pdr_interface.ko
+e pdr_interface.ko                   auto                                     modules.dep of pmic_glink.ko
+e pmic_glink.ko                      auto                                     modules.dep of altmode-glink.ko
+e qti-fixed-regulator.ko             auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e altmode-glink.ko                   auto                                     modules.dep of msm_drm.ko
+e blu_fw_driver.ko                   auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e gpi.ko                             auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e qseecom-mod.ko                     auto                                     modules.dep of smcinvoke_mod.ko
+e smcinvoke_mod.ko                   auto                                     modules.dep of hdcp.ko
+e hdcp.ko                            auto                                     modules.dep of msm_drm.ko
+e i2c-msm-geni.ko                    auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e leds-qti-tri-led.ko                led:red,led:green,led:blue               ROOT: status LED: the thermal LED notice consumer and the stage LEDs (row 22; fs-noticed)
+e mp3314.ko                          auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e msm-mmrm.ko                        auto                                     modules.dep of msm_drm.ko
+e msm_ext_display.ko                 auto                                     modules.dep of msm_drm.ko
+e msm_drm.ko                         path:/sys/class/drm/card0                ROOT: display (row 7) and the static KMS warning frame consumer (PLAN §1.1 notice consumers)
+e spi-msm-geni.ko                    auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e tps65132-regulator.ko              auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e mdt_loader.ko                      auto                                     modules.dep of msm_kgsl.ko
+e log_gpu_error.ko                   auto                                     modules.dep of msm_kgsl.ko
+e nvmem_qfprom.ko                    auto                                     softdep pre of msm_kgsl.ko
+e gpucc-anorak.ko                    auto                                     DT clocks of qcom,kgsl-3d0@3d00000 -> clock-controller@3d90000 (qcom,anorak-gpucc)
+e msm_kgsl.ko                        path:/sys/class/kgsl/kgsl-3d0/max_pwrlevel ROOT: GPU cap actuator (PLAN §1.1: absent -> GPU caps skipped and logged; no GPU workload in TS, so best-effort)
+F clk-dummy.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F dcvs_fp.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F kryo_arm64_edac.ko                 auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_dma_heaps.ko                  auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F mem_buf.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F mem-hooks.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-dcvs.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_cpu_vendor_hooks.ko           auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_llcc_pmu.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-reboot-reason.ko              auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_wdt_core.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F rtc-pm8xxx.ko                      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F ucsi_glink.ko                      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F zsmalloc.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F zram.ko                            auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F pm8941-pwrkey.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F reboot-mode.ko                     auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-pon.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+NOTE ts-t2: DT supplier gcc-anorak.ko of gdsc-regulator.ko loads after it (that device's probe defers until then)
+NOTE ts-t2: DT supplier gpucc-anorak.ko of arm_smmu.ko loads after it (that device's probe defers until then)
+NOTE ts-t2: DT supplier phy-qcom-ufs-qmp-v4-anarok.ko of ufs_qcom.ko loads after it (that device's probe defers until then)
+NOTE ts-t2: DT supplier nvmem_qcom-spmi-sdam.ko of pwm-qti-lpg.ko loads after it (that device's probe defers until then)
+CHECK ts-t2: committed list equals the derived list
+== profile ts-t3b: 113 modules  S=66 E=1 e=28 F=18
+S iommu-logger.ko                    live                                     modules.dep of arm_smmu.ko
+S qcom_iommu_util.ko                 live                                     modules.dep of arm_smmu.ko
+S qcom-scm.ko                        live                                     modules.dep of pinctrl-msm.ko
+S secure_buffer.ko                   live                                     modules.dep of arm_smmu.ko
+S proxy-consumer.ko                  live                                     modules.dep of rpmh-regulator.ko
+S cmd-db.ko                          live                                     modules.dep of qcom_rpmh.ko
+S qcom_rpmh.ko                       live                                     modules.dep of rpmh-regulator.ko
+S rpmh-regulator.ko                  live                                     DT vdd-supply of pwm-tach-fan@0 -> rpmh-regulator-bobb1 (qcom,rpmh-vrm-regulator)
+S gdsc-regulator.ko                  live                                     modules.dep of clk-qcom.ko
+S clk-qcom.ko                        live                                     modules.dep of gcc-anorak.ko
+S clk-rpmh.ko                        live                                     DT clocks of qcom,cpufreq-hw -> qcom,rpmhclk (qcom,anorak-rpmh-clk)
+S gcc-anorak.ko                      live                                     DT clocks of qcom,cpufreq-hw -> clock-controller@100000 (qcom,anorak-gcc)
+S icc-bcm-voter.ko                   live                                     modules.dep of icc-rpmh.ko
+S socinfo.ko                         live                                     modules.dep of icc-rpmh.ko
+S qcom_hwspinlock.ko                 live                                     by-name lookup in icc-rpmh.ko (socinfo part info via SMEM, which needs its hwlock)
+S icc-rpmh.ko                        live                                     modules.dep of qnoc-anorak.ko
+S qnoc-qos.ko                        live                                     modules.dep of qnoc-anorak.ko
+S qnoc-anorak.ko                     live                                     DT interconnects of ufshc@1d84000 -> interconnect@16e0000 (qcom,anorak-aggre1_noc)
+S arm_smmu.ko                        live                                     DT iommus of ufshc@1d84000 -> apps-smmu@15000000 (qcom,qsmmu-v500)
+S tmecom-intf.ko                     live                                     modules.dep of hwkm.ko
+S hwkm.ko                            live                                     modules.dep of crypto-qti-hwkm.ko
+S crypto-qti-hwkm.ko                 live                                     modules.dep of crypto-qti-common.ko
+S crypto-qti-common.ko               live                                     modules.dep of ufshcd-crypto-qti.ko
+S panel_event_notifier.ko            live                                     modules.dep of pwm-tach-fan.ko
+S qcom_glink.ko                      live                                     modules.dep of qcom_glink_smem.ko
+S qcom_glink_smem.ko                 live                                     modules.dep of rproc_qcom_common.ko
+S qcom_smd.ko                        live                                     modules.dep of rproc_qcom_common.ko
+S qrtr.ko                            live                                     softdep pre of qmi_helpers.ko
+S qmi_helpers.ko                     live                                     modules.dep of qcom_sysmon.ko
+S rproc_qcom_common.ko               live                                     modules.dep of qcom_sysmon.ko
+S pdr_interface.ko                   live                                     modules.dep of pmic_glink.ko
+S phy-qcom-ufs.ko                    live                                     modules.dep of ufs_qcom.ko
+S ufshcd-crypto-qti.ko               live                                     modules.dep of ufs_qcom.ko
+S qcom-pdc.ko                        live                                     softdep pre of pinctrl-msm.ko
+S pinctrl-msm.ko                     live                                     modules.dep of pinctrl-anorak.ko
+S pinctrl-anorak.ko                  live                                     DT interrupt-parent of pwm-tach-fan@0 -> pinctrl@f000000 (qcom,anorak-pinctrl)
+S ufs_qcom.ko                        bound:1                                  ROOT: fs-metacfg reads Meta's thermal config from super (T1 on; design §2.7: ufs_qcom in phase S whenever the image reads super)
+S phy-qcom-ufs-qmp-v4-anarok.ko      live                                     DT phys of ufshc@1d84000 -> ufsphy_mem@1d87000 (qcom,ufs-phy-qmp-v4-anarok)
+S qcom_ipcc.ko                       live                                     DT interrupt-parent of qcom,smp2p-adsp -> qcom,ipcc@ed18000 (qcom,ipcc)
+S pmic_glink.ko                      live                                     modules.dep of qti_battery_charger_main.ko
+S regmap-spmi.ko                     live                                     modules.dep of qcom-spmi-pmic.ko
+S spmi-pmic-arb.ko                   live                                     DT parent bus of qcom,pmxr2230@1 (qcom,spmi-pmic-arb)
+S qcom-spmi-pmic.ko                  live                                     DT parent bus of pinctrl@8800 (qcom,spmi-pmic)
+S pinctrl-spmi-gpio.ko               live                                     DT pinctrl-0 of pwm-tach-fan@0 -> pinctrl@8800 (qcom,pmxr2230-gpio)
+S pwm-qti-lpg.ko                     live                                     DT pwms of pwm-tach-fan@0 -> pwms@eb00 (qcom,pwm-lpg)
+S pwm-tach-fan.ko                    hwmon:pwmfan                             ROOT: fan actuator and tach: hwmon pwmfan rpm/pwm/rpm_per_sec/silent_rpm, cdev pwm-tach-fan0 (PLAN §1.1, TCD §3.3)
+S qcom_aoss.ko                       live                                     modules.dep of qcom_q6v5_pas.ko
+S qcom-cpufreq-hw.ko                 cpufreq:policy0,cpufreq:policy2          ROOT: CPU cap actuator: cpufreq policy0/policy2 scaling_max_freq, governor (PLAN §1.1, TCD §4.1)
+S qcom-dload-mode.ko                 bound:1,param:qcom_dload_mode/download_mode ROOT: softdog precondition (EXEC-SPEC E-2): the probe disables dump mode/SDI (qcom-dload-mode.c:306-340), so the device must be bound; the supervisor itself checks that download_mode reads 0
+S gpi.ko                             live                                     modules.dep of i2c-msm-geni.ko
+S i2c-msm-geni.ko                    live                                     DT parent bus of fuel-gauge@0x55 (qcom,i2c-geni)
+S qcom_tsens.ko                      bound:2                                  ROOT: SoC thermal zones (cpu-*, cpuss-*, gpuss-*, nspss-*, ddr): two tsens controllers (SENSORS SOC; v27.dts thermal-sensor@c263000, @c265000)
+S qcom-vadc-common.ko                live                                     modules.dep of qcom-spmi-adc5-gen3.ko
+S qcom-spmi-adc5-gen3.ko             iiochan:pmk8550_die_temp                 ROOT: PMIC ADC: soc-usr, pcb/pogo/usb-conn zones and the seven PMIC die channels (P7, J-171) (SENSORS PMIC)
+S mdt_loader.ko                      live                                     modules.dep of qcom_q6v5_pas.ko
+S qcom_pil_info.ko                   live                                     modules.dep of qcom_q6v5_pas.ko
+S qcom_ramdump.ko                    live                                     modules.dep of qcom_q6v5_pas.ko
+S qcom_sysmon.ko                     live                                     modules.dep of qcom_q6v5.ko
+S qcom_q6v5.ko                       live                                     modules.dep of qcom_q6v5_pas.ko
+S smp2p.ko                           live                                     DT interrupts-extended of remoteproc-adsp@03000000 -> qcom,smp2p-adsp (qcom,smp2p)
+S qcom_q6v5_pas.ko                   rproc:3000000.remoteproc-adsp            ROOT: ADSP: battery and charger path via pmic_glink (TCD §6.4; EXEC-SPEC v2.7 ADSP name). auto_boot is false for this SoC (qcom_q6v5_pas.c:967-979): the list proves probe and registration; the loader's explicit start (FSML_RPROC_START, required for T3b/R-1) must reach running within FSML_RPROC_WAIT, else S is not ready and the handoff is refused
+S qti_battery_charger_main.ko        psy:battery                              ROOT: battery psy: temp/voltage/current/capacity/status, usb online (PLAN §1.1, SENSORS BATT); registered at probe whether or not the ADSP runs (qti_battery_charger.c:3336), so it proves the driver, not live battery data
+S qrtr-smd.ko                        live                                     ROOT: IPC router transport to the ADSP (TS README §3 T3b); its rpmsg device appears only once the ADSP runs, so live is all the loader can prove (LIVE_ONLY_ROOTS)
+S bq27xxx_battery.ko                 live                                     modules.dep of bq27xxx_battery_i2c.ko
+S bq27xxx_battery_i2c.ko             psy:bq27z561-0                           ROOT: battery gauge: zone bq27z561-0 is an input of all three virtual sensors (v27.dts battery/display/surface_virtual_sensor thermal-zones)
+S virtual_sensor.ko                  bound:3                                  ROOT: BATT and SKIN classes: batt-virt-usr, surf-virt-usr (SENSORS). The DT zones exist from boot (thermal_of.c:1171-1220), so readiness is the three bound oculus,virtual-sensor devices; each probe defers until the power-supply zones bq27z561-0 and battery exist (virtual_sensor.c:1035-1048, 915-985, 1198-1202)
+e dispcc0-anorak.ko                  auto                                     DT clocks of qcom,mdss_mdp@ae00000 -> clock-controller@af00000 (qcom,anorak-dispcc0)
+e dispcc1-anorak.ko                  auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e phy-msm-snps-hs.ko                 auto                                     softdep pre of dwc3-msm.ko
+e phy-msm-ssusb-qmp.ko               auto                                     softdep pre of dwc3-msm.ko
+E dwc3-msm.ko                        udc:a600000.dwc3                         ROOT: USB-C data: the development host link (the ACM gadget binds a600000.dwc3; row 16: E in development images)
+e gh_msgq.ko                         auto                                     modules.dep of gh_rm_drv.ko
+e gh_rm_drv.ko                       auto                                     modules.dep of mem_buf_dev.ko
+e llcc-qcom.ko                       auto                                     modules.dep of msm_drm.ko
+e mem_buf_dev.ko                     auto                                     modules.dep of qseecom-mod.ko
+e msm_dma_iommu_mapping.ko           auto                                     modules.dep of msm_drm.ko
+e msm_qmp.ko                         auto                                     DT mboxes of qcom,gmu@3d69000 -> qcom,qmp-aop (qcom,qmp-mbox)
+e nvmem_qcom-spmi-sdam.ko            auto                                     DT nvmem of pwms@e800 -> sdam@8400 (qcom,spmi-sdam)
+e qti-fixed-regulator.ko             auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e altmode-glink.ko                   auto                                     modules.dep of msm_drm.ko
+e blu_fw_driver.ko                   auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e qseecom-mod.ko                     auto                                     modules.dep of smcinvoke_mod.ko
+e smcinvoke_mod.ko                   auto                                     modules.dep of hdcp.ko
+e hdcp.ko                            auto                                     modules.dep of msm_drm.ko
+e leds-qti-tri-led.ko                led:red,led:green,led:blue               ROOT: status LED: the thermal LED notice consumer and the stage LEDs (row 22; fs-noticed)
+e mp3314.ko                          auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e msm-mmrm.ko                        auto                                     modules.dep of msm_drm.ko
+e msm_ext_display.ko                 auto                                     modules.dep of msm_drm.ko
+e msm_drm.ko                         path:/sys/class/drm/card0                ROOT: display (row 7) and the static KMS warning frame consumer (PLAN §1.1 notice consumers)
+e spi-msm-geni.ko                    auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e tps65132-regulator.ko              auto                                     display path of the 95 (panel power, backlight, display clocks; stage 3c/3d)
+e log_gpu_error.ko                   auto                                     modules.dep of msm_kgsl.ko
+e nvmem_qfprom.ko                    auto                                     softdep pre of msm_kgsl.ko
+e gpucc-anorak.ko                    auto                                     DT clocks of qcom,kgsl-3d0@3d00000 -> clock-controller@3d90000 (qcom,anorak-gpucc)
+e msm_kgsl.ko                        path:/sys/class/kgsl/kgsl-3d0/max_pwrlevel ROOT: GPU cap actuator (PLAN §1.1: absent -> GPU caps skipped and logged; no GPU workload in TS, so best-effort)
+F clk-dummy.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F dcvs_fp.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F kryo_arm64_edac.ko                 auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_dma_heaps.ko                  auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F mem_buf.ko                         auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F mem-hooks.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-dcvs.ko                       auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_cpu_vendor_hooks.ko           auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_llcc_pmu.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-reboot-reason.ko              auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom_wdt_core.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F rtc-pm8xxx.ko                      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F ucsi_glink.ko                      auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F zsmalloc.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F zram.ko                            auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F pm8941-pwrkey.ko                   auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F reboot-mode.ko                     auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+F qcom-pon.ko                        auto                                     in the set; not needed by any S or E root (loaded with async_probe=1)
+NOTE ts-t3b: DT supplier gcc-anorak.ko of gdsc-regulator.ko loads after it (that device's probe defers until then)
+NOTE ts-t3b: DT supplier gpucc-anorak.ko of arm_smmu.ko loads after it (that device's probe defers until then)
+NOTE ts-t3b: DT supplier phy-qcom-ufs-qmp-v4-anarok.ko of ufs_qcom.ko loads after it (that device's probe defers until then)
+NOTE ts-t3b: DT supplier nvmem_qcom-spmi-sdam.ko of pwm-qti-lpg.ko loads after it (that device's probe defers until then)
+CHECK ts-t3b: committed list equals the derived list
+RESULT PASS: 0 error(s)

@@ -1,0 +1,19 @@
+FS[b1ba58d65e7ffa1a] t=207s DEADLINE armed t0=206 deadline=T0+200 ack_window=150 backstop=T0+201 reboot-reasons-not-logged-at-reboot
+FS[b1ba58d65e7ffa1a] t=207s STAGE=INIT_STARTED pid=1 kernel=6.18.33.2-microsoft-standard-WSL2 deadline=T0+200
+FS[b1ba58d65e7ffa1a] t=207s BACKSTOP armed pid=53 in=200s
+FS[b1ba58d65e7ffa1a] t=207s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62 (= the pinned v2.7 index)
+FS[b1ba58d65e7ffa1a] t=207s FW_TIMEOUT=1
+FS[b1ba58d65e7ffa1a] t=207s MODLIST /lib/fs/modules.load entries=3
+FS[b1ba58d65e7ffa1a] t=207s MODULE_FAIL nautilus.ko: insmod: can't insert '/lib/modules/nautilus.ko': No such file or directory
+FS[b1ba58d65e7ffa1a] t=208s MODULE_FAIL cmd-db.ko: insmod: can't insert '/lib/modules/cmd-db.ko': No such file or directory
+FS[b1ba58d65e7ffa1a] t=208s MODULE_FAIL gh_msgq.ko: insmod: can't insert '/lib/modules/gh_msgq.ko': No such file or directory
+FS[b1ba58d65e7ffa1a] t=211s STAGE=MODULES_READY ok=0 fail=3 udc=a600000.dwc3  drm=card0 
+FS[b1ba58d65e7ffa1a] t=211s ROLE mode=peripheral roles=device 
+FS[b1ba58d65e7ffa1a] t=211s STAGE=ACM_SETUP_ATTEMPTED 
+FS[b1ba58d65e7ffa1a] t=212s GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-b1ba58d65e7ffa1a
+FS[b1ba58d65e7ffa1a] t=213s NCM function=linked dev_addr=02:b1:ba:58:d6:5e host_addr=06:b1:ba:58:d6:5e ll=fe80::b1ba:58d6:5e7f:fa1a port=47201
+FS[b1ba58d65e7ffa1a] t=213s STAGE=UDC_BOUND state=configured
+FS[b1ba58d65e7ffa1a] t=214s NCM_NET if=usb0 addr=fe80::b1ba:58d6:5e7f:fa1a/64 operstate=lowerlayerdown inet6=[fe80000000000000b1ba58d65e7ffa1a 03 40 20 80 usb0;]
+FS[b1ba58d65e7ffa1a] t=214s STAGE=SHELL_READY 
+FS[b1ba58d65e7ffa1a] t=214s NCM_GUARD done after 0s: the host configured the gadget; nothing changed
+FS t=217s STAGE=HOST_ACK ack=85dae372148a5998 deadline-unchanged=T0+200

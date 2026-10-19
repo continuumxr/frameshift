@@ -329,3 +329,10 @@ need the PM's approval and its own relay.
 | USB link design (PD-8) | `docs/research/usb-link-design.md` |
 | slotting Valve's image in (distribution architecture) | `docs/research/valve-image-slot-in.md` |
 | Valve's hardware writers and protections | `docs/research/valve-writer-inventory.md` |
+| device health design | `docs/research/device-health-design.md` |
+| PD mapper (battery service) | `docs/research/pd-mapper.md` |
+| HibiscusXR | `docs/research/hibiscusxr.md` |
+| fs-blkguard, the boot-chain write guard (design) | `docs/research/fs-blkguard-design.md` |
+| VA_BITS 39 vs 48 for K1i | `docs/research/va-bits-k1i.md` |
+| Stearlight (static study) | `docs/research/stearlight.md` |
+| Reframed VR (ArmadaVR renamed) | `docs/research/reframed-vr.md` |

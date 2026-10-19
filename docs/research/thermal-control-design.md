@@ -268,11 +268,12 @@ batt-virt stale too** [D].
 | CPU hotplug / thermal-pause | — | — | DT nodes exist (`v27.dts:13408,13455`); drivers not built (`stock.config:3247,3254`) |
 | LMh | EPSS firmware; `qcom-cpufreq-hw` handles `dcvsh0/1` IRQs and exposes `cpuN/dcvsh_freq_limit` (0444, `qcom-cpufreq-hw.c:354-359`) | — | hardware clamp; `QTI_THERMAL_LIMITS_DCVS` not set (`stock.config:3248`) |
 
-### 1.3 Zones with cooling maps (default `step_wise`, `stock.config:3219`; identical trips/maps in v66)
+### 1.3 Zones with cooling maps (default `step_wise`, `stock.config:3219`; identical trip temperatures and maps in v66; v66 has hysteresis 3 at every tsens fan trip, cpu zones included)
 
 | zone(s) | sensor | trips °C (hysteresis) | action | source (dtsi) |
 |---|---|---|---|---|
-| cpu-*-fan (12), cpuss-*-fan (2), gpuss-*-fan (8), nspss-*-fan (3) | tsens | 60 (15) / 75 (10) / 80 (3) / 85 (3) | fan 1/2/3/4 | `:202-825,987-1090,1128-1710`; hysteresis `v27.dts:26505-26530` |
+| cpu-*-fan (12), cpuss-*-fan (2) | tsens | 60 (15) / 75 (10) / 80 (3) / 85 (3) | fan 1/2/3/4 | `:202-825,987-1090`; hysteresis `v27.dts:26505-26530` (cpu-0-0-0-fan; the other 13 the same) |
+| gpuss-*-fan (8), nspss-*-fan (3) | tsens | 60 (3) / 75 (3) / 80 (3) / 85 (3) | fan 1/2/3/4 | `:1128-1710`; v2.7 DTB and the Unit 2 T0-03 capture (2026-10-18). **Corrected 2026-10-18 (T0 r2):** revision 2 listed these 11 zones with the cpu zones' 15/10 hysteresis, which `thermald_tables.c` copied |
 | soc-fan | soc_therm | 60/75/80/85 | fan 1–4 | `:1755-1807` |
 | batt-virt-fan | battery virt | 45/49/53 (2) | fan 2/3/4 | `:20-59` |
 | surf-virt-fan | surface virt | 42/44/46 | fan 2/3/4 | `:1857-1897` |

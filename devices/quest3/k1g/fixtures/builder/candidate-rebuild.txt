@@ -1,0 +1,6 @@
+candidate 20261019T031348Z-1c8ade5c6ec2b063
+nonce 1c8ade5c6ec2b063 stamp 20261019T031348Z
+candidate image 1ee9f1059d91b1f100e6bde31910980c65befa42c5dd5b8de12e38d187ff2ce4
+rebuilt   image 1ee9f1059d91b1f100e6bde31910980c65befa42c5dd5b8de12e38d187ff2ce4
+candidate ramdisk.cpio      d9e1a3a5e069a310bda01fcecce1389faa3ec4413e61b650c74ac167ec9d2b1e  size=3567616
+rebuilt   ramdisk.cpio      d9e1a3a5e069a310bda01fcecce1389faa3ec4413e61b650c74ac167ec9d2b1e  size=3567616

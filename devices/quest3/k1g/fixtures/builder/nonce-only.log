@@ -1,0 +1,4 @@
+reference $HOME/work/fsbuild-neg/k1g/repro1/20260101T000000Z-0123456789abcdef (nonce 0123456789abcdef) image 70c35a3f896e2244bb5e5790389fae8c17e4482308d7b8aa5d7d83549a7aa406
+candidate $HOME/work/fsbuild-neg/k1g/nonce2/20260101T000001Z-fedcba9876543210 (nonce fedcba9876543210) image 19d4b0a375f6d058e81541ba87ce36c244c851b2645860875a0222898a04d872
+kernel bytes identical: 65740722b532b4235e2d35b517bf70d7753e63f42b7b7ee5c869117d999042d3 (42969600 bytes); ramdisk: 22 entries, only /init differs, only at the nonce
+NONCE-ONLY REBUILD: OK

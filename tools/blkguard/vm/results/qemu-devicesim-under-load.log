@@ -1,0 +1,16 @@
+fsbg-probe: nonce=7bd1a84af4bf mode=device arm=strict boot=protect
+PRE guard: mode=protect sealed=0 modules_disabled=0 hazards=modules mmc-ioctl nvme-passthru mtd
+WARN: hazards 'modules mmc-ioctl nvme-passthru mtd' accepted (fsbg.testkernel: test kernels only)
+PRE boot storage visible: 40 block nodes
+ROW H   /dev/vdb1              bytes=0/0 sha256= (expected value) -> timeout
+ROW H   /dev/vdb2              bytes=5058560/5058560 sha256=7e0cfe93e0e9867a (expected value) -> PASS
+ROW H   /dev/vdb3              bytes=12564/12564 sha256=a02fdeede1c1466f (expected value) -> PASS
+ROW H   /dev/vdb4              bytes=5632/5632 sha256=1674552357aa0ca1 (expected value) -> PASS
+ROW H   /dev/vdb5              bytes=3136/3136 sha256=a462b6dab7e67a72 (expected value) -> PASS
+ROW R6  /dev/vdb6              misc size=1048576 expect=1048576
+ROW R6  /dev/vdb7              devinfo size=4096 expect=4096
+ABORT: 1 hashing row(s) failed closed before arming; nothing attempted
+SERIES H     pass=51 fail=1
+HASHDIGEST before=f8c3a14e3c2a0103123f2b292296b31f after=e3b0c44298fc1c149afbf4c8996fb924
+FSBG-PROBE RESULT: ABORT nonce=7bd1a84af4bf cases=0 pass=0 fail=0 mode=device devicesim
+[   38.220114] reboot: Power down

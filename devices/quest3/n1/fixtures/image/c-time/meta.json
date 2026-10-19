@@ -1,0 +1,150 @@
+{
+ "ack": "b86a48e303e04a38",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=b1ba58d65e7ffa1a resp=f90101ff9009904611f849aa8561b2ca40e7c47ce4e20a489525a59ad80dc3ca kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=b1ba58d65e7ffa1a stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=b86a48e303e04a38 END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSDE1 error=time now=225 deadline=255 worst=126 END",
+   "label": "run refused: FSDE1 error=time, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=212 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "226.73 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "226.73 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "0.3 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "NCM function=linked dev_addr=02:b1:ba:58:d6:5e host_addr=06:b1:ba:58:d6:5e ll=fe80::b1ba:58d6:5e7f:fa1a port=47201",
+   "label": "NCM ids from the nonce: dev_addr 02:<nonce 0-4>, host_addr 06:<nonce 0-4>, ll fe80::<nonce>, port 47201",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK",
+   "label": "the ACM console came up in every NCM case: UDC_BOUND and SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "state=up if=usb0 ll=fe80::b1ba:58d6:5e7f:fa1a port=47201 ",
+   "label": "NCM linked after acm.gs0, bound, network up: NCM_NET if=usb0 addr=fe80::<nonce>/64; fs.ncm state=up",
+   "ok": true
+  },
+  {
+   "detail": "02:b1:ba:58:d6:5e",
+   "label": "configfs dev_addr/host_addr written with the nonce MACs",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no NCM_SKIPPED/NCM_DROPPED/NCM_NET_FAILED/NCM_FALLBACK; the guard saw the configured gadget",
+   "ok": true
+  },
+  {
+   "detail": "{'syslog-read': 0, 'syslog-size': 0, 'syslog-other': 0, 'mounts-open': 1, 'open-continue': 500, 'udc-enodev': 0, 'addr-ebusy': 0, 'errors': 0}",
+   "label": "configfs: no dev_addr/host_addr write after the NCM link (the fake answers EBUSY as f_ncm does)",
+   "ok": true
+  },
+  {
+   "detail": "fe80000000000000b1ba58d65e7ffa1a 03 40 20 80     usb0",
+   "label": "before the host link (no carrier): the device address was already PERMANENT (flags 80: DAD off means no tentative phase)",
+   "ok": true
+  },
+  {
+   "detail": "refused",
+   "label": "before the runner: a connect to [fe80::<nonce>%hst0]:47201 is refused (nothing listens)",
+   "ok": true
+  }
+ ],
+ "client_mode": null,
+ "inet6_before_host": "fe80000000000000b1ba58d65e7ffa1a 03 40 20 80     usb0\n",
+ "kernel_fake_counts": {
+  "addr-ebusy": 0,
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 500,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0,
+  "udc-enodev": 0
+ },
+ "mods": [],
+ "nonce": "b1ba58d65e7ffa1a",
+ "ok": true,
+ "plan": [
+  "verify",
+  "ack",
+  "time",
+  "run",
+  "done"
+ ],
+ "reboot_at_T0_plus": 14.7,
+ "runner_challenge": "98fe81e06d5ab93e3a5c583890718af6",
+ "scenario": "c-time",
+ "t_total_s": 16.8,
+ "verify_challenge": "37549403ee90a53e5411c59e46bb5ef6",
+ "want_ncm": "up",
+ "want_reboot": "collected",
+ "want_xfer": null
+}

@@ -159,7 +159,7 @@ cmd.exe /d /c "adb -s <serial> shell dumpsys battery > <cycle>\followup-<n>-batt
 
 ## 5. Persistent state: the required statement (FS-R-012 §6)
 
-Identity, slot and lock before/after checks (BA/BF/AF/AA on the user-build rows) are accepted for these repeats. Each
+Identity and slot before/after checks (BA/BF/AF/AA on the user-build rows) are accepted for these repeats. Each
 repeat's report includes, verbatim:
 
 > misc, devinfo and partition-content invariance were not measured.

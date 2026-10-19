@@ -1,0 +1,5 @@
+banner: Linux version 5.10.246-ga9c63e24cb76 (frameshift@k1g) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #1 SMP PREEMPT Wed Oct 14 00:00:00 UTC 2026
+ikconfig: 196932 bytes, sha256 4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b (= k1a/kernel/k1a.config)
+vermagic: '5.10.246-ga9c63e24cb76 SMP preempt mod_unload modversions aarch64' present
+REFUSE kgate result is not a gate PASS for this Image: mode report-only
+BUILD REFUSED: K1g kernel check: kgate result is not a gate PASS for this Image: mode report-only

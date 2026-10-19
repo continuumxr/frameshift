@@ -8,7 +8,7 @@
 # (never committed beyond its summary lines). Offline: no device, no download.
 set -uo pipefail
 T=$(cd "$(dirname "$0")/.." && pwd)
-B=$HOME/fsth-build
+B=${FSTH_BUILD:-$HOME/fsth-build}   # FSTH_BUILD: another build directory (e.g. a branch clone beside the main one)
 F=$T/fixtures
 QEMU=$(command -v qemu-aarch64 || true)
 mkdir -p "$F"/{build-record,ref,metacfg,accept,tables,core,core-aarch64,sweep,real-local,exec,stage,valve,consumers}

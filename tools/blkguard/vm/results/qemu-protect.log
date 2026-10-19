@@ -1,0 +1,243 @@
+fsbg-probe: nonce=2c19ae27e72b mode=vm arm=protect boot=protect
+PRE guard: mode=protect sealed=0 modules_disabled=0 hazards=modules mmc-ioctl nvme-passthru mtd
+ROW H   /dev/ram1              bytes=8388608/8388608 sha256=6e8e65eb0349aac7 -> PASS
+ROW H   /dev/loop6             bytes=2097152/2097152 sha256=f882ccbe6baedbb5 -> PASS
+ROW H   /dev/loop6p1           bytes=1048576/1048576 sha256=9430896047cb9956 -> PASS
+ROW H   /dev/loop6p2           bytes=1048576/1048576 sha256=ef02c9768ce5acb9 -> PASS
+ROW H   /dev/loop6p3           bytes=1048576/1048576 sha256=b5da0e65573f0ffe -> PASS
+ROW H   /dev/loop6p4           bytes=1048576/1048576 sha256=d65b72c4d9d2ba38 -> PASS
+ROW H   /dev/loop6p6           bytes=1048576/1048576 sha256=4d55afc461a9cb28 -> PASS
+ROW H   /dev/vda4              bytes=1048576/1048576 sha256=2732525aaed14811 -> PASS
+ROW H   /dev/sda4              bytes=1048576/1048576 sha256=35e442ab64072804 -> PASS
+ROW H   /dev/vda2              bytes=1048576/1048576 sha256=f1fa5b5d7582b152 -> PASS
+ROW H   /dev/sda2              bytes=1048576/1048576 sha256=b140c0970365711d -> PASS
+ROW H   /dev/vda7              bytes=1048576/1048576 sha256=92dea484a24cfbd1 -> PASS
+ROW H   /dev/sda7              bytes=1048576/1048576 sha256=1e33aaf59990599c -> PASS
+ROW H   /dev/mtdblock0         bytes=134217728/134217728 sha256=254bcc3fc4f27172 -> PASS
+ROW H   /dev/vda5              bytes=1048576/1048576 sha256=c40ec1a37897130c -> PASS
+ROW H   /dev/sda5              bytes=1048576/1048576 sha256=03f5b0dc06a7ff90 -> PASS
+ROW H   /dev/vda3              bytes=1048576/1048576 sha256=a8adbbcd4d0e4a0d -> PASS
+ROW H   /dev/sda3              bytes=1048576/1048576 sha256=37ce29d5271c8012 -> PASS
+ROW H   /dev/vda1              bytes=1048576/1048576 sha256=ad9adc2ef503efe0 -> PASS
+ROW H   /dev/sda1              bytes=1048576/1048576 sha256=01bbea7aa8a654a4 -> PASS
+ROW H   /dev/sda               bytes=16777216/16777216 sha256=ac6bcdd77ac78eac -> PASS
+ROW H   /dev/vda8              bytes=1048576/1048576 sha256=8ff9a3ab9358a69a -> PASS
+ROW H   /dev/sda8              bytes=1048576/1048576 sha256=13be3ed6721b5b93 -> PASS
+ROW H   /dev/vda               bytes=16777216/16777216 sha256=31917b61aecb2199 -> PASS
+ROW H   /dev/vda6              bytes=1048576/1048576 sha256=659e1caf44ca6a9b -> PASS
+ROW H   /dev/sda6              bytes=1048576/1048576 sha256=f117ba634c7b3903 -> PASS
+PRE pace: sha256=armv8-ce before-pass=43.64 s budget=120 s hashed=191 MiB cpu0=? kHz cpu1=? kHz governor=?
+ARMED: protect allow=part:fsbg_decoy_rw
+SEAL: re-arming refused (EPERM) -> PASS
+CASE N1    /dev/loop6             open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6             open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6             discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6             discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6             zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6             roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N7    /dev/loop6             blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N8    /dev/loop6             blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N9    /dev/loop6             blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N10   /dev/loop6             rrpart    rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p1           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p1           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p1           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p1           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p1           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p1           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p2           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p2           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p2           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p2           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p2           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p2           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N11   /dev/loop6p2           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p3           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p3           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p3           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p3           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p3           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p3           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p4           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p4           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p4           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p4           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p4           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p4           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p6           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p6           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p6           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p6           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p6           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p6           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE S5    /dev/loop4             open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE S3    dm-202->loop6p2        open      rc=-1   EPERM    d=1 other=0 -> PASS
+ALLOW A1    /dev/loop6p5           rc=0    d_total=0 -> PASS
+ALLOW A2    /dev/ram2              rc=0    d_total=0 -> PASS
+CASE C1    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C2    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C3    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C4    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C5    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C6    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C7    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C8    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C9    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C13   /dev/sda               scsi-ioctl rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C14   /dev/sda               scsi-ioctl rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C15   /dev/sda               scsi-ioctl rc=-1   EPERM    d=1 other=0 -> PASS
+SKIP  C16   /dev/sda               the SCSI host has no driver ioctl
+CASE C17   /dev/sda               pr        rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C10   /dev/sg0               sg        rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C11   /dev/sg0               sg        rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C18   /dev/sg0               scsi-ioctl rc=-1   EPERM    d=1 other=0 -> PASS
+CASE C12   /dev/bsg/0:0:0:0       scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+ALLOW A3    /dev/sda               rc=0    d_total=0 -> PASS
+ALLOW A4    /dev/sda               rc=0    d_total=0 -> PASS
+CASE N1    /dev/vda4              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda4              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda4              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda4              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda4              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda4              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda4              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda4              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda4              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda4              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda4              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda4              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/vda2              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda2              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda2              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda2              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda2              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda2              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda2              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda2              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda2              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda2              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda2              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda2              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/vda7              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda7              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda7              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda7              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda7              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda7              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda7              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda7              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda7              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda7              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda7              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda7              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+SKIP  N*    /dev/mtdblock0         no partitions: unguarded in protect mode
+CASE N1    /dev/vda5              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda5              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda5              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda5              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda5              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda5              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda5              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda5              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda5              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda5              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda5              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda5              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/vda3              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda3              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda3              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda3              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda3              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda3              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda3              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda3              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda3              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda3              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda3              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda3              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/vda1              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda1              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda1              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda1              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda1              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda1              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda1              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda1              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda1              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda1              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda1              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda1              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda               open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda               open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda               discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda               discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda               zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda               roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N7    /dev/sda               blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N8    /dev/sda               blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N9    /dev/sda               blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N10   /dev/sda               rrpart    rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/vda8              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda8              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda8              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda8              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda8              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda8              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda8              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda8              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda8              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda8              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda8              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda8              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/vda               open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda               open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda               discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda               discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda               zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda               roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N7    /dev/vda               blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N8    /dev/vda               blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N9    /dev/vda               blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N10   /dev/vda               rrpart    rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/vda6              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/vda6              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/vda6              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/vda6              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/vda6              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/vda6              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/sda6              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/sda6              open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/sda6              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/sda6              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/sda6              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/sda6              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+ROW H'  /dev/ram1              bytes=8388608/8388608 sha256=6e8e65eb0349aac7 -> PASS
+ROW H'  /dev/loop6             bytes=2097152/2097152 sha256=f882ccbe6baedbb5 -> PASS
+ROW H'  /dev/loop6p1           bytes=1048576/1048576 sha256=9430896047cb9956 -> PASS
+ROW H'  /dev/loop6p2           bytes=1048576/1048576 sha256=ef02c9768ce5acb9 -> PASS
+ROW H'  /dev/loop6p3           bytes=1048576/1048576 sha256=b5da0e65573f0ffe -> PASS
+ROW H'  /dev/loop6p4           bytes=1048576/1048576 sha256=d65b72c4d9d2ba38 -> PASS
+ROW H'  /dev/loop6p6           bytes=1048576/1048576 sha256=4d55afc461a9cb28 -> PASS
+ROW H'  /dev/vda4              bytes=1048576/1048576 sha256=2732525aaed14811 -> PASS
+ROW H'  /dev/sda4              bytes=1048576/1048576 sha256=35e442ab64072804 -> PASS
+ROW H'  /dev/vda2              bytes=1048576/1048576 sha256=f1fa5b5d7582b152 -> PASS
+ROW H'  /dev/sda2              bytes=1048576/1048576 sha256=b140c0970365711d -> PASS
+ROW H'  /dev/vda7              bytes=1048576/1048576 sha256=92dea484a24cfbd1 -> PASS
+ROW H'  /dev/sda7              bytes=1048576/1048576 sha256=1e33aaf59990599c -> PASS
+ROW H'  /dev/mtdblock0         bytes=134217728/134217728 sha256=254bcc3fc4f27172 -> PASS
+ROW H'  /dev/vda5              bytes=1048576/1048576 sha256=c40ec1a37897130c -> PASS
+ROW H'  /dev/sda5              bytes=1048576/1048576 sha256=03f5b0dc06a7ff90 -> PASS
+ROW H'  /dev/vda3              bytes=1048576/1048576 sha256=a8adbbcd4d0e4a0d -> PASS
+ROW H'  /dev/sda3              bytes=1048576/1048576 sha256=37ce29d5271c8012 -> PASS
+ROW H'  /dev/vda1              bytes=1048576/1048576 sha256=ad9adc2ef503efe0 -> PASS
+ROW H'  /dev/sda1              bytes=1048576/1048576 sha256=01bbea7aa8a654a4 -> PASS
+ROW H'  /dev/sda               bytes=16777216/16777216 sha256=ac6bcdd77ac78eac -> PASS
+ROW H'  /dev/vda8              bytes=1048576/1048576 sha256=8ff9a3ab9358a69a -> PASS
+ROW H'  /dev/sda8              bytes=1048576/1048576 sha256=13be3ed6721b5b93 -> PASS
+ROW H'  /dev/vda               bytes=16777216/16777216 sha256=31917b61aecb2199 -> PASS
+ROW H'  /dev/vda6              bytes=1048576/1048576 sha256=659e1caf44ca6a9b -> PASS
+ROW H'  /dev/sda6              bytes=1048576/1048576 sha256=f117ba634c7b3903 -> PASS
+HASH verify: 26 nodes, 0 failed or changed
+POST guard counters: total=176
+FSBG-PROBE RESULT: PASS nonce=2c19ae27e72b cases=181 pass=181 fail=0 mode=vm
+[  135.623653] reboot: Power down

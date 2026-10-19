@@ -1,0 +1,81 @@
+{
+ "ack": "b410571e5de84eb8",
+ "checks": [
+  {
+   "detail": "DEADLINE armed t0=87 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "147.86 final pid=1 arg=error-udc",
+   "label": "first reboot reason = error-udc",
+   "ok": true
+  },
+  {
+   "detail": "147.86 final pid=1 arg=error-udc",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "T0+60.9",
+   "label": "error-udc: reboot at T0 + ERR_DELAY 60 (..+4)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED ERROR_udc",
+   "label": "both binds fail: NCM linked, NCM_DROPPED, the ACM-only retry fails: ERROR_udc ('bind failed (ACM-only retry)'), no shell",
+   "ok": true
+  }
+ ],
+ "client_mode": null,
+ "inet6_before_host": "",
+ "kernel_fake_counts": {
+  "addr-ebusy": 0,
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 430,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0,
+  "udc-enodev": 0
+ },
+ "mods": [
+  "bind-fail"
+ ],
+ "nonce": "b1ba58d65e7ffa1a",
+ "ok": true,
+ "plan": [],
+ "reboot_at_T0_plus": 60.9,
+ "runner_challenge": "7b7d217c6c20a2cfbdb78927ccf25a6b",
+ "scenario": "c-bind-fail",
+ "t_total_s": 63.2,
+ "verify_challenge": "5e24db93d65a2f9fa995862fcbfbe1a7",
+ "want_ncm": "dropped",
+ "want_reboot": "error-udc",
+ "want_xfer": null
+}

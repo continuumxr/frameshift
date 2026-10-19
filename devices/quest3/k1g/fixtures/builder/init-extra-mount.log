@@ -1,0 +1,1 @@
+BUILD REFUSED: mount line not in the reviewed whitelist in $HOME/work/fsbuild-neg/k1g/init-devtmpfs.sh: $BB mount -t devtmpfs devtmpfs /dev

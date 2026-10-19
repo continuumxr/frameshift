@@ -1,0 +1,7 @@
+vbmeta        <repo>/firmware/quest3/v2.7-user_ota/vbmeta.img sha256=aae4af3a1740d568a1bcd1104f1b30b2998082def674e00c319acfab10faf215 rollback=1780444800 rb_loc=0 flags=0 release='avbtool 1.2.0' vbmeta_size=5632
+chain         vbmeta_system <repo>/firmware/quest3/v2.7-user_ota/vbmeta_system.img sha256=28f5ccc91f25665dda5db1abf1fc3bd3fcea58f30cb33827642cddf6f9c8bc50 rb_loc=1 rollback=1780444800 vbmeta_size=3136 key MATCH
+hash          boot <repo>/firmware/quest3/v66_unit1_slotA/boot.img sha256=49bba46377b52de5f111c90ef38b7a81f2e889eaebfcdff52225c4b5947b2d50 image_size=61607936 descriptor=7540467998cbd19ffc43c06d64abe10ad9ff489b804c20fa3a0623a6a52d7f82 MISMATCH
+hash          vendor_boot <repo>/firmware/quest3/v2.7-user_ota/vendor_boot.img sha256=bc0dd14de41834a601513123b2225a677fa4212dfa4505bf964228cea40d2f5b image_size=5058560 descriptor=798bdf418da82e2354a96af209852d3b261a758045242b54f53f344142679d9c MATCH
+vbmeta_digest 66b7619671a8a8dcb75262812e7ce1bd176af6aa32cd76dc3548b9c942e9f12a (2 structs, 8768 bytes) expected 66b7619671a8a8dcb75262812e7ce1bd176af6aa32cd76dc3548b9c942e9f12a MATCH
+AVB-CHECK FAIL digest=66b7619671a8a8dcb75262812e7ce1bd176af6aa32cd76dc3548b9c942e9f12a
+BUILD REFUSED: AVB check: the stock inputs do not reproduce Unit 2's runtime vbmeta digest and hash descriptors

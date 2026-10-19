@@ -1,0 +1,12 @@
+# fs-blkguard UML VM test 2026-10-19T03:52:12Z
+# kernel: ebbbce8711650d11 out-um/linux; c5803bfd7 TEST ONLY (QEMU): bind ufshcd-pci to the QEMU UFS host (1b36:0013) for the K1g VM tests; never in a device kernel|cd3993fd4 TEST ONLY (UML build): guard CONFIG_SMP / CONFIG_RT_THROTTLING_SYSCTL (ARM64-only) uses and make two !WALT stubs static inline in Meta sched code|
+# probe:  7226f45b2742b755 fsbg-probe.c
+[device-mode] cmdline: fsbg.testkernel fsbg.forceq
+[device-mode] FSBG-PROBE RESULT: FAIL nonce=a8fc69ab90a2 cases=15 pass=13 fail=2 mode=device testkernel forceq (uml exit 0)
+[device-mode] fresh nonce a8fc69ab90a2 seen
+[device-mode] host decoy unchanged (b6ebd38efb934ac0738dfff113d1cb0c49c940cae81e33033846bcd8cb89ea87)
+   [device-mode] CASE N1    /dev/ram1              open      rc=0    OK       d=0 other=0 -> FAIL
+   [device-mode] STOP: an operation that must be refused succeeded on /dev/ram1
+   [device-mode] CASE Q11   /dev/sda               open      rc=0    OK       d=0 other=0 -> FAIL
+   [device-mode] STOP: an operation that must be refused succeeded on /dev/sda
+# end 2026-10-19T03:52:21Z

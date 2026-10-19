@@ -1,0 +1,208 @@
+Core dump limits :
+	soft - 0
+	hard - NONE
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking environment variables for a tempdir...$HOME/work/blkguard/uml-run
+Checking if $HOME/work/blkguard/uml-run is on tmpfs...no
+Warning: tempdir $HOME/work/blkguard/uml-run is not on tmpfs
+Checking PROT_EXEC mmap in $HOME/work/blkguard/uml-run...OK
+Adding 377298944 bytes to physical memory to account for exec-shield gap
+Linux version 5.10.246-gc5803bfd72f9-dirty (<build-user>@<build-host>) (gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, GNU ld (GNU Binutils for Ubuntu) 2.46) #89 Sun Oct 18 20:57:11 PDT 2026
+Zone ranges:
+  Normal   [mem 0x0000000000000000-0x000000008e7d1fff]
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000000000000-0x000000002e7d1fff]
+Initmem setup node 0 [mem 0x0000000000000000-0x000000002e7d1fff]
+Built 1 zonelists, mobility grouping on.  Total pages: 187814
+Kernel command line: mem=384M rootfstype=hostfs rootflags=$HOME/work/blkguard/uml-run/root rw init=/init con=null con0=fd:0,fd:1 scsi_debug.dev_size_mb=16 fsbg.nonce=028d9958dd3e fsbg.testkernel fsbg.forceq root=98:0
+Dentry cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+Inode-cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+Memory: 375432K/761672K available (3423K kernel code, 907K rwdata, 1100K rodata, 155K init, 172K bss, 386240K reserved, 0K cma-reserved)
+NR_IRQS: 16
+clocksource: timer: mask: 0xffffffffffffffff max_cycles: 0x1cd42e205, max_idle_ns: 881590404426 ns
+Calibrating delay loop... 4220.51 BogoMIPS (lpj=21102592)
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 2048 (order: 2, 16384 bytes, linear)
+Mountpoint-cache hash table entries: 2048 (order: 2, 16384 bytes, linear)
+devtmpfs: initialized
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+futex hash table entries: 256 (order: 0, 6144 bytes, linear)
+NET: Registered protocol family 16
+SCSI subsystem initialized
+clocksource: Switched to clocksource timer
+VFS: Disk quotas dquot_6.6.0
+VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+fs_blkguard: v1, boot mode protect
+NET: Registered protocol family 2
+IP idents hash table entries: 16384 (order: 5, 131072 bytes, linear)
+tcp_listen_portaddr_hash hash table entries: 512 (order: 1, 8192 bytes, linear)
+TCP established hash table entries: 8192 (order: 4, 65536 bytes, linear)
+TCP bind hash table entries: 8192 (order: 4, 65536 bytes, linear)
+TCP: Hash tables configured (established 8192 bind 8192)
+UDP hash table entries: 512 (order: 2, 16384 bytes, linear)
+UDP-Lite hash table entries: 512 (order: 2, 16384 bytes, linear)
+NET: Registered protocol family 1
+printk: console [stderr0] disabled
+mconsole (version 2) initialized on $HOME/.uml/st00QF/mconsole
+Checking host MADV_REMOVE support...OK
+hwrng: no data available
+workingset: timestamp_bits=62 max_order=17 bucket_order=0
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 254)
+io scheduler mq-deadline registered
+io scheduler kyber registered
+brd: module loaded
+loop: module loaded
+scsi host0: scsi_debug: version 0190 [20200710]
+  dev_size_mb=16, opts=0x0, submit_queues=1, statistics=0
+scsi 0:0:0:0: Direct-Access     Linux    scsi_debug       0190 PQ: 0 ANSI: 7
+sd 0:0:0:0: Power-on or device reset occurred
+sd 0:0:0:0: Attached scsi generic sg0 type 0
+device-mapper: ioctl: 4.44.0-ioctl (2021-02-01) initialised: dm-devel@redhat.com
+NET: Registered protocol family 17
+Initialized stdio console driver
+Console initialized on /dev/tty0
+sd 0:0:0:0: [sda] 32768 512-byte logical blocks: (16.8 MB/16.0 MiB)
+sd 0:0:0:0: [sda] Write Protect is off
+sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
+printk: console [tty0] enabled
+Initializing software serial port version 1
+printk: console [mc-1] enabled
+epollctl add err fd 1, Operation not permitted
+epollctl add err fd 0, Operation not permitted
+sd 0:0:0:0: [sda] Optimal transfer size 524288 bytes
+sd 0:0:0:0: [sda] Attached SCSI disk
+VFS: Mounted root (hostfs filesystem) on device 0:13.
+devtmpfs: mounted
+This architecture does not have kernel memory protection.
+Run /init as init process
+fsbg-probe: nonce=028d9958dd3e mode=device arm=strict boot=protect
+PRE guard: mode=protect sealed=0 modules_disabled=0 hazards=modules devmem scsi-debug
+WARN: hazards 'modules devmem scsi-debug' accepted (fsbg.testkernel: test kernels only)
+ loop6: p1 p2 p3 p4 p5 p6
+ROW H   /dev/ram1              bytes=8388608/8388608 sha256=6e8e65eb0349aac7 -> PASS
+ROW H   /dev/loop6             bytes=2097152/2097152 sha256=f882ccbe6baedbb5 -> PASS
+ROW H   /dev/loop6p1           bytes=1048576/1048576 sha256=9430896047cb9956 -> PASS
+ROW H   /dev/loop6p2           bytes=1048576/1048576 sha256=ef02c9768ce5acb9 -> PASS
+ROW H   /dev/loop6p3           bytes=1048576/1048576 sha256=b5da0e65573f0ffe -> PASS
+ROW H   /dev/loop6p4           bytes=1048576/1048576 sha256=d65b72c4d9d2ba38 -> PASS
+ROW H   /dev/loop6p6           bytes=1048576/1048576 sha256=4d55afc461a9cb28 -> PASS
+PRE scope: content reads only R1-R5, R6, R7d (misc), R8 (devinfo); never opened: none
+PRE pace: sha256=portable before-pass=2.52 s budget=120 s hashed=15 MiB cpu0=? kHz cpu0=? kHz governor=?
+fs_blkguard: armed: mode strict, 5 allowlist entries, sealed by init[1]
+ARMED: strict allow=disk:ram0,disk:dm-200,disk:dm-201,disk:loop7,part:fsbg_decoy_rw
+SEAL: re-arming refused (EPERM) -> PASS
+fs_blkguard: denied open on ram1 (-) [deny-strict] by init[1]
+CASE N1    /dev/ram1              open      rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied open on ram1 (-) [deny-strict] by init[1]
+CASE N2    /dev/ram1              open      rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied discard on ram1 (-) [deny-strict] by init[1]
+CASE N3    /dev/ram1              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied discard on ram1 (-) [deny-strict] by init[1]
+CASE N4    /dev/ram1              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied zeroout on ram1 (-) [deny-strict] by init[1]
+CASE N5    /dev/ram1              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied roset on ram1 (-) [deny-strict] by init[1]
+CASE N6    /dev/ram1              roset     rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[1]
+CASE N7    /dev/ram1              blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[1]
+CASE N8    /dev/ram1              blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[1]
+CASE N9    /dev/ram1              blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+fs_blkguard: denied rrpart on ram1 (-) [deny-strict] by init[1]
+CASE N10   /dev/ram1              rrpart    rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6             open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6             open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6             discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6             discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6             zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6             roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N7    /dev/loop6             blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N8    /dev/loop6             blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N9    /dev/loop6             blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N10   /dev/loop6             rrpart    rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p1           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p1           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p1           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p1           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p1           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p1           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p2           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p2           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p2           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p2           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p2           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p2           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N11   /dev/loop6p2           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p3           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p3           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p3           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p3           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p3           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p3           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p4           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p4           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p4           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p4           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p4           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p4           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N1    /dev/loop6p6           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N2    /dev/loop6p6           open      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N3    /dev/loop6p6           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N4    /dev/loop6p6           discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N5    /dev/loop6p6           zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE N6    /dev/loop6p6           roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P1    /dev/ram1              write     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P2    /dev/ram1              write     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P3    /dev/ram1              write     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P4    /dev/ram1              write     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P5    /dev/ram1              write     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P7    /dev/ram1              fallocate rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P8    /dev/ram1              fallocate rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P9    /dev/ram1              discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE P10   /dev/ram1              zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+Buffer I/O error on dev ram1, logical block 0, lost async page write
+CASE P11   /dev/ram1              bio       rc=-5   EIO      d=1 other=0 -> PASS
+CASE S1    /dev/dm-200            bio       rc=-5   EIO      d=1 other=0 -> PASS
+CASE S2    /dev/dm-201            bio       rc=-5   EIO      d=1 other=0 -> PASS
+loop: Write error at byte offset 0, length 4096.
+blk_update_request: I/O error, dev loop7, sector 0 op 0x1:(WRITE) flags 0x8800 phys_seg 1 prio class 0
+CASE S4    /dev/loop7             write     rc=-5   EIO      d=1 other=0 -> PASS
+device-mapper: table: 254:202: linear: Device lookup failed
+device-mapper: ioctl: error adding target to table
+CASE S3    dm-202->loop6p2        open      rc=-1   EPERM    d=1 other=0 -> PASS
+ALLOW A1    /dev/loop6p5           rc=0    d_total=0 -> PASS
+ALLOW A2    /dev/ram0              rc=0    d_total=0 -> PASS
+CASE Q1    /dev/sda               discard   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q2    /dev/sda               zeroout   rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q3    /dev/sda               roset     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q4    /dev/sda               blkpg     rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q5    /dev/sda               rrpart    rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q12   /dev/sda               scsi-ioctl rc=-22  EINVAL   d=0 other=0 -> FAIL
+CASE Q13   /dev/sda               pr        rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q14   /dev/sda               scsi-ioctl rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q6    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q7    /dev/sda               scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q8    /dev/sg0               sg        rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q9    /dev/bsg/0:0:0:0       scsi      rc=-1   EPERM    d=1 other=0 -> PASS
+CASE Q11   /dev/sda               open      rc=-1   EPERM    d=1 other=0 -> PASS
+ALLOW A3    /dev/sda               rc=0    d_total=0 -> PASS
+ROW H'  /dev/ram1              bytes=8388608/8388608 sha256=6e8e65eb0349aac7 -> PASS
+ROW H'  /dev/loop6             bytes=2097152/2097152 sha256=f882ccbe6baedbb5 -> PASS
+ROW H'  /dev/loop6p1           bytes=1048576/1048576 sha256=9430896047cb9956 -> PASS
+ROW H'  /dev/loop6p2           bytes=1048576/1048576 sha256=ef02c9768ce5acb9 -> PASS
+ROW H'  /dev/loop6p3           bytes=1048576/1048576 sha256=b5da0e65573f0ffe -> PASS
+ROW H'  /dev/loop6p4           bytes=1048576/1048576 sha256=d65b72c4d9d2ba38 -> PASS
+ROW H'  /dev/loop6p6           bytes=1048576/1048576 sha256=4d55afc461a9cb28 -> PASS
+HASH verify: 7 nodes, 0 failed or changed
+POST guard counters: total=77
+FSBG-PROBE RESULT: FAIL nonce=028d9958dd3e cases=82 pass=81 fail=1 mode=device testkernel forceq
+sd 0:0:0:0: [sda] Synchronizing SCSI cache
+reboot: System halted
+
