@@ -63,17 +63,20 @@ static const struct gdef eureka_gd[] = {
     {"bpsy", CL_BATT, 1}, {"usb", CL_USB, 1}, {"ddr", CL_SOC, 0}, {"pmic", CL_PMIC, 7},
 };
 
+/* v2.7 DT fan trips (T0-03 on Unit 2, 2026-10-18, matches the v2.7 DTB): the cpu-* and cpuss-* fan zones carry
+   hysteresis 15/10/3/3 C; the gpuss-* and nspss-* fan zones (and soc-fan) 3 C at every trip. */
 #define TSF(z, b) {z, b, 4, {1, 2, 3, 4}, {60000, 75000, 80000, 85000}, {15000, 10000, 3000, 3000}}
+#define TSF3(z, b) {z, b, 4, {1, 2, 3, 4}, {60000, 75000, 80000, 85000}, {3000, 3000, 3000, 3000}}
 static const struct fdef eureka_fr[] = {
     TSF("cpu-0-0-0-fan", "cpu-0-0-0"), TSF("cpu-0-0-1-fan", "cpu-0-0-1"), TSF("cpu-0-1-0-fan", "cpu-0-1-0"),
     TSF("cpu-0-1-1-fan", "cpu-0-1-1"), TSF("cpu-1-0-0-fan", "cpu-1-0-0"), TSF("cpu-1-0-1-fan", "cpu-1-0-1"),
     TSF("cpu-1-1-0-fan", "cpu-1-1-0"), TSF("cpu-1-1-1-fan", "cpu-1-1-1"), TSF("cpu-1-2-0-fan", "cpu-1-2-0"),
     TSF("cpu-1-2-1-fan", "cpu-1-2-1"), TSF("cpu-1-3-0-fan", "cpu-1-3-0"), TSF("cpu-1-3-1-fan", "cpu-1-3-1"),
     TSF("cpuss-0-fan", "cpuss-0"), TSF("cpuss-1-fan", "cpuss-1"),
-    TSF("gpuss-0-fan", "gpuss-0"), TSF("gpuss-1-fan", "gpuss-1"), TSF("gpuss-2-fan", "gpuss-2"),
-    TSF("gpuss-3-fan", "gpuss-3"), TSF("gpuss-4-fan", "gpuss-4"), TSF("gpuss-5-fan", "gpuss-5"),
-    TSF("gpuss-6-fan", "gpuss-6"), TSF("gpuss-7-fan", "gpuss-7"),
-    TSF("nspss-0-fan", "nspss-0"), TSF("nspss-1-fan", "nspss-1"), TSF("nspss-2-fan", "nspss-2"),
+    TSF3("gpuss-0-fan", "gpuss-0"), TSF3("gpuss-1-fan", "gpuss-1"), TSF3("gpuss-2-fan", "gpuss-2"),
+    TSF3("gpuss-3-fan", "gpuss-3"), TSF3("gpuss-4-fan", "gpuss-4"), TSF3("gpuss-5-fan", "gpuss-5"),
+    TSF3("gpuss-6-fan", "gpuss-6"), TSF3("gpuss-7-fan", "gpuss-7"),
+    TSF3("nspss-0-fan", "nspss-0"), TSF3("nspss-1-fan", "nspss-1"), TSF3("nspss-2-fan", "nspss-2"),
     {"soc-fan", "soc-usr", 4, {1, 2, 3, 4}, {60000, 75000, 80000, 85000}, {3000, 3000, 3000, 3000}},
     {"batt-virt-fan", "batt-virt-usr", 3, {2, 3, 4}, {45000, 49000, 53000}, {2000, 2000, 2000}},
     {"surf-virt-fan", "surf-virt-usr", 3, {2, 3, 4}, {42000, 44000, 46000}, {2000, 2000, 2000}},

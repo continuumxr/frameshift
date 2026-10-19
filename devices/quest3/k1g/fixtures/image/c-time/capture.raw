@@ -1,0 +1,16 @@
+
+
+BusyBox v1.37.0 (Ubuntu 1:1.37.0-7ubuntu1) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+~ $ [6nfs-verify a833cc228692b84e90a254ee030544d7
+FSV1 nonce=1c8ade5c6ec2b063 resp=7f64798dbe66c09ee69e0231a461f8a0a6d00f269f7340ef3655de374a9b0d1a kernel=6.18.33.2-microsoft-standard-WSL2 pid1=/usr/bin/qemu-aarch64,/bin/busybox,/bin/busybox,sh,/init stages=INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY END
+~ $ [6nfs-ack 254fe509564f5aed
+FSA1 queued END
+~ $ [6nfs-status
+FSS1 nonce=1c8ade5c6ec2b063 stages=INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=254fe509564f5aed END
+~ $ [6nfs-k1g f78316aed3d36183551b110c681bd589
+FSDE1 error=time now=71682 deadline=71712 worst=127 END
+~ $ [6nfs-done
+FSD1 queued END
+~ $ [6n

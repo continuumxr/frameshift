@@ -1,0 +1,68 @@
+From cd3993fd4e7e52f85611df98e5b2e62524d70c1f Mon Sep 17 00:00:00 2001
+From: Matthieu <59584536+ender9492@users.noreply.github.com>
+Date: Thu, 15 Oct 2026 05:10:21 +0000
+Subject: [PATCH] TEST ONLY (UML build): guard CONFIG_SMP /
+ CONFIG_RT_THROTTLING_SYSCTL (ARM64-only) uses and make two !WALT stubs static
+ inline in Meta sched code
+
+---
+ include/linux/sched/walt.h | 4 ++--
+ kernel/sched/fair.c        | 2 ++
+ kernel/sched/rt.c          | 2 ++
+ 3 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/sched/walt.h b/include/linux/sched/walt.h
+index 5258b6338..b5bb40b44 100644
+--- a/include/linux/sched/walt.h
++++ b/include/linux/sched/walt.h
+@@ -191,11 +191,11 @@ static inline void core_ctl_notifier_unregister(struct notifier_block *n)
+ {
+ }
+ 
+-inline int walt_pause_cpus(struct cpumask *cpus)
++static inline int walt_pause_cpus(struct cpumask *cpus)
+ {
+ 	return 0;
+ }
+-inline int walt_resume_cpus(struct cpumask *cpus)
++static inline int walt_resume_cpus(struct cpumask *cpus)
+ {
+ 	return 0;
+ }
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f50eb4b7f..8d116d37e 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7834,7 +7834,9 @@ static void yield_task_fair(struct rq *rq)
+ 		 * If we are the only task in the tree, we should
+ 		 * attempt to pull a task from the shared runqueue.
+ 		 */
++#ifdef CONFIG_SMP
+ 		pulled_task = shared_runq_pick_next_task(rq, &rf);
++#endif
+ 		if (!pulled_task)
+ 			return;
+ 
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index d248b59af..67f7d547e 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -1590,6 +1590,7 @@ static void dump_throttled_rt_tasks(struct rt_rq *rt_rq)
+ 	if (tgid_comm != NULL && tgid_comm != unknown_pid)
+ 		kfree(tgid_comm);
+ out:
++#ifdef CONFIG_RT_THROTTLING_SYSCTL
+ 	if (sysctl_rt_throttling_info.panic_on_throttle) {
+ 		/*
+ 		 * Use pr_err() in the BUG() case since printk_sched() will
+@@ -1598,6 +1599,7 @@ static void dump_throttled_rt_tasks(struct rt_rq *rt_rq)
+ 		pr_err("%s\n", buf);
+ 		panic("%s\n", blame_buf);
+ 	}
++#endif
+ 	printk_deferred("%s\n", buf);
+ 	printk_deferred("%s\n", blame_buf);
+ }
+-- 
+2.53.0
+

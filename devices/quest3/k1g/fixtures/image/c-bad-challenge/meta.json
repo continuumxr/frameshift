@@ -1,0 +1,118 @@
+{
+ "ack": "860042fe9c1dc951",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=1c8ade5c6ec2b063 resp=d99a14880e41b57eb6a06d3f7d59d2398e6b5737102dc4fb1fcd87dbecf8770f kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSA1 queued END",
+   "label": "FSA1 queued",
+   "ok": true
+  },
+  {
+   "detail": "FSS1 nonce=1c8ade5c6ec2b063 stages=INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=860042fe9c1dc951 END",
+   "label": "FSS1 shows HOST_ACK recorded",
+   "ok": true
+  },
+  {
+   "detail": "FSDE1 error=bad-challenge END",
+   "label": "run-badchal refused: FSDE1 error=bad-challenge, no FSB1 text",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=71645 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "71662.07 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "71662.07 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "0.6 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK",
+   "label": "guard proof ran once between MODULES_READY and ACM_SETUP_ATTEMPTED: BLKGUARD_STARTED, BLKGUARD_DONE result=ABORT",
+   "ok": true
+  },
+  {
+   "detail": "run/fsbg=['full.log'] dev=[]",
+   "label": "the ABORTed probe created nothing but its own log: /run/fsbg = [full.log], no loop/ram/dm/sg/bsg node in /dev",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK",
+   "label": "ACM-only gadget (J-179): no NCM function made, UDC bound, shell up",
+   "ok": true
+  }
+ ],
+ "kernel_fake_counts": {
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 405,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0
+ },
+ "mods": [],
+ "nonce": "1c8ade5c6ec2b063",
+ "ok": true,
+ "plan": [
+  "verify",
+  "ack",
+  "run-badchal",
+  "done"
+ ],
+ "reboot_at_T0_plus": 17.1,
+ "runner_challenge": "c5dcecfb89fec46fccb6fcfce6a6c5a1",
+ "scenario": "c-bad-challenge",
+ "t_total_s": 19.1,
+ "verify_challenge": "9770fc55d7d4528d4549a5ae6ab03eeb",
+ "want_reboot": "collected"
+}

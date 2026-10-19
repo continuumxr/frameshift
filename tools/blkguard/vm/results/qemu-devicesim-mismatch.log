@@ -1,0 +1,20 @@
+fsbg-probe: nonce=3a2529fa3217 mode=device arm=strict boot=protect
+PRE guard: mode=protect sealed=0 modules_disabled=0 hazards=modules mmc-ioctl nvme-passthru mtd
+WARN: hazards 'modules mmc-ioctl nvme-passthru mtd' accepted (fsbg.testkernel: test kernels only)
+PRE boot storage visible: 40 block nodes
+PRE scope: content reads only R1-R5, R6, R7d (misc), R8 (devinfo); never opened: /dev/vda5 /dev/vdc3 /dev/sda3
+ROW H   /dev/vdb1              bytes=61607936/61607936 sha256=7fe59729491b40b6 (expected value) -> PASS
+ROW H   /dev/vdb2              bytes=5058560/5058560 sha256=7e0cfe93e0e9867a (expected value) -> PASS
+ROW H   /dev/vdb3              bytes=12564/12564 sha256=a02fdeede1c1466f (expected value) -> PASS
+ROW H   /dev/vdb4              bytes=5632/5632 sha256=90b1ce2c940db886 (expected value) -> content differs from the expected v2.7 image
+ROW H   vbmeta_system_a        -> not read (stopped after an earlier failure)
+ROW R6  misc                   -> not read (stopped after an earlier failure)
+ROW R6  devinfo                -> not read (stopped after an earlier failure)
+ROW H   misc                   -> not read (stopped after an earlier failure)
+ROW H   devinfo                -> not read (stopped after an earlier failure)
+PRE pace: sha256=armv8-ce before-pass=23.09 s budget=120 s hashed=78 MiB cpu0=? kHz cpu1=? kHz governor=?
+ABORT: 1 hashing row(s) failed closed before arming (5 later row(s) not read); no armed guard test case attempted
+SERIES H     pass=10 fail=4
+HASHDIGEST before=23c23fbcc0073bfa5faf715759d08b30 after=e3b0c44298fc1c149afbf4c8996fb924
+FSBG-PROBE RESULT: ABORT nonce=3a2529fa3217 cases=0 pass=0 fail=0 mode=device devicesim
+[   35.305469] reboot: Power down

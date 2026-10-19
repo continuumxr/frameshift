@@ -1,0 +1,57 @@
+fsbg-probe: nonce=7d7cccf82764 mode=device arm=strict boot=protect
+PRE guard: mode=protect sealed=0 modules_disabled=0 hazards=modules mmc-ioctl nvme-passthru mtd
+WARN: hazards 'modules mmc-ioctl nvme-passthru mtd' accepted (fsbg.testkernel: test kernels only)
+PRE scope: content reads only R1-R5, R6, R7d (misc), R8 (devinfo); never opened: /dev/vda3 /dev/sda3
+PRE pace: sha256=armv8-ce before-pass=4.19 s budget=120 s hashed=15 MiB cpu0=? kHz cpu1=? kHz governor=?
+ARMED: strict allow=disk:ram0,disk:dm-200,disk:dm-201,disk:loop7,part:fsbg_decoy_rw
+SEAL: re-arming refused (EPERM) -> PASS
+SKIP  Q*    /dev/vda3              persist: never opened (FS-R-014 s.3.1)
+SKIP  Q*    /dev/sda3              persist: never opened (FS-R-014 s.3.1)
+SKIP  Q12   /dev/sda               the SCSI host has no driver ioctl
+HASH verify: 7 nodes, 0 failed or changed
+POST guard counters: total=145
+SERIES H     pass=7 fail=0
+SERIES N1    pass=7 fail=0
+SERIES N2    pass=7 fail=0
+SERIES N3    pass=7 fail=0
+SERIES N4    pass=7 fail=0
+SERIES N5    pass=7 fail=0
+SERIES N6    pass=7 fail=0
+SERIES N7    pass=2 fail=0
+SERIES N8    pass=2 fail=0
+SERIES N9    pass=2 fail=0
+SERIES N10   pass=2 fail=0
+SERIES N11   pass=1 fail=0
+SERIES P1    pass=1 fail=0
+SERIES P2    pass=1 fail=0
+SERIES P3    pass=1 fail=0
+SERIES P4    pass=1 fail=0
+SERIES P5    pass=1 fail=0
+SERIES P7    pass=1 fail=0
+SERIES P8    pass=1 fail=0
+SERIES P9    pass=1 fail=0
+SERIES P10   pass=1 fail=0
+SERIES P11   pass=1 fail=0
+SERIES S1    pass=1 fail=0
+SERIES S2    pass=1 fail=0
+SERIES S4    pass=1 fail=0
+SERIES S3    pass=1 fail=0
+SERIES A1    pass=1 fail=0
+SERIES A2    pass=1 fail=0
+SERIES Q1    pass=17 fail=0
+SERIES Q2    pass=17 fail=0
+SERIES Q3    pass=17 fail=0
+SERIES Q4    pass=3 fail=0
+SERIES Q5    pass=3 fail=0
+SERIES Q13   pass=1 fail=0
+SERIES Q14   pass=1 fail=0
+SERIES Q6    pass=1 fail=0
+SERIES Q7    pass=1 fail=0
+SERIES Q8    pass=1 fail=0
+SERIES Q9    pass=1 fail=0
+SERIES Q11   pass=17 fail=0
+SERIES A3    pass=1 fail=0
+SERIES H'    pass=7 fail=0
+HASHDIGEST before=9e065a3b4d744d1a39d07652f706c7bc after=9e065a3b4d744d1a39d07652f706c7bc
+FSBG-PROBE RESULT: PASS nonce=7d7cccf82764 cases=149 pass=149 fail=0 mode=device testkernel
+[   21.149237] reboot: Power down

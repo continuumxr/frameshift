@@ -246,6 +246,7 @@ OpenHMD and xr-hardware have no Quest tracking [C].
 | quest-kexec-q2 | 2 | 3DoF | Touch 3DoF | SyncBoss kernel nodes; camera ioctl replay | `m_imu_3dof` | Monado/OpenXR | user report | GPL-2.0 / BSL |
 | quest-kexec | Pro | Meta's 6DoF (Android) | Meta's | Meta stack | Meta | Horizon apps | log | GPL-2.0 |
 | reframed-vr | 3, Pico | none on hardware | none | — | Basalt (replay) | Monado (QEMU) | dataset replay | none |
+| reframed-vr, re-read 2026-10-17 (`0d94a4e`; = ArmadaVR renamed; `reframed-vr.md`) | 3, Pico | none on hardware | none (virtual only) | IMU decoder from Meta-library RE (pointer only); calibration read via stock `dumpsys sensorservice` [C] | Basalt (replay; Quest runtime installed in QEMU) | Monado + native Frame SteamVR (QEMU) | replay, fixtures, QEMU tests | none |
 
 ---
 

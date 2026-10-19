@@ -1,0 +1,76 @@
+{
+ "ack": "24588936077d20c8",
+ "checks": [
+  {
+   "detail": "DEADLINE armed t0=230 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "290.17 final pid=1 arg=error-modules",
+   "label": "first reboot reason = error-modules",
+   "ok": true
+  },
+  {
+   "detail": "290.17 final pid=1 arg=error-modules",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "T0+60.2",
+   "label": "error-modules: reboot at T0 + ERR_DELAY 60 (..+4)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_REFUSED ERROR_modules",
+   "label": "index mismatch: MODULES_REFUSED then ERROR_modules, no module attempted, no NCM step, no SHELL_READY",
+   "ok": true
+  }
+ ],
+ "client_mode": null,
+ "inet6_before_host": "",
+ "kernel_fake_counts": {
+  "addr-ebusy": 0,
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 218,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0,
+  "udc-enodev": 0
+ },
+ "mods": [
+  "moddep-mismatch"
+ ],
+ "nonce": "b1ba58d65e7ffa1a",
+ "ok": true,
+ "plan": [],
+ "reboot_at_T0_plus": 60.2,
+ "runner_challenge": "3a3ae38101764c8a128d5ae275b07f8a",
+ "scenario": "c-modules-refused",
+ "t_total_s": 62.4,
+ "verify_challenge": "1cb119d45f9cf042f36e91f026b9e455",
+ "want_ncm": null,
+ "want_reboot": "error-modules",
+ "want_xfer": null
+}

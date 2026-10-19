@@ -1,0 +1,85 @@
+# FrameShift H-1 loader tests  2026-10-16T20:53:01Z
+# library f66d12e0ae579e55e8e67413c1fd903891f50c12c772270444fcb6e609facb96  kmodel 3f7a97cca5a24348acd36eed3e9f8428973cc1769b7f6c9ddaa7b7a3b1699ac8  harness 331645cf1354ce8943dd7e5ab0a425c5b22392e9b0dc760e1d9ee339dc42bc73
+# busybox c2f279d1d5640a0f327890d41cad594c0f059f3fed3f96dd72fdcc4f5e18ec02 (reviewed stage-1, aarch64 under qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2))
+# k1a init.sh (negative control, read-only) f819316e3800cedac62fa74a2130c99a42dd5e91f3ccb35534e9c00466c09b6a
+# index ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 modules.dep, 8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62 modules.softdep
+# index 15c8656c362032103aeba38ace417c02deb55627a7ab94b02f4fecf7f57aad4b modules.dep, e844343ea359507578f57575769cc99804c2ae3beeba085d1be9398b72e4cdc2 modules.softdep
+# index b41262ccdc4e0eaba6585435a6a584cadb79ba4d4fd6ed1b1858d759528de937 modules.dep, ac2de753255c506934be29e69261f1485f51ee9cf9c2bf467bcc0c4cf95f8713 modules.softdep
+PASS hang-then-S: HANDOFF OK (rc 0)
+PASS hang-then-S: the S module is READY
+PASS hang-then-S: the hung F module is loaded with async_probe=1 and PENDING (insmod 0, device not ready)
+PASS hang-then-S: S loaded before F, with no params
+PASS hang-then-S: finished well inside the bound (< 15 s)
+PASS hang-then-S: no insmod is left blocked (F used async_probe; S loaded before the hang)
+PASS negative control: K1a's loader (init.sh f819316e3800cedac62fa74a2130c99a42dd5e91f3ccb35534e9c00466c09b6a; no per-insmod deadline, waits for each insmod's return) stalls on the plain insmod blocked behind the hung probe and never reaches the S module
+PASS S hang: every S module is attempted (no deadline skips an S module)
+PASS S hang: each plain insmod is recorded LIVE insmod=blocked (init done, stuck in the global async wait), not as done
+PASS S hang: the hung device is PENDING insmod=blocked; the next S device, bound in its own init, is READY-BLOCKED with a FINDING
+PASS S hang: HANDOFF REFUSED (rc 1) naming the S module and the F skip
+PASS S hang: phase F skipped (s-not-ready); E still attempted
+PASS S hang: the library's own blocked insmod children are not killed
+PASS S hang: bounded (< 12 s)
+PASS S ceiling: the in-flight S module TIMED-OUT at the ceiling (not cancelled), the rest NOT-ATTEMPTED, never loaded
+PASS S ceiling: recorded as an S-readiness failure; E and F not loaded; HANDOFF REFUSED (rc 1) naming the ceiling
+PASS S ceiling: bounded by the ceiling (< 6 s), the blocked child still running
+PASS READY-BLOCKED covered: required E device ready while its insmod is blocked -> READY-BLOCKED, FINDING covered=own-check, HANDOFF OK listing it
+PASS READY-BLOCKED uncovered: an 'auto' check with no driver does not cover the function -> FINDING covered=no, HANDOFF REFUSED
+PASS ADSP start: written, reaches running inside its bounded wait, S ready, HANDOFF OK
+PASS ADSP start: no running within the wait -> S-readiness failure, F skipped, HANDOFF REFUSED naming the remoteproc
+PASS ADSP start: remoteproc not registered -> FAILED not-registered, HANDOFF REFUSED
+PASS S init hang: MODULE_TIMEOUT initstate=coming cancel=none; the next S module is still loaded and READY
+PASS S init hang: TIMED-OUT, HANDOFF REFUSED (rc 1), the child still running (not killed)
+PASS missing S: recorded FAILED file-missing
+PASS missing S: the other S modules are still loaded and READY
+PASS missing S: HANDOFF REFUSED (rc 1); F skipped and named in the refusal
+PASS missing S: the 6 s S readiness window is not waited (an S module is already dead)
+PASS fw: settings applied and read back before the first insmod (the first call saw 0,1,1)
+PASS fw readback failure (ro-force): REFUSED before any module (rc 2, no insmod, no /sys/module)
+PASS fw readback failure (ro-timeout): REFUSED before any module (rc 2, no insmod, no /sys/module)
+PASS fw readback failure (no-ignore): REFUSED before any module (rc 2, no insmod, no /sys/module)
+PASS fw readback failure (no-timeout): REFUSED before any module (rc 2, no insmod, no /sys/module)
+PASS F budget: the rest of F is SKIPPED (budget-f), at least one F module loaded
+PASS F budget: S untouched (both READY) and HANDOFF OK (rc 0)
+PASS F budget: phase F ended within its budget (+ one poll and record overhead, 0.5 s)
+PASS total budget: S loaded in full past the total; E and F SKIPPED (budget-total); HANDOFF OK
+PASS late S: MODULE_TIMEOUT initstate=coming at the deadline, then READY late=1 late_rc=0; HANDOFF OK
+PASS rc 0 is not ready: S insmod rc=0, initstate live, no hwmon -> PENDING; HANDOFF REFUSED
+PASS E required: FAILED -> HANDOFF REFUSED naming only the required one; F still loaded
+PASS E hang: drm_e LIVE insmod=blocked and PENDING; e2 MODULE_TIMEOUT coming; the rest of E SKIPPED (budget-e) inside the budget
+PASS E hang: phase F (async_probe=1) is not blocked: F modules READY; HANDOFF OK (no required E)
+PASS list refused (dep_later): rc 2, no insmod, reason dep-later:b.ko->a.ko
+PASS list refused (dep_missing): rc 2, no insmod, reason dep-not-listed:b.ko->a.ko
+PASS list refused (bad_pred): rc 2, no insmod, reason reason=predicate
+PASS list refused (bad_name): rc 2, no insmod, reason reason=name
+PASS list refused (dot_name): rc 2, no insmod, reason reason=name
+PASS list refused (phase_order): rc 2, no insmod, reason reason=phase-order
+PASS list refused (s_auto): rc 2, no insmod, reason reason=s-needs-explicit-predicate
+PASS list refused (dup): rc 2, no insmod, reason reason=duplicate
+PASS list refused (no_s): rc 2, no insmod, reason reason=no-S-module
+PASS list refused (not_indexed): rc 2, no insmod, reason not-indexed:c2.ko
+PASS list refused (extra_field): rc 2, no insmod, reason reason=fields
+PASS list refused (s_auto_atom): rc 2, no insmod, reason reason=s-needs-explicit-predicate
+PASS list refused (empty_atom): rc 2, no insmod, reason reason=predicate
+PASS list pin mismatch: rc 2, no insmod
+PASS a last list line without a newline is still loaded (S=2, b READY)
+PASS list refused (softdep pre: later): rc 2
+PASS index pin mismatch: rc 2, no insmod
+PASS no index pins: rc 2, no insmod
+PASS a malformed budget is refused (rc 2, no insmod)
+PASS a budget with a leading zero (octal in ash) is refused (rc 2, no insmod)
+PASS a zero poll interval is refused (rc 2, no insmod)
+PASS an unwritable run directory is refused before any module (rc 2)
+PASS latch: modules_disabled=1 written after F and read back
+PASS dep coming: the dependent S module is still attempted; its late failure is FAILED late=1 late_rc=1; REFUSED
+PASS S re-checked before F: window missed, ready by F -> F loaded, READY late=1, HANDOFF OK
+PASS already live: rc=1 note=already-live, READY, HANDOFF OK
+PASS caller set -eu and IFS=, : HANDOFF OK, options and IFS restored afterwards
+PASS real list k1i (94 modules, list 72e3464b3891): the runtime order/closure check passes against the pinned v2.7 index and HANDOFF OK
+PASS real list k1i: insmod order = list order, async_probe=1 exactly on F
+PASS real list ts-t1 (97 modules, list 03bc4869d2c2): the runtime order/closure check passes against the pinned v2.7 index and HANDOFF OK
+PASS real list ts-t1: insmod order = list order, async_probe=1 exactly on F
+PASS real list ts-t2 (102 modules, list 1c8f2ebe10eb): the runtime order/closure check passes against the pinned v2.7 index and HANDOFF OK
+PASS real list ts-t2: insmod order = list order, async_probe=1 exactly on F
+PASS real list ts-t3b (113 modules, list 3563d3d472b2): the runtime order/closure check passes against the pinned v2.7 index and HANDOFF OK
+PASS real list ts-t3b: insmod order = list order, async_probe=1 exactly on F
+TOTAL: 77 cases, 0 failed

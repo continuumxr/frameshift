@@ -1,0 +1,74 @@
+# c-kmsg-post mods=['kmsg-post'] plan=['verify', 'ack', 'run', 'done'] client=ok; image <repo>/build/n1/20261018T005854Z-b1ba58d65e7ffa1a
+# reboots: 208.50 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=b1ba58d65e7ffa1a resp=e678eeb2d55e9aeb6d742e7a46bec2f0142c776f8c0cd5bcb3f6caadd74ca140 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=b1ba58d65e7ffa1a stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=7d58f1cedb2b7d6c END]
+PASS  runner completed with a settled prompt  [FSB1 END v=1 nonce=b1ba58d65e7ffa1a chal=9dc87a01a7313928f880fa9a5f93cee0 lines=240 rec_sha256=8fa99c59e3903e898fb9caa2c133402a07c831023638b627a2056c4b5c7fce93]
+PASS  FSB1 VALID (exp n1, 6 steps kernel..log, this nonce and challenge)  [VALID]
+PASS  every step exited 0  [[('1', 'kernel', 'exited', '0'), ('2', 'mem', 'exited', '0'), ('3', 'modules', 'exited', '0'), ('4', 'net', 'exited', '0'), ('5', 'xfer', 'exited', '0'), ('6', 'log', 'exited', '0')]]
+PASS  no step wrote stderr  [[]]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=180 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [208.50 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [208.50 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork)
+PASS  reboot within 3 s of fs-done  [0.8 s]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  NCM ids from the nonce: dev_addr 02:<nonce 0-4>, host_addr 06:<nonce 0-4>, ll fe80::<nonce>, port 47201  [NCM function=linked dev_addr=02:b1:ba:58:d6:5e host_addr=06:b1:ba:58:d6:5e ll=fe80::b1ba:58d6:5e7f:fa1a port=47201]
+PASS  the ACM console came up in every NCM case: UDC_BOUND and SHELL_READY  [INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK]
+PASS  NCM linked after acm.gs0, bound, network up: NCM_NET if=usb0 addr=fe80::<nonce>/64; fs.ncm state=up  [state=up if=usb0 ll=fe80::b1ba:58d6:5e7f:fa1a port=47201 ]
+PASS  configfs dev_addr/host_addr written with the nonce MACs  [02:b1:ba:58:d6:5e]
+PASS  no NCM_SKIPPED/NCM_DROPPED/NCM_NET_FAILED/NCM_FALLBACK; the guard saw the configured gadget
+PASS  configfs: no dev_addr/host_addr write after the NCM link (the fake answers EBUSY as f_ncm does)  [{'syslog-read': 2, 'syslog-size': 2, 'syslog-other': 0, 'mounts-open': 1, 'open-continue': 855, 'udc-enodev': 0, 'addr-ebusy': 0, 'errors': 0}]
+PASS  before the host link (no carrier): the device address was already PERMANENT (flags 80: DAD off means no tentative phase)  [fe80000000000000b1ba58d65e7ffa1a 03 40 20 80     usb0]
+PASS  before the runner: a connect to [fe80::<nonce>%hst0]:47201 is refused (nothing listens)  [refused]
+PASS  after the record: a connect to port 47201 is refused again (the listener is gone)  [refused]
+PASS  kernel step: /proc/version = the pinned K1a banner; config_sha256 = sha256(k1a.config); K1a and N1 option lines  [== uname-r 6.18.33.2-microsoft-standard-WSL2
+== uname-v #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026
+== proc-version
+Linux version 5.10.246-gdbc2bc83a2b6 (frameshift@k1a) (Android (8508608, bas]
+PASS  mem step: MemTotal reported  [MemTotal:       11683848 kB
+MemFree:        10900000 kB
+MemAvailable:   11000000]
+PASS  modules step: loader lines, /proc/modules and the kmsg section  [== loaded 2
+== tainted 0
+== loader
+FS[b1ba58d65e7ffa1a] t=181s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d6]
+PASS  kmsg clean: modver-matches 0, taint-lines 0, warnings 0
+PASS  net step: UDC a600000.dwc3 (state as faked), config functions 'acm.gs0 ncm.fs', product FrameShift N1, serial FS-<nonce>  [{'UDC': 'a600000.dwc3', 'state': 'configured'}{'product': 'FrameShift N1', 'serialnumber': 'FS-b1ba58d65e7ffa1a', 'configuration': 'acm+ncm'}]
+PASS  net step: usb0 with MAC dev_addr, the IPv6 sysctls (disable_ipv6 0, addr_gen_mode 1, accept_dad 0, dad_transmits 0, accept_ra 0, autoconf 0, router_solicitations 0, forwarding 0)  [{'address': '02:b1:ba:58:d6:5e', 'operstate': 'up', 'carrier': '1', 'mtu': '1500', 'flags': '0x1003', 'ifindex': '3'}{'disable_ipv6': '0', 'addr_gen_mode': '1', 'accept_dad': '0', 'dad_transmits': '0', 'accept_ra': '0', 'autoconf': '0', 'router_solicitations': '0', 'forwarding': '0'}]
+PASS  net step: exactly ONE IPv6 address on usb0: fe80::<nonce>, prefix 64, scope link (20), permanent (80)  [fe80000000000000b1ba58d65e7ffa1a 03 40 20 80     usb0]
+PASS  net and log steps: every socket table was read (tcp, tcp6, udp, udp6, raw, raw6, packet)  [before ['packet', 'raw', 'raw6', 'tcp', 'tcp6', 'udp', 'udp6', 'udplite', 'udplite6'] after ['packet', 'raw', 'raw6', 'tcp', 'tcp6', 'udp', 'udp6', 'udplite', 'udplite6']]
+PASS  no unintended listener BEFORE the transfer: no TCP LISTEN row; no udp, udplite, raw or packet socket  [{'tcp': 0, 'tcp6': 0, 'udp': 0, 'udp6': 0, 'udplite': 0, 'udplite6': 0, 'raw': 0, 'raw6': 0, 'packet': 0}]
+PASS  no listener AFTER the transfer: no TCP LISTEN row; no udp, udplite, raw or packet socket  [{'tcp': 0, 'tcp6': 1, 'udp': 0, 'udp6': 0, 'udplite': 0, 'udplite6': 0, 'raw': 0, 'raw6': 0, 'packet': 0}]
+PASS  xfer step: fs-xfer result=ok  [r t_ms=188
+FSX1 header bytes=71 ok=1
+FSX1 rx bytes=8388608 sha256=b7d707bdefea3aa215ae23b9218b85883b5c873b9d2c0a4efa6233079347b1d2 ms=303
+FSX1 tx bytes=8388608 sha256=ede9b1736b77675e42d2fa73ef9302b51ec136e655097e620333b1a39a752b73 ms=2304 trailer=1
+FSX1 drain bytes=0 eof=1
+FSX1 result=ok t_ms=2846
+]
+PASS  transfer: device rx 8388608 bytes with the host's SHA-256, device tx 8388608 with the host's SHA-256 and the expected stream  [host ok rx b7d707bdefea tx ede9b1736b77]
+PASS  transfer: the peer was link-local on usb0 (scope = usb0's ifindex), the listener closed at the accept, drain eof=1 bytes=0  [FSX1 accept peer=fe80::1 scope=3 ]
+PASS  log step: usb0 counters after the transfer (rx and tx each above 8 MiB)  [{'rx_bytes': '8422019', 'tx_bytes': '8420067', 'rx_packets': '386', 'tx_packets': '366', 'rx_errors': '0', 'tx_errors': '0', 'rx_dropped': '0', 'tx_dropped': '4', 'operstate': 'up'}]
+PASS  log step: /run/fs.log with SHELL_READY
+PASS  log step: the post-transfer kernel-log check comes FIRST and is closed by its end marker  [== kmsg-post read=ok rc=0 bytes=393
+== kmsg-post-lines 6
+== kmsg-post-first [   ]
+PASS  kmsg-post: read=ok; lines, first, last, modver, taint, warnings and ncm lines reported  [== kmsg-post read=ok rc=0 bytes=393
+== kmsg-post-lines 6
+== kmsg-post-first [    0.000000] B
+== kmsg-post-last [  120.000002] W
+== kmsg-post-modver 0
+== kmsg-post-taint 0
+== kmsg-post-warnings 1 warni]
+PASS  kmsg-post: the post read extends step 3's (same first line, no fewer lines)  [6/[    0.000000] B vs 4/[    0.000000] B]
+PASS  kmsg-post: 1 WARNING, 0 BUG, 2 matching lines after the transfer  [('1', '0', '2', '2')]
+PASS  kmsg-post: the WARNING was logged only after the transfer began (session ESTABLISHED; after step 3's read, before step 6's)  [(199.99, 1)]
+PASS  kernel log came from KernelFake (syslog read answered, no listener errors)  [{'syslog-read': 2, 'syslog-size': 2, 'syslog-other': 0, 'mounts-open': 1, 'open-continue': 855, 'udc-enodev': 0, 'addr-ebusy': 0, 'errors': 0}]
+PASS  host client (mode ok): result ok  [ok]
+SCENARIO c-kmsg-post PASS

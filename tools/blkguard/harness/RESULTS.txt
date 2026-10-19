@@ -1,0 +1,5 @@
+# fs-blkguard decision-logic harness, 2026-10-16T16:03:19Z; patch ddb53d267b66a47d; test_policy.c c2ee3b534609b672; gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+policy header: ab6788a4a0a28572 (from 0001-block-add-fs-blkguard-a-boot-chain-block-write-guard.patch)
+fuzz: 2000000 token inputs, 17860 accepted, all well-formed
+fs-blkguard policy harness: 74272 checks, 0 failures
+# exit 0

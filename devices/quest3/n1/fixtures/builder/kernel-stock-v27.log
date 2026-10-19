@@ -1,0 +1,1 @@
+BUILD REFUSED: K1a kernel hash differs from the pin (<repo>/firmware/quest3/extracted/v2.7-user_ota/Image: db61c073962bf1df38cbb09cbb01f03e5595822754ffea1dc75166555f7d545e != 087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840)

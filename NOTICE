@@ -6,6 +6,9 @@ Licences (see docs/PROVENANCE-POLICY.md section 6):
   records): Apache License, Version 2.0 (see LICENSE).
 - Kernel patches in kernel-patches/ and FrameShift's own kernel modules:
   GPL-2.0-only (see kernel-patches/README.md).
+- fs-blkguard (tools/blkguard/): its kernel patches and the C sources of its
+  probe, harness, tests and bench, which share or compile the guard's policy
+  code: GPL-2.0-only (SPDX headers; docs/PROVENANCE-POLICY.md section 6).
 - Documentation (Markdown files and other prose): Creative Commons Attribution 4.0
   International (CC-BY-4.0), https://creativecommons.org/licenses/by/4.0/.
 

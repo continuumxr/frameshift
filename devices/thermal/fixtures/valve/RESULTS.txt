@@ -33,16 +33,16 @@ PASS masked: suspend.target
 PASS logind: suspend key ignored, power key powers off
 PASS MASKS.txt: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
 PASS kexec.target.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS logind.conf.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS poweroff.target.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS reboot.target.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
 PASS service.d/50-frameshift-caps.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
 PASS service.d/50-frameshift-ro.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
-PASS poweroff.target.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
-PASS system.conf.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
-PASS system/fs-thermald-watch.service: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
 PASS system/fs-thermald-ready.service: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
-PASS system/fs-thermald-shutdown.service: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
 PASS system/fs-thermald-ready.target: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
-PASS logind.conf.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
-PASS reboot.target.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS system/fs-thermald-shutdown.service: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS system/fs-thermald-watch.service: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
+PASS system.conf.d/50-frameshift.conf: no RuntimeWatchdogSec other than off, no WatchdogDevice, no CAP_SYS_BOOT grant
 PASS check: fresh READY record ok
 PASS check: boottime 6 s behind -> stale-age
 PASS check: boottime 5 s behind -> ok (boundary)

@@ -94,6 +94,11 @@ Only `usb-gadget-init`, `usb-gadget` and `adbd` are `DefaultDependencies=no`. `a
   - Test U4. If needed, add a FrameShift udev rule on that uevent that sets the role (Quest-side).
 - **Brief correction:** the Quest 3 stage images bind **ACM only**. Our NCM exists only as the
   Quest 2 draft (`devices/quest2/channel/target/fs-ncm.sh`) [M-static].
+  - **Update 2026-10-16:** the Quest 3 NCM step now exists as the offline N1 package (`devices/quest3/n1/`, branch
+    `feat/n1`): ACM first, NCM second and never fatal, IPv6 link-local only, one bounded transfer test as the only
+    listener. On the PM's PC the inbox `usbncm.inf` (UsbNcm, matching `USB\Class_02&SubClass_0d&Prot_00`) is present
+    [M], so Windows is expected to bind the NCM function without a driver install [C]; test U5's NCM half is what N1
+    measures.
 
 ### 2.1 Valve's stack as is: what breaks [D from M-static]
 1. **Developer Mode off fails at every boot and every plug (mandatory fix).**

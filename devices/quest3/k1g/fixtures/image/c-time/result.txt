@@ -1,0 +1,21 @@
+# c-time mods=[] plan=['verify', 'ack', 'time', 'run', 'done']; image <repo>/build/k1g/20261019T031348Z-1c8ade5c6ec2b063
+# reboots: 71682.88 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=1c8ade5c6ec2b063 resp=7f64798dbe66c09ee69e0231a461f8a0a6d00f269f7340ef3655de374a9b0d1a kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=1c8ade5c6ec2b063 stages=INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=254fe509564f5aed END]
+PASS  run refused: FSDE1 error=time, no FSB1 text  [FSDE1 error=time now=71682 deadline=71712 worst=127 END]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=71669 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [71682.88 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [71682.88 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork)
+PASS  reboot within 3 s of fs-done  [0.1 s]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  guard proof ran once between MODULES_READY and ACM_SETUP_ATTEMPTED: BLKGUARD_STARTED, BLKGUARD_DONE result=ABORT  [INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK]
+PASS  the ABORTed probe created nothing but its own log: /run/fsbg = [full.log], no loop/ram/dm/sg/bsg node in /dev  [run/fsbg=['full.log'] dev=[]]
+PASS  ACM-only gadget (J-179): no NCM function made, UDC bound, shell up  [INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK]
+SCENARIO c-time PASS

@@ -1,0 +1,4 @@
+fsbg-probe: nonce=85820e0a3944 mode=device arm=strict boot=protect
+ABORT: VM-only mode(s) testkernel refused: this platform identifies as a Quest/Qualcomm device (device tree or boot arguments); no armed guard test case attempted
+FSBG-PROBE RESULT: ABORT nonce=85820e0a3944 cases=0 pass=0 fail=0 mode=device testkernel
+[   10.233799] reboot: Power down

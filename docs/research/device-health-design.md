@@ -1,6 +1,6 @@
-# Device health: faulty sensors and peripherals never block the headset (design, rev 2)
+# Device health: faulty sensors and peripherals never block the headset (design, rev 2.2)
 
-**Status:** design only, revision 2, 2026-10-15. Revision 0 (`46d027b`) was reviewed
+**Status:** design only, revision 2.2, 2026-10-18 (revision 2, 2026-10-15; rev 2.2 adds the FS-R-014 §8 nautilus correction, §2.1). Revision 0 (`46d027b`) was reviewed
 adversarially: **NO-GO** (1 blocker, 5 major, 8 minor); revision 1 (`632ca22`) applied all of it.
 The delta review of revision 1 returned **GO-with-fixes** (4 major, 6 minor); every fix is applied
 here. The change tables are at the end. Nothing here authorises a device action.
@@ -197,7 +197,7 @@ not shown in source is marked [C].
 | PMIC die temperatures | PMIC ADC channels | `fs-thermald`: P7, required before READY (R50, part 2) |
 | PMIC temperature alarm | `qcom-spmi-temp-alarm.ko` — **never loaded** without a design that keeps stage-2 shutdown (PROJECT_SETUP §6A item 3, J-34) | — |
 | IR flood LEDs | `pmxr2230_torch2/3`, 140 mA cap, hardware strobe from PMIC GPIO 1 (tracking doc §8.0) | `fs-trackd` Layer 1: current, mode and trigger never written; exposure and strobe bounded; watchdog |
-| Depth projector | `oculus,nautilus` with its SAFETYBOSS MCU (`nautilus.ko`, odm_dlkm) | **never enabled** (tracking doc §8 item 3). **Correction (2026-10-16, H-1 work, finding H1-F4):** `nautilus.ko` (also in the v2.7 vendor_boot ramdisk) **is** entry 1 of K1a's 95-module list (`devices/quest3/stage3d/modules.load.v66`) and has probed on every stage image since stage 3d (its DT node is `status = "ok"`, with a clock, pinctrl and `vdd-supply`); whether its probe powers anything is [O]. K1a and stage 3d keep their Chair-concurred list unchanged. Later lists (K1i, TS, R-1) drop it; it comes back only in a reviewed tracking package together with the IR-emitter safety ownership above (Arbiter decision 2026-10-16; disclosed in FS-A-014) |
+| Depth projector | `oculus,nautilus` with its SAFETYBOSS MCU (`nautilus.ko`, odm_dlkm) | **never enabled** (tracking doc §8 item 3). **Correction (2026-10-16, H-1 work, finding H1-F4):** `nautilus.ko` (also in the v2.7 vendor_boot ramdisk) **is** entry 1 of K1a's 95-module list (`devices/quest3/stage3d/modules.load.v66`) and has probed on every stage image since stage 3d (its DT node is `status = "ok"`, with a clock, pinctrl and `vdd-supply`); whether its probe powers anything is [O]. **Correction (FS-R-014 §8, 2026-10-18):** the corrected history stays visible: `nautilus.ko` was in the earlier 95-module closure (K1a, stage 3d). Source inspection [M-static, Meta v2.7 tree `dbc2bc83a2b6`, `drivers/staging/oculus/nautilus.c`; the Chair's independent inspection, FS-R-014 §8, re-checked by us read-only] shows that probe obtains the `vdd` regulator and the clock, selects the default pinctrl state and creates the sysfs group, but does **not** call the driver's explicit regulator/clock enable routine; that routine runs only on a write to the driver's `enable` attribute, or on resume if it was enabled before suspend. This supports a narrower source conclusion only: by source, probe itself does not enable the projector; whether Meta's shipped binary matches this source, and that nothing wrote `enable` during our boots, are [D], not checked. It does **not** measure projector darkness, and it does not exclude inherited hardware state (what the bootloader or an earlier stage left powered) or the effect of the default pinctrl selection [O]. It does not require another K1a boot or block the unchanged closure. K1a and stage 3d keep their Chair-concurred list unchanged. Later lists (K1i, TS, R-1) drop it; it comes back only in a reviewed tracking package together with the IR-emitter safety ownership above (Arbiter decision 2026-10-16; disclosed in FS-A-014) |
 | SyncBoss proximity IR LED | `meta,prox-ir-supply` on the SyncBoss node (v27.dts:25726 block) | Driven by the SyncBoss firmware when proximity is enabled [C]. Proximity is never enabled under FrameShift today (§2.3 note), so the LED is expected off [C]; if proximity is ever enabled, `fs-trackd` owns it |
 
 **Who turns the emitters off if `fs-trackd` dies.** The strobe follows camera exposure and SyncBoss
@@ -1010,3 +1010,6 @@ Units 1 and 2 (§6.6); the recommendation is to decide it when the package is re
 - **Rev 2.1** (2026-10-15): PM decision recorded: Valve's crash reporting is off by default (crash
   hook and `steamos-log-submitter` masked; crash data local, no identifiers; opt-in only if Valve
   welcomes reports). Decision list, A19 and §8 updated.
+- **Rev 2.2** (2026-10-18): FS-R-014 §8 nautilus correction in §2.1 (the depth-projector row): the
+  source shows no explicit enable in probe; projector darkness was not measured; inherited hardware
+  state is not excluded; the 95-module history stays visible.

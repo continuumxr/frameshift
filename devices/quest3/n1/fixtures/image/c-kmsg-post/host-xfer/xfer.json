@@ -1,0 +1,44 @@
+{
+ "Adapter": null,
+ "Address": "fe80::b1ba:58d6:5e7f:fa1a",
+ "Challenge": "9dc87a01a7313928f880fa9a5f93cee0",
+ "Checks": {
+  "DeviceRxMatchesSent": true,
+  "DeviceTxMatchesReceived": true,
+  "NothingAfterTrailer": true,
+  "ReceivedIsExpected": true,
+  "TrailerNonceChal": true
+ },
+ "Client": "n1/tools/xfer-client.py",
+ "ConnectAttempts": 22,
+ "ConnectRefused": 21,
+ "ConnectedAfterMs": 4239,
+ "D2h": {
+  "Bytes": 8388608,
+  "ExpectedSha256": "ede9b1736b77675e42d2fa73ef9302b51ec136e655097e620333b1a39a752b73",
+  "Ms": 2492,
+  "Sha256": "ede9b1736b77675e42d2fa73ef9302b51ec136e655097e620333b1a39a752b73"
+ },
+ "EndUtc": "2026-10-18T01:31:38.564547Z",
+ "Fixture": true,
+ "H2d": {
+  "Bytes": 8388608,
+  "Ms": 165,
+  "Sha256": "b7d707bdefea3aa215ae23b9218b85883b5c873b9d2c0a4efa6233079347b1d2"
+ },
+ "Mode": "ok",
+ "Nonce": "b1ba58d65e7ffa1a",
+ "Notes": [],
+ "Port": 47201,
+ "Result": "ok",
+ "Schema": "frameshift.fs-xfer-host.v1",
+ "ScopeId": 2,
+ "StartUtc": "2026-10-18T01:31:30.674730Z",
+ "Trailer": "FSX1 END b1ba58d65e7ffa1a 9dc87a01a7313928f880fa9a5f93cee0 rx=8388608 rx_sha256=b7d707bdefea3aa215ae23b9218b85883b5c873b9d2c0a4efa6233079347b1d2 tx=8388608 tx_sha256=ede9b1736b77675e42d2fa73ef9302b51ec136e655097e620333b1a39a752b73",
+ "TrailerFields": {
+  "rx": "8388608",
+  "rx_sha256": "b7d707bdefea3aa215ae23b9218b85883b5c873b9d2c0a4efa6233079347b1d2",
+  "tx": "8388608",
+  "tx_sha256": "ede9b1736b77675e42d2fa73ef9302b51ec136e655097e620333b1a39a752b73"
+ }
+}

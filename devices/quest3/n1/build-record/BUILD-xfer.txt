@@ -1,0 +1,11 @@
+fs-xfer build record
+date_utc:   2026-10-16T21:05:06Z
+compiler:   Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+command: $HOME/toolchains/clang-r450784e/bin/clang --target=aarch64-linux-gnu -static -O2 -std=c11 -D_GNU_SOURCE -Wall -Wextra -Werror -fno-ident -fuse-ld=lld -Wl,--build-id=none -s -o build/fs-xfer src/fs-xfer.c
+source:     src/fs-xfer.c sha256=d76edaba2ab9013075d4d85822917812f3e4896b722de26d34b2880897d1fa68
+libc:       libc6-dev-arm64-cross 2.43-2ubuntu2cross1 (static glibc)
+binary:     build/fs-xfer sha256=cb136c1f081402e86dd2856cb7d2ca067ca0a3678d6872fcc710490891857310 size=675608
+elf:        ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, for GNU/Linux 3.7.0, stripped
+limits:     h2d=d2h=8388608 bytes; listen 10 s (bind retried on EADDRNOTAVAIL, then the accept), session 12 s, header 2 s, drain 1 s / 64 KiB, 4 rejects, backstop alarm 25 s
+checks:     aarch64, ET_EXEC, no INTERP, no NEEDED, bit-identical rebuild, limits unchanged, no exec/fork/open in the source
+native:     build/fs-xfer.native (gcc 15.2.0, -DFSX_FIXTURE: the ::1 mode; fixtures only, never packaged) sha256=914ba5a0b07c002873044bb18d69a7265377591336f03f031133fe3bd26f38fa

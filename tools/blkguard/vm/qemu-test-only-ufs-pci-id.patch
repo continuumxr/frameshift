@@ -1,0 +1,25 @@
+From c5803bfd72f91fcd489900adeb033c769b6c3c8a Mon Sep 17 00:00:00 2001
+From: Matthieu <59584536+ender9492@users.noreply.github.com>
+Date: Fri, 16 Oct 2026 08:15:39 +0000
+Subject: [PATCH] TEST ONLY (QEMU): bind ufshcd-pci to the QEMU UFS host
+ (1b36:0013) for the K1g VM tests; never in a device kernel
+
+---
+ drivers/scsi/ufs/ufshcd-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index 4bf8ec886..8c0b4ca09 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -378,6 +378,7 @@ static const struct dev_pm_ops ufshcd_pci_pm_ops = {
+ 
+ static const struct pci_device_id ufshcd_pci_tbl[] = {
+ 	{ PCI_VENDOR_ID_SAMSUNG, 0xC00C, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
++	{ PCI_VDEVICE(REDHAT, 0x0013), 0 },	/* TEST ONLY: the QEMU UFS host (hw/ufs), for the K1g VM tests */
+ 	{ PCI_VDEVICE(INTEL, 0x9DFA), (kernel_ulong_t)&ufs_intel_cnl_hba_vops },
+ 	{ PCI_VDEVICE(INTEL, 0x4B41), (kernel_ulong_t)&ufs_intel_ehl_hba_vops },
+ 	{ PCI_VDEVICE(INTEL, 0x4B43), (kernel_ulong_t)&ufs_intel_ehl_hba_vops },
+-- 
+2.53.0
+

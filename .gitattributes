@@ -57,3 +57,27 @@ devices/thermal/valve/** text eol=lf
 # TS packages: pinned by hash; LF in the blob and in every working copy.
 devices/quest3/ts/** text eol=lf
 devices/quest3/host/*.ps1 text eol=lf
+# N1 (NCM next to ACM): fixtures carry raw tty captures and FSB1 bytes compared by hash; the build record and the
+# sign-off are pinned text (LF in the blob and in every working copy).
+devices/quest3/n1/fixtures/** -text
+devices/quest3/n1/build-record/** text eol=lf
+devices/quest3/host/fixtures/n1/** -text
+# fs-blkguard: the kernel patches are applied byte-exact (git apply); run logs are evidence.
+tools/blkguard/patches/*.patch -text
+tools/blkguard/vm/*.patch -text
+tools/blkguard/vm/results/** -text
+tools/blkguard/kgate/results/** -text
+# K1g r3 (J-207): the probe test results are LF in the blob and in every working copy (a CRLF working copy made the
+# image builder's clean-checkout check refuse on a core.autocrlf=true checkout).
+tools/blkguard/**/RESULTS*.txt text eol=lf
+# K1g (2026-10-16): build records, fixtures and the kgate result are pinned by hash; never convert.
+devices/quest3/k1g/kernel/record/** -text
+devices/quest3/k1g/kernel/BUILD-RECORD.txt -text
+devices/quest3/k1g/fixtures/** -text
+tools/kgate/validation/quest3/check-k1g.* -text
+devices/quest3/k1g/README.md text eol=lf
+devices/quest3/RECOVERY-K1g.md text eol=lf
+# H-1 loader (2026-10-16): phase lists are read by busybox on the target (LF everywhere); the derivation
+# report and test results are byte-exact records.
+devices/quest3/h1/lists/** text eol=lf
+devices/quest3/h1/fixtures/** -text

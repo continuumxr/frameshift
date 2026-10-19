@@ -2,7 +2,7 @@ source:   src/fs-metacfg.c sha256=59e56d9b89dde8faad5051c33949c4430d44ed3f8625cc
 source:   src/fs-thermald.c sha256=be3407f8ec707db692b6421f8a50baf40130e60d6deb10b94628a8c700997e63
 source:   src/thermald_core.c sha256=84fa741f0b5df06c52022845c4dfb2903ecfdbb15b489d4fe5c1f511d887199d
 source:   src/thermald_accept.c sha256=51700981d3b822b506c4c9543b5d8b641b8682824934250f0d01290d80f8dc6e
-source:   src/thermald_tables.c sha256=986f1343dc5d26f373b16a7a3f9bd8ce1af2222c30e13c4deb59772efa1ed470
+source:   src/thermald_tables.c sha256=eb2be3d99c14174dd833bd8ae98b51a711821a07ad28bd707bcd4b3fd03d7b28
 source:   src/thermald_exec.c sha256=009b741d500bf0fecc4d524cc37ce00b31af205559912013b8625b225174f2f2
 source:   src/fst_record.c sha256=cef4e72a254b4b07693502597d98dce9473364b3dc1c8cc35a5813ea51442b7a
 source:   src/fs-poweroff-final.c sha256=eb7a56ff3201515683923a8bb14631a1dfd01d1b0b5eb5c2d74eafacaa586529
@@ -18,11 +18,11 @@ source:   src/fs-noticed.c sha256=f8b3c00481fe0a60a49643d4dd04c9f4e8de626e1bac04
 source:   src/fs-thermald-watch.c sha256=bbf48d98f48ebc78aa7dffdf4cc4a66fdcd328a05fd8226cb2f39ff97f8f504d
 binary:   fs-metacfg.a64 sha256=0e8e9221d6153b65ca93d2b5bf2de18c53658d5c9b1fbeb11bae2d5c9ecf671a size=589160
 binary:   fs-metacfg-test.a64 sha256=d4a339662330edc969d5c6b1128f9a5af44f88621f60b4c71ea3d256f7601e06 size=590184
-binary:   fs-thermald-sim.a64 sha256=b105f37cc49a667a24dd67369222aa00efa8d7ae9d2f50a82d7df5d70ab1ab6f size=761416
-binary:   fs-thermald.a64 sha256=33b2d7b914f226f355662a99ae960e403d4d82dd35822a2ed6df39ad451b7d83 size=760200
-binary:   fs-thermald-trial.a64 sha256=a3a1e7d1357b05b560585af4ae0cf887205117216e7c577e17baba9e3394ac22 size=760456
-binary:   fs-thermald-logonly.a64 sha256=e8ac70c77eedce594352b39f78d175846a34aaa9feedfa0893ec28450a736c55 size=753416
-binary:   fs-thermald-logonly-trial.a64 sha256=182133bcca4ff341a47f37147fd74c6d2ba715d9303e1a08988224d1b18cf9d5 size=753672
+binary:   fs-thermald-sim.a64 sha256=9669c92a3567fc4bf761d8ff4b29b6a8ea3aa973944babc3483bd32fa4ddde2b size=761416
+binary:   fs-thermald.a64 sha256=0b89d5d38e58a966c4f94221dcca9e001e94775722bd3447b012109cef4d7203 size=760200
+binary:   fs-thermald-trial.a64 sha256=f3342500961edf32416708b78d32b02ff587b647906e75648d742b2e1e803027 size=760456
+binary:   fs-thermald-logonly.a64 sha256=641b95885f9bfe3170551330a7cd3215267b25b54d2409af39966302b08f8cfb size=753416
+binary:   fs-thermald-logonly-trial.a64 sha256=ec7d6992043d2fcd8f19d34c9d54047fbd034ae14b327a66bbb6303284c3cde5 size=753672
 binary:   fs-poweroff-final.a64 sha256=23435f62badfb7620123a34792445266db6aeb956362745a228f829ae7d2387e size=800
 binary:   fs-noticed.a64 sha256=ff071e414f536dd863088fbb7b710a213647f05f0c6baf4718aa7aad968ade29 size=655384
 binary:   fs-warnscreen.a64 sha256=c293f829be15d5cd605c4cc084f393685f6fa325c863d6c567260c002cd0cb9f size=794248

@@ -20,4 +20,4 @@ PASS faulty  stuck2500-alt: 20/20 ok, C = Python 20/20; t4 after onset 61-66 s (
 PASS faulty  stuck3700-load: 20/20 ok, C = Python 20/20; t4 after onset 48-56 s (bound 62 s), reasons ['t4:fan-trip2']
 PASS faulty  frozen-trip2: 20/20 ok, C = Python 20/20; t4 after onset 31-31 s (bound 32 s), reasons ['t4:fan-trip2']
 PASS faulty  unreadable-trip2: 20/20 ok, C = Python 20/20; t4 after onset 5-5 s (bound 5 s), reasons ['t4:fan-trip2']
-sweep: 22/22 groups pass, 440 runs, 440/440 C = Python (wall time 367 s, 3 jobs)
+sweep: 22/22 groups pass, 440 runs, 440/440 C = Python (wall time 432 s, 4 jobs)

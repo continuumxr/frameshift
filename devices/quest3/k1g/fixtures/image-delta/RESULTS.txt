@@ -1,0 +1,31 @@
+# image-delta-k1g.py 2026-10-19T03:15:29Z: the r2 candidate d24d1559 (FS-R-015 s.4; Unit 2 K1G REVIEW, J-207) vs the r3 candidate (the 4096-byte O_DIRECT fix: the guard kernel unchanged)
+kernel: identical, 42969600 bytes, sha256 65740722b532b4235e2d35b517bf70d7753e63f42b7b7ee5c869117d999042d3
+header: identical except the ramdisk size (2025360 -> 2025400 bytes, compressed)
+ramdisk: bin/fsbg-probe: 1d37e5f2384cbdb9 (859992 bytes) -> c1de030c51f1ee4b (859992 bytes)
+ramdisk: init: the nonce only (a6718ea6bc4fe516 -> 1c8ade5c6ec2b063)
+ramdisk: every other file (20 of 22) byte-identical with identical cpio headers
+MANIFEST: 11 of 68 lines differ:
+  - built:            20261018T004649Z
+  + built:            20261019T031348Z
+  - nonce:            a6718ea6bc4fe516   (USB serial FS-a6718ea6bc4fe516)
+  + nonce:            1c8ade5c6ec2b063   (USB serial FS-1c8ade5c6ec2b063)
+  - OUTPUT IMAGE:     boot-k1g.img  size=45002752  sha256=d24d155966ac45e9005e85d2a6c00cef585c4967bd67890e9d75dc7b1f4742a4
+  + OUTPUT IMAGE:     boot-k1g.img  size=45002752  sha256=1ee9f1059d91b1f100e6bde31910980c65befa42c5dd5b8de12e38d187ff2ce4
+  - probe binary      1d37e5f2384cbdb946cbd6ed3756829d6fa14631b2e17120ff21dcd7c0ca5cf9  <repo>/build/k1g/probe/fsbg-probe
+  + probe binary      c1de030c51f1ee4b785c96b1f497bc6339d2b404f2431f07edf3aac39375077d  <repo>/build/k1g/probe/fsbg-probe
+  - build-image-k1g.sh 310824c8ba0cb51416807711b14959ee2eb18a71cf5866ba46d3830d25de2950  (recorded)
+  + build-image-k1g.sh e83d157daecfe8d297fe8a8eb7c28a16c7fd0876ec0a040c6ab8c4856ca85199  (recorded)
+  - checkout HEAD     f5cf9f035613bda67424d3c79d35bdf38274bdb3  (the image's sources are committed there)
+  + checkout HEAD     014c64dd8ff9acd2c35b5ebd807ee1c12b03f38b  (the image's sources are committed there)
+  - ramdisk.cpio      2b3d042b969e6eb959a75c2eded2ee701eeec864794a41d0c4b4e453d45da4da  size=3567616
+  + ramdisk.cpio      d9e1a3a5e069a310bda01fcecce1389faa3ec4413e61b650c74ac167ec9d2b1e  size=3567616
+  - ramdisk.lz4       50445c82531694b32ca0cd2cf0fd52b73298282e6833c5279e885e866e081de1  size=2025360
+  + ramdisk.lz4       401c454362b81c1306af7a941a44865b63ca0a29817e2382a8cc415bf4883682  size=2025400
+  - 1d37e5f2384cbdb946cbd6ed3756829d6fa14631b2e17120ff21dcd7c0ca5cf9  859992  /bin/fsbg-probe  k1g/build-probe.sh of tools/blkguard/probe/fsbg-probe.c (37
+  + c1de030c51f1ee4b785c96b1f497bc6339d2b404f2431f07edf3aac39375077d  859992  /bin/fsbg-probe  k1g/build-probe.sh of tools/blkguard/probe/fsbg-probe.c (72
+  - f07778e13b8cc230fdf153cb11a20580543861653259b02492d81915659cd567  15488  /init  k1g/init.sh (ef9786070cc6a70abcb598de6386859c53253fab188479e842b1edebe
+  + be554871ef57f558efe22b74bc431ee32266fe4b16cb909d3f32b15148a0c0e1  15488  /init  k1g/init.sh (ef9786070cc6a70abcb598de6386859c53253fab188479e842b1edebe
+  - > ramdisk size: 2025360
+  + > ramdisk size: 2025400
+PROBE-ONLY DELTA: OK: 20261019T031348Z-1c8ade5c6ec2b063 differs from 20261018T004649Z-a6718ea6bc4fe516 only by the probe (and the nonce); kernel sha256 65740722b532b4235e2d35b517bf70d7753e63f42b7b7ee5c869117d999042d3
+# exit 0

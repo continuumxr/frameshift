@@ -1,0 +1,12 @@
+# c-modules-refused mods=['moddep-mismatch'] plan=[] client=None; image <repo>/build/n1/20261018T005854Z-b1ba58d65e7ffa1a
+# reboots: 290.17 final pid=1 arg=error-modules
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=230 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = error-modules  [290.17 final pid=1 arg=error-modules]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [290.17 final pid=1 arg=error-modules]
+PASS  any later record is only the backstop (fork)
+PASS  error-modules: reboot at T0 + ERR_DELAY 60 (..+4)  [T0+60.2]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  index mismatch: MODULES_REFUSED then ERROR_modules, no module attempted, no NCM step, no SHELL_READY  [INIT_STARTED MODULES_REFUSED ERROR_modules]
+SCENARIO c-modules-refused PASS

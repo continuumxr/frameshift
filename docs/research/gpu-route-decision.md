@@ -2,7 +2,14 @@
 
 **Status:** research and recommendation only, 2026-10-14 (J-150 brief). No device was touched.
 **Revision 1:** the adversarial review (GO-with-fixes; (e′) stays the recommendation) has been
-applied; see §6.
+applied; see §6. **Revision 1.1 (2026-10-18):** the FS-R-015 §7 correction to F2a below.
+
+> **Correction (FS-R-015 §7, 2026-10-18).** F2a (added J-199) said Turnip's display WSI "must
+> implement" `VK_EXT_display_control` and `VK_EXT_display_surface_counter` "for real", and stated
+> the V4L2 decoder as a need. The Chair ruled that F2a is a **concrete compatibility lead**:
+> imported or referenced extension names do not establish mandatory use, the absence of a fallback,
+> or a working Quest display path. The decoder claim likewise remains a lead until confirmed. F2a
+> is reworded in place; the route recommendation is unchanged.
 
 **Method:**
 - No Valve, Meta or Qualcomm binary was disassembled or decompiled.
@@ -69,6 +76,7 @@ Chair turnaround are not included.
 |---|---|---|
 | F1 | **gamescope on the Frame does not drive KMS.** `gamescope-session` runs it with `--backend openvr --allow-deferred-backend`, as a SteamVR overlay | `~/sfroot-full/usr/lib/steamos/gamescope-session` L59–60 [M-static] |
 | F2 | **The KMS client is vrcompositor, through Turnip's display WSI.** Its strings include `VK_KHR_display`, `VK_EXT_acquire_drm_display`, `vkAcquireDrmDisplayEXT` and `VK_EXT_direct_mode_display`. It also uses libdrm at runtime (imports `drmModeGetResources`/`GetConnector`) and has a **DRM-lease path** (review). vrcompositor and `modetest` are the only KMS masters; Plasma runs nested (review-verified) | `/opt/steamvr/bin/linuxarm64/vrcompositor` (strings, symbol table) [M-static → D] |
+| F2a | **Compatibility lead (corrected rev 1.1, FS-R-015 §7): vrcompositor references Vulkan display-event and present-timing entry points:** `vkRegisterDisplayEventEXT` (alongside a "VulkanVblankThread" string), `vkGetSwapchainCounterEXT`, `VK_KHR_present_id` and `present_wait`. That suggests it can pace frames from display events [C]. The names alone do not establish that the paths are mandatory, that no fallback exists when `VK_EXT_display_control` / `VK_EXT_display_surface_counter` are absent, or that any Quest display path works [O]. So implementing them in Turnip's display WSI on our KMS route, with vblank events from the Quest 3 DRM driver, is a **candidate requirement to confirm** (by tracing which paths run, on a host or the device), not an established one (added J-199). Likewise, the Steam Link player's need for a V4L2 stateful decoder (NV12) is a **lead** from the stearlight study, until confirmed on our side | names confirmed present in our 0.4.5 `vrcompositor` [M-static]; their use and necessity [O]; the pacing reading and the decoder need come from the stearlight source study (`<private note, withheld>`) [C, lead] |
 | F3 | Valve's helper scripts address the display **by driver name** (`modetest -M msm`) and hard-code Frame specifics: DSI-1, one 4320×2160 plane on one CRTC. `set_kernel_thread_priorities.sh` names drm/msm threads (`msm`, `ring0..3`, `dsi_drm_work_*`); without matches it skips silently and loses those RT priorities | `/usr/bin/displays_turn_off_drm_master`; `/usr/share/deckard/set_kernel_thread_priorities.sh` L71 [M-static] |
 | F4 | **Turnip opens a DRM device only if its driver name is exactly `msm`, at version 1.x with x ≥ 6** (syncobj). With `VK_KHR_display` it opens **the same device's** primary node as the display (`master_fd`) | Mesa main `5419740b` `tu_knl.cc` L417–440, `tu_knl_drm_msm.cc` L1341–1352 [M-static] |
 | F5 | **Display WSI must be on the GPU's own device.** `can_present_on_device` uses `drmDevicesEqual`, and Acquire checks `st_rdev`; a different (SDE) fd returns `VK_ERROR_UNKNOWN`. The display WSI commits **one plane covering the full mode** | `tu_wsi.cc` L26–33; `wsi_common_display.c` L4597–4622, L2931–3016 [M-static] |

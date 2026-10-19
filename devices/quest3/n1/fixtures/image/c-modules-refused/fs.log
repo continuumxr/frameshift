@@ -1,0 +1,6 @@
+FS[b1ba58d65e7ffa1a] t=230s DEADLINE armed t0=230 deadline=T0+200 ack_window=150 backstop=T0+201 reboot-reasons-not-logged-at-reboot
+FS[b1ba58d65e7ffa1a] t=230s STAGE=INIT_STARTED pid=1 kernel=6.18.33.2-microsoft-standard-WSL2 deadline=T0+200
+FS[b1ba58d65e7ffa1a] t=230s BACKSTOP armed pid=53 in=201s
+FS[b1ba58d65e7ffa1a] t=230s STAGE=MODULES_REFUSED reason=vendor-module-index-mismatch dep=411d03a86fc57063f4fc51030692b1ea77006750b631d6c1c17d12e08f45f796 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62
+FS[b1ba58d65e7ffa1a] t=230s ERROR stage=modules vendor modules.dep/modules.softdep are not the pinned v2.7 ones; no module loaded
+FS[b1ba58d65e7ffa1a] t=290s REBOOT reason=error-modules

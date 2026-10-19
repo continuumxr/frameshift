@@ -1,0 +1,37 @@
+FrameShift Quest 3 N1 image (an NCM USB network link next to the ACM console: the unchanged K1a kernel + the K1a PID 1 with NCM as a second, never-fatal function) — ONE ATTEMPT ONLY, never reuse
+For the Quest 3 units on Horizon OS v2.7 (build 52433670036000520; vendor_boot = the slot's own stock one, module index pinned in init.sh; vbmeta digest 66b76196...f12a) only; Unit 2 first, after K1a. fastboot boot ONLY. No Valve file. No panel write. Gadget ACM first, then NCM (never fatal; NCM bind failure: ACM-only retry; no host configuration within 30 s: ACM-only fallback). IPv6 link-local only (fe80::<nonce>), no IPv4. One runner, fs-n1: one FSB1 record exp=n1 (kernel,mem,modules,net,xfer,log); the only listener is /bin/fs-xfer, one bounded transfer session (8 MiB each way, SHA-256 both sides) on [fe80::<nonce>%<ncm if>]:47201. PID 1 deadline T0+200 s, backstop T0+201 s (init.sh DEADLINE); ack window 150 s; reboot to the bootloader ~1 s after fs-done
+built:            20260101T000000Z
+nonce:            0123456789abcdef   (USB serial FS-0123456789abcdef)
+TEST OVERRIDES:   FS_TEST_NONCE=0123456789abcdef FS_TEST_OUTBASE=$HOME/work/fsbuild-neg/n1/repro2 FS_TEST_STAMP=20260101T000000Z (negative fixtures only; NOT a candidate image)
+OUTPUT IMAGE:     boot-n1.img  size=44937216  sha256=f143f6d31f14693c86acec75912dd790919115ec551e5b5f942d6e876d84ac5b
+
+## the kernel (kernel-check.txt)
+K1a kernel        087f0e72999922909e9583b95ae956f0186d6c1a337b71308b845456689e1840  size=42967552  (pinned; byte-identical in the output: AOSP re-unpack)
+K1a banner        Linux version 5.10.246-gdbc2bc83a2b6 (frameshift@k1a) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #1 SMP PREEMPT Wed Oct 14 00:00:00 UTC 2026
+K1a config        4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b  k1a/kernel/k1a.config (= the Image's IKCONFIG; the device reports sha256(zcat /proc/config.gz), which must equal it)
+kgate result      3c70f4b471375777a4f27c016dae70a706d667af91d0631905f4046668aadab8  tools/kgate/validation/quest3/check-k1a.json (gate-mode PASS, build k1a, for this Image and config)
+
+## inputs (sha256 enforced unless noted)
+stock boot        e32f98c74bcce5c25b098393f7804e19fbba2f0c2034c49a4fcf6aa9a8cdc024  <repo>/firmware/quest3/v2.7-user_ota/boot.img  (header fields only; its kernel db61c073962bf1df38cbb09cbb01f03e5595822754ffea1dc75166555f7d545e is NOT in the output)
+stock vendor_boot bc0dd14de41834a601513123b2225a677fa4212dfa4505bf964228cea40d2f5b  <repo>/firmware/quest3/v2.7-user_ota/vendor_boot.img  (NOT in the output: the unit's slot provides it)
+vbmeta            aae4af3a1740d568a1bcd1104f1b30b2998082def674e00c319acfab10faf215  <repo>/firmware/quest3/v2.7-user_ota/vbmeta.img
+vbmeta_system     28f5ccc91f25665dda5db1abf1fc3bd3fcea58f30cb33827642cddf6f9c8bc50  <repo>/firmware/quest3/v2.7-user_ota/vbmeta_system.img
+vbmeta digest     66b7619671a8a8dcb75262812e7ce1bd176af6aa32cd76dc3548b9c942e9f12a  (computed = Unit 2 runtime ro.boot.vbmeta.digest; avb-check.txt, tool 02ec464e26046a9f98d4166ac15490cd7bf0a060e663d4be76e377de3e0de55f)
+CAVEAT            the bytes on the unit's slot are INFERRED from the OTA (the runtime vbmeta digest, kernel string, vendor command line and bootconfig match), NOT read back: AVB's hash descriptors are not enforced at boot on these units, and this image's boot hash does NOT match vbmeta
+device-side check init.sh refuses to load any module unless /lib/modules/modules.dep = ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 and modules.softdep = 8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62 (the pinned vendor_boot's): mismatch -> no module, reboot error-modules at T0+60 s
+vendor modules    0dd1deb02e5e9183e66c14682f94339da34fd56152a12208b22868ca231f66f4  lib/modules/modules.load.recovery (131 modules; provenance only, NOT loaded as a list)
+loaded modules    1b93d77d029146cf93289be87de51514c6ab7b96987f9c467a7f13f6e2a6463f  stage3d/modules.load.v66 -> /lib/fs/modules.load (95 modules, Meta's STOCK v2.7 module files from the slot's vendor ramdisk; module-list-check.txt, tool 402525cd94220832b4201212684e22a910833e1dd0c6b7dc2cbd438ba14bf4c8)
+vendor file list  c01d89a16159be9ad67ee6bf32fd11a14827068a4e23e298f33bdea0d621b2ce  (143 entries)
+AOSP mkbootimg    d2bb0af5ba6d3198a3e99529c97eda1be0b5a093  (E1 fs_gitcheck CLEAN; helper adbe27e92be16da5d2d8a2bc8f3ea35bd2040cd41ed38068c1360030433487e8)
+E1 notes          NOTE: mode bits not checkable here: skip (drvfs without metadata: no exec bits) 
+ramdisk-scan-3d   a417a1225d58b6da9e4623721b4676cf28155f55aa2ac2f11f85e5a57cfca7d7  (recorded; output in ramdisk-scan.txt)
+init.sh source    09cf80d5866261b573730ace02b495c2da04050eaafded809a069f50d4e9ff7f  (recorded)
+fs-n1.sh          009d0d69c8ea9ca8cc2e036177c9e6e2a0e504ef35a4a206cf5eae1204b1b2b7  (recorded)
+fs-n1-info.sh     77d3aec3a1c7aa21d38126acf70b50fd7633581f0faf805c80ad6bf2e0e50793  (recorded)
+fs-xfer           cb136c1f081402e86dd2856cb7d2ca067ca0a3678d6872fcc710490891857310  size=675608  (pinned; n1/build-record/BUILD-xfer.txt, source src/fs-xfer.c d76edaba2ab9013075d4d85822917812f3e4896b722de26d34b2880897d1fa68)
+fsb1-pace.sh      71ce176e09c21b2304b0be90543f2c0da26b0a5c0aed3c3bb23cf8a2b412404c  (pinned)
+build-image.sh    b1dc5adaff9cfa447be5c2a36768ee55dabc5b72ee5161cb847db071b829ebf5  (recorded)
+checkout HEAD     29b263520188d1873bb6bc190f5baa88473d427a  (the image's sources are committed there)
+ramdisk.cpio      32e29d81640fef1c40711b37cb43894fc495b7416343ec9a1ca44d3d63bca6e3  size=3398144
+ramdisk.lz4       da5c4c36934d05f0c32bb347454bdee730c83f5731faa3ba7ef02fcee65a49bb  size=1960691
+

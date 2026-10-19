@@ -1,0 +1,61 @@
+# K1g kernel build record
+start: 2026-10-16T05:05:35Z
+outdir: $HOME/work/kgate27/out-k1g
+host: Linux 6.18.33.2-microsoft-standard-WSL2 x86_64; nproc 12; make -j10
+source: a9c63e24cb76ef7f16781c0a86b9f9905bad9128 (dirty files: 0)
+make: GNU Make 4.3
+clang: Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+ld.lld: LLD 14.0.7 (compatible with GNU linkers)
+pahole: v1.31
+recorded, not pinned: python3 3.14.4; perl v5.40.1; tar (GNU tar) 1.35; xz (XZ Utils) 5.8.3; glibc 2.43
+locale: LANG=C.UTF-8 TZ=UTC umask 0022; randomize_va_space 2; make prefix: setarch x86_64 -R
+KBUILD_BUILD_HOST=k1g
+KBUILD_BUILD_TIMESTAMP=Wed Oct 14 00:00:00 UTC 2026
+KBUILD_BUILD_USER=frameshift
+KBUILD_BUILD_VERSION=1
+make vars: ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CLANG_TRIPLE=aarch64-linux-gnu- REAL_CC=$HOME/toolchains/clang-r450784e/bin/clang LLVM=1 LLVM_IAS=1 LD=$HOME/toolchains/clang-r450784e/bin/ld.lld AR=$HOME/toolchains/clang-r450784e/bin/llvm-ar NM=$HOME/toolchains/clang-r450784e/bin/llvm-nm OBJCOPY=$HOME/toolchains/clang-r450784e/bin/llvm-objcopy OBJDUMP=$HOME/toolchains/clang-r450784e/bin/llvm-objdump READELF=$HOME/toolchains/clang-r450784e/bin/llvm-readelf OBJSIZE=$HOME/toolchains/clang-r450784e/bin/llvm-size STRIP=$HOME/toolchains/clang-r450784e/bin/llvm-strip HOSTCC=$HOME/toolchains/clang-r450784e/bin/clang HOSTAR=$HOME/toolchains/clang-r450784e/bin/llvm-ar HOSTLD=$HOME/toolchains/clang-r450784e/bin/ld.lld HOSTLDFLAGS=-fuse-ld=lld PYTHON=python3
+request list: $HOME/AppData/Local/Temp/fs-k1g/tools/kgate/validation/requests/quest3-k1a.txt sha256 d812a76dc1be4c550bb51154622fdb5d548aeccf03352674eea7a945ff0fb53e
+stock config: <repo>/firmware/quest3/extracted/v2.7-user_ota/kernel.config sha256 87eb12925ec09e7e2ec85e1c09162849f29e3642f9cb8c410d6459d7979ed823 (CRLF-stripped fa0342f1b1dc12d2a723ecb1e390877b31f729480ad8328a89c1b5ae6b1f9a99)
+build-kernel-k1g.sh: 633a2a7d83ee769afc2b8ef3972851520edeba5557443ec7398427a73be15d05
+patch: $HOME/AppData/Local/Temp/fs-k1g/tools/blkguard/patches/0001-block-add-fs-blkguard-a-boot-chain-block-write-guard.patch sha256 ddb53d267b66a47dc9717a567ca94d6b31b56f667ff97e48011cadde849e5665
+patch: the source commit's format-patch equals the committed patch file
+toolchain: matches toolchain.sha256 (16 files; pin file sha256 32d5a27124298d999912fba57363be00a82c299c89c9958d5ddb6e155f1abf83)
+toolchain: matches toolchain-clanglib.sha256 (716 files; pin file sha256 a73651cebc8e76c1318115692f527dc37abfb98b387a7762d5fc6ce9dd261af1)
+toolchain: every tool name resolves to its pinned file (toolchain.links, 9 names)
+requests: --enable DEVTMPFS --enable DEVTMPFS_MOUNT --enable FHANDLE --module AUTOFS_FS --module BTRFS_FS --enable BTRFS_FS_POSIX_ACL --enable TMPFS_XATTR --enable TMPFS_POSIX_ACL
+== config delta vs stock (olddefconfig of stock.config = the step-2 build's .config):
+< # CONFIG_AUTOFS_FS is not set
+> # CONFIG_BCM_SBA_RAID is not set
+< # CONFIG_BTRFS_FS is not set
+> # CONFIG_BTRFS_ASSERT is not set
+> # CONFIG_BTRFS_DEBUG is not set
+> # CONFIG_BTRFS_FS_CHECK_INTEGRITY is not set
+> # CONFIG_BTRFS_FS_REF_VERIFY is not set
+> # CONFIG_BTRFS_FS_RUN_SANITY_TESTS is not set
+< # CONFIG_CRYPTO_XXHASH is not set
+< # CONFIG_DEVTMPFS is not set
+< # CONFIG_FHANDLE is not set
+< # CONFIG_TMPFS_POSIX_ACL is not set
+< # CONFIG_TMPFS_XATTR is not set
+> CONFIG_AUTOFS_FS=m
+> CONFIG_BTRFS_FS=m
+> CONFIG_BTRFS_FS_POSIX_ACL=y
+> CONFIG_CRYPTO_XXHASH=m
+> CONFIG_DEVTMPFS=y
+> CONFIG_DEVTMPFS_MOUNT=y
+> CONFIG_FHANDLE=y
+> CONFIG_RAID6_PQ=m
+> CONFIG_RAID6_PQ_BENCHMARK=y
+> CONFIG_TMPFS_POSIX_ACL=y
+> CONFIG_TMPFS_XATTR=y
+> CONFIG_XOR_BLOCKS=m
+build rc=0 in 7683s
+banner: Linux version 5.10.246-ga9c63e24cb76 (frameshift@k1g) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #1 SMP PREEMPT Wed Oct 14 00:00:00 UTC 2026
+kernelrelease: 5.10.246-ga9c63e24cb76
+4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b  .config
+be84f21eb8a5698b7c5378beeb4f18194d35e30ec0648ed64a9e31d9f78cd984  vmlinux
+65740722b532b4235e2d35b517bf70d7753e63f42b7b7ee5c869117d999042d3  arch/arm64/boot/Image
+0ce513c3af499dff91fd634f0ac940c50f9b5fe84f3bf6867776fe27d5ded621  Module.symvers
+752137903a8f17b65ee92ae48963bd0ec4c8915611d008c648c455dbbe7a29d3  System.map
+.ko: 278 (list sha256 632d85134f2803f4f842de8f1d30b5ad21201fa52f7f36e25da2a8aa7630c671)
+end: 2026-10-16T07:14:42Z

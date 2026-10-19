@@ -1,0 +1,17 @@
+FS[1c8ade5c6ec2b063] t=71675s DEADLINE armed t0=71675 deadline=T0+200 ack_window=150 backstop=T0+201 reboot-reasons-not-logged-at-reboot
+FS[1c8ade5c6ec2b063] t=71675s STAGE=INIT_STARTED pid=1 kernel=6.18.33.2-microsoft-standard-WSL2 deadline=T0+200
+FS[1c8ade5c6ec2b063] t=71675s BACKSTOP armed pid=53 in=201s
+FS[1c8ade5c6ec2b063] t=71675s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65725725d8811bff62 (= the pinned v2.7 index)
+FS[1c8ade5c6ec2b063] t=71675s FW_TIMEOUT=1
+FS[1c8ade5c6ec2b063] t=71675s MODLIST /lib/fs/modules.load entries=3
+FS[1c8ade5c6ec2b063] t=71676s MODULE_FAIL nautilus.ko: insmod: can't insert '/lib/modules/nautilus.ko': No such file or directory
+FS[1c8ade5c6ec2b063] t=71676s MODULE_FAIL cmd-db.ko: insmod: can't insert '/lib/modules/cmd-db.ko': No such file or directory
+FS[1c8ade5c6ec2b063] t=71677s MODULE_FAIL gh_msgq.ko: insmod: can't insert '/lib/modules/gh_msgq.ko': No such file or directory
+FS[1c8ade5c6ec2b063] t=71680s STAGE=MODULES_READY ok=0 fail=3 udc=a600000.dwc3  drm=card0 
+FS[1c8ade5c6ec2b063] t=71680s STAGE=BLKGUARD_STARTED 
+FS[1c8ade5c6ec2b063] t=71680s STAGE=BLKGUARD_DONE result=ABORT
+FS[1c8ade5c6ec2b063] t=71680s ROLE mode=peripheral roles=device 
+FS[1c8ade5c6ec2b063] t=71680s STAGE=ACM_SETUP_ATTEMPTED 
+FS[1c8ade5c6ec2b063] t=71681s GADGET_IDENTITY vid=0x1d6b pid=0x0104 class=0xef/0x02/0x01 serial=FS-1c8ade5c6ec2b063
+FS[1c8ade5c6ec2b063] t=71682s STAGE=UDC_BOUND state=configured
+FS[1c8ade5c6ec2b063] t=71682s STAGE=SHELL_READY 

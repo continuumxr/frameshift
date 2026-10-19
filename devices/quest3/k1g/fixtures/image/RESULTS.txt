@@ -1,0 +1,17 @@
+# k1g whole-image fixtures  2026-10-19T03:49:45Z
+# image 20261019T031348Z-1c8ade5c6ec2b063/boot-k1g.img sha256=1ee9f1059d91b1f100e6bde31910980c65befa42c5dd5b8de12e38d187ff2ce4
+# harness sha256=4792c6ff4aee430e9d6e8ac87fc7a9ecdbbdfa035d4653fdc9418fd740836016  test-image.sh sha256=ce74098ff65261d8e1bd2b60d12d624ab7fab7e608af56e9603d6a2f7498fecb
+# host: Linux 6.18.33.2-microsoft-standard-WSL2; qemu: qemu-aarch64 version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2); bwrap 0.11.1
+# NOT shown here: the K1g kernel booting (no QEMU model of the Quest 3) or the guard acting (no guard in the host kernel: the probe ABORTs); see tools/image-harness-k1g.py and tools/blkguard/vm/
+SCENARIO c-ack-no-done PASS
+SCENARIO c-no-ack PASS
+SCENARIO c-full PASS
+SCENARIO c-kmsg-findings PASS
+SCENARIO c-bind-fail PASS
+SCENARIO c-repeat PASS
+SCENARIO c-bad-challenge PASS
+SCENARIO c-time PASS
+SCENARIO c-done-early PASS
+SCENARIO c-modules-real PASS
+SCENARIO c-modules-refused PASS
+TOTAL: 11 scenarios, 0 failed

@@ -1,0 +1,1 @@
+BUILD REFUSED: probe binary (k1g/build-probe.sh) hash differs from the pin ($HOME/work/fsbuild-neg/k1g/fsbg-probe: 1f213b183c2e817030a1f3b26abe4e0b383f22bdaba5ae16caf3f437bd26f704 != c1de030c51f1ee4b785c96b1f497bc6339d2b404f2431f07edf3aac39375077d)

@@ -1,0 +1,15 @@
+# k1a/kernel/compare-builds.sh (unchanged) record/run1/manifest.txt record/run2/manifest.txt <out-k1g-1 Image> <out-k1g Image> <pins>
+# <pins> = the EXPECT_K1A_KERNEL / EXPECT_K1A_CONFIG lines of build-image-k1g.sh with their trailing comments removed:
+#   EXPECT_K1A_KERNEL=65740722b532b4235e2d35b517bf70d7753e63f42b7b7ee5c869117d999042d3
+#   EXPECT_K1A_CONFIG=4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b
+IDENTICAL .config 4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b
+IDENTICAL vmlinux be84f21eb8a5698b7c5378beeb4f18194d35e30ec0648ed64a9e31d9f78cd984
+IDENTICAL arch/arm64/boot/Image 65740722b532b4235e2d35b517bf70d7753e63f42b7b7ee5c869117d999042d3
+IDENTICAL Module.symvers 0ce513c3af499dff91fd634f0ac940c50f9b5fe84f3bf6867776fe27d5ded621
+IDENTICAL System.map 752137903a8f17b65ee92ae48963bd0ec4c8915611d008c648c455dbbe7a29d3
+.ko: A=278 B=278 differing-lines=0 (list sha256 A 632d85134f2803f4 B 632d85134f2803f4)
+Images byte-identical (cmp): 42969600 bytes
+PINS OK   record/run1/manifest.txt: Image and .config = build-image.sh's pins
+PINS OK   record/run2/manifest.txt: Image and .config = build-image.sh's pins
+RESULT: BIT-IDENTICAL REBUILD
+# exit 0

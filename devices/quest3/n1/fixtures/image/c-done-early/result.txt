@@ -1,0 +1,23 @@
+# c-done-early mods=[] plan=['verify', 'done'] client=None; image <repo>/build/n1/20261018T005854Z-b1ba58d65e7ffa1a
+# reboots: 228.27 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=b1ba58d65e7ffa1a resp=c35acbf2809c10b2f07841ccce67cb7af957874e761b169ceb59ff737f0220ff kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=216 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [228.27 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [228.27 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork)
+PASS  reboot within 3 s of fs-done  [0.9 s]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  NCM ids from the nonce: dev_addr 02:<nonce 0-4>, host_addr 06:<nonce 0-4>, ll fe80::<nonce>, port 47201  [NCM function=linked dev_addr=02:b1:ba:58:d6:5e host_addr=06:b1:ba:58:d6:5e ll=fe80::b1ba:58d6:5e7f:fa1a port=47201]
+PASS  the ACM console came up in every NCM case: UDC_BOUND and SHELL_READY  [INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY]
+PASS  NCM linked after acm.gs0, bound, network up: NCM_NET if=usb0 addr=fe80::<nonce>/64; fs.ncm state=up  [state=up if=usb0 ll=fe80::b1ba:58d6:5e7f:fa1a port=47201 ]
+PASS  configfs dev_addr/host_addr written with the nonce MACs  [02:b1:ba:58:d6:5e]
+PASS  no NCM_SKIPPED/NCM_DROPPED/NCM_NET_FAILED/NCM_FALLBACK; the guard saw the configured gadget
+PASS  configfs: no dev_addr/host_addr write after the NCM link (the fake answers EBUSY as f_ncm does)  [{'syslog-read': 0, 'syslog-size': 0, 'syslog-other': 0, 'mounts-open': 1, 'open-continue': 453, 'udc-enodev': 0, 'addr-ebusy': 0, 'errors': 0}]
+PASS  before the host link (no carrier): the device address was already PERMANENT (flags 80: DAD off means no tentative phase)  [fe80000000000000b1ba58d65e7ffa1a 03 40 20 80     usb0]
+PASS  before the runner: a connect to [fe80::<nonce>%hst0]:47201 is refused (nothing listens)  [refused]
+SCENARIO c-done-early PASS

@@ -1,9 +1,23 @@
-# Protection-domain mapper for Quest 3 T3b (research, rev 1)
+# Protection-domain mapper for Quest 3 T3b (research, rev 1.1)
 
-**Status:** research only, revision 1, 2026-10-16. Answers PM decision D-T0-4 (J-190): "research an
-open-source PD mapper for T3b". Revision 0 (`13f69f6`) was reviewed adversarially: **GO-with-fixes**
-(1 blocker, 4 major, 2 minor, completeness). Every fix is applied here; the change table is §11.
-Nothing here authorises a device action.
+**Status:** research only, revision 1.1, 2026-10-18 (revision 1, 2026-10-16). Answers PM decision
+D-T0-4 (J-190): "research an open-source PD mapper for T3b". Revision 0 (`13f69f6`) was reviewed
+adversarially: **GO-with-fixes** (1 blocker, 4 major, 2 minor, completeness). Every fix is applied
+here; the change table is §11. Nothing here authorises a device action.
+
+> **Correction (FS-R-014 §9, 2026-10-18).** The Chair accepted preparing the pinned open-source
+> mapper route and its dependency/notice manifest (no device execution), and corrected C-PD3's
+> equivalence. Fixed in place in §1, §5.4, §7.1, §8 (PD-M5, C-PD3) and §9:
+> - **K5 (download_mode=0) and `QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n` are not equivalent protections.**
+>   K5 changes only the *consequence* of a panic (no crash-dump mode). It does not remove the
+>   PDR-callback panic/restart path. Disabling the config option removes that particular panic path.
+>   A future package may choose either route only with its actual failure behaviour stated.
+> - **`shutdown_in_progress=1` only suppresses failure handling** (the PDR-timeout panic and the
+>   "failed to recover" panic). It does not itself shut down the ADSP or the headset. The future
+>   shutdown sequence must keep battery and thermal handling running until the actual shutdown and
+>   justify when the suppression is applied.
+> - **Mapper publication, PD notification and battery-data freshness are separate claims.** An UP
+>   notification alone does not validate fresh battery readings.
 
 **Licence:** CC-BY-4.0 (our own documentation; `docs/PROVENANCE-POLICY.md` §6).
 
@@ -67,9 +81,12 @@ goes up or down.
 - Data: **our own `.jsn` files written from the facts in §2.1** (the four ADSP domains), checked in
   a test against the semantics of Meta's files. Meta's own files are not needed.
 - No kernel change; the K1a/K1g kernel and the stock vendor modules stay as reviewed.
-- **Conditions (rev 1):** run it only once K5 (download_mode=0) is in place or the kernel has
-  `QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n`, because the mapper makes a stock panic path reachable that
-  otherwise ends in crash-dump mode (§5.4); a `charger_pd` DOWN indication becomes an immediate
+- **Conditions (rev 1; corrected rev 1.1):** the mapper makes a stock PDR-callback panic path
+  reachable (§5.4). Two routes exist and they are **not equivalent**: K5 (download_mode=0) keeps
+  the panic but changes its consequence from crash-dump mode to the configured panic behaviour
+  (`PANIC_TIMEOUT=-1`, an immediate reboot [D, not measured]); `QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n`
+  removes that panic path. The package that runs the
+  mapper states which route it uses and the resulting failure behaviour; a `charger_pd` DOWN indication becomes an immediate
   battery-class SEVERE (§5.1); no DSP-serving file or RPC daemon runs (§5.6); our build fixes one
   upstream read-error defect (§3.1).
 - A back-port of the in-kernel `qcom_pd_mapper` is feasible only as **new kernel code** (a
@@ -344,11 +361,26 @@ without the modem domain. It stays on the mainline-in-parallel track (FS-R-001),
     `system_state`, a `charger_pd` DOWN with a slow callback can turn a thermal power-off into dump
     mode [D].
   - **Mitigation (a new write: needs its own approval):** the shutdown path writes `1` to
-    `/sys/kernel/qcom_rproc/shutdown_in_progress` as its **first** step. This is a volatile kernel
-    flag, but it is a new write class and goes to the Chair (C-PD3) and the PM (PD-M5).
-- **Chair item C-PD3** is therefore conditional: the mapper may run only when **either** K5
-  (download_mode=0) is in place **or** our kernel has `QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n` (a config
-  change: new kernel, kgate); in both cases the shutdown path sets `shutdown_in_progress` first.
+    `/sys/kernel/qcom_rproc/shutdown_in_progress`. This is a volatile kernel flag, but it is a new
+    write class and goes to the Chair (C-PD3) and the PM (PD-M5).
+  - **What the flag does and does not do (correction, FS-R-014 §9):** it **suppresses** failure
+    handling only: the PDR-timeout panic and the "remoteproc failed to recover" panic are skipped
+    while it is set [M-static, lines above]. It does not shut down the ADSP or the headset, and it
+    does not stop any ADSP failure from happening. Setting it also hides an ADSP failure that
+    would otherwise have been handled. So it must not be applied earlier than needed: the shutdown
+    sequence keeps battery and thermal handling running until the actual shutdown, and the package
+    states and justifies the exact point where the suppression is applied (rev 1 said "as its
+    **first** step"; that is now a proposal to be justified, not a given).
+- **Chair item C-PD3** is therefore conditional, and the two routes **are not equivalent**
+  (correction, FS-R-014 §9):
+  - **K5 (download_mode=0)** addresses the dump-mode consequence only. The PDR-callback panic path
+    stays; after K5 a panic takes the kernel's panic behaviour (`PANIC_TIMEOUT=-1`: an immediate
+    reboot is the expected outcome [D, config only; not measured]) instead of dump mode.
+  - **`QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n`** (a config change: new kernel, kgate) removes that
+    particular panic path. What then happens after a callback timeout is the driver's non-panic
+    path [O, to be stated from source in the package].
+  - A future package may choose either route only with its actual failure behaviour stated. In
+    either case the `shutdown_in_progress` write is a separate, justified step (above).
 
 ### 5.5 Charging (§6A, FS-R-012/013)
 - The mapper does not start the ADSP and writes no charger setting. JEITA charging control stays in
@@ -427,9 +459,17 @@ without the modem domain. It stays on the mainline-in-parallel track (FS-R-001),
 
 ### 7.1 T3b (battery path) — proposed integration
 
-**Prerequisite (§5.4):** K5 (download_mode=0) in place, or a kernel with
-`QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n`; and the shutdown path writes `shutdown_in_progress` first
-(PD-M5, C-PD3). No mapper run before that.
+**Prerequisite (§5.4, corrected rev 1.1):** one of the two non-equivalent routes, K5
+(download_mode=0) or a kernel with `QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n`, chosen with its actual
+failure behaviour stated; and a shutdown sequence whose `shutdown_in_progress` write point is
+justified and keeps battery/thermal handling until the actual shutdown (PD-M5, C-PD3). No mapper
+run before that.
+
+**Separate claims (FS-R-014 §9).** The run records three things separately and never infers one
+from another: (1) **mapper publication** (service 64 published, step 4); (2) **PD notification**
+(the PDR resolution and any UP/DOWN indication for `charger_pd`); (3) **battery-data freshness**
+(psy `temp`/`voltage_now`/`current_now` moving and agreeing with Android, step 5). An UP
+notification alone does not validate fresh battery readings.
 
 **Step 0, read-only, on stock Android (a T0 follow-up item):** from Android's `dmesg` and
 `logcat` on the same unit, read the timestamps of: the `vendor.pd_mapper` start, the
@@ -502,8 +542,14 @@ the pinned daemon binary; the module closure is unchanged.
   otherwise (§6.2, §7.1).
 - **PD-M5 Panic prerequisite:** no mapper run until **K5 (download_mode=0)** is in place **or** our
   kernel has `QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n`; plus a new volatile write,
-  `/sys/kernel/qcom_rproc/shutdown_in_progress` = 1, as the first step of our shutdown path.
-  **Recommend K5 first** (no new kernel), and approve the shutdown-flag write for review (§5.4).
+  `/sys/kernel/qcom_rproc/shutdown_in_progress` = 1, in our shutdown path at a justified point.
+  **Recommend K5 first** (no new kernel), stating that a PDR-callback timeout then still panics and
+  reboots [D], and approve the shutdown-flag write for review (§5.4).
+  **Corrected rev 1.1 (FS-R-014 §9):** the two routes are not equivalent. K5 leaves the panic path
+  in place (only the dump-mode consequence changes); `=n` removes it. If K5 is chosen, the package
+  states that a PDR-callback timeout still panics. The flag only suppresses failure handling;
+  it does not shut anything down, and battery/thermal handling must continue until the actual
+  shutdown.
 
 ### Chair items
 - **C-PD1** Admission of a third-party userspace daemon (BSD-3-Clause, D6 FOSS) into TS images and
@@ -518,7 +564,14 @@ the pinned daemon binary; the module closure is unchanged.
 - **C-PD3** The PDR-callback panic becomes reachable with the mapper, and before K5 it lands in
   crash-dump mode, not a reboot (§5.4). **Recommend:** allow the mapper only with K5 in place or
   `QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n`, and admit the new write
-  `/sys/kernel/qcom_rproc/shutdown_in_progress` = 1 as the first shutdown step.
+  `/sys/kernel/qcom_rproc/shutdown_in_progress` = 1 (rev 1 recommendation, superseded by the
+  ruling below).
+  **Ruled (FS-R-014 §9):** the two routes are not equivalent protections (K5 addresses the dump
+  mode; `=n` removes the panic path); a package picks one with its actual failure behaviour stated.
+  `shutdown_in_progress=1` suppresses failure handling only; the shutdown sequence must preserve
+  battery/thermal handling until actual shutdown and justify when the suppression is applied.
+  Preparing the pinned mapper route and its dependency/notice manifest is accepted; no device
+  execution.
 - **C-PD4** Fault rules, effective from T3b: a `charger_pd` DOWN indication line is an **immediate
   battery-class SEVERE** (§5.1); mapper start/publish failure and mapper-process death are WARN
   until O-PD1 is answered; mapper start inside phase S after the remoteproc exists, with a 5 s
@@ -533,6 +586,10 @@ the pinned daemon binary; the module closure is unchanged.
   T3b). Worst case: fatal error → failed recovery → panic (§5.6).
 - **O-PD7** How long the PDR DOWN callback takes with UCSI, altmode and the battery driver loaded
   (§5.4; timed in T3b).
+- **O-PD8** (FS-R-014 §9) The failure behaviour after a PDR-callback timeout with
+  `QCOM_PANIC_ON_PDR_NOTIF_TIMEOUT=n` (no panic: what the driver does instead), and the panic
+  outcome after K5 (an immediate reboot by `PANIC_TIMEOUT=-1` is [D] only). Each is stated before
+  a package chooses its route.
 - **O-PD3** Whether our downstream glink/pmic_glink has the send-before-intent race that the 2024
   mainline fix addressed (§6.2). A source comparison can answer it offline.
 - **O-PD4** Mapper supervision after the switch to Valve's systemd (R-1).

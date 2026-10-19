@@ -1,0 +1,33 @@
+{
+ "Adapter": null,
+ "Address": "fe80::b1ba:58d6:5e7f:fa1a",
+ "Challenge": "2253f44fdf78120ec5df94d7e486d70c",
+ "Checks": null,
+ "Client": "n1/tools/xfer-client.py",
+ "ConnectAttempts": 0,
+ "ConnectRefused": 0,
+ "ConnectedAfterMs": null,
+ "D2h": {
+  "Bytes": 0,
+  "ExpectedSha256": "046e30793f9f965aec2806bec41254af7fab8b81fc251808c5b1a9c2835d944b",
+  "Ms": null,
+  "Sha256": null
+ },
+ "EndUtc": "2026-10-18T01:30:07.941017Z",
+ "Fixture": true,
+ "H2d": {
+  "Bytes": 0,
+  "Ms": null,
+  "Sha256": null
+ },
+ "Mode": "no-connect",
+ "Nonce": "b1ba58d65e7ffa1a",
+ "Notes": [],
+ "Port": 47201,
+ "Result": "connect-timeout",
+ "Schema": "frameshift.fs-xfer-host.v1",
+ "ScopeId": 2,
+ "StartUtc": "2026-10-18T01:30:02.345169Z",
+ "Trailer": null,
+ "TrailerFields": null
+}

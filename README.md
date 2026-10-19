@@ -9,7 +9,7 @@
 project up cold, read it top to bottom, then follow [How to resume](#how-to-resume).
 Everything else in the repository is linked from here.
 
-*Status as of 2026-10-17 UTC (JOURNAL up to J-193, latest ruling FS-R-013). **Milestone K1a passed on both Quest 3 units on 2026-10-17:** a FrameShift-built Horizon OS v2.7 kernel, from Meta's published kernel source, booted by temporary boot with Meta's stock modules (FS-R-013 concurred). Before that, the display milestone (M2): correct images on both units on v2.7 (stage 3d, J-144/J-146), accepted by FS-R-012. **Next:** the K1a report and three new packages go to the Chair in FS-A-014: the boot-chain guard (K1g), a USB network link (N1) and the first thermal-service step (TS T0). Then the Steam-ready kernel (K1i), the full thermal service and **R-1 "SteamOS boots"**, the first big milestone. Nothing to install yet.*
+*Status as of 2026-10-19 UTC (JOURNAL up to J-217, latest ruling FS-R-016). **Milestone T0 passed on both Quest 3 units on 2026-10-18:** the first thermal-service step identified the temperature, fan and battery sensors under stock Android and read them through a short CPU load; the fan-trip table, corrected after the first run, matches on both units (FS-R-016). **Milestone K1a** passed on both units on 2026-10-17: a FrameShift-built Horizon OS v2.7 kernel, from Meta's published kernel source, booted by temporary boot with Meta's stock modules (FS-R-013). The first boot-chain guard run (**K1g** r2, Unit 2, 2026-10-19) came out **REVIEW**: the guard kernel booted cleanly, but its probe stopped itself before arming the guard, on a read-alignment defect (fail-closed; nothing was written). The fix (r3) is built and tested and its reads are concurred; the revised attempt gate goes to the Chair before the replacement attempt. **Next:** K1g r3 on Unit 2, then the USB network link (N1) and K1g on Unit 1, the Steam-ready kernel (K1i), the full thermal service and **R-1 "SteamOS boots"**, the first big milestone. Nothing to install yet.*
 
 *This status line is the project's single current-status source. Status lines
 in other documents (`docs/PROJECT_SETUP.md` §7, `docs/JOURNAL.md` "Where we are
@@ -26,11 +26,16 @@ differ, this one wins.*
 - **Our own kernel:** a FrameShift-built v2.7 kernel booted on both Quest 3
   units with all 95 of Meta's stock modules loaded and no kernel warning
   (K1a, J-193).
+- **Thermal sensors:** the sensors the thermal service needs are identified
+  and read on both Quest 3 units (T0, J-205/J-206). This does not yet prove
+  FrameShift's own thermal protection; that is the later TS stages.
+- **Boot-chain guard:** our guard kernel booted on Unit 2, but the first probe
+  run stopped itself before arming (K1g r2 REVIEW, J-207); the fix is built.
 - **Not yet:** SteamOS itself. No Valve rootfs or systemd has run on a
   headset, and there is nothing to install.
-- **Next:** the boot-chain guard (K1g), then the Steam-ready kernel (K1i),
-  the full thermal service and R-1 "SteamOS boots". The Quest 2 channel
-  continues offline.
+- **Next:** the boot-chain guard (K1g r3), the USB network link (N1), then
+  the Steam-ready kernel (K1i), the full thermal service and R-1 "SteamOS
+  boots". The Quest 2 channel continues offline.
 
 New here and not on the team? [Outsider quickstart](#outsider-quickstart)
 says what you need, what builds and which tests run offline.
@@ -38,7 +43,7 @@ says what you need, what builds and which tests run offline.
 ### Licence and notice (summary)
 
 - Code (tools, host scripts, on-device services, fixtures and records): **Apache License 2.0**
-  (`LICENSE`). Kernel patches in `kernel-patches/` and FrameShift's own kernel modules:
+  (`LICENSE`). Kernel patches (in `kernel-patches/` and the fs-blkguard patches in `tools/blkguard/`), the fs-blkguard probe, harness, test and bench C sources (`tools/blkguard/`) and FrameShift's own kernel modules:
   **GPL-2.0-only** (`kernel-patches/README.md`). Documentation: **CC-BY-4.0**
   (`LICENSES/CC-BY-4.0.txt`). See `NOTICE`.
 - Meta and Quest are trademarks of Meta Platforms, Inc.; Valve, Steam, SteamOS and Steam Frame
@@ -84,9 +89,10 @@ published as sanitised snapshots (one commit per export):
   init-script excerpts) are **withheld**: the public copy holds only material
   the project wrote itself. Also withheld, as outside the public scope (the
   SteamOS-port work for an already-unlocked headset): the project's
-  device-state capture and partition-readback tooling (including the K1a
-  readback rows, the K1a walkthrough and sign-off tooling, and the
-  Android-side T0 thermal probe), its firmware-update risk research,
+  device-state capture and partition-readback tooling (including the
+  readback rows, the K1a, K1g and N1 walkthroughs, run addenda and sign-off
+  tooling, and the Android-side T0 thermal probe and its run documents), its
+  firmware-update risk research,
   research that depends on its private clean-room study of third-party
   binaries, security findings about third-party software that go to its
   authors first, and the documents of an earlier, shelved device
@@ -313,7 +319,7 @@ The full lists are in `docs/JOURNAL.md` → **Do not go here** (25 items),
 
 ---
 
-## Current state (2026-10-17)
+## Current state (2026-10-19)
 
 ### Milestones on hardware (Quest 3, by temporary `fastboot boot`)
 
@@ -324,25 +330,31 @@ Nothing was flashed by FrameShift in any of these runs. Milestone definitions: `
 | 2026-10-08 | **M1, first shell**: the stock kernel with our initramfs, a USB serial shell and a challenge | **achieved** on Unit 1 (v66) [M] | FS-R-005 |
 | 2026-10-09 to 10-11 | early trials on Unit 1 (v66): four Valve userspace files on the stock kernel; two first display tests | each reached our init and answered the challenge. Registered outcomes: a listing-rule defect (fixed), an inconclusive record, and a lit but garbled image | FS-R-009, FS-R-010, FS-R-012 |
 | 2026-10-13, 2026-10-14 | **M2, correct image on the panels** | stage 3c on Unit 1 (v66); then stage 3d on **both units on v2.7**, with the eye swap and the 21° roll corrected | **FS-R-012: display milestone accepted** |
-| 2026-10-17 | **K1a, our own kernel boots** | a FrameShift-built v2.7 kernel with Meta's stock modules booted on **both units** (Unit 2, then Unit 1): K1A PASS each (all 95 modules loaded, no kernel warning, memory measured), clean before/after checks, no recovery needed, highest battery reading 31.0 °C [M] | FS-R-013 concurred; report in FS-A-014 |
+| 2026-10-17 | **K1a, our own kernel boots** | a FrameShift-built v2.7 kernel with Meta's stock modules booted on **both units** (Unit 2, then Unit 1): K1A PASS each (all 95 modules loaded, no kernel warning, memory measured), clean before/after checks, no recovery needed, highest battery reading 31.0 °C [M] | FS-R-013 concurred; **FS-R-014: accepted** |
+| 2026-10-18 | **T0, thermal sensors identified** (stock Android, no FrameShift image) | on **both units** (Unit 2, then Unit 1): T0 PASS each; the sensors read through a short CPU load (SoC peak 50.4 and 52.6 °C, battery at most 27.9 °C, fan not needed); all 28 fan zones match the corrected table [M]. A first Unit 2 run (REVIEW) had found the table error and a row-timing defect, both fixed in r2 | **FS-R-016: T0 complete** (not yet a test of FrameShift's thermal protection or of the fan) |
+| 2026-10-19 | **K1g r2, boot-chain guard** (Unit 2) | **REVIEW:** the guard kernel booted (95 modules, no warning) and the unit returned to fastboot by itself; the probe's third hashing row failed closed (its reads were rounded to 512 bytes on 4096-byte storage), so the guard was not armed and no guard case ran; nothing was written | **FS-R-016: REVIEW accepted**; the r3 reads concurred |
 
 No Valve rootfs or systemd has run on a headset yet. That is R-1, after the guard (K1g) and the Steam-ready kernel (K1i).
 
 ### In progress
 
-- **FS-A-014**, the next relay to the Chair. It reports the K1a results and asks to execute three packages, all
-  built and tested offline:
-  - **K1g**: the K1a kernel plus `fs-blkguard`, which refuses writes to the boot chain, proven by a probe on both units;
-  - **N1**: the K1a kernel with a USB network link next to the serial console, one bounded transfer, Unit 2 only, after K1g;
-  - **TS T0**: the first thermal-service step, run under stock Android with no FrameShift image: it identifies the sensors
-    and reads them under a short CPU load (its Android-side tooling is not in this public copy).
-- **The module loader (H-1/H-2):** an ordered, bounded loader for the later kernels, with the thermal modules first and a
-  refusal to hand over if they are not ready. Built offline; for K1i and TS.
+- **K1g r3** (`devices/quest3/k1g/`, the guard in `tools/blkguard/`): the probe now reads in whole 4096-byte blocks and
+  hashes only each row's bytes; the kernel is unchanged. Tested in QEMU and UML with 4096-byte sectors, including a
+  reproduction of the Unit 2 failure. Its reads are concurred (FS-R-016); the revised attempt gate (recording the r2
+  attempt as superseded) goes to the Chair as its own change before the replacement Unit 2 attempt.
+- **N1** (`devices/quest3/n1/`): the guard kernel with a USB network link next to the serial console and one bounded
+  transfer, Unit 2 only, after a clean K1g r3 on Unit 2.
+- **K1i preparation:** 48-bit virtual addresses together with SysV IPC, with a 39-bit control image
+  (`docs/research/va-bits-k1i.md`, PM decision); the Wi-Fi module now rebuilds to match Meta's stock module (J-210).
+- **The module loader (H-1/H-2)** (`devices/quest3/h1/`): an ordered, bounded loader for the later kernels, with the
+  thermal modules first and a refusal to hand over if they are not ready. Built offline; for K1i and TS.
 - **The thermal and battery service** (`devices/thermal/`): specifications, our own C sources, simulations and the
-  derived threshold tables (identifiers and numbers only, J-123). Built and tested offline.
+  derived threshold tables (identifiers and numbers only, J-123), with the fan-table correction found by T0. Built
+  and tested offline.
 - **R-1 preparation:** the review of what SteamOS 0.4.5 could write or start (masks and controls; kept private
-  for now), and an open-source PD mapper for the battery service
-  (`docs/research/pd-mapper.md`).
+  for now), an open-source PD mapper for the battery service (`docs/research/pd-mapper.md`), a design for how
+  FrameShift answers SteamOS's shut down, restart, sleep, update and reset requests (with the PM's decisions; kept
+  private for now), and the R-1 package itself, being built and tested offline in QEMU (not in this copy yet).
 - **Installed boot:** a research design for a later, reviewed install-and-restore cycle on Unit 2 (kept private for
   now). No install is planned before R-1.
 
@@ -352,8 +364,8 @@ All units are unlocked headsets (assumed by the project).
 
 | unit | firmware | role and notes |
 |---|---|---|
-| Quest 3 **Unit 1** (`QUEST3UNIT1`) | Horizon OS v2.7 (build `52433670036000520`), slot A | the temporary-boot test unit; never flashed by FrameShift. Stage 3c (on v66), stage 3d and K1a (on v2.7) passed here. Its proximity sensor is faulty |
-| Quest 3 **Unit 2** (`QUEST3UNIT2`) | Horizon OS v2.7 (build `52433670036000520`), slot A | stage 3d and K1a passed here; reserved for separately reviewed flashing work. Its IPD slider and proximity sensor are faulty. Backed up read-only |
+| Quest 3 **Unit 1** (`QUEST3UNIT1`) | Horizon OS v2.7 (build `52433670036000520`), slot A | the temporary-boot test unit; never flashed by FrameShift. Stage 3c (on v66), stage 3d, K1a and T0 (on v2.7) passed here. Its proximity sensor is faulty |
+| Quest 3 **Unit 2** (`QUEST3UNIT2`) | Horizon OS v2.7 (build `52433670036000520`), slot A | stage 3d, K1a and T0 passed here; K1g r2 came out REVIEW (r3 next). Reserved for separately reviewed flashing work. Its IPD slider and proximity sensor are faulty. Backed up read-only |
 | Quest 2 (`QUEST2UNIT`) | Horizon OS v2.7 (build `52242990024200150`), slot b | secondary target; temporary boot only; no Quest 2 run is concurred yet |
 
 No Quest Pro, Quest 3S or Quest 1 unit is used. The XR Elite is shelved. Known unit faults are recorded and factored into
@@ -363,11 +375,10 @@ results, never compensated for.
 
 ## Next steps and open items (in order)
 
-1. **K1a: done** (2026-10-17, both units; FS-R-013).
-2. **FS-A-014 to the Chair:** the K1a results, and the EXECUTE asks for **K1g**, **N1** and **TS T0**, after its
-   adversarial reviews.
-3. **K1g**, if concurred: one attended attempt on Unit 2, then one on Unit 1. Then **N1** on Unit 2. **T0** runs under stock
-   Android on the PM's schedule.
+1. **K1a: done** (2026-10-17, both units; FS-R-013). **T0: done** (2026-10-18, both units; FS-R-016).
+2. **K1g r3:** the revised attempt gate, with its tests and review, to the Chair (FS-R-016); then the replacement attempt
+   on Unit 2. After a clean Unit 2 result: **N1** on Unit 2, then K1g on Unit 1.
+3. **SA-C1**, the restart-argument lockdown in our kernel, as its own named kernel change with K1i (FS-R-016).
 4. **K1i**, the kernel for Steam: SysV IPC plus a rebuilt, pinned module set, passing K1g again.
 5. **TS**, the full thermal and battery service, stages T1–T5 on each unit and kernel that will use them.
 6. **R-1, SteamOS boots**: Valve's unmodified 0.4.5 rootfs loaded into RAM over USB, verified, reaching a controlled console
@@ -491,14 +502,15 @@ read the [safety rules](#safety-rules-non-negotiable-in-brief) first.
    (all of it), then the latest entries (J-78 onward) and the
    **Corrections** table. The journal is the full history. Its entries are
    never rewritten.
-3. **The latest ruling is FS-R-013** (K1a concurred); FS-R-001 is the safety
+3. **The latest ruling is FS-R-016** (T0 complete; K1g r2 REVIEW accepted; the r3 reads concurred); FS-R-001 is the safety
    boundary. Every `FS-R-*` is binding until superseded. The relays and
    rulings are private review records (J-167); the journal records their
    effects.
-4. **The last relay** was FS-A-013 (the K1a package, ruled by FS-R-013). The
-   next is **FS-A-014** (the K1a results; asks for K1g, N1 and TS T0). The K1a
-   package is `devices/quest3/k1a/` (its walkthrough and sign-off tooling are
-   not in this public copy); recovery: `devices/quest3/RECOVERY.md` §4b.
+4. **The last relay** was FS-A-016 (the T0 r2 results, the K1g r2 REVIEW and the
+   r3 asks, ruled by FS-R-016). Next: the K1g gate revision as its own change.
+   The packages are `devices/quest3/k1a/`, `k1g/` and `n1/` (their walkthroughs,
+   run addenda and sign-off tooling are not in this public copy); recovery:
+   `devices/quest3/RECOVERY.md` §4b and `devices/quest3/RECOVERY-K1g.md`.
 5. **The device README:** `devices/quest3/README.md` (then `quest2/`, and so
    on), and `docs/PROJECT_SETUP.md` for the plan and the §6A safety
    requirements.
@@ -606,11 +618,12 @@ Meta or Valve is redistributed here.
 | `docs/CHAIR_DIRECTIVE.md`, `docs/FrameShift_Chair_Continuity_Directive.md` | the Chair's role and protocol (partly superseded; see `ERRATA-002.md`) |
 | `docs/ERRATA-001.md`, `docs/ERRATA-002.md` | early supersessions |
 | `relays/` | a short note only: the review dialogue (relays `FS-A-NNN`, rulings `FS-R-NNN`, evidence) is kept private (J-167) |
-| `devices/quest3/` | README; `RECOVERY.md`; `SIGNOFF.md`, `SIGNOFF-3c.md`, `SIGNOFF-3d.md` (sign-off sheets); `stage1/` (first shell); `stage2a/` (Valve files, trial i); `stage3a/` (display, trial iii, spent); `stage3b/` (trial iii-b, run 2026-10-11, J-107); **`stage3c/` (4-plane rerun on v66, STAGE PASS, J-125)**; **`stage3d/` (v2.7, both units, STAGE PASS, J-144/J-146)**; **`k1a/` (our own v2.7 kernel, K1A PASS on both units, J-193)**; `ts/` (thermal-service inputs: sensors and firmware facts); `common/` (PID 1 infrastructure: FSB1, DEADLINE, OUTCOMES, MISC-RULE, fs-supervise); `host/` (observer, collector, classifiers, captures); `evidence/` (withheld) |
+| `devices/quest3/` | README; `RECOVERY.md`; `SIGNOFF.md`, `SIGNOFF-3c.md`, `SIGNOFF-3d.md` (sign-off sheets); `stage1/` (first shell); `stage2a/` (Valve files, trial i); `stage3a/` (display, trial iii, spent); `stage3b/` (trial iii-b, run 2026-10-11, J-107); **`stage3c/` (4-plane rerun on v66, STAGE PASS, J-125)**; **`stage3d/` (v2.7, both units, STAGE PASS, J-144/J-146)**; **`k1a/` (our own v2.7 kernel, K1A PASS on both units, J-193)**; `k1g/` (the boot-chain guard package, r3); `n1/` (the USB network link package); `h1/` (the module loader); `RECOVERY-K1g.md`; `ts/` (thermal-service inputs: sensors and firmware facts); `common/` (PID 1 infrastructure: FSB1, DEADLINE, OUTCOMES, MISC-RULE, fs-supervise); `host/` (observer, collector, classifiers, captures); `evidence/` (withheld) |
 | `devices/thermal/` | the thermal and battery service: specifications, our C sources, simulations, derived threshold tables (offline) |
 | `devices/quest2/` | README; `PORT-PLAN.md`; `channel/` (NCM channel); `analysis/` (v2.7 DT extraction and stage 1); `evidence/` (withheld) |
 | `devices/questpro/`, `quest3s/`, `quest1/`, `xre/` | per-device READMEs |
 | `tools/kgate/` | offline kernel symbol-version gate (FS-R-006 §3) |
+| `tools/blkguard/` | fs-blkguard, the boot-chain write guard: the kernel patch and the probe, harness, test and bench C sources (GPL-2.0-only), the QEMU/UML harness scripts and their results |
 | `kernel-patches/` | future kernel patches (GPL-2.0-only); empty for now |
 | `LICENSE`, `LICENSES/`, `NOTICE` | Apache-2.0 (code), CC-BY-4.0 (docs); licences, trademark and non-affiliation notice |
 

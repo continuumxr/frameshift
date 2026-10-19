@@ -1,0 +1,1 @@
+BUILD REFUSED: K1a config (k1a/kernel/k1a.config, the exact K1g config) hash differs from the pin ($HOME/work/fsbuild-neg/k1g/k1a.config: 0fa0db569359a34cf84e52728eb95ec4973aea9dfec46cdc4fa4d3eecd4ce127 != 4aa0c894655627f6ff39476ac2a45abb4c224ee0053957d5002c694b0602826b)

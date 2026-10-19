@@ -1,0 +1,10 @@
+# K1g r3: two builds of the probe with k1g/build-probe.sh at 9ff2c938, 2026-10-19T04:09:55Z (outputs in a temporary directory)
+source:   $HOME/AppData/Local/Temp/fs-k1g-r3/tools/blkguard/probe/fsbg-probe.c sha256 7226f45b2742b755f6fdef1d6cb5ace35f0801344e9fc7ceaa0d2c8b1ff17890
+compiler: aarch64-linux-gnu-gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0; glibc (aarch64 cross) 2.43-2ubuntu2cross1
+binary:   <tmp>/run1/fsbg-probe sha256 c1de030c51f1ee4b785c96b1f497bc6339d2b404f2431f07edf3aac39375077d size 859992
+PIN OK (build-image-k1g.sh EXPECT_FSBG_PROBE)
+source:   $HOME/AppData/Local/Temp/fs-k1g-r3/tools/blkguard/probe/fsbg-probe.c sha256 7226f45b2742b755f6fdef1d6cb5ace35f0801344e9fc7ceaa0d2c8b1ff17890
+compiler: aarch64-linux-gnu-gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0; glibc (aarch64 cross) 2.43-2ubuntu2cross1
+binary:   <tmp>/run2/fsbg-probe sha256 c1de030c51f1ee4b785c96b1f497bc6339d2b404f2431f07edf3aac39375077d size 859992
+PIN OK (build-image-k1g.sh EXPECT_FSBG_PROBE)
+BYTE-IDENTICAL: run 1 = run 2 (c1de030c51f1ee4b785c96b1f497bc6339d2b404f2431f07edf3aac39375077d)

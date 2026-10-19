@@ -29,7 +29,7 @@ PASS Quest 2 accepted (batt-usr 1/10)         want reason=-                     
 PASS Quest 2 batt-usr multiplier 1/1000       want reason=multiplier             got limits=builtin reason=multiplier vr_export=0
 PASS A-6 BOARD bounded too (pcb1-usr slot 0 set) want reason=bounds-unset-slot      got limits=builtin reason=bounds-unset-slot vr_export=0
 PASS Quest 2 cpu-0 gains a LIGHT              want reason=coverage-mask          got limits=builtin reason=coverage-mask vr_export=0
-PASS spawn: real reader, synthetic file (P18) want reason=unknown-hash           got reason=unknown-hash in 0.01 s (bound 0.0-1.9 s)
+PASS spawn: real reader, synthetic file (P18) want reason=unknown-hash           got reason=unknown-hash in 0.00 s (bound 0.0-1.9 s)
 PASS spawn: probe of the spawn rules, then reader want reason=unknown-hash           got reason=unknown-hash in 0.01 s (bound 0.0-1.9 s)
 PASS spawn: helper hangs -> 2 s deadline      want reason=reader-timeout         got reason=reader-timeout in 2.00 s (bound 1.9-2.6 s)
 PASS spawn: half a header then hangs          want reason=reader-timeout         got reason=reader-timeout in 2.00 s (bound 1.9-2.6 s)
@@ -39,6 +39,6 @@ PASS spawn: json_len over the cap             want reason=reader-bad-record     
 PASS spawn: n = 129                           want reason=reader-bad-record      got reason=reader-bad-record in 0.01 s (bound 0.0-1.9 s)
 PASS spawn: short record then EOF             want reason=reader-bad-record      got reason=reader-bad-record in 0.01 s (bound 0.0-1.9 s)
 PASS spawn: helper missing (exec fails)       want reason=reader-bad-record      got reason=reader-bad-record in 0.01 s (bound 0.0-1.9 s)
-PASS spawn: stuck helper, boot continues, reaped want reader-timeout + reaped later; 3.80 s
+PASS spawn: stuck helper, boot continues, reaped want reader-timeout + reaped later; 3.81 s
 PASS probe negative control (no spawn rules)  probe reports failure
 acceptance and spawn: 43/43 pass

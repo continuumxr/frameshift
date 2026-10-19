@@ -1,0 +1,58 @@
+# c-ncm-skip mods=['ncm-skip'] plan=['verify', 'ack', 'run', 'done'] client=no-connect; image <repo>/build/n1/20261018T005854Z-b1ba58d65e7ffa1a
+# reboots: 114.32 final pid=1 arg=collected
+PASS  FSV1 response = sha256(nonce:challenge)  [FSV1 nonce=b1ba58d65e7ffa1a resp=c9532d5b8740452c5020c4f2d1f21ed08f8e2d66be8060d620e0922a28a7fb49 kernel=6.18.33.2-micro]
+PASS  FSV1 stages end with SHELL_READY  [INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY]
+PASS  FSA1 queued  [FSA1 queued END]
+PASS  FSS1 shows HOST_ACK recorded  [FSS1 nonce=b1ba58d65e7ffa1a stages=INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY,HOST_ACK acked=fcffbc588fb02705 END]
+PASS  runner completed with a settled prompt  [FSB1 END v=1 nonce=b1ba58d65e7ffa1a chal=2253f44fdf78120ec5df94d7e486d70c lines=182 rec_sha256=f08016ec6f0731daed1c43974a3b573e83aee9f213a3c69af2c4c7c09343f7e7]
+PASS  FSB1 VALID (exp n1, 6 steps kernel..log, this nonce and challenge)  [VALID]
+PASS  every step exited 0  [[('1', 'kernel', 'exited', '0'), ('2', 'mem', 'exited', '0'), ('3', 'modules', 'exited', '0'), ('4', 'net', 'exited', '0'), ('5', 'xfer', 'exited', '0'), ('6', 'log', 'exited', '0')]]
+PASS  no step wrote stderr  [[]]
+PASS  FSD1 queued  [FSD1 queued END]
+PASS  deadline armed with the image's values (200 / 150)  [DEADLINE armed t0=90 deadline=T0+200 ack_window=150]
+PASS  backstop armed
+PASS  first reboot reason = collected  [114.32 final pid=1 arg=collected]
+PASS  PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)  [114.32 final pid=1 arg=collected]
+PASS  any later record is only the backstop (fork)
+PASS  reboot within 3 s of fs-done  [0.8 s]
+PASS  no access to the decoy backlight or DRM node (inotify: 0 events)
+PASS  tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)
+PASS  MODULE_INDEX logged; modules attempted = the harness short list in order  [attempted ['nautilus', 'cmd-db', 'gh_msgq']]
+PASS  NCM ids from the nonce: dev_addr 02:<nonce 0-4>, host_addr 06:<nonce 0-4>, ll fe80::<nonce>, port 47201  [NCM function=none dev_addr=02:b1:ba:58:d6:5e host_addr=06:b1:ba:58:d6:5e ll=fe80::b1ba:58d6:5e7f:fa1a port=47201]
+PASS  the ACM console came up in every NCM case: UDC_BOUND and SHELL_READY  [INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY HOST_ACK]
+PASS  NCM setup failure before the bind: NCM_SKIPPED step=mkdir, ACM-only bind, fs.ncm state=none  [state=none if=none ll=fe80::b1ba:58d6:5e7f:fa1a port=47201 ]
+PASS  kernel step: /proc/version = the pinned K1a banner; config_sha256 = sha256(k1a.config); K1a and N1 option lines  [== uname-r 6.18.33.2-microsoft-standard-WSL2
+== uname-v #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026
+== proc-version
+Linux version 5.10.246-gdbc2bc83a2b6 (frameshift@k1a) (Android (8508608, bas]
+PASS  mem step: MemTotal reported  [MemTotal:       11683848 kB
+MemFree:        10900000 kB
+MemAvailable:   11000000]
+PASS  modules step: loader lines, /proc/modules and the kmsg section  [== loaded 2
+== tainted 0
+== loader
+FS[b1ba58d65e7ffa1a] t=91s MODULE_INDEX dep=ae5edf110424463af4ca2cb3b51992ff25cc031c5e74296eb01d8b9828e429e3 softdep=8e49f03a5cbcf0883d5107e176bfefcb16f99bdb965a6d65]
+PASS  kmsg clean: modver-matches 0, taint-lines 0, warnings 0
+PASS  net step: UDC a600000.dwc3 (state as faked), config functions 'acm.gs0', product FrameShift N1, serial FS-<nonce>  [{'UDC': 'a600000.dwc3', 'state': 'configured'}{'product': 'FrameShift N1', 'serialnumber': 'FS-b1ba58d65e7ffa1a', 'configuration': 'acm'}]
+PASS  net and log steps: every socket table was read (tcp, tcp6, udp, udp6, raw, raw6, packet)  [before ['packet', 'raw', 'raw6', 'tcp', 'tcp6', 'udp', 'udp6', 'udplite', 'udplite6'] after ['packet', 'raw', 'raw6', 'tcp', 'tcp6', 'udp', 'udp6', 'udplite', 'udplite6']]
+PASS  no unintended listener BEFORE the transfer: no TCP LISTEN row; no udp, udplite, raw or packet socket  [{'tcp': 0, 'tcp6': 0, 'udp': 0, 'udp6': 0, 'udplite': 0, 'udplite6': 0, 'raw': 0, 'raw6': 0, 'packet': 0}]
+PASS  no listener AFTER the transfer: no TCP LISTEN row; no udp, udplite, raw or packet socket  [{'tcp': 0, 'tcp6': 0, 'udp': 0, 'udp6': 0, 'udplite': 0, 'udplite6': 0, 'raw': 0, 'raw6': 0, 'packet': 0}]
+PASS  xfer step: fs-xfer result=no-ncm  [FSX1 start port=- if=none ifindex=0 addr=- h2d=8388608 d2h=8388608
+FSX1 result=no-ncm t_ms=5
+]
+PASS  log step: /run/fs.log with SHELL_READY
+PASS  log step: the post-transfer kernel-log check comes FIRST and is closed by its end marker  [== kmsg-post read=ok rc=0 bytes=233
+== kmsg-post-lines 4
+== kmsg-post-first [   ]
+PASS  kmsg-post: read=ok; lines, first, last, modver, taint, warnings and ncm lines reported  [== kmsg-post read=ok rc=0 bytes=233
+== kmsg-post-lines 4
+== kmsg-post-first [    0.000000] B
+== kmsg-post-last [    9.500000] m
+== kmsg-post-modver 0
+== kmsg-post-taint 0
+== kmsg-post-warnings 0 warni]
+PASS  kmsg-post: the post read extends step 3's (same first line, no fewer lines)  [4/[    0.000000] B vs 4/[    0.000000] B]
+PASS  kmsg-post: 0 WARNING, 0 BUG, 0 matching lines after the transfer  [('0', '0', '0', '0')]
+PASS  kernel log came from KernelFake (syslog read answered, no listener errors)  [{'syslog-read': 2, 'syslog-size': 2, 'syslog-other': 0, 'mounts-open': 1, 'open-continue': 691, 'udc-enodev': 0, 'addr-ebusy': 0, 'errors': 0}]
+PASS  host client (mode no-connect): result connect-timeout  [connect-timeout]
+SCENARIO c-ncm-skip PASS

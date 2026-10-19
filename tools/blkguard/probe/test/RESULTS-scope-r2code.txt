@@ -1,0 +1,92 @@
+# test-scope.c (FS-R-014 s.3 fixtures; K1g r3 4K regression), 2026-10-19T03:09:40Z; the r2 code (a537251e) fsbg-probe.c 37f1177789ed3fcf; test-scope.c 3ab1dc239c740062; gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0; built with -Wl,--wrap=open,--wrap=pread,--wrap=pread64
+FAIL  scope, discovery order  0: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  1: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  2: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  3: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  4: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  5: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  6: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  7: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  8: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order  9: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 10: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 11: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 12: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 13: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 14: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 15: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 16: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 17: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 18: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 19: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 20: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 21: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 22: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 23: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+FAIL  scope, discovery order 24: 3 opens, all on the 7 allowlisted partitions (persist, userdata, metadata, boot_b, BOOT_A, boot_a_old, 'misc ', vbmeta, whole LUNs, persistbak, modemst1, fsc never opened)
+PASS  gate: rows on persist, userdata, metadata, boot_b, BOOT_A and a whole LUN are refused before any open (0 opens)
+PASS  gate: persist and an unidentifiable node are not on the content-read allowlist
+PASS  protected phase: persist is never a target of any case (FS-R-014 s.3.1); other nodes are
+PASS  duplicate boot_a: the pass stops at R1 with nothing opened at all
+PASS  before-pass, read error       at row 1 (boot_a): 1 open(s), none after the failing row
+PASS  before-pass, range beyond the node at row 1 (boot_a): 1 open(s), none after the failing row
+PASS  before-pass, content differs  at row 1 (boot_a): 1 open(s), none after the failing row
+PASS  before-pass, missing node     at row 1 (boot_a): 1 open(s), none after the failing row
+PASS  before-pass, read error       at row 2 (vendor_boot_a): 2 open(s), none after the failing row
+PASS  before-pass, range beyond the node at row 2 (vendor_boot_a): 2 open(s), none after the failing row
+PASS  before-pass, content differs  at row 2 (vendor_boot_a): 2 open(s), none after the failing row
+PASS  before-pass, missing node     at row 2 (vendor_boot_a): 2 open(s), none after the failing row
+PASS  before-pass, read error       at row 3 (dtbo_a): 3 open(s), none after the failing row
+PASS  before-pass, range beyond the node at row 3 (dtbo_a): 3 open(s), none after the failing row
+PASS  before-pass, content differs  at row 3 (dtbo_a): 3 open(s), none after the failing row
+PASS  before-pass, missing node     at row 3 (dtbo_a): 3 open(s), none after the failing row
+FAIL  before-pass, read error       at row 4 (vbmeta_a): 4 open(s), none after the failing row
+FAIL  before-pass, range beyond the node at row 4 (vbmeta_a): 4 open(s), none after the failing row
+FAIL  before-pass, content differs  at row 4 (vbmeta_a): 4 open(s), none after the failing row
+FAIL  before-pass, missing node     at row 4 (vbmeta_a): 4 open(s), none after the failing row
+FAIL  before-pass, read error       at row 5 (vbmeta_system_a): 5 open(s), none after the failing row
+FAIL  before-pass, range beyond the node at row 5 (vbmeta_system_a): 5 open(s), none after the failing row
+FAIL  before-pass, content differs  at row 5 (vbmeta_system_a): 5 open(s), none after the failing row
+FAIL  before-pass, missing node     at row 5 (vbmeta_system_a): 5 open(s), none after the failing row
+FAIL  before-pass, range beyond the node at row 6 (misc): 6 open(s), none after the failing row
+FAIL  before-pass, range beyond the node at row 7 (devinfo): 7 open(s), none after the failing row
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+FAIL  after-pass setup: the before-pass did not complete (2 rows)
+PASS  a failed open is not retried without O_DIRECT: exactly one open of the row, then stop
+FAIL  after-pass with < 1 s left before AFTER_END: no row read (0 opens), all 7 rows timed (REVIEW, not FAIL)
+PASS  a failure before the real rows: R1-R5, R6, R7d, R8 all 'not read' (9), 0 opens
+PASS  node_open_allowed: persist refused even with an empty cached name; an unidentifiable partition refused; a whole LUN allowed (Q target, no content read)
+PASS  4096-byte blocks, boot_a          range 61607936: hashed exactly the range (59 read(s), last 790528 bytes expected, all 4096-aligned: yes)
+PASS  4096-byte blocks, vendor_boot_a   range  5058560: hashed exactly the range (5 read(s), last 864256 bytes expected, all 4096-aligned: yes)
+FAIL  4096-byte blocks, dtbo_a          range    12564: Invalid argument (1 read(s), last 16384 bytes expected, all 4096-aligned: NO)
+FAIL  4096-byte blocks, vbmeta_a        range     5632: Invalid argument (1 read(s), last 8192 bytes expected, all 4096-aligned: NO)
+FAIL  4096-byte blocks, vbmeta_system_a range     3136: Invalid argument (1 read(s), last 4096 bytes expected, all 4096-aligned: NO)
+PASS  4096-byte blocks, misc            range  1048576: hashed exactly the range (1 read(s), last 1048576 bytes expected, all 4096-aligned: yes)
+PASS  4096-byte blocks, devinfo         range     4096: hashed exactly the range (1 read(s), last 4096 bytes expected, all 4096-aligned: yes)
+FAIL  4096-byte blocks: the whole content pass (R1-R5, R6, R7d, R8) passes, 9 opens, the 7 rows hashed
+PASS   512-byte blocks, boot_a          range 61607936: hashed exactly the range (59 read(s), last 790528 bytes expected, all 4096-aligned: yes)
+PASS   512-byte blocks, vendor_boot_a   range  5058560: hashed exactly the range (5 read(s), last 864256 bytes expected, all 4096-aligned: yes)
+FAIL   512-byte blocks, dtbo_a          range    12564: hashed exactly the range (1 read(s), last 16384 bytes expected, all 4096-aligned: NO)
+FAIL   512-byte blocks, vbmeta_a        range     5632: hashed exactly the range (1 read(s), last 8192 bytes expected, all 4096-aligned: NO)
+FAIL   512-byte blocks, vbmeta_system_a range     3136: hashed exactly the range (1 read(s), last 4096 bytes expected, all 4096-aligned: NO)
+PASS   512-byte blocks, misc            range  1048576: hashed exactly the range (1 read(s), last 1048576 bytes expected, all 4096-aligned: yes)
+PASS   512-byte blocks, devinfo         range     4096: hashed exactly the range (1 read(s), last 4096 bytes expected, all 4096-aligned: yes)
+PASS   512-byte blocks: the whole content pass (R1-R5, R6, R7d, R8) passes, 9 opens, the 7 rows hashed
+FAIL  node of exactly 12564 bytes (dtbo_a): the rounded read would pass its end: refused before any read (1 reads; Invalid argument), 3 open(s), none after it
+FAIL  node of exactly 5632 bytes (vbmeta_a): the rounded read would pass its end: refused before any read (0 reads; Invalid argument), 4 open(s), none after it
+FAIL  node of exactly 3136 bytes (vbmeta_system_a): the rounded read would pass its end: refused before any read (0 reads; Invalid argument), 5 open(s), none after it
+FAIL  dtbo_a: a read that returns 236 bytes less than asked (still >= the 12564 needed) fails closed; no later open
+TOTAL: 89 cases, 61 failed
+# exit 1

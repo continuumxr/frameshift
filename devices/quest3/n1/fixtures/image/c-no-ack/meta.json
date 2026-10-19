@@ -1,0 +1,126 @@
+{
+ "ack": "f08e0fe938166d80",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=b1ba58d65e7ffa1a resp=a0f2e3ec8e6ba2a6e868e1b34924bedbe4c375c62977b190835f5cf84227fd81 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=22 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "183.45 final pid=1 arg=no-host-ack",
+   "label": "first reboot reason = no-host-ack",
+   "ok": true
+  },
+  {
+   "detail": "183.45 final pid=1 arg=no-host-ack",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "SHELL_READY+150.4",
+   "label": "no-ack reboot at SHELL_READY + ACK_WINDOW..+3",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted ['nautilus', 'cmd-db', 'gh_msgq']",
+   "label": "MODULE_INDEX logged; modules attempted = the harness short list in order",
+   "ok": true
+  },
+  {
+   "detail": "NCM function=linked dev_addr=02:b1:ba:58:d6:5e host_addr=06:b1:ba:58:d6:5e ll=fe80::b1ba:58d6:5e7f:fa1a port=47201",
+   "label": "NCM ids from the nonce: dev_addr 02:<nonce 0-4>, host_addr 06:<nonce 0-4>, ll fe80::<nonce>, port 47201",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY",
+   "label": "the ACM console came up in every NCM case: UDC_BOUND and SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "state=up if=usb0 ll=fe80::b1ba:58d6:5e7f:fa1a port=47201 ",
+   "label": "NCM linked after acm.gs0, bound, network up: NCM_NET if=usb0 addr=fe80::<nonce>/64; fs.ncm state=up",
+   "ok": true
+  },
+  {
+   "detail": "02:b1:ba:58:d6:5e",
+   "label": "configfs dev_addr/host_addr written with the nonce MACs",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no NCM_SKIPPED/NCM_DROPPED/NCM_NET_FAILED/NCM_FALLBACK; the guard saw the configured gadget",
+   "ok": true
+  },
+  {
+   "detail": "{'syslog-read': 0, 'syslog-size': 0, 'syslog-other': 0, 'mounts-open': 1, 'open-continue': 1031, 'udc-enodev': 0, 'addr-ebusy': 0, 'errors': 0}",
+   "label": "configfs: no dev_addr/host_addr write after the NCM link (the fake answers EBUSY as f_ncm does)",
+   "ok": true
+  },
+  {
+   "detail": "fe80000000000000b1ba58d65e7ffa1a 03 40 20 80     usb0",
+   "label": "before the host link (no carrier): the device address was already PERMANENT (flags 80: DAD off means no tentative phase)",
+   "ok": true
+  },
+  {
+   "detail": "refused",
+   "label": "before the runner: a connect to [fe80::<nonce>%hst0]:47201 is refused (nothing listens)",
+   "ok": true
+  }
+ ],
+ "client_mode": null,
+ "inet6_before_host": "fe80000000000000b1ba58d65e7ffa1a 03 40 20 80     usb0\n",
+ "kernel_fake_counts": {
+  "addr-ebusy": 0,
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 1031,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0,
+  "udc-enodev": 0
+ },
+ "mods": [],
+ "nonce": "b1ba58d65e7ffa1a",
+ "ok": true,
+ "plan": [
+  "verify"
+ ],
+ "reboot_at_T0_plus": 161.4,
+ "runner_challenge": "c28eb3523260244e3ce454dab29ef50e",
+ "scenario": "c-no-ack",
+ "t_total_s": 164.3,
+ "verify_challenge": "c1fe762c3d67df430ad39a4a943343d3",
+ "want_ncm": "up",
+ "want_reboot": "no-host-ack",
+ "want_xfer": null
+}

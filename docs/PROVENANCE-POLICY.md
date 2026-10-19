@@ -53,7 +53,7 @@ Every file in the public export set has exactly one category in `docs/provenance
 | 2.1 | **Our own original: code** | `own:code` | scripts, tools, host software, our C programs, build scripts, repo config | Apache-2.0 (§6) | clean-room rules (§3) |
 | 2.2 | **Bridge code: our own original** | `own:bridge` | the adaptation layer (J-120, J-156): our own userspace services, adapters, SteamVR/OpenXR plugins, and our own kernel modules | userspace: Apache-2.0; kernel modules: GPL-2.0-only (§6) | clean-room (§3); talks to Meta/Valve only through public interfaces (UAPI, D-Bus, documented plugin APIs); none in the export set yet |
 | 2.3 | **Our own original: docs, records, fixtures** | `own:doc`, `own:record`, `own:fixture` | documentation, rulings, journal; logs and results of our tools and runs; synthetic or generated test data | docs: CC-BY-4.0; records and fixtures: Apache-2.0 (§6) | records may cite third-party identifiers, sizes and hashes (§1.4), never contents |
-| 2.4 | **Hook patches to Meta's GPL source: derived, keep minimal and tracked** | `gpl:hook-patch` | patches against Meta's published GPL-2.0 kernel (`oculus-linux-kernel`) or upstream Linux | **GPL-2.0-only** (the kernel's licence), in `kernel-patches/` | smallest change that gives a bridge its hook; one row per patch with the upstream tree, tag/commit and file, and why the hook is needed; prefer upstream (mainline) code over Meta's where it exists (route (c), J-155) |
+| 2.4 | **Hook patches to Meta's GPL source: derived, keep minimal and tracked** | `gpl:hook-patch` | patches against Meta's published GPL-2.0 kernel (`oculus-linux-kernel`) or upstream Linux | **GPL-2.0-only** (the kernel's licence), in `kernel-patches/` (fs-blkguard's in `tools/blkguard/`) | smallest change that gives a bridge its hook; one row per patch with the upstream tree, tag/commit and file, and why the hook is needed; prefer upstream (mainline) code over Meta's where it exists (route (c), J-155) |
 | 2.5 | **Derived from GPL source: data** | `gpl:data` | tables our tools generated from Meta's public GPL-2.0 source (config option lists, allowlists) | Apache-2.0, GPL-2.0 attribution kept **[LAWYER]** | attribution to the source tree; no copied source text beyond identifiers |
 | 2.6 | **Third-party under another licence** | `third-party:<SPDX>` | anything not written by us that we are allowed to copy (e.g. a licence text, a vendored FOSS file) | its own licence, unchanged | keep its licence text and notices; record origin URL, version and hash; none in the export set except the Apache-2.0 licence text itself (`legal`) |
 | 2.7 | **Observed facts about Meta/Valve artefacts** | `observed:meta`, `observed:valve` | our own readouts of headers, identifiers, module lists, hashes, manifests | Apache-2.0 for our readout **[LAWYER]** | identifiers, numbers and hashes only (§1.4); verbatim files or listings are **not** allowed (flag) |
@@ -94,6 +94,14 @@ the user and verified against Valve's keys (PROJECT_SETUP §0.0); we host nothin
    FrameShift", and the public references it relies on. A file that is not written from scratch
    says what it derives from.
 8. **Reviewers and research agents get these rules in their brief** (J-152).
+9. **Deep inspection of every source (PM, 2026-10-17, J-197).** Every relevant source is studied
+   in depth under item 2, not just its README: third-party ports (stearlight, reframed-vr/ArmadaVR,
+   any later one), their source trees, built APKs and images, as well as Valve's and Meta's images,
+   so that we are as informed as possible. The output is private facts notes (never
+   exported); nothing is copied, and the findings are leads until our own work confirms
+   them. Downloads need the PM's approval (file name, source, size). They are kept outside the
+   repo, each in its own new directory, are never executed, and are verified against the
+   publisher's checksums where available.
 
 ## 4. What never enters the public repo
 
@@ -146,6 +154,7 @@ component list is not shipped.
 |---|---|
 | tools, host scripts, on-device services and bridges (userspace), build scripts, test fixtures and records | **Apache-2.0** (unchanged from J-90; the public `LICENSE`) |
 | kernel patches (`kernel-patches/`) and FrameShift's own kernel modules | **GPL-2.0-only** |
+| fs-blkguard (`tools/blkguard/`, 2026-10-19 export): its kernel patches and the C sources of its probe, harness, tests and bench, which share or compile the guard's kernel policy code | **GPL-2.0-only** (SPDX headers; the scripts and results there stay Apache-2.0) |
 | documentation (Markdown files and other prose, including relays, rulings and the journal) | **CC-BY-4.0** |
 
 Notes:

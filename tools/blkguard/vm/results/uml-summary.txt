@@ -1,0 +1,37 @@
+# fs-blkguard UML VM test 2026-10-19T03:42:34Z
+# kernel: 02670243ef04756e out-um/linux; c5803bfd7 TEST ONLY (QEMU): bind ufshcd-pci to the QEMU UFS host (1b36:0013) for the K1g VM tests; never in a device kernel|cd3993fd4 TEST ONLY (UML build): guard CONFIG_SMP / CONFIG_RT_THROTTLING_SYSCTL (ARM64-only) uses and make two !WALT stubs static inline in Meta sched code|
+# probe:  7226f45b2742b755 fsbg-probe.c
+[strict-bootprotect] cmdline: fsbg.vm
+[strict-bootprotect] FSBG-PROBE RESULT: PASS nonce=af99ac3861cc cases=192 pass=192 fail=0 mode=vm (uml exit 0)
+[strict-bootprotect] fresh nonce af99ac3861cc seen
+[strict-bootprotect] host decoy unchanged (fac539df52069e3efab6e59783e99e87796cb97cbccff39db004adc82b91a984)
+[strict-bootoff] cmdline: fsbg.vm fs_blkguard=off
+[strict-bootoff] FSBG-PROBE RESULT: PASS nonce=a10f89c01a56 cases=212 pass=212 fail=0 mode=vm (uml exit 0)
+[strict-bootoff] fresh nonce a10f89c01a56 seen
+[strict-bootoff] host decoy unchanged (8a65592fc493c5973fce5e88cdbf97386c06faaf3afa805e34bc45c6d1a5c0c5)
+[protect] cmdline: fsbg.vm fsbg.protect
+[protect] FSBG-PROBE RESULT: PASS nonce=fd61ff7dd1bf cases=170 pass=170 fail=0 mode=vm (uml exit 0)
+[protect] fresh nonce fd61ff7dd1bf seen
+[protect] host decoy unchanged (59b15c3037858b9d78f5e9d2578220472f576e5dd7019214aa9274ac5302e7e6)
+[device-mode] cmdline: fsbg.testkernel
+[device-mode] FSBG-PROBE RESULT: PASS nonce=3905dc1f37b2 cases=82 pass=82 fail=0 mode=device testkernel (uml exit 0)
+[device-mode] fresh nonce 3905dc1f37b2 seen
+[device-mode] host decoy unchanged (1fbc633d86c64a2a03f07f17ba83f3e2fa4d894b39fe4cedf423972399f32449)
+[k1g-layout] cmdline: fsbg.testkernel fsbg.tmpfsdev fsbg.child fsbg.compact
+[k1g-layout] FSBG-PROBE RESULT: PASS nonce=104527b15533 cases=82 pass=82 fail=0 mode=device testkernel (uml exit 0)
+[k1g-layout] fresh nonce 104527b15533 seen
+[k1g-layout] host decoy unchanged (bd07616d3fdb9813393c1838c5bb25f55091fd5ee62b5c553bf829c6a78c70e6)
+[strict-4k] cmdline: fsbg.vm scsi_debug.sector_size=4096
+[strict-4k] FSBG-PROBE RESULT: PASS nonce=c2c3d273eca2 cases=156 pass=156 fail=0 mode=vm (uml exit 0)
+[strict-4k] fresh nonce c2c3d273eca2 seen
+[strict-4k] host decoy unchanged (01d47c97b9ca569b2682266e8060f2ffecb835b870da72def641184338584f53)
+[k1g-layout-4k] cmdline: fsbg.testkernel fsbg.tmpfsdev fsbg.child fsbg.compact scsi_debug.sector_size=4096
+[k1g-layout-4k] FSBG-PROBE RESULT: PASS nonce=1201824eec72 cases=82 pass=82 fail=0 mode=device testkernel (uml exit 0)
+[k1g-layout-4k] fresh nonce 1201824eec72 seen
+[k1g-layout-4k] host decoy unchanged (a3ea0ebdf2437d1cb0fc7ff935b2ad1de0f476580b8181c74969ad2d5bdbfbaf)
+[unpatched-kernel] cmdline: fsbg.vm
+[unpatched-kernel] FSBG-PROBE RESULT: ABORT nonce=843b3882e5f4 cases=0 pass=0 fail=0 mode=vm (uml exit 0)
+[unpatched-kernel] fresh nonce 843b3882e5f4 seen
+[unpatched-kernel] host decoy unchanged (d6a4f7a56724d2c28e6b172bb47504c9bbb2b9ed7598deccc97d2050824ddd00)
+   [unpatched-kernel] ABORT: /proc/fs_blkguard missing or unreadable: the guard is not in this kernel
+# end 2026-10-19T03:45:32Z

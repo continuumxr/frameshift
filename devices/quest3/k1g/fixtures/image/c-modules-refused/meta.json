@@ -1,0 +1,75 @@
+{
+ "ack": "866fb1b6120341a9",
+ "checks": [
+  {
+   "detail": "DEADLINE armed t0=71686 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "71746.88 final pid=1 arg=error-modules",
+   "label": "first reboot reason = error-modules",
+   "ok": true
+  },
+  {
+   "detail": "71746.88 final pid=1 arg=error-modules",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "T0+60.9",
+   "label": "index mismatch: reboot error-modules at T0 + ERR_DELAY 60 (..+4)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_REFUSED ERROR_modules",
+   "label": "index mismatch: MODULES_REFUSED then ERROR_modules, no module attempted, no SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_REFUSED ERROR_modules",
+   "label": "index mismatch: the guard proof never ran (no module closure, no BLKGUARD stage)",
+   "ok": true
+  }
+ ],
+ "kernel_fake_counts": {
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 221,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0
+ },
+ "mods": [
+  "moddep-mismatch"
+ ],
+ "nonce": "1c8ade5c6ec2b063",
+ "ok": true,
+ "plan": [],
+ "reboot_at_T0_plus": 60.9,
+ "runner_challenge": "5435360447c69b5386da2e76658f4da5",
+ "scenario": "c-modules-refused",
+ "t_total_s": 62.8,
+ "verify_challenge": "1274c0af1cee89c2f60f12bf8f1b50b0",
+ "want_reboot": "error-modules"
+}

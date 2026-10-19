@@ -1,0 +1,157 @@
+Core dump limits :
+	soft - 0
+	hard - NONE
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking environment variables for a tempdir...$HOME/work/blkguard/uml-run
+Checking if $HOME/work/blkguard/uml-run is on tmpfs...no
+Warning: tempdir $HOME/work/blkguard/uml-run is not on tmpfs
+Checking PROT_EXEC mmap in $HOME/work/blkguard/uml-run...OK
+Adding 117903360 bytes to physical memory to account for exec-shield gap
+Linux version 5.10.246-gc5803bfd72f9 (<build-user>@<build-host>) (gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, GNU ld (GNU Binutils for Ubuntu) 2.46) #82 Sat Oct 17 18:13:39 PDT 2026
+Zone ranges:
+  Normal   [mem 0x0000000000000000-0x000000007f070fff]
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000000000000-0x000000001f070fff]
+Initmem setup node 0 [mem 0x0000000000000000-0x000000001f070fff]
+Built 1 zonelists, mobility grouping on.  Total pages: 125351
+Kernel command line: mem=384M rootfstype=hostfs rootflags=$HOME/work/blkguard/uml-run/root rw init=/init con=null con0=fd:0,fd:1 scsi_debug.dev_size_mb=16 fsbg.nonce=104527b15533 fsbg.testkernel fsbg.tmpfsdev fsbg.child fsbg.compact root=98:0
+Dentry cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+Inode-cache hash table entries: 32768 (order: 6, 262144 bytes, linear)
+mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+Memory: 379616K/508356K available (3423K kernel code, 907K rwdata, 1100K rodata, 155K init, 172K bss, 128740K reserved, 0K cma-reserved)
+NR_IRQS: 16
+clocksource: timer: mask: 0xffffffffffffffff max_cycles: 0x1cd42e205, max_idle_ns: 881590404426 ns
+Calibrating delay loop... 2085.68 BogoMIPS (lpj=10428416)
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+devtmpfs: initialized
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+futex hash table entries: 256 (order: 0, 6144 bytes, linear)
+NET: Registered protocol family 16
+SCSI subsystem initialized
+clocksource: Switched to clocksource timer
+VFS: Disk quotas dquot_6.6.0
+VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+fs_blkguard: v1, boot mode protect
+NET: Registered protocol family 2
+IP idents hash table entries: 8192 (order: 4, 65536 bytes, linear)
+tcp_listen_portaddr_hash hash table entries: 256 (order: 0, 4096 bytes, linear)
+TCP established hash table entries: 4096 (order: 3, 32768 bytes, linear)
+TCP bind hash table entries: 4096 (order: 3, 32768 bytes, linear)
+TCP: Hash tables configured (established 4096 bind 4096)
+UDP hash table entries: 256 (order: 1, 8192 bytes, linear)
+UDP-Lite hash table entries: 256 (order: 1, 8192 bytes, linear)
+NET: Registered protocol family 1
+printk: console [stderr0] disabled
+mconsole (version 2) initialized on $HOME/.uml/T0NziD/mconsole
+Checking host MADV_REMOVE support...OK
+hwrng: no data available
+workingset: timestamp_bits=62 max_order=17 bucket_order=0
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 254)
+io scheduler mq-deadline registered
+io scheduler kyber registered
+brd: module loaded
+loop: module loaded
+scsi host0: scsi_debug: version 0190 [20200710]
+  dev_size_mb=16, opts=0x0, submit_queues=1, statistics=0
+scsi 0:0:0:0: Direct-Access     Linux    scsi_debug       0190 PQ: 0 ANSI: 7
+sd 0:0:0:0: Power-on or device reset occurred
+sd 0:0:0:0: Attached scsi generic sg0 type 0
+device-mapper: ioctl: 4.44.0-ioctl (2021-02-01) initialised: dm-devel@redhat.com
+NET: Registered protocol family 17
+Initialized stdio console driver
+Console initialized on /dev/tty0
+sd 0:0:0:0: [sda] 32768 512-byte logical blocks: (16.8 MB/16.0 MiB)
+sd 0:0:0:0: [sda] Write Protect is off
+sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
+sd 0:0:0:0: [sda] Optimal transfer size 524288 bytes
+printk: console [tty0] enabled
+Initializing software serial port version 1
+printk: console [mc-1] enabled
+epollctl add err fd 1, Operation not permitted
+epollctl add err fd 0, Operation not permitted
+sd 0:0:0:0: [sda] Attached SCSI disk
+VFS: Mounted root (hostfs filesystem) on device 0:13.
+devtmpfs: mounted
+This architecture does not have kernel memory protection.
+Run /init as init process
+fsbg-probe: nonce=104527b15533 mode=device arm=strict boot=protect
+PRE guard: mode=protect sealed=0 modules_disabled=0 hazards=modules devmem scsi-debug
+WARN: hazards 'modules devmem scsi-debug' accepted (fsbg.testkernel: test kernels only)
+ loop6: p1 p2 p3 p4 p5 p6
+PRE scope: content reads only R1-R5, R6, R7d (misc), R8 (devinfo); never opened: none
+PRE pace: sha256=portable before-pass=5.59 s budget=120 s hashed=15 MiB cpu0=? kHz cpu0=? kHz governor=?
+fs_blkguard: armed: mode strict, 5 allowlist entries, sealed by init[24]
+ARMED: strict allow=disk:ram0,disk:dm-200,disk:dm-201,disk:loop7,part:fsbg_decoy_rw
+SEAL: re-arming refused (EPERM) -> PASS
+fs_blkguard: denied open on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied open on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied discard on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied discard on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied zeroout on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied roset on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied blkpg on ram1 (-) [deny-strict] by init[24]
+fs_blkguard: denied rrpart on ram1 (-) [deny-strict] by init[24]
+Buffer I/O error on dev ram1, logical block 0, lost async page write
+loop: Write error at byte offset 0, length 4096.
+blk_update_request: I/O error, dev loop7, sector 0 op 0x1:(WRITE) flags 0x8800 phys_seg 1 prio class 0
+device-mapper: table: 254:202: linear: Device lookup failed
+device-mapper: ioctl: error adding target to table
+HASH verify: 7 nodes, 0 failed or changed
+POST guard counters: total=78
+SERIES H     pass=7 fail=0
+SERIES N1    pass=7 fail=0
+SERIES N2    pass=7 fail=0
+SERIES N3    pass=7 fail=0
+SERIES N4    pass=7 fail=0
+SERIES N5    pass=7 fail=0
+SERIES N6    pass=7 fail=0
+SERIES N7    pass=2 fail=0
+SERIES N8    pass=2 fail=0
+SERIES N9    pass=2 fail=0
+SERIES N10   pass=2 fail=0
+SERIES N11   pass=1 fail=0
+SERIES P1    pass=1 fail=0
+SERIES P2    pass=1 fail=0
+SERIES P3    pass=1 fail=0
+SERIES P4    pass=1 fail=0
+SERIES P5    pass=1 fail=0
+SERIES P7    pass=1 fail=0
+SERIES P8    pass=1 fail=0
+SERIES P9    pass=1 fail=0
+SERIES P10   pass=1 fail=0
+SERIES P11   pass=1 fail=0
+SERIES S1    pass=1 fail=0
+SERIES S2    pass=1 fail=0
+SERIES S4    pass=1 fail=0
+SERIES S3    pass=1 fail=0
+SERIES A1    pass=1 fail=0
+SERIES A2    pass=1 fail=0
+SERIES Q1    pass=1 fail=0
+SERIES Q2    pass=1 fail=0
+SERIES Q3    pass=1 fail=0
+SERIES Q4    pass=1 fail=0
+SERIES Q5    pass=1 fail=0
+SERIES Q12   pass=1 fail=0
+SERIES Q13   pass=1 fail=0
+SERIES Q14   pass=1 fail=0
+SERIES Q6    pass=1 fail=0
+SERIES Q7    pass=1 fail=0
+SERIES Q8    pass=1 fail=0
+SERIES Q9    pass=1 fail=0
+SERIES Q11   pass=1 fail=0
+SERIES A3    pass=1 fail=0
+SERIES H'    pass=7 fail=0
+HASHDIGEST before=9e065a3b4d744d1a39d07652f706c7bc after=9e065a3b4d744d1a39d07652f706c7bc
+FSBG-PROBE RESULT: PASS nonce=104527b15533 cases=82 pass=82 fail=0 mode=device testkernel
+sd 0:0:0:0: [sda] Synchronizing SCSI cache
+reboot: System halted
+

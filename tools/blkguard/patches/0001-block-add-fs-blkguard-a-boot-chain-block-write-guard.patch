@@ -1,0 +1,1216 @@
+From a9c63e24cb76ef7f16781c0a86b9f9905bad9128 Mon Sep 17 00:00:00 2001
+From: Matthieu <59584536+ender9492@users.noreply.github.com>
+Date: Thu, 15 Oct 2026 04:27:41 +0000
+Subject: [PATCH] block: add fs-blkguard, a boot-chain block-write guard
+ (FrameShift)
+
+Refuse writes to boot-chain and unit-unique partitions, identified by
+their GPT names as parsed by the kernel, to the whole-disk nodes of the
+disks carrying them (sticky per request queue), to SCSI/UFS pass-through,
+host-driver SCSI ioctls and partition-table changes; in strict mode
+refuse every block device except an allowlist.
+
+Hooks: block device open with FMODE_WRITE, write_iter, fallocate,
+BLKDISCARD/BLKSECDISCARD/BLKZEROOUT, BLKROSET clear (single fetch),
+BLKPG, BLKRRPART, IOC_PR_*, every write-class bio in
+submit_bio_checks(), blk_verify_command() (sd SG_IO,
+SCSI_IOCTL_SEND_COMMAND, bsg-scsi), sg write/SG_IO, transport bsg
+(UFS BSG), SCSI host-driver ioctls (ufs-qcom UFS_IOCTL_QUERY), START/STOP
+UNIT, SG_SCSI_RESET and CDROMEJECT/CLOSETRAY.  Control is
+/proc/fs_blkguard: one arming request seals it; the mode never goes
+down; strict mode requires kernel.modules_disabled=1.  Boot flag
+fs_blkguard=off leaves it unarmed.
+
+No exported symbol, struct layout or Kconfig symbol changes.
+
+Signed-off-by: Matthieu <59584536+ender9492@users.noreply.github.com>
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ block/Makefile              |   1 +
+ block/blk-core.c            |   4 +
+ block/bsg.c                 |   4 +
+ block/fs-blkguard-policy.h  | 270 +++++++++++++++++++
+ block/fs-blkguard.c         | 503 ++++++++++++++++++++++++++++++++++++
+ block/ioctl.c               |  33 ++-
+ block/scsi_ioctl.c          |   7 +
+ drivers/scsi/scsi_error.c   |   3 +
+ drivers/scsi/scsi_ioctl.c   |   9 +
+ drivers/scsi/sg.c           |   9 +
+ fs/block_dev.c              |  15 ++
+ include/linux/fs_blkguard.h |  47 ++++
+ 12 files changed, 902 insertions(+), 3 deletions(-)
+ create mode 100644 block/fs-blkguard-policy.h
+ create mode 100644 block/fs-blkguard.c
+ create mode 100644 include/linux/fs_blkguard.h
+
+diff --git a/block/Makefile b/block/Makefile
+index b9db5d4ed..da85b86d6 100644
+--- a/block/Makefile
++++ b/block/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_BLOCK) := bio.o elevator.o blk-core.o blk-sysfs.o \
+ 			blk-lib.o blk-mq.o blk-mq-tag.o blk-stat.o \
+ 			blk-mq-sysfs.o blk-mq-cpumap.o blk-mq-sched.o ioctl.o \
+ 			genhd.o ioprio.o badblocks.o partitions/ blk-rq-qos.o
++obj-$(CONFIG_BLOCK)		+= fs-blkguard.o
+ 
+ obj-$(CONFIG_BOUNCE)		+= bounce.o
+ obj-$(CONFIG_BLK_SCSI_REQUEST)	+= scsi_ioctl.o
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 73adca697..a7bb3c3f6 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -41,6 +41,7 @@
+ #include <linux/psi.h>
+ #include <linux/sched/sysctl.h>
+ #include <linux/blk-crypto.h>
++#include <linux/fs_blkguard.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/block.h>
+@@ -835,6 +836,9 @@ static noinline_for_stack bool submit_bio_checks(struct bio *bio)
+ 	if (should_fail_bio(bio))
+ 		goto end_io;
+ 
++	if (unlikely(fs_blkguard_deny_bio(bio)))
++		goto end_io;
++
+ 	if (bio->bi_partno) {
+ 		if (unlikely(blk_partition_remap(bio)))
+ 			goto end_io;
+diff --git a/block/bsg.c b/block/bsg.c
+index 62707c774..a4e072415 100644
+--- a/block/bsg.c
++++ b/block/bsg.c
+@@ -20,6 +20,7 @@
+ #include <scsi/scsi_device.h>
+ #include <scsi/scsi_driver.h>
+ #include <scsi/sg.h>
++#include <linux/fs_blkguard.h>
+ 
+ #define BSG_DESCRIPTION	"Block layer SCSI generic (bsg) driver"
+ #define BSG_VERSION	"0.4"
+@@ -148,6 +149,9 @@ static int bsg_sg_io(struct request_queue *q, fmode_t mode, void __user *uarg)
+ 
+ 	if (hdr.guard != 'Q')
+ 		return -EINVAL;
++	if (q->bsg_dev.ops != &bsg_scsi_ops &&
++	    fs_blkguard_deny_transport(FSBG_PATH_BSG))
++		return -EPERM;
+ 	ret = q->bsg_dev.ops->check_proto(&hdr);
+ 	if (ret)
+ 		return ret;
+diff --git a/block/fs-blkguard-policy.h b/block/fs-blkguard-policy.h
+new file mode 100644
+index 000000000..32fa34327
+--- /dev/null
++++ b/block/fs-blkguard-policy.h
+@@ -0,0 +1,270 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * fs-blkguard policy core (FrameShift).
++ *
++ * Pure decision functions with no kernel state, shared by
++ * block/fs-blkguard.c and the FrameShift userspace test harness
++ * (tools/blkguard/harness), which compiles this header unchanged.
++ *
++ * The including file provides: bool/true/false, u8, size_t, and
++ * strlen/strncmp/memcpy/memset.
++ *
++ * Copyright (C) 2026 FrameShift contributors
++ */
++#ifndef FS_BLKGUARD_POLICY_H
++#define FS_BLKGUARD_POLICY_H
++
++enum fsbg_mode {
++	FSBG_OFF = 0,		/* nothing guarded (boot flag fs_blkguard=off) */
++	FSBG_PROTECT = 1,	/* boot storage guarded; other disks free */
++	FSBG_STRICT = 2,	/* every block device guarded except the allowlist */
++};
++
++#define FSBG_MAX_ALLOW	8
++#define FSBG_NAME_MAX	64	/* GPT volname buffer (64); disk names are < 32 */
++
++enum fsbg_allow_kind {
++	FSBG_ALLOW_DISK = 1,	/* "disk:<gendisk name>", whole-disk node only */
++	FSBG_ALLOW_PART = 2,	/* "part:<GPT partition name>", exact */
++};
++
++struct fsbg_allow {
++	int kind;
++	char name[FSBG_NAME_MAX];
++};
++
++struct fsbg_policy {
++	int mode;
++	int n_allow;
++	struct fsbg_allow allow[FSBG_MAX_ALLOW];
++};
++
++enum fsbg_reason {
++	FSBG_R_ALLOW_OFF = 0,
++	FSBG_R_ALLOW_LISTED,
++	FSBG_R_ALLOW_UNGUARDED,
++	FSBG_R_DENY_PROTECTED,		/* partition carries a protected GPT name */
++	FSBG_R_DENY_MARKER_WHOLE,	/* whole-disk node of boot storage */
++	FSBG_R_DENY_MARKER_DISK,	/* any other partition of boot storage */
++	FSBG_R_DENY_STRICT,		/* strict mode, not on the allowlist */
++	FSBG_R_DENY_PASSTHROUGH,	/* SCSI/UFS pass-through while armed */
++	FSBG_R_NR
++};
++
++static inline bool fsbg_reason_denies(int r)
++{
++	return r >= FSBG_R_DENY_PROTECTED;
++}
++
++/*
++ * Protected GPT partition names (base names; a trailing "_a"/"_b" slot
++ * suffix is ignored).  Taken from the Quest 3 v2.7 GPT (Unit 2 baseline,
++ * devices/quest3/evidence/unit2-v27-baseline-20261012) plus the SM8550/
++ * Android names of the J-119/FS-R-001 scope that a later firmware may add.
++ *
++ * A disk that carries any of these names is "boot storage": its whole-disk
++ * node and every partition not on the allowlist are denied as well, so a
++ * name missing from this list on such a disk is still protected.
++ * Never add "userdata": it is the later-stage writable target (C6).
++ */
++static const char *const fsbg_protected_names[] = {
++	/* boot chain and firmware */
++	"xbl", "xbl_config", "xbl_ramdump", "xbl_sc_logs", "xbl_sc_test_mode",
++	"multiimgoem", "multiimgqti", "apdp", "cdt", "ddr", "uefi",
++	"aop", "aop_config", "tz", "hyp", "adsp", "cdsp", "abl", "keymaster",
++	"boot", "init_boot", "vendor_boot", "recovery", "devcfg", "qupfw",
++	"vbmeta", "vbmeta_system", "vbmeta_vendor", "dtbo", "uefisecapp",
++	"imagefv", "ovrtz", "shrm", "cpucp", "featenabler", "modem", "dsp",
++	"bluetooth", "rtice", "storsec", "uefivarstore", "secdata", "tzsc",
++	"spunvm", "connsec", "splash", "limits", "limits-cdsp", "dip",
++	"devinfo", "toolsfv", "pstore", "vm-data", "mdcompress",
++	/* unit-unique and Android state (J-119) */
++	"persist", "ssd", "vision", "misc", "keystore", "frp", "modemst1",
++	"modemst2", "fsg", "fsc", "metadata", "super",
++};
++
++static inline size_t fsbg_base_len(const char *name, size_t len)
++{
++	if (len > 2 && name[len - 2] == '_' &&
++	    (name[len - 1] == 'a' || name[len - 1] == 'b'))
++		return len - 2;
++	return len;
++}
++
++static inline bool fsbg_name_protected(const char *name)
++{
++	size_t len, blen, i;
++
++	if (!name || !name[0])
++		return false;
++	len = strlen(name);
++	blen = fsbg_base_len(name, len);
++	for (i = 0; i < sizeof(fsbg_protected_names) /
++			sizeof(fsbg_protected_names[0]); i++) {
++		const char *p = fsbg_protected_names[i];
++
++		if (strlen(p) == blen && !strncmp(p, name, blen))
++			return true;
++	}
++	return false;
++}
++
++static inline bool fsbg_listed(const struct fsbg_policy *p, int kind,
++			       const char *name)
++{
++	int i;
++
++	for (i = 0; i < p->n_allow && i < FSBG_MAX_ALLOW; i++)
++		if (p->allow[i].kind == kind &&
++		    !strncmp(p->allow[i].name, name, FSBG_NAME_MAX))
++			return true;
++	return false;
++}
++
++/*
++ * Verdict for a write to one block device node.
++ *   disk:   gendisk name ("sde", "ram0", "dm-3")
++ *   part:   GPT name of the partition, "" if it has none, NULL for the
++ *           whole-disk node
++ *   marker: callback telling whether the disk carries a protected name;
++ *           only called when the answer matters
++ * Order: protected names are never allowlistable; the whole-disk node of
++ * boot storage is never allowlistable; then the allowlist; then the mode.
++ */
++static inline int fsbg_verdict(const struct fsbg_policy *p, const char *disk,
++			       const char *part,
++			       bool (*marker)(void *ctx), void *ctx)
++{
++	if (p->mode == FSBG_OFF)
++		return FSBG_R_ALLOW_OFF;
++	if (part) {
++		if (fsbg_name_protected(part))
++			return FSBG_R_DENY_PROTECTED;
++		if (part[0] && fsbg_listed(p, FSBG_ALLOW_PART, part))
++			return FSBG_R_ALLOW_LISTED;
++	} else {
++		if (marker(ctx))
++			return FSBG_R_DENY_MARKER_WHOLE;
++		if (fsbg_listed(p, FSBG_ALLOW_DISK, disk))
++			return FSBG_R_ALLOW_LISTED;
++	}
++	if (p->mode == FSBG_STRICT)
++		return FSBG_R_DENY_STRICT;
++	if (part && marker(ctx))
++		return FSBG_R_DENY_MARKER_DISK;
++	return FSBG_R_ALLOW_UNGUARDED;
++}
++
++/*
++ * SCSI pass-through (SG_IO on sd/bsg/sg, SCSI_IOCTL_SEND_COMMAND,
++ * CDROM_SEND_PACKET).  While armed only identification and status
++ * commands pass, whatever the caller's capabilities or open mode.
++ * Everything else (WRITE*, UNMAP, FORMAT UNIT, WRITE BUFFER (firmware),
++ * MODE SELECT, SECURITY PROTOCOL OUT (RPMB), ATA PASS-THROUGH, START STOP
++ * UNIT, SYNCHRONIZE CACHE, vendor opcodes, and also READ*) is refused.
++ * len is the CDB length the caller will send.
++ */
++static inline bool fsbg_cdb_allowed(const u8 *cdb, unsigned int len)
++{
++	if (len < 6)
++		return false;	/* no valid CDB is shorter than 6 bytes */
++	switch (cdb[0]) {
++	case 0x00:	/* TEST UNIT READY */
++	case 0x03:	/* REQUEST SENSE */
++	case 0x12:	/* INQUIRY */
++	case 0x1a:	/* MODE SENSE(6) */
++	case 0x25:	/* READ CAPACITY(10) */
++	case 0x5a:	/* MODE SENSE(10) */
++	case 0xa0:	/* REPORT LUNS */
++		return true;
++	case 0x9e:	/* SERVICE ACTION IN(16): READ CAPACITY(16) only */
++		return (cdb[1] & 0x1f) == 0x10;
++	default:
++		return false;
++	}
++}
++
++static inline bool fsbg_name_char_ok(char c)
++{
++	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
++	       (c >= '0' && c <= '9') || c == '_' || c == '-' || c == '.';
++}
++
++/*
++ * Parse an arming request:
++ *   "protect" | "strict"  [ " allow=" ENTRY { "," ENTRY } ]  [ "\n" ]
++ *   ENTRY = "disk:" NAME | "part:" NAME,  NAME = [A-Za-z0-9_.-]{1,31|63}
++ * Protected partition names are rejected in the allowlist.
++ * Returns 0, or -1 on any syntax or policy error.
++ */
++static inline int fsbg_parse(const char *buf, size_t len,
++			     struct fsbg_policy *out)
++{
++	size_t i = 0, n;
++
++	memset(out, 0, sizeof(*out));
++	if (len && buf[len - 1] == '\n')
++		len--;
++	if (len >= 7 && !strncmp(buf, "protect", 7)) {
++		out->mode = FSBG_PROTECT;
++		i = 7;
++	} else if (len >= 6 && !strncmp(buf, "strict", 6)) {
++		out->mode = FSBG_STRICT;
++		i = 6;
++	} else {
++		return -1;
++	}
++	if (i == len)
++		return 0;
++	if (len - i < 7 || strncmp(buf + i, " allow=", 7))
++		return -1;
++	i += 7;
++	for (;;) {
++		struct fsbg_allow *a;
++		size_t max;
++
++		if (out->n_allow == FSBG_MAX_ALLOW)
++			return -1;
++		a = &out->allow[out->n_allow];
++		if (len - i >= 5 && !strncmp(buf + i, "disk:", 5)) {
++			a->kind = FSBG_ALLOW_DISK;
++			max = 31;
++		} else if (len - i >= 5 && !strncmp(buf + i, "part:", 5)) {
++			a->kind = FSBG_ALLOW_PART;
++			max = FSBG_NAME_MAX - 1;
++		} else {
++			return -1;
++		}
++		i += 5;
++		for (n = 0; i + n < len && buf[i + n] != ','; n++)
++			if (!fsbg_name_char_ok(buf[i + n]))
++				return -1;
++		if (n == 0 || n > max)
++			return -1;
++		memcpy(a->name, buf + i, n);
++		a->name[n] = '\0';
++		if (a->kind == FSBG_ALLOW_PART && fsbg_name_protected(a->name))
++			return -1;
++		out->n_allow++;
++		i += n;
++		if (i == len)
++			return 0;
++		i++;		/* the ',' */
++		if (i == len)
++			return -1;	/* trailing comma */
++	}
++}
++
++/*
++ * One-way transition rule.  The first accepted request seals the guard;
++ * a request may never lower the mode below the boot mode.
++ */
++static inline bool fsbg_transition_ok(int cur_mode, bool sealed,
++				      int new_mode)
++{
++	if (sealed)
++		return false;
++	return new_mode >= cur_mode && new_mode != FSBG_OFF;
++}
++
++#endif /* FS_BLKGUARD_POLICY_H */
+diff --git a/block/fs-blkguard.c b/block/fs-blkguard.c
+new file mode 100644
+index 000000000..ebe8b8186
+--- /dev/null
++++ b/block/fs-blkguard.c
+@@ -0,0 +1,503 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * fs-blkguard: FrameShift boot-chain block-write guard.
++ *
++ * Refuses writes to boot-chain and unit-unique partitions (identified by
++ * their GPT names, as parsed by the kernel's own partition scanner), to the
++ * whole-disk nodes of the disks that carry them, to SCSI/UFS pass-through,
++ * and to partition-table changes on those disks.  In strict mode every block
++ * device is refused except an allowlist.
++ *
++ * Control: /proc/fs_blkguard (0600).  Reading shows the state, the counters,
++ * the per-device verdicts and the last refusals.  Writing one arming request
++ * ("protect|strict [allow=disk:N,part:N]") seals the guard: no later write is
++ * accepted, the mode can never be lowered, and strict mode requires
++ * kernel.modules_disabled=1.  There is no off switch after boot; the only
++ * opt-out is the boot flag fs_blkguard=off, which leaves the guard unarmed
++ * until a request arms it.
++ *
++ * Copyright (C) 2026 FrameShift contributors
++ */
++#define pr_fmt(fmt) "fs_blkguard: " fmt
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/atomic.h>
++#include <linux/bio.h>
++#include <linux/blkdev.h>
++#include <linux/capability.h>
++#include <linux/genhd.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/proc_fs.h>
++#include <linux/rcupdate.h>
++#include <linux/sched.h>
++#include <linux/seq_file.h>
++#include <linux/spinlock.h>
++#include <linux/string.h>
++#include <linux/uaccess.h>
++#include <linux/fs_blkguard.h>
++
++#include "blk.h"
++#include "fs-blkguard-policy.h"
++
++#define FSBG_VERSION	1
++#define FSBG_LOG_LEN	32
++
++static struct fsbg_policy fsbg_boot_pol = { .mode = FSBG_PROTECT };
++static struct fsbg_policy fsbg_armed_pol;
++/* Published once (release); the pointed-to policy is never modified again. */
++static const struct fsbg_policy *fsbg_active = &fsbg_boot_pol;
++static bool fsbg_sealed;
++static DEFINE_MUTEX(fsbg_ctl_lock);
++
++static atomic_long_t fsbg_denied[FSBG_PATH_NR];
++
++static const char *const fsbg_path_names[FSBG_PATH_NR] = {
++	[FSBG_PATH_OPEN] = "open",	[FSBG_PATH_WRITE] = "write",
++	[FSBG_PATH_FALLOCATE] = "fallocate",
++	[FSBG_PATH_DISCARD] = "discard", [FSBG_PATH_ZEROOUT] = "zeroout",
++	[FSBG_PATH_ROSET] = "roset",	[FSBG_PATH_BLKPG] = "blkpg",
++	[FSBG_PATH_RRPART] = "rrpart",	[FSBG_PATH_BIO] = "bio",
++	[FSBG_PATH_SCSI] = "scsi",	[FSBG_PATH_SG] = "sg",
++	[FSBG_PATH_BSG] = "bsg",	[FSBG_PATH_SCSI_IOCTL] = "scsi-ioctl",
++	[FSBG_PATH_PR] = "pr",
++};
++
++static const char *const fsbg_reason_names[FSBG_R_NR] = {
++	[FSBG_R_ALLOW_OFF] = "allow-off",
++	[FSBG_R_ALLOW_LISTED] = "allow-listed",
++	[FSBG_R_ALLOW_UNGUARDED] = "allow-unguarded",
++	[FSBG_R_DENY_PROTECTED] = "deny-protected",
++	[FSBG_R_DENY_MARKER_WHOLE] = "deny-bootdisk-whole",
++	[FSBG_R_DENY_MARKER_DISK] = "deny-bootdisk",
++	[FSBG_R_DENY_STRICT] = "deny-strict",
++	[FSBG_R_DENY_PASSTHROUGH] = "deny-passthrough",
++};
++
++static const char *const fsbg_mode_names[] = { "off", "protect", "strict" };
++
++struct fsbg_log_ent {
++	u64 seq;
++	u8 path;
++	u8 reason;
++	pid_t pid;
++	char comm[TASK_COMM_LEN];
++	char dev[BDEVNAME_SIZE];
++	char name[FSBG_NAME_MAX];
++};
++
++static struct fsbg_log_ent fsbg_log[FSBG_LOG_LEN];
++static u64 fsbg_log_seq;
++static DEFINE_SPINLOCK(fsbg_log_lock);
++
++/*
++ * Sticky boot-storage marks, keyed by request queue.  A queue once seen
++ * carrying a protected partition stays boot storage for the rest of the
++ * boot, so re-binding sd (a new gendisk on the same queue, before its
++ * partitions are scanned) does not reopen it.  Pointers are only
++ * compared, never dereferenced; a reused pointer can only over-protect.
++ */
++#define FSBG_STICKY_LEN	32
++static const void *fsbg_sticky[FSBG_STICKY_LEN];
++static DEFINE_SPINLOCK(fsbg_sticky_lock);
++
++static bool fsbg_sticky_has(const void *q)
++{
++	int i;
++
++	for (i = 0; i < FSBG_STICKY_LEN; i++)
++		if (READ_ONCE(fsbg_sticky[i]) == q)
++			return true;
++	return false;
++}
++
++static void fsbg_sticky_add(const void *q)
++{
++	unsigned long flags;
++	int i;
++
++	if (!q || fsbg_sticky_has(q))
++		return;
++	spin_lock_irqsave(&fsbg_sticky_lock, flags);
++	for (i = 0; i < FSBG_STICKY_LEN; i++)
++		if (!fsbg_sticky[i] || fsbg_sticky[i] == q)
++			break;
++	if (i < FSBG_STICKY_LEN)
++		WRITE_ONCE(fsbg_sticky[i], q);
++	spin_unlock_irqrestore(&fsbg_sticky_lock, flags);
++	if (i == FSBG_STICKY_LEN)
++		pr_warn_once("sticky table full\n");
++}
++
++static int __init fsbg_setup(char *str)
++{
++	if (!strcmp(str, "off"))
++		fsbg_boot_pol.mode = FSBG_OFF;
++	else if (!strcmp(str, "protect"))
++		fsbg_boot_pol.mode = FSBG_PROTECT;
++	else
++		pr_warn("unknown boot flag value '%s', keeping protect\n", str);
++	return 1;
++}
++__setup("fs_blkguard=", fsbg_setup);
++
++/* True once module loading is latched off (or impossible). */
++static bool fsbg_modules_locked(void)
++{
++#ifdef CONFIG_MODULES
++	return READ_ONCE(modules_disabled);
++#else
++	return true;
++#endif
++}
++
++static inline const struct fsbg_policy *fsbg_policy(void)
++{
++	return smp_load_acquire(&fsbg_active);
++}
++
++static void fsbg_copy_name(char *dst, const u8 *src, size_t n)
++{
++	size_t i;
++
++	for (i = 0; i < n && i < FSBG_NAME_MAX - 1 && src[i]; i++)
++		dst[i] = src[i];
++	dst[i] = '\0';
++}
++
++static bool fsbg_part_protected(struct hd_struct *part)
++{
++	char name[FSBG_NAME_MAX];
++
++	if (!part || !part->info)
++		return false;
++	fsbg_copy_name(name, part->info->volname,
++		       sizeof(part->info->volname));
++	return fsbg_name_protected(name);
++}
++
++/* Caller holds rcu_read_lock().  True if any partition has a protected name. */
++static bool fsbg_marker_cb(void *ctx)
++{
++	struct gendisk *disk = ctx;
++	struct disk_part_tbl *ptbl;
++	int i;
++
++	if (fsbg_sticky_has(disk->queue))
++		return true;
++	ptbl = rcu_dereference(disk->part_tbl);
++	if (!ptbl)
++		return false;
++	for (i = 1; i < ptbl->len; i++)
++		if (fsbg_part_protected(rcu_dereference(ptbl->part[i]))) {
++			fsbg_sticky_add(disk->queue);
++			return true;
++		}
++	return false;
++}
++
++/* Evaluates one device node; fills @pname with its GPT name (or ""). */
++static int fsbg_eval(const struct fsbg_policy *pol, struct gendisk *disk,
++		     int partno, char *pname)
++{
++	int r;
++
++	pname[0] = '\0';
++	rcu_read_lock();
++	if (partno) {
++		struct hd_struct *part = __disk_get_part(disk, partno);
++
++		if (part && part->info)
++			fsbg_copy_name(pname, part->info->volname,
++				       sizeof(part->info->volname));
++		r = fsbg_verdict(pol, disk->disk_name, pname,
++				 fsbg_marker_cb, disk);
++	} else {
++		r = fsbg_verdict(pol, disk->disk_name, NULL,
++				 fsbg_marker_cb, disk);
++	}
++	if (r == FSBG_R_DENY_PROTECTED)
++		fsbg_sticky_add(disk->queue);
++	rcu_read_unlock();
++	return r;
++}
++
++static void fsbg_record(enum fs_blkguard_path path, int reason,
++			const char *dev, const char *name)
++{
++	struct fsbg_log_ent *e;
++	unsigned long flags;
++
++	atomic_long_inc(&fsbg_denied[path]);
++	spin_lock_irqsave(&fsbg_log_lock, flags);
++	e = &fsbg_log[fsbg_log_seq % FSBG_LOG_LEN];
++	e->seq = ++fsbg_log_seq;
++	e->path = path;
++	e->reason = reason;
++	e->pid = task_pid_nr(current);
++	get_task_comm(e->comm, current);
++	strscpy(e->dev, dev, sizeof(e->dev));
++	strscpy(e->name, name, sizeof(e->name));
++	spin_unlock_irqrestore(&fsbg_log_lock, flags);
++	pr_warn_ratelimited("denied %s on %s (%s) [%s] by %s[%d]\n",
++			    fsbg_path_names[path], dev, name[0] ? name : "-",
++			    fsbg_reason_names[reason], current->comm,
++			    task_pid_nr(current));
++}
++
++bool fs_blkguard_deny_bdev(struct gendisk *disk, int partno,
++			   enum fs_blkguard_path path)
++{
++	const struct fsbg_policy *pol = fsbg_policy();
++	char pname[FSBG_NAME_MAX];
++	char dev[BDEVNAME_SIZE];
++	int r;
++
++	if (pol->mode == FSBG_OFF || !disk)
++		return false;
++	r = fsbg_eval(pol, disk, partno, pname);
++	if (!fsbg_reason_denies(r))
++		return false;
++	disk_name(disk, partno, dev);
++	fsbg_record(path, r, dev, pname);
++	return true;
++}
++
++bool fs_blkguard_deny_bio(struct bio *bio)
++{
++	unsigned int op = bio_op(bio);
++
++	if (!op_is_write(op))
++		return false;
++	/* An empty REQ_OP_WRITE is a cache flush and carries no data. */
++	if (op == REQ_OP_WRITE && !bio_sectors(bio))
++		return false;
++	return fs_blkguard_deny_bdev(bio->bi_disk, bio->bi_partno,
++				     FSBG_PATH_BIO);
++}
++
++bool fs_blkguard_deny_cdb(const unsigned char *cdb, unsigned int len,
++			  enum fs_blkguard_path path)
++{
++	char op[8];
++
++	if (fsbg_policy()->mode == FSBG_OFF || fsbg_cdb_allowed(cdb, len))
++		return false;
++	snprintf(op, sizeof(op), "op=%02x", cdb[0]);
++	fsbg_record(path, FSBG_R_DENY_PASSTHROUGH, "scsi", op);
++	return true;
++}
++
++bool fs_blkguard_deny_transport(enum fs_blkguard_path path)
++{
++	if (fsbg_policy()->mode == FSBG_OFF)
++		return false;
++	fsbg_record(path, FSBG_R_DENY_PASSTHROUGH, "bsg", "transport");
++	return true;
++}
++
++/*
++ * SCSI ioctls that reach a device without a filtered CDB: host-driver
++ * private ioctls (ufs-qcom UFS_IOCTL_QUERY can write bBootLunEn), START/STOP
++ * UNIT, SG_SCSI_RESET, CDROMEJECT/CDROMCLOSETRAY.  Refused while armed.
++ */
++bool fs_blkguard_deny_scsi_ioctl(unsigned int cmd)
++{
++	char c[16];
++
++	if (fsbg_policy()->mode == FSBG_OFF)
++		return false;
++	snprintf(c, sizeof(c), "ioctl=%x", cmd);
++	fsbg_record(FSBG_PATH_SCSI_IOCTL, FSBG_R_DENY_PASSTHROUGH, "scsi", c);
++	return true;
++}
++
++/* Build-time routes to storage or kernel memory that this guard does not close. */
++static void fsbg_show_hazards(struct seq_file *m)
++{
++	bool any = false;
++
++#define FSBG_HAZARD(cond, name)				\
++	do {						\
++		if (cond) {				\
++			seq_puts(m, " " name);		\
++			any = true;			\
++		}					\
++	} while (0)
++	seq_puts(m, "hazards:");
++	FSBG_HAZARD(!fsbg_modules_locked(), "modules");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_DEVMEM), "devmem");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_DEVKMEM), "devkmem");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_KEXEC_CORE), "kexec");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_HIBERNATION), "hibernation");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_FUNCTION_ERROR_INJECTION),
++		    "error-injection");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_DEBUG_FS), "debugfs");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_KGDB), "kgdb");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_MMC_BLOCK), "mmc-ioctl");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_NVME_CORE), "nvme-passthru");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_MTD), "mtd");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_TCM_PSCSI), "tcm-pscsi");
++	FSBG_HAZARD(IS_ENABLED(CONFIG_SCSI_DEBUG), "scsi-debug");
++#undef FSBG_HAZARD
++	seq_puts(m, any ? "\n" : " none\n");
++}
++
++static void fsbg_show_targets(struct seq_file *m,
++			      const struct fsbg_policy *pol)
++{
++	struct class_dev_iter iter;
++	struct device *dev;
++
++	seq_puts(m, "targets:\n");
++	class_dev_iter_init(&iter, &block_class, NULL, &disk_type);
++	while ((dev = class_dev_iter_next(&iter))) {
++		struct gendisk *disk = dev_to_disk(dev);
++		struct disk_part_iter piter;
++		struct hd_struct *part;
++		char pname[FSBG_NAME_MAX];
++		char name[BDEVNAME_SIZE];
++		int r;
++
++		r = fsbg_eval(pol, disk, 0, pname);
++		seq_printf(m, "  %s - %s\n", disk->disk_name,
++			   fsbg_reason_names[r]);
++		disk_part_iter_init(&piter, disk, 0);
++		while ((part = disk_part_iter_next(&piter))) {
++			r = fsbg_eval(pol, disk, part->partno, pname);
++			seq_printf(m, "  %s %s %s\n",
++				   disk_name(disk, part->partno, name),
++				   pname[0] ? pname : "-",
++				   fsbg_reason_names[r]);
++		}
++		disk_part_iter_exit(&piter);
++	}
++	class_dev_iter_exit(&iter);
++}
++
++/* Evaluates the boot-storage mark of every disk (fills the sticky set). */
++static void fsbg_mark_all(void)
++{
++	struct class_dev_iter iter;
++	struct device *dev;
++
++	class_dev_iter_init(&iter, &block_class, NULL, &disk_type);
++	while ((dev = class_dev_iter_next(&iter))) {
++		rcu_read_lock();
++		fsbg_marker_cb(dev_to_disk(dev));
++		rcu_read_unlock();
++	}
++	class_dev_iter_exit(&iter);
++}
++
++static int fsbg_show(struct seq_file *m, void *v)
++{
++	const struct fsbg_policy *pol = fsbg_policy();
++	struct fsbg_log_ent snap;
++	unsigned long flags;
++	long total = 0;
++	u64 seq, first;
++	int i;
++
++	seq_printf(m, "fs_blkguard %d\nmode: %s\nsealed: %d\nallow:",
++		   FSBG_VERSION, fsbg_mode_names[pol->mode],
++		   READ_ONCE(fsbg_sealed));
++	for (i = 0; i < pol->n_allow; i++)
++		seq_printf(m, " %s:%s",
++			   pol->allow[i].kind == FSBG_ALLOW_DISK ?
++			   "disk" : "part", pol->allow[i].name);
++	seq_printf(m, "%s\nmodules_disabled: %d\n",
++		   pol->n_allow ? "" : " -",
++		   fsbg_modules_locked());
++	fsbg_show_hazards(m);
++	seq_puts(m, "denied:");
++	for (i = 0; i < FSBG_PATH_NR; i++) {
++		long n = atomic_long_read(&fsbg_denied[i]);
++
++		total += n;
++		seq_printf(m, " %s=%ld", fsbg_path_names[i], n);
++	}
++	seq_printf(m, " total=%ld\n", total);
++	fsbg_show_targets(m, pol);
++
++	seq_puts(m, "log:\n");
++	spin_lock_irqsave(&fsbg_log_lock, flags);
++	seq = fsbg_log_seq;
++	spin_unlock_irqrestore(&fsbg_log_lock, flags);
++	first = seq > FSBG_LOG_LEN ? seq - FSBG_LOG_LEN + 1 : 1;
++	for (; first && first <= seq; first++) {
++		spin_lock_irqsave(&fsbg_log_lock, flags);
++		snap = fsbg_log[(first - 1) % FSBG_LOG_LEN];
++		spin_unlock_irqrestore(&fsbg_log_lock, flags);
++		if (snap.seq != first)
++			continue;	/* overwritten meanwhile */
++		seq_printf(m, "  %llu %s %s %s %s %d %s\n", snap.seq,
++			   fsbg_path_names[snap.path], snap.dev,
++			   snap.name[0] ? snap.name : "-",
++			   fsbg_reason_names[snap.reason], snap.pid,
++			   snap.comm);
++	}
++	return 0;
++}
++
++static int fsbg_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, fsbg_show, NULL);
++}
++
++static ssize_t fsbg_write(struct file *file, const char __user *ubuf,
++			  size_t count, loff_t *ppos)
++{
++	struct fsbg_policy req;
++	char buf[512];
++	int ret;
++
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++	if (count == 0 || count >= sizeof(buf))
++		return -EINVAL;
++	if (copy_from_user(buf, ubuf, count))
++		return -EFAULT;
++	buf[count] = '\0';
++	if (fsbg_parse(buf, count, &req))
++		return -EINVAL;
++
++	mutex_lock(&fsbg_ctl_lock);
++	ret = -EPERM;
++	if (!fsbg_transition_ok(fsbg_policy()->mode, fsbg_sealed, req.mode))
++		goto out;
++	ret = -EBUSY;
++	if (req.mode == FSBG_STRICT && !fsbg_modules_locked())
++		goto out;
++	fsbg_mark_all();
++	fsbg_armed_pol = req;
++	smp_store_release(&fsbg_active, &fsbg_armed_pol);
++	WRITE_ONCE(fsbg_sealed, true);
++	pr_notice("armed: mode %s, %d allowlist entr%s, sealed by %s[%d]\n",
++		  fsbg_mode_names[req.mode], req.n_allow,
++		  req.n_allow == 1 ? "y" : "ies", current->comm,
++		  task_pid_nr(current));
++	ret = count;
++out:
++	mutex_unlock(&fsbg_ctl_lock);
++	return ret;
++}
++
++static const struct proc_ops fsbg_proc_ops = {
++	.proc_open	= fsbg_open,
++	.proc_read	= seq_read,
++	.proc_lseek	= seq_lseek,
++	.proc_release	= single_release,
++	.proc_write	= fsbg_write,
++};
++
++static int __init fsbg_init(void)
++{
++	if (!proc_create("fs_blkguard", 0600, NULL, &fsbg_proc_ops))
++		pr_err("cannot create /proc/fs_blkguard\n");
++	pr_info("v%d, boot mode %s\n", FSBG_VERSION,
++		fsbg_mode_names[fsbg_boot_pol.mode]);
++	return 0;
++}
++fs_initcall(fsbg_init);
+diff --git a/block/ioctl.c b/block/ioctl.c
+index 7780d2d02..e2c6633ae 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -11,6 +11,7 @@
+ #include <linux/blktrace_api.h>
+ #include <linux/pr.h>
+ #include <linux/uaccess.h>
++#include <linux/fs_blkguard.h>
+ #include "blk.h"
+ 
+ static int blkpg_do_ioctl(struct block_device *bdev,
+@@ -19,6 +20,8 @@ static int blkpg_do_ioctl(struct block_device *bdev,
+ 	struct blkpg_partition p;
+ 	sector_t start, length;
+ 
++	if (fs_blkguard_deny_bdev(bdev->bd_disk, 0, FSBG_PATH_BLKPG))
++		return -EPERM;
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+ 	if (copy_from_user(&p, upart, sizeof(struct blkpg_partition)))
+@@ -97,6 +100,8 @@ static int blkdev_reread_part(struct block_device *bdev, fmode_t mode)
+ {
+ 	struct block_device *tmp;
+ 
++	if (fs_blkguard_deny_bdev(bdev->bd_disk, 0, FSBG_PATH_RRPART))
++		return -EPERM;
+ 	if (!disk_part_scan_enabled(bdev->bd_disk) || bdev_is_partition(bdev))
+ 		return -EINVAL;
+ 	if (!capable(CAP_SYS_ADMIN))
+@@ -126,6 +131,9 @@ static int blk_ioctl_discard(struct block_device *bdev, fmode_t mode,
+ 	struct request_queue *q = bdev_get_queue(bdev);
+ 	int err;
+ 
++	if (fs_blkguard_deny_bdev(bdev->bd_disk, bdev->bd_partno,
++				  FSBG_PATH_DISCARD))
++		return -EPERM;
+ 	if (!(mode & FMODE_WRITE))
+ 		return -EBADF;
+ 
+@@ -161,6 +169,9 @@ static int blk_ioctl_zeroout(struct block_device *bdev, fmode_t mode,
+ 	uint64_t start, end, len;
+ 	int err;
+ 
++	if (fs_blkguard_deny_bdev(bdev->bd_disk, bdev->bd_partno,
++				  FSBG_PATH_ZEROOUT))
++		return -EPERM;
+ 	if (!(mode & FMODE_WRITE))
+ 		return -EBADF;
+ 
+@@ -400,15 +411,18 @@ static int blkdev_roset(struct block_device *bdev, fmode_t mode,
+ {
+ 	int ret, n;
+ 
++	if (get_user(n, (int __user *)arg))
++		return -EFAULT;
++	if (!n && fs_blkguard_deny_bdev(bdev->bd_disk, bdev->bd_partno,
++					FSBG_PATH_ROSET))
++		return -EPERM;
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+ 
+ 	ret = __blkdev_driver_ioctl(bdev, mode, cmd, arg);
+ 	if (!is_unrecognized_ioctl(ret))
+ 		return ret;
+-	if (get_user(n, (int __user *)arg))
+-		return -EFAULT;
+-	set_device_ro(bdev, n);
++	set_device_ro(bdev, n);	/* fs-blkguard: the value checked above */
+ 	return 0;
+ }
+ 
+@@ -511,6 +525,19 @@ static int blkdev_common_ioctl(struct block_device *bdev, fmode_t mode,
+ {
+ 	unsigned int max_sectors;
+ 
++	switch (cmd) {
++	case IOC_PR_REGISTER:
++	case IOC_PR_RESERVE:
++	case IOC_PR_RELEASE:
++	case IOC_PR_PREEMPT:
++	case IOC_PR_PREEMPT_ABORT:
++	case IOC_PR_CLEAR:
++		if (fs_blkguard_deny_bdev(bdev->bd_disk, bdev->bd_partno,
++					  FSBG_PATH_PR))
++			return -EPERM;
++		break;
++	}
++
+ 	switch (cmd) {
+ 	case BLKFLSBUF:
+ 		return blkdev_flushbuf(bdev, mode, cmd, arg);
+diff --git a/block/scsi_ioctl.c b/block/scsi_ioctl.c
+index c9f009cc0..5e4bcdd64 100644
+--- a/block/scsi_ioctl.c
++++ b/block/scsi_ioctl.c
+@@ -21,6 +21,7 @@
+ #include <scsi/scsi_ioctl.h>
+ #include <scsi/scsi_cmnd.h>
+ #include <scsi/sg.h>
++#include <linux/fs_blkguard.h>
+ 
+ struct blk_cmd_filter {
+ 	unsigned long read_ok[BLK_SCSI_CMD_PER_LONG];
+@@ -201,6 +202,10 @@ int blk_verify_command(unsigned char *cmd, fmode_t mode)
+ {
+ 	struct blk_cmd_filter *filter = &blk_default_cmd_filter;
+ 
++	/* fs-blkguard: applies to root and CAP_SYS_RAWIO as well. */
++	if (fs_blkguard_deny_cdb(cmd, BLK_MAX_CDB, FSBG_PATH_SCSI))
++		return -EPERM;
++
+ 	/* root can do any command. */
+ 	if (capable(CAP_SYS_RAWIO))
+ 		return 0;
+@@ -542,6 +547,8 @@ static int __blk_send_generic(struct request_queue *q, struct gendisk *bd_disk,
+ static inline int blk_send_start_stop(struct request_queue *q,
+ 				      struct gendisk *bd_disk, int data)
+ {
++	if (fs_blkguard_deny_scsi_ioctl(data == 0x02 ? CDROMEJECT : CDROMCLOSETRAY))
++		return -EPERM;
+ 	return __blk_send_generic(q, bd_disk, GPCMD_START_STOP_UNIT, data);
+ }
+ 
+diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+index 0df8f3131..9ec334785 100644
+--- a/drivers/scsi/scsi_error.c
++++ b/drivers/scsi/scsi_error.c
+@@ -27,6 +27,7 @@
+ #include <linux/blkdev.h>
+ #include <linux/delay.h>
+ #include <linux/jiffies.h>
++#include <linux/fs_blkguard.h>
+ 
+ #include <scsi/scsi.h>
+ #include <scsi/scsi_cmnd.h>
+@@ -2346,6 +2347,8 @@ scsi_ioctl_reset(struct scsi_device *dev, int __user *arg)
+ 	unsigned long flags;
+ 	int error = 0, rtn, val;
+ 
++	if (fs_blkguard_deny_scsi_ioctl(SG_SCSI_RESET))
++		return -EPERM;
+ 	if (!capable(CAP_SYS_ADMIN) || !capable(CAP_SYS_RAWIO))
+ 		return -EACCES;
+ 
+diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
+index 14872c9dc..db9390e74 100644
+--- a/drivers/scsi/scsi_ioctl.c
++++ b/drivers/scsi/scsi_ioctl.c
+@@ -14,6 +14,7 @@
+ #include <linux/mm.h>
+ #include <linux/string.h>
+ #include <linux/uaccess.h>
++#include <linux/fs_blkguard.h>
+ 
+ #include <scsi/scsi.h>
+ #include <scsi/scsi_cmnd.h>
+@@ -239,6 +240,8 @@ static int scsi_ioctl_common(struct scsi_device *sdev, int cmd, void __user *arg
+ 		return scsi_test_unit_ready(sdev, IOCTL_NORMAL_TIMEOUT,
+ 					    NORMAL_RETRIES, &sense_hdr);
+ 	case SCSI_IOCTL_START_UNIT:
++		if (fs_blkguard_deny_scsi_ioctl(cmd))
++			return -EPERM;
+ 		scsi_cmd[0] = START_STOP;
+ 		scsi_cmd[1] = 0;
+ 		scsi_cmd[2] = scsi_cmd[3] = scsi_cmd[5] = 0;
+@@ -246,6 +249,8 @@ static int scsi_ioctl_common(struct scsi_device *sdev, int cmd, void __user *arg
+ 		return ioctl_internal_command(sdev, scsi_cmd,
+ 				     START_STOP_TIMEOUT, NORMAL_RETRIES);
+ 	case SCSI_IOCTL_STOP_UNIT:
++		if (fs_blkguard_deny_scsi_ioctl(cmd))
++			return -EPERM;
+ 		scsi_cmd[0] = START_STOP;
+ 		scsi_cmd[1] = 0;
+ 		scsi_cmd[2] = scsi_cmd[3] = scsi_cmd[5] = 0;
+@@ -277,6 +282,8 @@ int scsi_ioctl(struct scsi_device *sdev, int cmd, void __user *arg)
+ 	if (ret != -ENOIOCTLCMD)
+ 		return ret;
+ 
++	if (sdev->host->hostt->ioctl && fs_blkguard_deny_scsi_ioctl(cmd))
++		return -EPERM;
+ 	if (sdev->host->hostt->ioctl)
+ 		return sdev->host->hostt->ioctl(sdev, cmd, arg);
+ 
+@@ -292,6 +299,8 @@ int scsi_compat_ioctl(struct scsi_device *sdev, int cmd, void __user *arg)
+ 	if (ret != -ENOIOCTLCMD)
+ 		return ret;
+ 
++	if (sdev->host->hostt->compat_ioctl && fs_blkguard_deny_scsi_ioctl(cmd))
++		return -EPERM;
+ 	if (sdev->host->hostt->compat_ioctl)
+ 		return sdev->host->hostt->compat_ioctl(sdev, cmd, arg);
+ 
+diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
+index 91cbf45cf..e6222dfc5 100644
+--- a/drivers/scsi/sg.c
++++ b/drivers/scsi/sg.c
+@@ -47,6 +47,7 @@ static int sg_version_num = 30536;	/* 2 digits for each component */
+ #include <linux/ratelimit.h>
+ #include <linux/uio.h>
+ #include <linux/cred.h> /* for sg_check_file_access() */
++#include <linux/fs_blkguard.h>
+ 
+ #include "scsi.h"
+ #include <scsi/scsi_dbg.h>
+@@ -686,6 +687,10 @@ sg_write(struct file *filp, const char __user *buf, size_t count, loff_t * ppos)
+ 		sg_remove_request(sfp, srp);
+ 		return -EFAULT;
+ 	}
++	if (fs_blkguard_deny_cdb(cmnd, cmd_size, FSBG_PATH_SG)) {
++		sg_remove_request(sfp, srp);
++		return -EPERM;
++	}
+ 	/*
+ 	 * SG_DXFER_TO_FROM_DEV is functionally equivalent to SG_DXFER_FROM_DEV,
+ 	 * but is is possible that the app intended SG_DXFER_TO_DEV, because there
+@@ -760,6 +765,10 @@ sg_new_write(Sg_fd *sfp, struct file *file, const char __user *buf,
+ 		sg_remove_request(sfp, srp);
+ 		return -EFAULT;
+ 	}
++	if (fs_blkguard_deny_cdb(cmnd, hp->cmd_len, FSBG_PATH_SG)) {
++		sg_remove_request(sfp, srp);
++		return -EPERM;
++	}
+ 	if (read_only && sg_allow_access(file, cmnd)) {
+ 		sg_remove_request(sfp, srp);
+ 		return -EPERM;
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 68b99d165..ffc5c4d81 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -33,6 +33,7 @@
+ #include <linux/task_io_accounting_ops.h>
+ #include <linux/falloc.h>
+ #include <linux/uaccess.h>
++#include <linux/fs_blkguard.h>
+ #include <linux/suspend.h>
+ #include "internal.h"
+ 
+@@ -1473,6 +1474,12 @@ static int __blkdev_get(struct block_device *bdev, fmode_t mode, void *holder,
+ 	if (!disk)
+ 		goto out;
+ 
++	if (!for_part && (mode & FMODE_WRITE) &&
++	    fs_blkguard_deny_bdev(disk, partno, FSBG_PATH_OPEN)) {
++		ret = -EPERM;
++		goto out_put_disk;
++	}
++
+ 	if (partno) {
+ 		whole = bdget_disk(disk, 0);
+ 		if (!whole) {
+@@ -1902,6 +1909,10 @@ ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	size_t shorted = 0;
+ 	ssize_t ret;
+ 
++	if (fs_blkguard_deny_bdev(I_BDEV(bd_inode)->bd_disk,
++				  I_BDEV(bd_inode)->bd_partno, FSBG_PATH_WRITE))
++		return -EPERM;
++
+ 	if (bdev_read_only(I_BDEV(bd_inode)))
+ 		return -EPERM;
+ 
+@@ -2002,6 +2013,10 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+ 	loff_t isize;
+ 	int error;
+ 
++	if (fs_blkguard_deny_bdev(bdev->bd_disk, bdev->bd_partno,
++				  FSBG_PATH_FALLOCATE))
++		return -EPERM;
++
+ 	/* Fail if we don't recognize the flags. */
+ 	if (mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
+ 		return -EOPNOTSUPP;
+diff --git a/include/linux/fs_blkguard.h b/include/linux/fs_blkguard.h
+new file mode 100644
+index 000000000..8c18e2599
+--- /dev/null
++++ b/include/linux/fs_blkguard.h
+@@ -0,0 +1,47 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * fs-blkguard: FrameShift boot-chain block-write guard (hooks).
++ *
++ * Every hook returns true when the operation must be refused.  The caller
++ * then fails it with -EPERM (or BLK_STS_IOERR at the bio layer).  Hooks are
++ * placed before the kernel's own mode and capability checks, so that a
++ * refusal is counted even for a caller that the kernel would also refuse.
++ *
++ * Copyright (C) 2026 FrameShift contributors
++ */
++#ifndef _LINUX_FS_BLKGUARD_H
++#define _LINUX_FS_BLKGUARD_H
++
++#include <linux/types.h>
++
++struct gendisk;
++struct bio;
++
++enum fs_blkguard_path {
++	FSBG_PATH_OPEN,		/* block device open with FMODE_WRITE */
++	FSBG_PATH_WRITE,	/* write(2)/pwrite/aio/io_uring on a bdev file */
++	FSBG_PATH_FALLOCATE,	/* fallocate(2) on a bdev file */
++	FSBG_PATH_DISCARD,	/* BLKDISCARD, BLKSECDISCARD */
++	FSBG_PATH_ZEROOUT,	/* BLKZEROOUT */
++	FSBG_PATH_ROSET,	/* BLKROSET clearing read-only */
++	FSBG_PATH_BLKPG,	/* BLKPG add/delete/resize partition */
++	FSBG_PATH_RRPART,	/* BLKRRPART partition rescan */
++	FSBG_PATH_BIO,		/* any write-class bio (fs, dm, md, loop, swap, mmap) */
++	FSBG_PATH_SCSI,		/* SG_IO / SCSI_IOCTL_SEND_COMMAND on sd, bsg-scsi */
++	FSBG_PATH_SG,		/* /dev/sg* write(2) and SG_IO */
++	FSBG_PATH_BSG,		/* transport bsg (UFS BSG query/UIC, FC, SAS) */
++	FSBG_PATH_SCSI_IOCTL,	/* SCSI host-driver ioctls (UFS_IOCTL_QUERY), START/STOP UNIT,
++				 * SG_SCSI_RESET, CDROMEJECT/CDROMCLOSETRAY */
++	FSBG_PATH_PR,		/* IOC_PR_* persistent reservations */
++	FSBG_PATH_NR
++};
++
++bool fs_blkguard_deny_bdev(struct gendisk *disk, int partno,
++			   enum fs_blkguard_path path);
++bool fs_blkguard_deny_bio(struct bio *bio);
++bool fs_blkguard_deny_cdb(const unsigned char *cdb, unsigned int len,
++			  enum fs_blkguard_path path);
++bool fs_blkguard_deny_transport(enum fs_blkguard_path path);
++bool fs_blkguard_deny_scsi_ioctl(unsigned int cmd);
++
++#endif /* _LINUX_FS_BLKGUARD_H */
+-- 
+2.53.0
+

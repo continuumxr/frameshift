@@ -1,0 +1,103 @@
+{
+ "ack": "80e77070defc6a76",
+ "checks": [
+  {
+   "detail": "FSV1 nonce=1c8ade5c6ec2b063 resp=db919ba92eb5af218b655059a9d618255f65433a8e853316e98e9bf08f563761 kernel=6.18.33.2-micro",
+   "label": "FSV1 response = sha256(nonce:challenge)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED,MODULES_READY,BLKGUARD_STARTED,BLKGUARD_DONE,ACM_SETUP_ATTEMPTED,UDC_BOUND,SHELL_READY",
+   "label": "FSV1 stages end with SHELL_READY",
+   "ok": true
+  },
+  {
+   "detail": "FSD1 queued END",
+   "label": "FSD1 queued",
+   "ok": true
+  },
+  {
+   "detail": "DEADLINE armed t0=71680 deadline=T0+200 ack_window=150",
+   "label": "deadline armed with the image's values (200 / 150)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "backstop armed",
+   "ok": true
+  },
+  {
+   "detail": "71725.51 final pid=1 arg=collected",
+   "label": "first reboot reason = collected",
+   "ok": true
+  },
+  {
+   "detail": "71725.51 final pid=1 arg=collected",
+   "label": "PID 1 rebooted by exec of fs-reboot-final (via=final, pid=1)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "any later record is only the backstop (fork)",
+   "ok": true
+  },
+  {
+   "detail": "-0.0 s",
+   "label": "reboot within 3 s of fs-done",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "no access to the decoy backlight or DRM node (inotify: 0 events)",
+   "ok": true
+  },
+  {
+   "detail": "",
+   "label": "tty accounting: only the banner, echoed commands, protocol/record lines and prompts (no stray tty output)",
+   "ok": true
+  },
+  {
+   "detail": "attempted 95",
+   "label": "modules attempted = the image's 95-entry list, each once, nothing else (the vendor decoy list unused)",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY",
+   "label": "guard proof ran once between MODULES_READY and ACM_SETUP_ATTEMPTED: BLKGUARD_STARTED, BLKGUARD_DONE result=ABORT",
+   "ok": true
+  },
+  {
+   "detail": "run/fsbg=['full.log'] dev=[]",
+   "label": "the ABORTed probe created nothing but its own log: /run/fsbg = [full.log], no loop/ram/dm/sg/bsg node in /dev",
+   "ok": true
+  },
+  {
+   "detail": "INIT_STARTED MODULES_READY BLKGUARD_STARTED BLKGUARD_DONE ACM_SETUP_ATTEMPTED UDC_BOUND SHELL_READY",
+   "label": "ACM-only gadget (J-179): no NCM function made, UDC bound, shell up",
+   "ok": true
+  }
+ ],
+ "kernel_fake_counts": {
+  "errors": 0,
+  "mounts-open": 1,
+  "open-continue": 1846,
+  "syslog-other": 0,
+  "syslog-read": 0,
+  "syslog-size": 0
+ },
+ "mods": [
+  "modules-real"
+ ],
+ "nonce": "1c8ade5c6ec2b063",
+ "ok": true,
+ "plan": [
+  "verify",
+  "done"
+ ],
+ "reboot_at_T0_plus": 45.5,
+ "runner_challenge": "9be3cdab53e3b98a56416377ac11a67c",
+ "scenario": "c-modules-real",
+ "t_total_s": 47.5,
+ "verify_challenge": "dad76892a00116a22721695fd7ae2b5a",
+ "want_reboot": "collected"
+}

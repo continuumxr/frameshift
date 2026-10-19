@@ -1,0 +1,18 @@
+PASS  steps = kernel,mem,modules,net,xfer,log  [kernel,mem,modules,net,xfer,log]
+PASS  every step runs under fs-supervise with grace 1 s (the three step forms)  [3 forms]
+PASS  fs-supervise limits: t <= 60, cap <= 1 MiB  [t=[8, 2, 9, 6, 26, 6] cap=[6144, 256, 24576, 6144, 2048, 24576]]
+PASS  MAXLINES = 8 + 2 x 1329 = 2666  [runner has 2666]
+PASS  RUNNER_WORST >= steps 108.0 + emission 13.4 s + 2 s writes, rounded up, + 2 = 126  [runner has 126]
+PASS  the time rule is in the runner (now + RUNNER_WORST <= /run/fs.deadline)
+PASS  init.sh DEADLINE 200, ACK_WINDOW 150 (the K1a values)  [200/150]
+PASS  init.sh writes /run/fs.deadline = T0 + DEADLINE
+PASS  RUNNER_WORST fits the deadline with room for the host steps (< DEADLINE - 60)  [126]
+PASS  fs-xfer: design budget LISTEN_MS + SESSION_MS + DRAIN_MS = 23000 ms (not a hard maximum: deadlines are tested on waits only) < BACKSTOP_S 25 s (SIGALRM, hard) < the xfer step's t 26 s (fs-supervise TERM, hard)
+PASS  fs-xfer: HEADER_MS <= SESSION_MS  [2000/12000]
+PASS  fs-xfer: 8 MiB each way, a multiple of the 32-byte stream block and of the 64 KiB chunk
+PASS  the runner passes port 47201 (XFER_PORT) and init.sh's NCM_PORT is 47201
+PASS  the log role runs kmsg_post FIRST; kmsg_post reads the kernel log once (one plain dmesg: no option, never a clear; one awk, no system/getline/pipe) and ends with its end marker
+PASS  kmsg_post at most 8167 bytes (W x 200, U x 160 and the fixed lines at their longest); the later sections keep r1's 16384 bytes of the log step's cap 24576  [W=30 U=10]
+PASS  init.sh NCM_GUARD_S 30 < ACK_WINDOW (the guard acts long before the no-ack reboot)  [NCM_GUARD_S=30]
+PASS  device runner start limit T0 + 74 s; host start limit BootStartUtc + 54 s (>= 50 s: stage 3c sent its runner at about +32 s)
+RESULT PASS
