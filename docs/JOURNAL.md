@@ -84,8 +84,10 @@ cost us something to learn.
    enabled. Check the kernel config.
 7. **Don't treat `github.com/ValveSoftware/steamos_kernel` as the Steam Frame
    kernel source.** It is the old SteamOS 2 x86 archive, newest branch 4.19
-   from 2019. The Frame kernel's commit is not in it [M-static]. As of
-   2026-10-07 the Frame kernel source has not been located.
+   from 2019. The Frame kernel's commit is not in it [M-static].
+   *(Corrected 2026-10-23, see Corrections: Valve does publish Frame kernel
+   source tarballs at `holo-packages.steamos.cloud/archlinux-deckard-hotfixes/source/`;
+   the 0.4.5 commit `e66bc2ca6f8c` is only in the unofficial `evlaV` mirror.)*
 8. **Don't ship from Valve's dev branches.** Valve's image server carries
    `rc`, `beta`, `bc`, `main` and more. Only `stable` is a release branch by
    Valve's own config, and only stable bundles are signed with the key a
@@ -5944,6 +5946,312 @@ publication]
   - The cause of the empty data is [O].
 - This answers FS-R-014 §10's "parsed trace findings". Any future Perfetto proposal must fix the config and bring producer-side diagnostics. Nothing is planned; it is not on the critical path.
 
+**J-218 · 2026-10-19T21:08:21Z. The K1g gate revision (FS-R-016 §5, c3-ii) is built, tested, reviewed and pushed on `feat/k1g-gate` cb7f016b, not merged. It awaits the Chair's review in FS-A-017.**
+- The only executable changed is `fs-k1g-units.ps1` (pin `adf53f8c…` → `41e8107f…`). N1 needs no code change (shared `Get-FsK1gUnit2Outcome`).
+- **The exception recognises only** the Unit 2 r2 record (nonce <attempt nonce withheld>, `b01996d7…`). Before it applies:
+  - the ordinary bindings must pass;
+  - the build and evidence copies must match byte for byte, and so must both ledger copies;
+  - the class rule must hold (pre-arming ABORT, cases=0, clean after-session);
+  - FS-R-016 is pinned by name and hash.
+- **Unit 2:** one further attempt, only while the r3 candidate table is pinned. Prior attempts are discovered three ways (ledger, observe.json, attempt.lock).
+- **Unit 1 and N1:** they need exactly one bound, clean, r3-lineage successor PASS.
+- There is no force switch, no blanket exclusion and no "latest wins". The r2 REVIEW stays named.
+- **Tests:** K1g 89/89 (was 71; 18 new); N1 107/107 with 3 rebuild cases skipped (was 103).
+- **Reviews:** safety and correctness, both ACCEPT WITH FIXES, all applied.
+- **New pins:** SIGNOFF-k1g `38d1c21d…`; SIGNOFF-n1 `be6f7f4f…` (that one line only). SIGNOFF-k1g also has disclosed prose changes.
+- **Records:** `CHANGES-gate-r1.md` and `review/gate-r1.diff`. The limits are disclosed in §8 (successor MANIFEST and ledger text are not record-bound; A5 and PRIOR RESULTS show only the successor; DEVICE_REJECTED spends the attempt).
+- **Incidents, disclosed:**
+  - the N1 builder wrote three unspent candidate directories into the main checkout's ignored `build\n1` (`20261019T2035…`, `…2039…`, `…2042…`), which are harmless and left in place;
+  - two agents' scratch files collided (`smoke2.ps1`), so an R-1 dry-run replay ran instead, offline only.
+  - Lesson: agents use unique scratch names.
+- **Usage limit:** all five offline agents were cut off at the session limit and resumed afterwards; none claims partial results.
+
+**J-219 · 2026-10-19T22:14:12Z. Public update pushed (PM approval); stray N1 directories removed (PM approval).**
+- PM (in chat): "You can go ahead and push the repo updates live." "You can remove the old N1 image folders."
+- **Public repo** `continuumxr/frameshift` main: `d6cbf02` → **`8f123bb`** (fast-forward; author and committer the noreply identity; 2026-10-19T21:58:11Z).
+  - Pushed by the Arbiter after the reviews finished: scope/privacy and licence/correctness, both GO-with-fixes with all fixes applied, re-audit clean. The Arbiter also scanned the added lines (no serials, no email, no unlock or root wording) and re-checked the tip.
+  - Content: the T0 milestone, the K1g r3, N1 r2 and H1 packages with tools/blkguard, the kgate K1g result, the thermal fix, new and corrected research notes, the journal through J-217 (redacted), and the public README through FS-R-016.
+  - New exclusions: the K1g/N1 run kits and the T0 runbooks (root material), and the system-actions design (private for now) (a public edition later).
+  - The blkguard patches carry the public identity in From and Signed-off-by (DCO intact).
+  - Review: the export review record (private).
+- `export/public-20261019` merged into master (dca60f46): policy, provenance, PROJECT_SETUP. Local `frameshift-public` fast-forwarded.
+- **Open:** an SPDX-header sweep for the new scripts (the three GPL test/bench sources first); the private README still shows K1a-era status.
+- `build\n1`: the three unspent, untracked candidate directories from the gate agent's diagnosis were removed. The reviewed `20261018T005854Z-b1ba58d65e7ffa1a` and the older candidates remain.
+
+**J-220 · 2026-10-19T22:15:30Z. R-1 phase 3 (`feat/r1` 008ab878, PACKAGE.md rev 3).**
+- **QEMU** (under heavy host load, so no timing claims):
+  - Run 2: the guard refused Valve's fsck write-open of the decoy; nosuid stopped sudo, pkexec and su; the poweroff signal name was fixed.
+  - Run 4b: the shutdown path worked (SIGRTMIN+4 → 35 s → forced poweroff). It is not a valid guard-off negative control [O].
+  - Run 5: the deadline supervisor survived systemd; the hold ended and the 45 s fallback fired under TCG.
+  - Run 7b: at 7.6 GiB with every tmpfs cap full, about 2.0 GiB stayed available, with no OOM; a 7 s power-key hold gave a clean poweroff.
+  - Run 8: all 109 masks held (0 violations), masked D-Bus names were refused, privilege probes were denied, and plain reboot worked.
+  - Run 6b: the execve audit found no updater, rauc, deckard, fsck or partitioner run.
+  - Runs 3/3b (read-through) and 3c (the SA-A4 ordering test) are incomplete; nothing is claimed.
+- **Components:** offline 45/45, deadline 18/18, classifier 60/60, observer 27/27 (dry run), init 52/52 (text only; never executed [O]), builder 51/51 plus one NON-SHIPPING K1g-harness image that stops before handoff.
+- **Defects fixed:** the multi-marker parser (rev 2 would have stopped every attempt); the guard-refusal pattern.
+- **Rev 3 review:** GO-with-fixes (4 MAJOR, applied). The FS-R-016 notes are folded in: K1i throughout; extended operation as gate G-3a; SA-A4 described as defence in depth.
+- **Arbiter technical call:** keep R-1 without an ack window, and review the side effect that `fs-ack` cancels N1's 6b fallback when R-1 reuses N1's base.
+- **Incidents, disclosed:** a .pyc briefly in the ignored AOSP tree, then removed; a builder-test directory collision (both re-run); PACKAGE.md emptied once by a script error and restored from the commit.
+
+**J-221 · 2026-10-20T03:53:18Z. FS-A-017 sent; FS-R-017 received (FS-R-017, private review record): gate revision r1 ACCEPTED; the FS-A-017 §7.3 pre-execution checks are all passed.**
+- **FS-R-017:**
+  - gate r1 accepted (`cb7f016b`; gate `41e8107f…`; SIGNOFF-k1g `38d1c21d…`; SIGNOFF-n1 `be6f7f4f…`);
+  - CONCUR with exactly one new attended Unit 2 K1g r3 attempt (fresh nonce-only rebuild), then one Unit 2 N1 attempt after a bound, clean r3 PASS, then one Unit 1 K1g r3 attempt;
+  - no further Chair round, but §7.3 must be completed first;
+  - the limits are accepted as consistency and provenance checks, not authentication against a hostile operator;
+  - an unpinned operator note on the historical REVIEW is required beside the Unit 1 and N1 prerequisite reports;
+  - Perfetto: the parse is noted; the cause stays open.
+- **§7.3, done by the Arbiter on merged master:**
+  1. `cb7f016b` merged unchanged (0b261f46).
+  2. All 10 delta files are blob-identical to `cb7f016b`: gate `41e8107f…`, both SIGNOFFs as reviewed. Relevant merge changes: none; master's other `tools/` changes are the four export files the gate and suites don't read.
+  3–5. Both suites run in full (FS_SILENT=1), with new output files:
+     - K1g **89 executed, 0 failed** (S section 18/18);
+     - N1 **110 executed, 0 failed** (UG 6/6; **N3, N4 and O6 executed and passed**, the real rebuild included);
+     - `build\n1` is unchanged afterwards (the rebuild test cleans up).
+     - Outputs: `devices/quest3/host/test-host-{k1g,n1}.merged-20261020.output.txt`.
+  6. Live-ledger check (read-only, a private output file): **Unit 2 K1g open** for the one replacement; **Unit 1 K1g blocked**; **N1 blocked**. Every message names r2 as K1G REVIEW, superseded for progression.
+  7. SIGNOFF pin verification: both regenerate byte-identical (`38d1c21d…`, `be6f7f4f…`).
+- The operator note (verbatim) is added to the K1g and N1 RUN-UNDER-F addenda (unpinned).
+- **Next:** the attended Unit 2 K1g r3 session when the PM is at the device. Then N1 on Unit 2, then Unit 1 K1g r3.
+
+**J-222 · 2026-10-20T07:49:33Z. K1g r3 on Unit 2: K1G PASS. The boot-chain write guard is proven on the device.**
+- Run under FS-R-017/016/015/014. Nonce `<attempt nonce withheld>` (the one replacement attempt, spent); image `5ced51dd…`, a nonce-only rebuild of r3 `1ee9f105…`. Evidence: `devices/quest3/evidence/unit2-k1g-r3-20261020/` and the ledger `k1g-attempt-ledger-20261020/`.
+- **0b:** [removed for publication]
+  A1–A4 y (confirmed). Phase B 24.0 °C (charging). BA 24.0 °C.
+- **Attempt:**
+  - `fastboot boot` HANDOFF_ACKNOWLEDGED at 07:29:34Z; gadget at Th+12 s; COLLECTED-VALID; FSB1 VALID;
+  - returned to fastboot by itself; AF/AA identity and slot unchanged;
+  - AA10 30.0 °C; follow-ups 31.0 and 31.0 °C; phase F clean True (F1 y, F2 n, F3–F6 y).
+- **Classifier: K1G PASS** (record `0015417d…ec98`):
+  - kernel: the K1a config, 95 modules, MemTotal 7839080 kB, 0 warnings;
+  - **guard: 411/411 cases PASS in device mode; 402 denials** (open 16, write 6, fallocate 2, discard 107, zeroout 100, roset 99, blkpg 12, rrpart 8, bio 3, scsi 21, sg 9, bsg 1, scsi-ioctl 12, pr 6);
+  - strict and sealed, with the exact allowlist; modules_disabled 1; hazards none;
+  - 14 nodes hash-verified unchanged; R1–R5 before and after at the expected values; misc and devinfo sizes as expected.
+- **Gate after the PASS:** Unit 2 K1g closed; **Unit 1 K1g open; N1 open.**
+- Historical r2 attempt `<attempt nonce withheld>` remains K1G REVIEW (`b01996d7…`). The r3 successor is `<attempt nonce withheld>` (`0015417d…`).
+- **Next (FS-R-017 §5 order):** N1 on Unit 2, then K1g r3 on Unit 1. The FS-R-017 operator note goes beside N1's PRIOR RESULTS and Unit 1's A5.
+
+**J-223 · 2026-10-20T16:18:24Z. K1i built and analysed offline (`feat/k1i` a2ebe9a7, not merged); N1 image ready.**
+- **K1i** (BUILD-RECORD.md; va-bits-k1i.md rev 3 §7):
+  - both variants built twice, **bit-identical** per pair (Image, vmlinux, .config, Module.symvers, System.map, all 278 .ko, and the stripped sets);
+  - images: K1i-48 `ee34461b…`, K1i-39 `6daa4fa0…`;
+  - modpost clean; each module set passes against its own kernel's Module.symvers (278/278, 0 CRC mismatches).
+  - va48 run1's "end line: 1" was a count of `^end:` lines; the run completed with rc=0.
+- **module_layout, demonstrated** (QEMU load test plus static CRCs, not hardware): stock `zsmalloc.ko` is refused (-8, "disagrees about version of symbol module_layout") by **both** K1i-48 and K1i-39; the K1g kernel accepts it. Static CRC across all 272 stock modules: stock `0xb1f01218`, K1i-48 `0xe6c528ca`, K1i-39 `0x41487de7`.
+  - **Finding:** the refusal comes from the IPC options, not VA48. The VA39 control also needs its own rebuilt set.
+- **Module table:** 278 rows.
+  - Control at the K1a config: 271 of 272 differ from stock only in vermagic and build ID ("the compared code/data sections are identical"); socinfo is the exception.
+  - At K1i the comparison is a difference inventory, not an equivalence claim.
+- **SA-C1** stays a separate series [O] (PLAN.md §7, G9).
+- **N1 0b** (PM remote): [removed for publication]
+- **N1 image** `build\n1\20261020T155655Z-<attempt nonce withheld>` (`18cb5c28…`): nonce-only OK, preflight OK. Phase A onward waits for the PM tonight.
+
+**J-224 · 2026-10-20T16:47:43Z. TS T1 status checked; PM decisions: retarget T1 to K1i, and --skin-absent.**
+- **T1** (`feat/ts-t1` 72c59d30, built on the K1g r3 kernel lineage):
+  - tests: builder 72/0, rows 29/29, checker 94/94, host 70 with 1 stale expectation (S0: SIGNOFF-t1 now exists);
+  - both reviews' 25 findings fixed or declared; no delta re-review yet;
+  - the branch predates the gate revision, so SIGNOFF-t1 needs regeneration.
+  - On K1i, T1 needs K1i's rebuilt modules: stock modules are refused on module_layout (J-223).
+- **PM decisions (in chat):**
+  - T1 target: "Retarget T1 to K1i (Recommended)". Finish the K1i package first (K1i boot plus the guard re-proof), then run T1–T5 once, on K1i (the R-1 composition). The K1g-kernel T1 will not go to the Chair.
+  - D-T1-7: "Yes, --skin-absent (Recommended)". A trial-only flag: the missing skin sensor is recorded, not treated as a fault; product handling is decided before T2.
+- Arbiter calls: a delta re-review before T1's Chair package (adversarial-review rule); rebase on master and regenerate SIGNOFF when it is retargeted.
+- **Next critical path:** the K1i concrete package, with SA-C1 as a separately named kernel change (FS-R-016 (e), §7), then the K1i device run and TS T1–T5 on K1i, then R-1.
+
+**J-225 · 2026-10-20T17:06:51Z. PM goal: an installable test image goes live for testers at V3.**
+- PM (in chat): "I think once we get to the V3 I would like to push an installable image live for testing."
+- V3 means R-1, G1–G3, V0–V2 (6DoF head) and V3 (Touch Plus controllers).
+- **Release prerequisites planned in parallel:**
+  - the installed-boot path and PC installer (research only today; they need Chair rulings);
+  - Return to Horizon (SA-P4);
+  - the update service (SA-P5–P7);
+  - TS T1–T6 including the soak;
+  - the legal and licence pre-release check;
+  - tester docs and a feedback channel.
+- No Valve redistribution: the installer fetches Valve's signed image from Valve.
+
+**J-226 · 2026-10-20T17:11:42Z. PM device plan: Quest 3 and Quest 3S in tandem with a joint launch; all four devices in lockstep after R-1.**
+- PM (in chat): "this should be developed in tandem with the Q3S version so they could theoretically be launched at the same time. Then we go us on getting the Q2 and QPro version working. They should all move forward from R1 together."
+- PM clarified: "Q3+Q3S launch together; all 4 in lockstep after R-1"; Quest 3S hardware: "I'll get a Quest 3S".
+- This supersedes the 2026-10-09 order (Q3, Q2, QPro, Q3S) adopted in FS-R-006. **Disclose it to the Chair in the next relay.**
+- Until the 3S unit arrives, 3S work stays offline: the Quest 3 kernel tree with its own config; the kgate under ~/work/kgateq3s; and the 3S display, lens and camera differences studied from its own firmware.
+
+**J-227 · 2026-10-20T17:15:50Z. PM note: the Quest 3S displays should be identical to the Quest 2's.**
+- PM (in chat): "The Q3S displays should be identical to the Q2, so that world should coincidentally carry over too."
+- Recorded as a lead [C, PM report]: Q2 panel work (timings, panel binding, lens geometry) may carry to the 3S, while the display controller is the Quest 3 SoC's (DPU/DSI on XR2 Gen 2). To be confirmed from the 3S firmware and device tree.
+
+**J-228 · 2026-10-20T17:56:51Z. SA-C1 restart-state lockdown written (`feat/k1i` 33de60f4); PM decisions on module signing and fuses; R-1 long QEMU runs relaunched detached.**
+- **SA-C1** (`devices/quest3/k1i/sa-c1/`, GPL-2.0 patches 0002–0009, applies cleanly, reproducible head `94f7ed0f`):
+  - exact-match restart allowlist (plain; `bootloader`; `recovery` only when installed). Anything else gets EPERM from reboot(2); in-kernel callers fall back to a plain restart;
+  - the boot-fixed tethered/installed mode (`fs.installed=1`, read once in setup_arch, `__ro_after_init`);
+  - reboot-reason writes only 0x02/0x01 (panic 0x07);
+  - dload-mode never arms dump or EDL, and the bootloader-appended download-mode options are ignored;
+  - SDAM and dload sysfs are read-only; qcom_scm ignores `download_mode=1`; the involved drivers can't be unbound.
+  - T-SA2 part 1: 1,305 checks plus 27 static checks pass (stock fails 152). The QEMU part waits for the build. Device-only items are [O].
+  - Review: GO-with-fixes (the MAJOR `KERNEL_PARAM_OPS_FL_NOARG` fix applied; root-module and real-kernel evidence declared).
+- **PM decisions (in chat):**
+  - module signing: "Rely on the latch (Recommended)". No MODULE_SIG; the pre-latch root-module window is declared a residual (owner control).
+  - fuses: "Yes, read-only (Recommended)". The qfprom nvmem is read-only from userspace (new patch 0010, in progress).
+- **Builds:** a detached SA-C1 queue (`~/work/k1i/sac1-queue.sh`) waits for the QEMU runs to end, then runs the K1i-48 and K1i-39 SA-C1 pairs.
+  - Incident: the first launch's wait test used `pgrep -x` on a 15-character truncated process name, so it started at once. It was stopped during the source clone, the partial clone was removed, and it was fixed (`ps -eo args`).
+  - The queue was then stopped again for the series change (0010). It is relaunched after 0010.
+- **R-1:** runs 3e (`reboot recovery` / SA-A4 ordering), 6c (`reboot bootloader` plus execve audit) and 3f (the full read-through) were started at 17:19Z as detached WSL jobs from `feat/r1` 0414f66f (with time limits).
+
+**J-229 · 2026-10-20T18:46:48Z. PM: write a public "How FrameShift works" guide now.**
+- PM asked whether a full explanation of how FrameShift works, and of everything done so far, would go to the repo. The Arbiter's answer: the pieces are public (README, PROJECT_SETUP, the redacted journal, research notes, package READMEs), but no single guide exists.
+- PM decision: "Write it now (Recommended)". The guide is drafted after the K1i package agent finishes (one agent at a time), reviewed for public safety, updated at each milestone, and published with the next export after PM approval.
+
+**J-230 · 2026-10-20T21:15:27Z. K1i device-run package built offline (`feat/k1i` a15c0b11; pins PENDING-BUILD); finding: `systemctl reboot <arg>` is refused by SteamOS 0.4.5's systemd.**
+- **The K1i package** (devices/quest3/k1i/) reuses the K1g machinery. What changes:
+  - the kernel and config pins, with SA-C1 identity checks;
+  - our own rebuilt 95-module closure (PID 1 verifies index, dep, softdep, load list and the file set before any insmod);
+  - SA-C1 restart-state facts (read-only) folded into the existing steps, so the host start limit is BootStartUtc+48 s;
+  - the order gate: per unit, the unit's own K1G PASS is required; one attempt; for Unit 1, also Unit 2's K1I PASS and A5.
+  - The guard probe `c1de030c…`, its rows and the 200 s deadline are unchanged.
+  - Tests: builder 91/91 (a dev run; repeat on the committed tree with pins), image 25/25, host 76/76, bounds 17.
+  - Reviews: device/safety and host/checker, both GO-with-fixes (2 MAJOR each), fixes applied or declared. The fixes were not re-reviewed.
+  - PENDING-BUILD: the SA-C1 kernel and module-set pins, kernel gate G6, the candidate table.
+  - For the Chair:
+    - a new delegation ruling for K1i;
+    - qfprom (0010) isn't in the 95-module closure, so it is not exercised on the device;
+    - there are no device write-refusal attempts;
+    - a module-set refusal probably lands in Android, with dump mode not excluded [O].
+  - The agent's commit trailer names Claude Sonnet 5.5 (the model that did the work).
+- **R-1 QEMU runs 3e and 6c (detached, 17:19Z):**
+  - both reached END with every mask holding, the decoys unchanged, and the direct `reboot(2)` with an argument refused ("Operation not permitted").
+  - Both then hit the time limit, because the harness's final `systemctl reboot recovery` / `reboot bootloader` failed with "**Too many arguments.**" SteamOS 0.4.5's systemd (257) rejects the positional reboot argument; `systemctl reboot --reboot-argument=<arg>` is needed.
+  - This explains the earlier runs' missing end too. The **system-actions design, R-1's operator procedure and the harness need correcting.** Run 3f (read-through) is still running.
+
+**J-231 · 2026-10-20T21:25:58Z. The reboot-argument fix is applied; R-1 run 3f found a real memory problem; the SA-C1 builds have started.**
+- **Fix** (J-230):
+  - static confirmation from the 0.4.5 `systemctl` binary's strings: `--reboot-argument=ARG` exists, and "Too many arguments." is printed for the positional form;
+  - `feat/r1` e72a731a fixes the harness and the R-1 procedure and drafts; master 40bb2e71 updates system-actions-design rev 0.2;
+  - tests: test_r1 45/45, classify 60/60, init 52/52, deadline 18/18.
+  - Stale copies remain on `feat/k1i` and `feat/ts-t1` (they will update on merge), plus FS-A-016:937 (a sent relay, to be corrected in the next relay). The SA-C1 README and the 0003 message use `systemctl reboot edl` as an example of a refused string (to clarify).
+- **R-1 run 3f** (the full read-through, Quest-sized 8 GiB VM, masks on): progress reached 7.0 GiB at 1,491 s, then **"Kernel panic - not syncing: System is deadlocked on memory"** at 5,716 s; the decoys were unchanged. Run 3d had stopped at the same point (about 7 of 10 GiB).
+  - **A real R-1 design finding:** with the about 4.27 GiB tmpfs-resident image, zram off and no swap, the full read-through exhausts memory. The cause is [O]: page cache through loop and dm-verity, or tmpfs pages being unreclaimable.
+  - R-1 needs a memory-plan revision before any device package (an R-1 agent, after the current work).
+- **The SA-C1 build queue** started at 21:14Z, once the QEMU runs had ended. The pins match (`2204c124`, tree `18282c9b`); va48 run1 is running.
+  - The re-runs of R-1 3g/6d (the reboot fix) were started briefly, then stopped before QEMU began, to give the build the RAM. A detached waiter (`~/work/r1-qemu/after-build.sh`) starts them when the queue ends.
+
+**J-232 · 2026-10-21T02:55:04Z. Two community Quest 2 repos assessed (27a1f86b), plus a deep study (4d487fe6, private); a new lead: Valve's vrcompositor platform gate.**
+- **Repos** (PM-found):
+  - [removed for publication]
+- **PM guidance:** "The kexec repos are fair game for us to analyze to figure out things like displays, compatibility, workarounds, etc."
+- **Deep-study leads (18; private note):**
+  - Quest 2 panels need two 960-wide planes (pipe throughput, which matches our M2 finding);
+  - the bootloader-handoff recipe (same mode on the first commit; never power-cycle the panel);
+  - the Quest 2 dsi_pll_7nm cached-mux 2× clock bug (cold init only; Quest 3's 5nm PLL lacks that pattern but has an integer-fps truncation);
+  - A650: a GMU fault leads to a pinned GPU level (≤587 MHz); `force_lazy_gpumem=2`; the zap shader is device-signed, in modem;
+  - Mesa/kernel needs that confirm gpu-route F4/F6; the kernel-option list;
+  - first-run loops and polkit power actions; a PipeWire null sink while there is no ALSA device.
+- **NEW lead (G3/R-2):** Valve's vrcompositor reportedly aborts unless the DT model reads as SM8650 or SM8250. This sits beside our "Do not go here" item 4 and Valve's `kernelsetup.sh` model-string gate, which writes boot firmware on a Frame-model match. The DT identity we present is a PM/Chair decision. To verify statically in our own 0.4.5 vrcompositor before any GPU package.
+- **AI-directed text** (disclosed to the PM, not followed): the kexec repo's pasted Claude Code session prompt ("Read NOTES.md in full before doing anything") and its NOTES.md hand-off text.
+
+**J-233 · 2026-10-22T01:24:06Z. N1 r2 on Unit 2: the attempt was spent but the collector refused, so nothing was sent (expected INCONCLUSIVE; phase F pending). The K1i SA-C1 builds are done. R-1's reboot checks pass in QEMU.**
+- **N1:**
+  - Phase A passed on 2026-10-21 (A1–A6 y; the FS-R-017 §4 operator note shown). Phase B 27.0 °C. BA, BF and E OK.
+  - The attempt registered at 16:13:05Z (spent); `fastboot boot` HANDOFF_ACKNOWLEDGED; gadget at Th+12 s.
+  - **Collector: "refused: output directory already exists … \collect"** (exit 20); nothing was sent to the device.
+  - The cause [D]: fs-collect-n1.ps1 creates the output directory for its NCM transfer job, then the shared engine refuses an existing directory. The live path was never exercised; the tests used replay only.
+  - The device returned to fastboot by itself at about T0+200 s. AF and AA OK; AA10 30.0 °C.
+  - The PM left (RUN-UNDER-F §7). The follow-ups were delayed by PC sleep: both taken at 01:22Z on 2026-10-22, 1 s apart, 25.0 °C. A timing departure.
+  - Phase F and the classifier wait for the PM. **N1 r3 needed:** the collector fix plus a live-path test.
+- **K1i SA-C1 builds:** queue done at 2026-10-21T01:24:58Z, all four runs rc=0 (K1i-48 and K1i-39, two each). The bit-identity comparison and pin filling are next (an agent).
+- **R-1 reboot re-runs** (feat/r1 e72a731a; run automatically after the queue):
+  - 3g (`systemctl reboot --reboot-argument=recovery`): "fs-reboot-param-guard: refused reboot argument 'recovery'; restarting with none". **SA-A4 ordering confirmed** in QEMU.
+  - 6d: "Restarting system with command 'bootloader'".
+  - Both qemu_rc=0, decoys unchanged. These close the two R-1 [O] items (emulator evidence).
+
+**J-234 · 2026-10-22T01:45:18Z. N1 r2 Unit 2 closed: phase F PASSED with clean False (follow-up spacing); classifier exit 70 (no collect.json), so no N1 result; the attempt is spent.**
+- Phase F: F1 y, F2 n, F3–F6 y (confirmed). follow-ups-finished FAILED, because reading 2 was 1 s after reading 1 (the PC slept with the lid closed; the readings were taken on wake and reconnection).
+- **PM executive decision:** "approve the late temp readings anyway. So far none have shown to be abnormal". The tool verdict is kept and the PM decision recorded beside it.
+- PM: Unit 2 was unplugged right after AA, and reconnected before the readings.
+- PM rule: the laptop stays open, and the PM says before closing it (no keep-awake).
+- Evidence: `devices/quest3/evidence/unit2-n1-20261021/` and the ledger `n1-attempt-ledger-20261021/`.
+- **N1 r3 needed:** the collector output-directory fix and a live-path test.
+- FS-R-017: "Report and resolve an unexpected N1 outcome … before continuing the sequence." Reported to the PM; the cause is understood and host-only (the K1g collector is separate and proven live).
+
+**J-235 · 2026-10-22T03:09:28Z. N1 r3 built and reviewed offline (branch `feat/n1-r3`, head `4a6bf5b8`); the gate is inert until a Chair ruling.**
+- Root cause confirmed by both reviewers: `fs-collect-n1.ps1` created the output directory for the transfer job, and the shared engine's New-FsCapture refuses an existing directory, so it threw before the port opened (exit 20, nothing sent). Every live run would have refused.
+- Fix: an existing directory is refused up front, and only the engine creates it. The job writes no file; `xfer.json` is saved after the engine, never throws, and goes only into the engine's directory. `collect.json` records the host-tool hashes. `fs-collect.ps1` is unchanged (no K1g pin moves).
+- Live-path test LV0–LV5 (scripted ACM device, FSX1 responder on ::1, loopback adapter): the pinned r2 bytes reproduce the r2 refusal exactly; r3 gives COLLECTED-VALID, 8 MiB each way. Not testable without the device: the real port, a UsbNcm adapter, the fe80:: connect and real-time budgets.
+- N1 gate revision r1 (`fs-n1-units.ps1`): recognises only attempt <attempt nonce withheld>, pinned byte for byte, and admits one r3 attempt. The historical attempt stays "without an outcome", never a PASS. The ruling pin is empty, so Unit 2 stays refused until the Chair rules.
+- Tests: N1 128/0 (N3/N4/O6 run; O5 skipped, no `build\k1a` in the clone); K1g 89/0. SIGNOFF-n1 `be6f7f4f…` → `954de7db…` (three pin rows); SIGNOFF-k1g unchanged. Image unchanged (b1ba58d6).
+- Reviews (safety, correctness): ACCEPT WITH FIXES, no blocker; all findings fixed (`devices/quest3/n1/CHANGES-r3.md` §10, RA3/RB3).
+- Seven unattributed `%TEMP%\fsn1-host-*` directories left in place. No AI-directed text found.
+- No headset, E: or /persist access. Unit 2 unplugged by the PM.
+
+**J-236 · 2026-10-22T15:41:36Z. FS-A-018 drafted, reviewed and bundled; READY TO SEND. N1 r3 hardened (feat/n1-r3 `644b981d`); K1i pins filled (feat/k1i `ab2cf6c6`).**
+- K1i: the SA-C1 build pairs are bit-identical (va48 Image `ac02bfaa…`, vmlinux `41315cc2…`, modules digest `e8c787a4…`; va39 Image `8adbe889…`). Pins filled except EXPECT_K1I_GATE (G6 not run). Host tests 76/76; six pin-state assertions rewritten (P1 weaker: checks "not PENDING" only), disclosed.
+- N1 r3: the gate now pins the r2 `checklist-n1.json` (`33b76723…`) and requires follow-up spacing to be its only non-clean reason (`492c8365`). Delta review RA4: ACCEPT WITH FIXES, three MINOR fixed at `9bdd471a` (hidden/unknown-serial locks on the outcome side, type-strict and case-sensitive fact checks, every `serial=` match), plus collector exit 15 when collect.json cannot be saved. N1 130/0/0, K1g 89/0/0. SIGNOFF-n1 `19e4b8a4…`.
+- FS-A-018: Chair-view review ACCEPT WITH FIXES (three MAJOR: ruling-pin fill is a runtime-byte change; non-clean phase F needs explicit concurrence; the reboot correction limited to what QEMU showed). All applied; facts check done.
+- PM decisions: bundle the original session logs and journal as byte copies (no redacted copies).
+- Relay FS-A-018 (private review record) SHA-256 `b3a0577d1d48c775ba8f371060c19e2a854009c8be3f94f94cd98d3037a6c96a`; bundles: n1-r3-package `4c377019…`, evidence `3917aa5e…`, raw `8b31a998…` (deterministic across runs).
+- No headset, E: or /persist access.
+
+**J-237 · 2026-10-22T15:59:46Z. FS-A-018 sent by the PM** (relay `b3a0577d…`, three bundles as listed in J-236). Awaiting FS-R-018. Until then: offline work only; no N1 r3 or Unit 1 K1g session.
+
+**J-238 · 2026-10-22T16:02:34Z. FS-R-018 received and saved (FS-R-018 (private review record)).**
+- ACCEPT Unit 2 K1g r3 PASS; N1 r2 = spent attempt WITHOUT AN OUTCOME (no INCONCLUSIVE record may be made). CONCUR one Unit 2 N1 r3 replacement after the §4 checks. Unit 1 K1g r3 may run before N1 r3 (SIGNOFF-k1g `38d1c21d…`, one attempt, operator note quoted with its timestamp in the attempt log).
+- The non-clean phase F exception is for that exact event only; never a precedent for late follow-ups. The Chair notes the late readings also missed the observation window, not only spacing.
+- §4: fill exactly Ruling `FS-R-018`, RulingSections `s.3, s.4`, RulingSha256 = LF sha of the committed ruling; correct UN0/UN1/UN9 with an explicit empty-ruling fixture (no skipping or weakening); then merge, suites on merged master, live-ledger check, session pin check.
+- R-1 memory guidance forwarded to the running R-1 agent. K1i: no execution scope. Compositor model gate: inspect the 0.4.5 binary before choosing a DT identity.
+- **Correction (Arbiter):** FS-A-018 was sent with its header still reading "DRAFT — not yet reviewed" although the Chair-view review, delta review and facts check were done (J-236). The sent file is kept unchanged as the record; disclose in FS-A-019.
+
+**J-239 · 2026-10-22T16:45:14Z. FS-R-018 §4 pre-execution steps 1–5 done on merged master `e41b599f`; N1 r3 cleared for one Unit 2 session (step 6 at session time).**
+- Ruling fill and test correction on feat/n1-r3 `a78ae504` (after merging master at `d552a9b0`, docs/relays only). Runtime diff vs `644b981d`: exactly the three ruling values (`FS-R-018`, `s.3, s.4`, `7fef506f…`). With them blanked the gate hashes to `059b7ed9…` (UN12). Gate filled `1d725bbdfb3ec8b4c05fc6110622efd04b15776414adee6ab1817c2ecc3e16a3`; SIGNOFF-n1 `8cea3cc65dfb5a50b465b70a5d73cf9268e6aea98b5386d69c7e5f6fe61ee4fc` (one row changed vs `19e4b8a4…`); SIGNOFF-k1g `38d1c21d…` unchanged; the N1 host suite (private) `1c9b8e20…` (explicit empty-ruling fixture for UN1/UN8/UN9; UN0 drops only its no-ruling condition; new UN15 checks the deployed ruling pins and file hash).
+- Merged into master `e41b599f` (tree identical to `a78ae504`). Suites on merged master (FS_SILENT=1): K1g 89/0/0; N1 132/0/0 incl. the real rebuild N3/N4/O6, LV0–LV6, UN0–UN15, and O5 (the main checkout has `build\k1a`). Outputs `devices/quest3/host/test-host-{k1g,n1}.merged-20261022.output.txt`.
+- Live-ledger check (read-only, FS-A-019 (private review record) → a private output file): Unit 2 K1g closed; Unit 1 K1g open; Unit 2 N1 open (historical r2 named WITHOUT AN OUTCOME); Unit 1 N1 blocked.
+- Remaining before each session: session pin verification and the fresh nonce-only rebuild. The laptop must stay awake through the follow-up readings; defer the boot if the session cannot finish before the PM leaves (FS-R-018 §4).
+
+**J-240 · 2026-10-22T17:11:08Z. R-1 memory: cause found and fixed offline (feat/r1 `972c7ca9`); read-through passes in QEMU at 8 GiB and 6 GiB (measurement).**
+- Cause [D, harness kernel source; M, runs 3f/3i]: tmpfs allocates a page for every hole read through a non-user read (the loop driver's path), so the read-through materialised the sparse RAM image's holes. 3f: image 4,586,516,480 B at load end; shmem grew by 3,546,316,800 B = the hole bytes below the ~7.50 GiB read offset at the panic. No second image copy; dm-bufio ≤ 20.5 MB. PACKAGE R1-2/§5 ("holes never materialised") corrected to load-only. Claims cover the observed runs and the harness kernel only; the device kernel is [C].
+- Fix (our layer only; Valve's image untouched; one backing object): a 16 MiB zero area after the hash tree in the same RAM file; a read-only dm-linear map `fsr1-valve-map` sends holes to it; verity reads data from the map and hashes from the loop. Full authentication kept (every block verified; read-through SHA-256 = Valve's). dm-zero is off in the device config. New memory lines MEM-RX, per-GiB MemAvailable/Shmem/dm-bufio, Shmem in MEM-2. One adversarial review: BLOCKER (verity parameter buffer too small) and three MINOR fixed at `da45238e`; one deliberate difference kept.
+- Tests: classifier 62/62, init 53/53, receiver 45/45 (builder test not run from a worktree: environmental).
+- QEMU (TCG): 8 GiB match=yes, Shmem flat 4,503,684 kB, MemAvailable at target 3,303,312 kB; 6 GiB with harness-only `fsr1.mem1=1024`: match=yes, MemAvailable at target 1,249,260 kB (below MEM-2's 1,792 MiB floor); 6 GiB with the real reserve: refused at MEM-1 (fails closed). QEMU times do not establish the device budget (V2 ≤ 150 s) [O].
+- Plan: RAM-root for 8 GiB and larger (Quest 3, 3S, Pro). Quest 2 (6 GiB) cannot hold the image in RAM; zram does not help (lz4 4.12 GB, zstd 4.06 GB). Storage choice for 6 GiB goes to the PM.
+
+**J-241 · 2026-10-22T17:26:59Z. PM decision: Quest 2 (6 GiB) gets the SteamOS image served from the PC.**
+- Asked with three options (decide with the installer [recommended], headset storage now, served from PC). PM chose **"Served from PC"**: Quest 2 reads Valve's image from the PC over USB, still fully verified by dm-verity on the headset; nothing is written to the headset.
+- Consequences to design: works only while tethered; needs a network/USB block-device option in the Quest 2 kernel (its own kernel, not K1i); the PC side becomes a served, read-only image; R-1 on 8 GiB+ devices stays RAM-root. To be put to the Chair with the Quest 2 package.
+
+**J-242 · 2026-10-22T17:47:49Z. Compositor model gate studied statically in Valve's 0.4.5 (private note a private research note, `664b9644`). Nothing executed.**
+- [M-static] The check is not in vrcompositor itself but in a perception library it loads for CVP motion estimation: the device-tree model must contain "SM8650" or "SM8250", or the process aborts. It runs only on that library's session path, which the compositor takes when an async-Vulkan setting is on (Valve default off; the Frame driver's settings turn it on) [D, medium confidence]. XRService has the same aborting check; other DSP clients only return false.
+- **Safety hazard [M-static]:** a shared model helper does substring matching on Frame board names. Matching models arm Valve's boot-chain/U-Boot flash path (kernelsetup.sh) and FPGA programming; a manual OOBE script installs an image and may request a factory reset; steamos-manager applies Frame CPU/GPU limits on an sm8650 compatible. A Frame-like model string ("SM8650 MP …") contains a matching token, so presenting it system-wide would arm the flash path.
+- Recommendation (A): keep our real DT model and compatible everywhere; stay off the CVP/XRService paths through our own settings layer (async-Vulkan off, Frame HMD driver not loaded, cv driver disabled). Fallback (B): an SM8650 model visible only to SteamVR processes in their own namespace, avoiding every helper token ([O] safety review needed). Option C (system-wide Frame model) rejected.
+- Open [O]: live check that the compositor starts on route A; the systemlayer path into the library; driver_cv on a failed DSP check; Steam client checks. Decision belongs with the GPU-stage package (Chair).
+
+**J-243 · 2026-10-23T04:20:00Z. K1g r3 on Unit 1: K1G PASS. The boot-chain write guard is now proven on both Quest 3 units.**
+- Run under FS-R-018 §5 (with FS-R-017, FS-R-016, FS-R-015, FS-R-014). Nonce `<attempt nonce withheld>` (the one Unit 1 attempt, spent); image `55ca4fc9…`, a nonce-only rebuild of the r3 candidate. Evidence: `devices/quest3/evidence/unit1-k1g-r3-20261023/` and the ledger `k1g-attempt-ledger-20261023/`.
+- **0b:**
+  - [removed for publication]
+  - **PM standing permission:** "You have my permission to `adb reboot` next time."
+- **Process slips (Arbiter), both recorded in the attempt log:**
+  - The host-hashes command omitted the end of the SIGNOFF-k1g §A command, so `host-hashes.txt` held hashes without paths. Phase A STOPPED at its first check with nothing sent to the headset. The PM said "yes" to the recommendation; the file was rewritten and phase A re-run (PASSED). The incomplete file is kept as `f/host-hashes-incomplete-command.txt`.
+  - Phase B STOPPED at the 02:31Z reading (status 2, level 90, temperature 330): while charging the reading must be below 300. Nothing was sent to the headset; the PM let the unit cool and the Arbiter took passive readings. The Arbiter's reading loop stopped only for status 5 or below 295 and so missed a passing status-3 reading (310) at 03:12:22Z. The admitted reading was status 5, level 100, temperature 320 at 03:32:35Z (battery full, within the rule).
+- **PM "Executive override: let's start the test now." declined:** the admission rule is FS-R-012 §5, enforced by the pinned phase B tool; there is no override. The PM's direction (propose admitting status 2 below 35.0 °C above 70 % charge) is recorded for FS-A-019 in FS-A-019 (private review record). The PM also remarked, on re-confirming in chat what the keypresses had already recorded: "we should change that" (recorded in the attempt log).
+- **Attempt:**
+  - Phase E presence confirmed; attempt registered 03:40:48Z; `fastboot boot` HANDOFF_ACKNOWLEDGED at 03:41:00Z; gadget `FS-<attempt nonce withheld>` on COM21 at Th+12 s; COLLECTED-VALID; FSB1 VALID.
+  - Returned to fastboot by itself; AF/AA identity and slot unchanged (AF02–09 = BF02–09; AA = BA for 04–09, 16–21, 23: 0 differences after normalising fastboot's "Total time" footer).
+  - AA10 temperature 330; follow-ups 330 and 330 (status 2 and 5, level 100); phase F clean True (F1 y, F2 n, F3–F6 n).
+- **Classifier: K1G PASS** (record `75f0e6d4…17b2d`, `observe-20261023T034048Z`):
+  - kernel: the K1a config, 95 modules, MemTotal 7836020 kB, 0 WARNING, 0 BUG;
+  - **guard: 411/411 cases PASS in device mode; 402 denials**; 14 nodes hash-verified unchanged (digest before = after `c465f51b…`); R1–R5 before and after at the expected values; R6 misc 1048576 and devinfo 4096; strict and sealed, modules_disabled 1, hazards none; FSUP1 exited 0.
+- **Gate after the PASS** (`gate-live-ledger-check-after.txt`, master `71c6dc51`): Unit 2 K1g closed; **Unit 1 K1g closed**; Unit 2 N1 open; Unit 1 N1 blocked (N1 runs on Unit 2 only, PM decision 2026-10-16.
+- Report to the PM at ~04:06Z.
+
+**J-244 · 2026-10-23T05:35:00Z. N1 r3 on Unit 2: N1 FAIL (PC side: the NCM adapter had no usable IPv6 link-local address). The one replacement attempt is spent; returns for review (FS-R-018 §3).**
+- Run under FS-R-018 §3–§4 (with FS-R-017, FS-R-016, FS-R-015, FS-R-014). Nonce `<attempt nonce withheld>` (fresh nonce-only rebuild, image `e7f93e2b…`); cycle `captures\<attempt nonce withheld>`. Evidence: `devices/quest3/evidence/unit2-n1r3-20261023/` and the ledger `n1-attempt-ledger-20261023/`. Attempt registered 05:18:04Z.
+- **0b:** [removed for publication]
+- **Phase B** STOPPED at 04:40Z (status 2, temperature 300, rule is below 300 while charging); nothing was sent to the headset. Passive readings held at 300 until status 5 at 05:12:19Z; formal reading 05:12:39Z status 5, level 100, temperature 300: PASSED. PM go 05:16:24Z.
+- **Attempt:** `fastboot boot` HANDOFF_ACKNOWLEDGED; gadget on COM22 at Th+13 s; collector COLLECTED-VALID, FSB1 VALID, fs-done sent. The transfer failed on the PC: Windows created the `UsbNcm Host Device #2` adapter (ifIndex 51, up, MAC matched) at about +28.5 s, but it never got a preferred IPv6 link-local address; 0 connect attempts, 0 bytes; the device side reported accept-timeout.
+- **Classifier: N1 FAIL (exit 42).** Device-side facts were clean (K1a banner, config `4aa0c894…`, 95 modules, 0 WARNING/BUG pre and post, `usb0` up with its link-local address, no listeners, ACM continuity). Only the transfer check failed. classify-n1.json sha256 `428f4b1b…`, xfer.json `2f976236…`.
+- **Return and phase F:** back in fastboot by itself, rebooted; AF02–09 = BF02–09 and AA = BA for rows 04–09, 16–21, 23 (0 differences after normalising fastboot's "Total time" footer); AA10 temperature 320; follow-ups 330 and 320; phase F PASSED (clean True, F1 y, F2 n, F3–F6 y).
+- **Gate after:** Unit 2 K1g closed, Unit 1 K1g closed, **Unit 2 N1 closed** (attempt spent), Unit 1 N1 blocked (`gate-live-ledger-check-after.txt`). No third attempt; the laptop stays available through the disposition.
+- **PM requests, recorded for FS-A-019 in FS-A-019 (private review record):** the assent friction ("explicitness" that wastes time; one session go should cover the session), the chat re-confirmation of already-recorded keypresses, and the admission temperature rule (propose admitting status 2 below 35.0 °C above 70 % charge). The PM also said during the attempt: "I did not \"UsbNcm Host Device\"" (the adapter appeared without a visible prompt).
+- **Community and Valve repos reviewed** (private note a private research note, commit `420d1118`): an unofficial mirror holds Valve's actual Frame kernel source, and the 0.4.5 kernel commit is reachable. **PM decision: "If an official source exists, we should adopt it as our reference."** (confirming the mirror against Valve's own host is open).
+
 ---
 
 ## Corrections
@@ -5952,6 +6260,7 @@ Earlier claims we got wrong, kept visible on purpose.
 
 | when | we said | actually | how we found out |
 |---|---|---|---|
+| JOURNAL Do-not item 7; `docs/RESEARCH_NOTES.md` section 4; J-08; `FS-A-002` §6 | "As of 2026-10-07 the Frame kernel source has not been located" | **Valve publishes it**: GPL source tarballs `linux-618-deckard-6.18.0+g<hash>` and `linux-72-deckard` in the public listing `holo-packages.steamos.cloud/archlinux-deckard-hotfixes/source/` (oldest 2026-10-01; the 6.18 commits listed are `29e952b28e50`, `4b6c9fe99a37`, `733a4be78129`, `a74502eff11e`). The 0.4.5 release commit `e66bc2ca6f8c` and the 0.3.0 commit `fbdbca41fd45` are **not** in that listing; both are in the unofficial `evlaV/deckard-linux` git mirror (Valve-authored commits). The tarballs' upstream GitLab project is not public | community-repos review of 2026-10-23 section 0A; public listing and `git ls-remote` checks, nothing downloaded |
 | J-207 / FS-A-016 | "vbmeta, vbmeta_system, misc and devinfo were not read" and "no row after R2 was opened" | **No later row was opened after the R3 failure.** R3 (dtbo_a) was opened and its read failed with EINVAL before any byte was hashed | FS-R-016 §3 |
 | J-207 / FS-A-016 | "the guard was never armed" | strict arming and sealing and the armed cases were **not reached**; the record still shows the boot-default `mode: protect`; zero denied counters and zero cases do not validate interception | FS-R-016 §3 |
 | J-207 / FS-A-016 | "no dump mode (PC PnP check: no 05C6:900E ever registered)" and "the timeline leaves no room for a dump-mode visit" | **no dump mode was observed or reported by the PM; the retained return record is consistent with that.** The PC PnP check is a reported check, not retained hardware evidence; a short return timeline does not prove that no transient enumeration happened | FS-R-016 §3 |

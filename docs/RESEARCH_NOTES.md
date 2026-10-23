@@ -84,8 +84,12 @@ PM leaning, 2026-10-07: route 2, because it's more native to the OS.
   with a Quest 3 DT. That is what Valve's userspace is built against — upstream
   `drm/msm`, Mesa/Turnip expectations, btrfs. Downstream vendor kernels stall
   on their own version. Developed offline in parallel, per the ruling.
-- Valve's Frame kernel source is not located (`FS-A-002` §6). Mainline 6.18
-  plus Valve's extracted config is the substitute.
+- Valve's Frame kernel source is published as GPL source tarballs at
+  `holo-packages.steamos.cloud/archlinux-deckard-hotfixes/source/`
+  (`linux-618-deckard`, `linux-72-deckard`; [M] listing, 2026-10-23, corrects
+  `FS-A-002` §6). The 0.4.5 commit `e66bc2ca6f8c` is not in that listing; it is
+  in the unofficial `evlaV/deckard-linux` mirror (Valve-authored). See
+  a private research note section 0A.
 
 ## 5. Community work index — by device (don't reinvent the wheel)
 

@@ -12,8 +12,11 @@
 #   Invoke-FsN1Xfer ...                 the FSX1 client: connect (retrying refused connects until the window ends),
 #                                       header, 8 MiB up, 8 MiB + trailer down, every check; returns the xfer.json object
 #   Invoke-FsN1XferSession ...          the live session for the collector: waits (bounded) for the adapter, records its
-#                                       timeline, then Invoke-FsN1Xfer; writes <OutDir>\xfer.json
-#   Start-FsN1XferJob / Wait-FsN1XferJob    the same in a background runspace (the collector's ACM engine runs meanwhile)
+#                                       timeline, then Invoke-FsN1Xfer; returns the xfer.json object (and writes
+#                                       <OutDir>\xfer.json only when -OutDir is given: the offline tests)
+#   Start-FsN1XferJob / Wait-FsN1XferJob    the same in a background runspace (the collector's ACM engine runs meanwhile);
+#                                       N1 r3: the runspace writes NO file and needs no directory; the collector writes
+#                                       its result after the engine (which alone creates the output directory)
 #
 # The FSX1 protocol (normative text: devices/quest3/n1/README.md s.4; fs-xfer.c's header):
 #   PC -> device: "FSX1 <nonce> <chal> 8388608 8388608\n", then 8388608 random bytes;
@@ -267,9 +270,9 @@ function Save-FsN1XferJson($X, [string]$Path) {
 # The live session (the collector runs it in a background runspace, Start-FsN1XferJob): BOUNDED ENUMERATION - the
 # adapter of THIS attempt is looked up once a second until it is Up with a preferred link-local address, or until
 # AdapterWaitSec have passed, or until WindowEndUtc, or until $Sync.Stop; every change is recorded (the timeline). Then
-# the FSX1 session until WindowEndUtc. Writes <OutDir>\xfer.json and returns the object.
+# the FSX1 session until WindowEndUtc. Returns the object (and writes <OutDir>\xfer.json when -OutDir is given).
 function Invoke-FsN1XferSession {
-    param([Parameter(Mandatory)][string]$Nonce, [Parameter(Mandatory)][string]$Chal, [Parameter(Mandatory)][string]$OutDir,
+    param([Parameter(Mandatory)][string]$Nonce, [Parameter(Mandatory)][string]$Chal, [string]$OutDir = '',
           [Parameter(Mandatory)][DateTime]$WindowEndUtc, [int]$AdapterWaitSec = 60, $Sync = $null, [scriptblock]$Find = $null)
     $ids = Get-FsN1Ids $Nonce
     $tl = New-Object System.Collections.Generic.List[object]
@@ -302,25 +305,26 @@ function Invoke-FsN1XferSession {
     }
     $x | Add-Member NoteProperty AdapterTimeline $tl.ToArray()
     $x | Add-Member NoteProperty AdapterWaitSec $AdapterWaitSec
-    Save-FsN1XferJson $x (Join-Path $OutDir 'xfer.json')
+    if ($OutDir) { Save-FsN1XferJson $x (Join-Path $OutDir 'xfer.json') }
     $x
 }
 
-# Background runspace: the library is loaded there from THIS file (the pinned copy beside the collector).
+# Background runspace: the library is loaded there from THIS file (the pinned copy beside the collector). N1 r3: it
+# writes no file (the result object comes back through Wait-FsN1XferJob).
 function Start-FsN1XferJob {
-    param([Parameter(Mandatory)][string]$Nonce, [Parameter(Mandatory)][string]$Chal, [Parameter(Mandatory)][string]$OutDir,
+    param([Parameter(Mandatory)][string]$Nonce, [Parameter(Mandatory)][string]$Chal,
           [Parameter(Mandatory)][DateTime]$WindowEndUtc, [int]$AdapterWaitSec = 60)
     $sync = [hashtable]::Synchronized(@{ Stop = $false })
     $ps = [PowerShell]::Create()
     $lib = Join-Path $PSScriptRoot 'fs-xfer-n1.ps1'
-    $null = $ps.AddScript({ param($Lib, $Nonce, $Chal, $OutDir, $WindowEndUtc, $AdapterWaitSec, $Sync)
+    $null = $ps.AddScript({ param($Lib, $Nonce, $Chal, $WindowEndUtc, $AdapterWaitSec, $Sync)
         . $Lib
-        Invoke-FsN1XferSession -Nonce $Nonce -Chal $Chal -OutDir $OutDir -WindowEndUtc $WindowEndUtc -AdapterWaitSec $AdapterWaitSec -Sync $Sync
-    }).AddArgument($lib).AddArgument($Nonce).AddArgument($Chal).AddArgument($OutDir).AddArgument($WindowEndUtc).AddArgument($AdapterWaitSec).AddArgument($sync)
-    [pscustomobject]@{ PowerShell = $ps; Handle = $ps.BeginInvoke(); Sync = $sync; OutDir = $OutDir }
+        Invoke-FsN1XferSession -Nonce $Nonce -Chal $Chal -WindowEndUtc $WindowEndUtc -AdapterWaitSec $AdapterWaitSec -Sync $Sync
+    }).AddArgument($lib).AddArgument($Nonce).AddArgument($Chal).AddArgument($WindowEndUtc).AddArgument($AdapterWaitSec).AddArgument($sync)
+    [pscustomobject]@{ PowerShell = $ps; Handle = $ps.BeginInvoke(); Sync = $sync }
 }
 # Waits at most TimeoutMs (bounded); a session still running then is told to stop and abandoned. Returns the xfer.json
-# object, or $null (then xfer.json may be missing: the classifier says INCONCLUSIVE for the transfer).
+# object, or $null (then the collector writes no xfer.json: the classifier says INCONCLUSIVE for the transfer).
 function Wait-FsN1XferJob($Job, [int]$TimeoutMs = 90000) {
     $done = $Job.Handle.AsyncWaitHandle.WaitOne($TimeoutMs)
     if (-not $done) { $Job.Sync.Stop = $true; $null = $Job.Handle.AsyncWaitHandle.WaitOne(5000) }
