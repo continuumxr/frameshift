@@ -12,5 +12,6 @@ This folder holds the device-side inputs of FrameShift's thermal and battery ser
 
 **Withheld from this public copy:** the T0 package (the first TS step, an Android-side probe under stock
 Horizon: its rows, capture tool, checker, sign-off sheet and fixtures) and its README, because the probe
-includes a row outside the public scope (see the root `README.md`, "About this public copy"). Nothing has
-run on a device from this folder yet.
+includes a row outside the public scope (see the root `README.md`, "About this public copy"). T0, the Android-side
+baseline, passed on both Quest 3 units (2026-10-18/19 UTC); the later stages (T1–T5) run on FrameShift's own
+kernel and have not run yet.

@@ -10,7 +10,13 @@
 #     the hashes; adapter wait, connects and the session itself end at the host give-up (BootStartUtc + 200 - 15 s)
 #     at the latest (per-call socket timeouts are capped by that deadline). The ACM engine (the pinned
 #     fs-collect.ps1: fs-verify, fs-ack, fs-status, fs-n1 once, the gated fs-done) runs unchanged meanwhile; the
-#     runspace is waited for (bounded) afterwards and its xfer.json lands in the output directory;
+#     runspace is waited for (bounded) afterwards and the collector writes its result as xfer.json into the output
+#     directory;
+#   - N1 r3 (devices/quest3/n1/CHANGES-r3.md; the r2 live refusal of J-234): the output directory must be NEW. Only the
+#     engine creates it (fs-collect.ps1 New-FsCapture, which refuses an existing one); this script never does, and the
+#     background runspace writes no file (r2 created the directory here for the runspace, so the engine refused every
+#     live run before anything was sent). collect.json also records the SHA-256 of the three host files that ran
+#     (HostTools: the provenance the N1 order gate checks for the one N1 r3 attempt, fs-n1-units.ps1);
 #   - the replay CLI takes -N1ReplayXfer <xfer.json> (a fixture's PC side, e.g. the QEMU harness's), copied as is.
 # The runspace opens no listener, changes no adapter, driver, firewall or network setting and installs nothing.
 #
@@ -21,8 +27,9 @@
 # LIVE (only after the Chair's ruling on the N1 package and the PM's sign-off; never run by fixtures):
 #   fs-collect-n1.ps1 -N1Port COM7 -N1Nonce <16 hex> -N1BootStartUtc <observe.json BootStartUtc> [-N1HandoffUtc <...>] -N1OutDir <new dir>
 # REPLAY (offline): fs-collect-n1.ps1 -N1Replay <capture.raw> [-N1ReplayIndex <idx>] [-N1ReplayXfer <xfer.json>] -N1OutDir <new dir>
-# Exit: 10 record collected, FSB1-valid; 11 collected, FSB1 rejected; 14 INCONCLUSIVE; 20 refused to start (nothing
-#   sent); 70 internal error. The N1 verdict is fs-classify-n1.ps1's (it also needs xfer.json).
+# Exit: 10 record collected, FSB1-valid; 11 collected, FSB1 rejected; 14 INCONCLUSIVE; 15 collect.json not written (no
+#   result: nothing to classify, whatever the status); 20 refused to start (nothing sent); 70 internal error. The N1
+#   verdict is fs-classify-n1.ps1's (it also needs xfer.json).
 [CmdletBinding()]
 param(
     [string]$N1Port = '', [string]$N1Nonce = '', [string]$N1OutDir = '',
@@ -85,6 +92,26 @@ function Get-FsN1ReplayTokens {
     $tk
 }
 
+# N1 r3: the collector (not the runspace) writes the PC side's result, once, into the directory the ENGINE created (its
+# capture index exists: never a directory this run did not make), never over an existing file, and never throws (review
+# B MAJOR-1: a failed xfer.json write must not lose collect.json). Returns @{ File; Note }.
+function Save-FsN1XferResult($X, [string]$OutDir) {
+    try {
+        if ($null -eq $X) { return [pscustomobject]@{ File = $null; Note = 'no xfer.json: the PC-side session returned no result' } }
+        if (-not $OutDir -or -not (Test-Path -LiteralPath (Join-Path $OutDir 'capture.raw.idx') -PathType Leaf)) { return [pscustomobject]@{ File = $null; Note = "xfer.json not written: $OutDir was not created by the engine (no capture index)" } }
+        $p = Join-Path $OutDir 'xfer.json'
+        if (Test-Path -LiteralPath $p) { return [pscustomobject]@{ File = $null; Note = "xfer.json not written: $p already exists" } }
+        Save-FsN1XferJson $X $p
+        [pscustomobject]@{ File = $p; Note = $p }
+    } catch { [pscustomobject]@{ File = $null; Note = "xfer.json not written: $($_.Exception.Message)" } }
+}
+# N1 r3: the SHA-256 of the host files that run (collect.json HostTools)
+function Get-FsN1HostTools {
+    $f = { param($n) Get-FsSha256Hex ([IO.File]::ReadAllBytes((Join-Path $PSScriptRoot $n))) }
+    [ordered]@{ Collector = (& $f 'fs-collect-n1.ps1'); XferLib = (& $f 'fs-xfer-n1.ps1'); Engine = (& $f 'fs-collect.ps1'); Native = (& $f 'fs-native.ps1')
+                Proto = (& $f '..\stage1\fs-proto.ps1'); Fsb1 = (& $f '..\common\host\fsb1.ps1') }
+}
+
 function Invoke-FsN1Replay {
     param([Parameter(Mandatory)][string]$RawPath, [string]$IndexPath, [string]$XferPath = '', [Parameter(Mandatory)][string]$OutDir, [int]$PollMs = 50, [int]$HostMarginSec = 15,
           [string]$Kernel = '', [string]$Pid1 = '', [int]$GiveUpSec = 0)
@@ -111,10 +138,11 @@ function Invoke-FsN1Replay {
 
 # ------------------------------------------------------------------ CLI -----
 if ($script:FsN1Invocation -eq '.') { return }
-$exit = 70; $r = $null; $started = $false; $job = $null
+$exit = 70; $r = $null; $started = $false; $job = $null; $OutDirK = ''
 try {
     $OutDirK = Get-FsN1Arg 'N1OutDir'
     if (-not $OutDirK) { throw 'refused: -N1OutDir is required (a new directory)' }
+    $hostTools = Get-FsN1HostTools
     $margin = [int](Get-FsN1Arg 'N1HostMarginSec'); $poll = [int](Get-FsN1Arg 'N1PollMs')
     if ($margin -ne 15) { throw 'refused: -N1HostMarginSec is fixed at 15 for N1 (the runner start gate is derived from it)' }
     $rp = Get-FsN1Arg 'N1Replay'
@@ -126,6 +154,8 @@ try {
         if (@($r.Replay.Divergence).Count) { Write-Output (ConvertTo-FsPrintable "REPLAY DIVERGENCE: $(@($r.Replay.Divergence) -join '; ')") }
     } else {
         if ((Get-FsN1Arg 'N1ReplayKernel') -or (Get-FsN1Arg 'N1ReplayPid1') -or [int](Get-FsN1Arg 'N1ReplayGiveUpSec') -or (Get-FsN1Arg 'N1ReplayXfer')) { throw 'refused: the -N1Replay* options are replay fixtures only' }
+        # N1 r3: a new directory, checked before anything else; the engine creates it (never this script)
+        if (Test-Path -LiteralPath $OutDirK) { throw "refused: output directory already exists: $OutDirK (-N1OutDir must be a new directory; the engine creates it)" }
         $port = Get-FsN1Arg 'N1Port'; $nonce = Get-FsN1Arg 'N1Nonce'
         if ($port -cnotmatch '^COM[0-9]{1,3}\z') { throw 'refused: -N1Port must be given explicitly as COMn (never chosen automatically)' }
         if ($nonce -cnotmatch '^[0-9a-f]{16}\z') { throw 'refused: -N1Nonce must be the image nonce (16 lowercase hex)' }
@@ -149,7 +179,6 @@ try {
         if (-not $g.SerialOk) { throw "refused: no USB gadget with serial FS-$nonce is present" }
         if ($g.ComPort -cne $port) { throw "refused: $port is not the port registered under FS-$nonce (that is '$($g.ComPort)')" }
         $tokens = @{ V = (New-FsHex 16); A = (New-FsHex 8); C = (New-FsHex 16) }
-        if (-not (Test-Path -LiteralPath $OutDirK)) { $null = New-Item -ItemType Directory -Path $OutDirK }
         $t = New-FsRawSerialTransport -PortName $port -PollMs $poll
         $nowMs = [long]$t.NowMs(); $nowU = [DateTime]::UtcNow
         $cv = ConvertTo-FsTransportDeadlines -Deadlines $dl -NowMs $nowMs -NowUtc $nowU
@@ -166,7 +195,7 @@ try {
         Write-Output "HOST GIVE-UP: $($dl.GiveUpUtc.ToString('o')); the runner is sent only before $($origin.AddSeconds($limitSec).ToString('o')) (BootStartUtc + $limitSec s <= T0 + $($sp.DeviceRunnerStartLimitSec) s); the NCM transfer client runs in the background until the give-up at the latest"
         # the PC side of the NCM link, in the background (bounded: the host give-up at the latest), started only now that
         # every start refusal has passed (review m6)
-        $job = Start-FsN1XferJob -Nonce $nonce -Chal $tokens.C -OutDir $OutDirK -WindowEndUtc $dl.GiveUpUtc -AdapterWaitSec $sp.AdapterWaitSec
+        $job = Start-FsN1XferJob -Nonce $nonce -Chal $tokens.C -WindowEndUtc $dl.GiveUpUtc -AdapterWaitSec $sp.AdapterWaitSec
         $started = $true
         $r = Invoke-FsCollectRun -Transport $t -OutDir $OutDirK -Tokens $tokens -Cfg $cfg -Mode 'live' -PortName $port
     }
@@ -177,16 +206,24 @@ try {
         $job.Sync.Stop = $true
         $w = Wait-FsN1XferJob $job 45000; $job = $null
         $xr = if ($null -ne $w.Result -and $w.Result.PSObject.Properties['Result']) { [string]$w.Result.Result } else { 'none' }
-        Write-Output (ConvertTo-FsPrintable "NCM TRANSFER (PC side): $xr; completed $($w.Completed)$(if (@($w.Errors).Count) { '; errors: ' + (@($w.Errors) -join ' | ') }) -> $(Join-Path $OutDirK 'xfer.json')")
-        $r | Add-Member NoteProperty Xfer ([ordered]@{ Result = $xr; Completed = $w.Completed; Errors = @($w.Errors); File = (Join-Path $OutDirK 'xfer.json') })
+        $xs = Save-FsN1XferResult $w.Result $OutDirK
+        Write-Output (ConvertTo-FsPrintable "NCM TRANSFER (PC side): $xr; completed $($w.Completed)$(if (@($w.Errors).Count) { '; errors: ' + (@($w.Errors) -join ' | ') }) -> $($xs.Note)")
+        $r | Add-Member NoteProperty Xfer ([ordered]@{ Result = $xr; Completed = $w.Completed; Errors = @($w.Errors); File = $xs.File })
     }
+    $r | Add-Member NoteProperty HostTools $hostTools
+    $cjSaved = $true
     try { Save-FsCollectJson -Result $r -Path (Join-Path $OutDirK 'collect.json') }
-    catch { Write-Output (ConvertTo-FsPrintable "COLLECT.JSON NOT WRITTEN: $($_.Exception.Message)") }
+    catch { $cjSaved = $false; Write-Output (ConvertTo-FsPrintable "COLLECT.JSON NOT WRITTEN: $($_.Exception.Message)") }
     Write-FsSummary $r
     $exit = switch ($r.Status) { 'COLLECTED-VALID' { 10 } 'COLLECTED-REJECTED' { 11 } default { 14 } }
+    # N1 r3 delta review: without collect.json there is nothing to classify, so the run never exits 10/11/14 (exit 15)
+    if (-not $cjSaved) { Write-Output "NO RESULT: collect.json was not written (status $($r.Status)): this run cannot be classified; the capture files stay as written (exit 15)"; $exit = 15 }
 } catch {
     Write-Output (ConvertTo-FsPrintable "REFUSED/ERROR: $($_.Exception.Message)")
-    if ($null -ne $job) { try { $job.Sync.Stop = $true; $null = Wait-FsN1XferJob $job 30000 } catch { } }
+    if ($null -ne $job) {
+        try { $job.Sync.Stop = $true; $wj = Wait-FsN1XferJob $job 30000; $xs = Save-FsN1XferResult $wj.Result $OutDirK
+              Write-Output (ConvertTo-FsPrintable "NCM TRANSFER (PC side, after the error): $(if ($null -ne $wj.Result -and $wj.Result.PSObject.Properties['Result']) { [string]$wj.Result.Result } else { 'none' }) -> $($xs.Note)") } catch { }
+    }
     $ctx = $script:FsLastCtx
     if (-not $started -or $null -eq $ctx) { Write-Output 'RECOVERY: nothing was sent to the device by this run (the ACM console)'; $exit = 20 }
     else {
