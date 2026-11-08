@@ -8,7 +8,10 @@
 #     bounded enumeration; the timeline is recorded), then retries ONE outbound TCP session to
 #     [fe80::<nonce>%<ifIndex>]:47201 (refused until the runner's xfer step listens), moves 8 MiB each way and checks
 #     the hashes; adapter wait, connects and the session itself end at the host give-up (BootStartUtc + 200 - 15 s)
-#     at the latest (per-call socket timeouts are capped by that deadline). The ACM engine (the pinned
+#     at the latest (per-call socket timeouts are capped by that deadline). fix/n1-linklocal: the console session
+#     starts only after the PC side reports the adapter ready (Up, a preferred link-local address), bounded by the
+#     readiness gate (at most 20 s, and 20 s before the runner start limit; then it starts anyway), so the PC side
+#     is already retrying its connect when the runner's xfer step opens its 10 s listen window. The ACM engine (the pinned
 #     fs-collect.ps1: fs-verify, fs-ack, fs-status, fs-n1 once, the gated fs-done) runs unchanged meanwhile; the
 #     runspace is waited for (bounded) afterwards and the collector writes its result as xfer.json into the output
 #     directory;
@@ -61,6 +64,13 @@ $script:FsN1Spec = @{
     Kernel = '5.10.246-gdbc2bc83a2b6'; Pid1 = '/bin/busybox,sh,/init'
     AckStatusTries = 2
     AdapterWaitSec = 60                                            # the PC's bounded wait for this attempt's NCM adapter
+    # fix/n1-linklocal: the readiness gate. The console session starts only when the PC side reports this attempt's
+    # adapter Up with a preferred link-local address, or at the latest PcReadyWaitSec after the job started and
+    # PcReadyLeadSec before the runner start limit (BootStartUtc + 54 s), so the engine keeps its verify/ack/status lead
+    # (5.6 s in the r3 attempt; N1 r4 review RB4 F2: 20 s of lead, the console opens by BootStartUtc + 34 s at the latest,
+    # so a slow verify/ack/status still reaches the runner gate). The device listens 10 s only (fs-xfer.c LISTEN_MS,
+    # pinned in the image).
+    PcReadyWaitSec = 20; PcReadyLeadSec = 20
 }
 $script:FsCmdSpec['fs-n1'] = '^[0-9a-f]{32}\z'
 
@@ -179,23 +189,38 @@ try {
         if (-not $g.SerialOk) { throw "refused: no USB gadget with serial FS-$nonce is present" }
         if ($g.ComPort -cne $port) { throw "refused: $port is not the port registered under FS-$nonce (that is '$($g.ComPort)')" }
         $tokens = @{ V = (New-FsHex 16); A = (New-FsHex 8); C = (New-FsHex 16) }
+        $limitSec = $sp.DeviceDeadlineSec - $margin - $sp.RunnerWorstSec - $sp.RunnerMarginSec
+        # fix/n1-linklocal: the PC side of the NCM link starts here (the static start refusals above have passed, review m6;
+        # N1 r4 review RB4 F3: the serial port is opened and the start refusal re-checked only after the gate, so a ready
+        # PC side may already be retrying its connect over NCM when they refuse: harmless, nothing listens on the device
+        # yet, and nothing has been sent on the ACM console)
+        # and the console waits for it, bounded (the readiness gate, FsN1Spec PcReadyWaitSec/PcReadyLeadSec). The r3
+        # attempt sent fs-n1 5.6 s after the job started, the device listened 10 s, and the PC side's first look
+        # ended 28.5 s after its start. Nothing has been sent yet; the time spent here is re-checked below (the same
+        # start refusal) and the engine's runner gate still decides on its own clock.
+        $job = Start-FsN1XferJob -Nonce $nonce -Chal $tokens.C -WindowEndUtc $dl.GiveUpUtc -AdapterWaitSec $sp.AdapterWaitSec
+        $gateU = [DateTime]::UtcNow.AddSeconds($sp.PcReadyWaitSec)
+        $leadU = $origin.AddSeconds($limitSec - $sp.PcReadyLeadSec)
+        if ($leadU -lt $gateU) { $gateU = $leadU }
+        $rdy = Wait-FsN1XferReady $job $gateU
+        $gateNote = if ($rdy.Ready) { "ready after $($rdy.WaitedMs) ms (the session saw it at +$($rdy.ReadyMs) ms)" }
+                    elseif ($rdy.Ended) { "NOT READY: the session ended after $($rdy.WaitedMs) ms ($($rdy.State))" }
+                    else { "NOT READY after $($rdy.WaitedMs) ms (the gate's bound; the session keeps looking): $($rdy.State)" }
+        Write-Output (ConvertTo-FsPrintable "NCM ADAPTER (PC side): $gateNote")
         $t = New-FsRawSerialTransport -PortName $port -PollMs $poll
         $nowMs = [long]$t.NowMs(); $nowU = [DateTime]::UtcNow
         $cv = ConvertTo-FsTransportDeadlines -Deadlines $dl -NowMs $nowMs -NowUtc $nowU
         $why = Get-FsLiveStartRefusal -RemainMs $cv.RemainMs -AckRemainMs $cv.AckRemainMs -AckWindowSec $sp.AckWindowSec
         if ($why) { throw "refused (after $([long]($nowU - $cliUtc).TotalSeconds) s of preparation): $why" }
-        $limitSec = $sp.DeviceDeadlineSec - $margin - $sp.RunnerWorstSec - $sp.RunnerMarginSec
-        $timing = [ordered]@{ BudgetOrigin = 'BootStartUtc'; BootStartUtc = $origin.ToString('o'); HandoffUtcEvidence = $(if ($hoEv) { $hoEv.ToString('o') } else { $null })
+        $timing =[ordered]@{ BudgetOrigin = 'BootStartUtc'; BootStartUtc = $origin.ToString('o'); HandoffUtcEvidence = $(if ($hoEv) { $hoEv.ToString('o') } else { $null })
                               GiveUpUtc = $dl.GiveUpUtc.ToString('o'); AckGiveUpUtc = $dl.AckGiveUpUtc.ToString('o'); DeviceDeadlineNoEarlierThanUtc = $dl.DeviceDeadlineUtc.ToString('o')
                               RunnerStartNoLaterThanUtc = $origin.AddSeconds($limitSec).ToString('o'); DeviceRunnerStartLimit = "T0 + $($sp.DeviceRunnerStartLimitSec) s"
                               CollectorStartUtc = $cliUtc.ToString('o'); ConvertedAtUtc = $nowU.ToString('o'); ConvertedAtMs = $nowMs
                               PreparationMs = [long]($nowU - $cliUtc).TotalMilliseconds; RemainMsAtConversion = $cv.RemainMs; AckRemainMsAtConversion = $cv.AckRemainMs
-                              XferWindowEndUtc = $dl.GiveUpUtc.ToString('o'); XferAdapterWaitSec = $sp.AdapterWaitSec }
+                              XferWindowEndUtc = $dl.GiveUpUtc.ToString('o'); XferAdapterWaitSec = $sp.AdapterWaitSec
+                              PcReadyGateUntilUtc = $gateU.ToString('o'); PcReady = $rdy.Ready; PcReadyWaitedMs = $rdy.WaitedMs; PcReadyState = (ConvertTo-FsPrintable $rdy.State) }
         $cfg = New-FsN1Cfg -Nonce $nonce -GiveUpMs $cv.GiveUpMs -AckGiveUpMs $cv.AckGiveUpMs -Timing $timing -HostMarginSec $margin
         Write-Output "HOST GIVE-UP: $($dl.GiveUpUtc.ToString('o')); the runner is sent only before $($origin.AddSeconds($limitSec).ToString('o')) (BootStartUtc + $limitSec s <= T0 + $($sp.DeviceRunnerStartLimitSec) s); the NCM transfer client runs in the background until the give-up at the latest"
-        # the PC side of the NCM link, in the background (bounded: the host give-up at the latest), started only now that
-        # every start refusal has passed (review m6)
-        $job = Start-FsN1XferJob -Nonce $nonce -Chal $tokens.C -WindowEndUtc $dl.GiveUpUtc -AdapterWaitSec $sp.AdapterWaitSec
         $started = $true
         $r = Invoke-FsCollectRun -Transport $t -OutDir $OutDirK -Tokens $tokens -Cfg $cfg -Mode 'live' -PortName $port
     }

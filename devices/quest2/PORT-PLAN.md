@@ -1,5 +1,12 @@
 # Quest 2 port plan: v2.7 only (offline scoping)
 
+> **Status update (2026-11-08):** device order (PM, 2026-10-20): Quest 2 and Quest Pro join after R-1 works on
+> Quest 3/3S, then all four move in lockstep. **Memory (PM decision, J-241):** the Quest 2 has 6 GiB, too little for
+> R-1's RAM-held image, so its SteamOS image will be served from the PC over USB, verified on the headset by
+> dm-verity, nothing written to the headset (FS-R-019 §6: needs its own authenticated, read-only transport and
+> disconnect handling in the Quest 2 package). The Quest 2 kernel source and builds are in WSL `~/work/kgateq2`.
+> Community leads: a private research note (private). The plan below is the 2026-10-10 scoping.
+
 > **Status update (2026-10-10):** the PM's unit is now **on v2.7**
 > (`52242990024200150`, slot b). `ro.boot.vbmeta.digest` matches the
 > computed `91b7f93d…`, and a read-only Q2-P1 baseline has been taken

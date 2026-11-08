@@ -8,8 +8,9 @@
 - **CPU:** 1.80/2.42/2.84 GHz.
 - **GPU:** bin 0, 587 MHz [M-static, Meta firmware tables].
 
-**Status (2026-10-10):** the unit is **on v2.7** (slot b) (J-75; details
-under "Unit status" below). The
+**Status (2026-11-08):** unchanged on the device side; PM decision (J-241): the Quest 2 image is to be served from the PC. R-1 is emulator-only so far (J-247). The status below is historical.
+
+**Status (2026-10-10):** the unit is **on v2.7** (slot b) (J-75; details under "Unit status" below). The
 USB channel (`channel/`) is built offline and has never run on a headset.
 FS-R-010 §7 asks for the complete channel folder so the Chair can review the
 implementation. It was supplied in the consolidated FS-A-011 (sent
