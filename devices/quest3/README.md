@@ -13,6 +13,8 @@ has caused issues on newer firmware; may matter for SteamOS (IPD sensing).
 Record it in Unit 2's baseline and the checklist before using Unit 2 as the
 v2.7 platform (J-69).
 
+**Status (2026-11-08):** current state is in the root `README.md` status line: K1a, T0 and K1g are complete on both units, N1 passed on Unit 2 (2026-11-08), FS-A-021 is in preparation. The 2026-10-11 status below is historical.
+
 **Status (2026-10-11):** Stage 1 achieved. Trial (i) (stage 2a) registered
 COMPATIBILITY FAIL at step 4, a listing-rule defect (FS-R-009). Trial (iii)
 (stage 3a display) registered INCONCLUSIVE, with no light seen (FS-R-010;

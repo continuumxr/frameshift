@@ -10,9 +10,10 @@ project up cold, read it top to bottom, then follow [How to resume](#how-to-resu
 Everything else in the repository is linked from here.
 
 **New to FrameShift?** Read [How FrameShift works](docs/HOW-FRAMESHIFT-WORKS.md) first: a plain-language
-guide to the design, the safety systems and what has been tested so far.
+guide to the design, the safety systems and what has been tested so far. For a one-page answer to "can I try it yet?", see
+[What works today](docs/WHAT-WORKS-TODAY.md).
 
-*Status as of 2026-10-23 UTC (JOURNAL up to J-244, latest ruling FS-R-018). **Milestone T0 passed on both Quest 3 units on 2026-10-18:** the first thermal-service step identified the temperature, fan and battery sensors under stock Android and read them through a short CPU load; the fan-trip table, corrected after the first run, matches on both units (FS-R-016). **Milestone K1a** passed on both units on 2026-10-17: a FrameShift-built Horizon OS v2.7 kernel, from Meta's published kernel source, booted by temporary boot with Meta's stock modules (FS-R-013). The boot-chain storage write guard (**K1g**) **passed on both Quest 3 units** (411 of 411 cases, 402 of them refusals, protected partitions unchanged): on Unit 2 after a first attempt whose probe stopped itself before arming the guard (fail-closed; nothing was written), on Unit 1 on its one attempt (2026-10-23). The USB network link (**N1**) has **not passed yet**: its second run on Unit 2 failed on a timing problem in our own PC-side tool (it took too long to find the new network adapter) before the transfer started; a faster tool is built and another run needs a new review. **Next:** a reviewed N1 re-run, the Steam-ready kernel (K1i), the full thermal service and **R-1 "SteamOS boots"**, the first big milestone. Nothing to install yet.*
+*Status as of 2026-11-08 UTC (JOURNAL up to J-257, latest ruling FS-R-020). **Milestone T0 passed on both Quest 3 units on 2026-10-18:** the first thermal-service step identified the temperature, fan and battery sensors under stock Android and read them through a short CPU load; the fan-trip table, corrected after the first run, matches on both units (FS-R-016). **Milestone K1a** passed on both units on 2026-10-17: a FrameShift-built Horizon OS v2.7 kernel, from Meta's published kernel source, booted by temporary boot with Meta's stock modules (FS-R-013). The boot-chain storage write guard (**K1g**) **passed on both Quest 3 units** (411 of 411 cases, 402 of them refusals, protected partitions unchanged): on Unit 2 after a first attempt whose probe stopped itself before arming the guard (fail-closed; nothing was written), on Unit 1 on its one attempt (2026-10-23). The USB network link (**N1**) **passed on Unit 2 on 2026-11-08**, on the third run: an 8 MiB transfer each way over the USB network function, checksums matching on both sides. The second run had failed because our own PC-side tool was too slow to find the new network adapter (not a Windows problem); a faster tool fixed it. N1 has not yet been run on Unit 1. **R-1 "SteamOS boots"** has so far passed only in an emulator, with the image sized to the headset's memory; nothing has been booted on a headset yet. The Steam-ready kernel (**K1i**) is built and has passed its offline checks; its run on a headset is still pending. **Next:** the K1i headset run, the full thermal service and R-1 on a headset, the first big milestone. Nothing to install yet. For a one-page answer see [What works today](docs/WHAT-WORKS-TODAY.md).*
 
 *This status line is the project's single current-status source. Status lines
 in other documents (`docs/PROJECT_SETUP.md` §7, `docs/JOURNAL.md` "Where we are
@@ -32,13 +33,13 @@ differ, this one wins.*
 - **Thermal sensors:** the sensors the thermal service needs are identified
   and read on both Quest 3 units (T0, J-205/J-206). This does not yet prove
   FrameShift's own thermal protection; that is the later TS stages.
-- **Boot-chain guard:** our guard kernel booted on Unit 2, but the first probe
-  run stopped itself before arming (K1g r2 REVIEW, J-207); the fix is built.
+- **Boot-chain guard:** passed on both Quest 3 units (K1g, 411 of 411 cases;
+  FS-R-019).
 - **Not yet:** SteamOS itself. No Valve rootfs or systemd has run on a
   headset, and there is nothing to install.
-- **Next:** the boot-chain guard (K1g r3), the USB network link (N1), then
-  the Steam-ready kernel (K1i), the full thermal service and R-1 "SteamOS
-  boots". The Quest 2 channel continues offline.
+- **USB network link:** passed on Unit 2 (N1, 2026-11-08); Unit 1 is next.
+- **Next:** the Steam-ready kernel on a headset (K1i), the full thermal service
+  and R-1 "SteamOS boots". The Quest 2 channel continues offline.
 
 New here and not on the team? [Outsider quickstart](#outsider-quickstart)
 says what you need, what builds and which tests run offline.

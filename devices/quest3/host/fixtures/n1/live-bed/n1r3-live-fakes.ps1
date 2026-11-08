@@ -10,7 +10,8 @@
 #   New-FsRawSerialTransport  the COM port -> a scripted ACM device: the N1 QEMU harness capture (c-full) delivered by
 #                             the replay transport of the pinned engine (every write must equal the recorded one), plus
 #                             the device's xfer step: when fs-n1 <chal> is written, an FSX1 responder starts on ::1 and
-#                             the rest of the record is held back until it has served the PC side (at most 60 s)
+#                             the rest of the record is held back until its listen window (ListenMs, 10 s as the
+#                             unit's) and any session have ended (at most 60 s)
 #   New-FsHex                 the random host tokens -> the capture's own tokens (the device answers are recorded)
 #   New-FsN1Cfg               the real one, then the harness's kernel release and PID 1 (as -N1ReplayKernel/-Pid1 do)
 # Every event is appended to <bed>\host\n1r3-bed.log; the configuration is <bed>\host\n1r3-bed.json.
@@ -19,6 +20,21 @@ $script:N1BedCfg = [IO.File]::ReadAllText((Join-Path $script:N1BedDir 'n1r3-bed.
 $script:N1BedLogPath = Join-Path $script:N1BedDir 'n1r3-bed.log'
 function Write-N1BedLog([string]$Line) { [IO.File]::AppendAllText($script:N1BedLogPath, "$([DateTime]::UtcNow.ToString('o')) $Line`n") }
 Write-N1BedLog 'bed loaded'
+# fix/n1-linklocal: the bed models the PC side's timing as the r3 live attempt showed it. The adapter appears
+# AdapterAfterMs after the bed loads (the collector start; on the unit it is already there: both gadget functions
+# enumerate together), its link-local address stays Tentative for TentativeMs (DAD), the PC side's FIRST lookup costs
+# FirstLookupDelayMs (r3: 28.5 s with the CIM cmdlets), and the device's xfer step listens ListenMs only (fs-xfer.c
+# LISTEN_MS = 10000). The responder's port is reserved now (nothing listens on it until fs-n1: a connect is refused,
+# as the unit's kernel refuses it before the listener exists).
+function Get-N1BedNum([string]$Name, [long]$Default) { if ($script:N1BedCfg.PSObject.Properties[$Name]) { [long]$script:N1BedCfg.$Name } else { $Default } }
+$script:N1BedTiming = [ordered]@{ AdapterAfterMs = (Get-N1BedNum 'AdapterAfterMs' 0); TentativeMs = (Get-N1BedNum 'TentativeMs' 1500)
+                                  FirstLookupDelayMs = (Get-N1BedNum 'FirstLookupDelayMs' 300); ListenMs = (Get-N1BedNum 'ListenMs' 10000) }
+$bedL = New-Object Net.Sockets.TcpListener([Net.IPAddress]::IPv6Loopback, 0); $bedL.Start(); $script:N1BedPort = ([Net.IPEndPoint]$bedL.LocalEndpoint).Port; $bedL.Stop()
+[AppDomain]::CurrentDomain.SetData('n1r3.bed.port', [int]$script:N1BedPort)
+[AppDomain]::CurrentDomain.SetData('n1r3.bed.t0', [long][DateTime]::UtcNow.Ticks)
+[AppDomain]::CurrentDomain.SetData('n1r3.bed.timing', (@($script:N1BedTiming.Values) -join ','))
+[AppDomain]::CurrentDomain.SetData('n1r3.bed.lookups', [int]0)
+Write-N1BedLog "timing $(@($script:N1BedTiming.Keys | ForEach-Object { "$_=$($script:N1BedTiming[$_])" }) -join ' ') port $($script:N1BedPort)"
 $script:N1BedTokens = New-Object 'System.Collections.Generic.Queue[string]'
 foreach ($tk in @($script:N1BedCfg.Tokens)) { $script:N1BedTokens.Enqueue([string]$tk) }
 
@@ -48,13 +64,13 @@ function New-FsN1Cfg {
 # The device's xfer step: an FSX1 responder on ::1 in a runspace (the same protocol as test-host-n1.ps1's Start-Emu and
 # n1/src/fs-xfer.c); its port is published in the AppDomain for the PC side's adapter stand-in (n1r3-live-fakes-xfer.ps1).
 function Start-N1BedResponder([string]$N, [string]$Ch) {
-    $l = New-Object Net.Sockets.TcpListener([Net.IPAddress]::IPv6Loopback, 0); $l.Start()
+    $l = New-Object Net.Sockets.TcpListener([Net.IPAddress]::IPv6Loopback, [int]$script:N1BedPort); $l.Start()
     $port = ([Net.IPEndPoint]$l.LocalEndpoint).Port
     $rs = [PowerShell]::Create()
-    $null = $rs.AddScript({ param($L, $N, $Ch)
+    $null = $rs.AddScript({ param($L, $N, $Ch, $ListenMs)
         $L.Server.ReceiveTimeout = 0
-        $deadline = [DateTime]::UtcNow.AddSeconds(60)
-        while (-not $L.Pending()) { if ([DateTime]::UtcNow -ge $deadline) { $L.Stop(); return 'no connection within 60 s' }; Start-Sleep -Milliseconds 50 }
+        $deadline = [DateTime]::UtcNow.AddMilliseconds($ListenMs)
+        while (-not $L.Pending()) { if ([DateTime]::UtcNow -ge $deadline) { $L.Stop(); return "accept-timeout (no connection within $ListenMs ms)" }; Start-Sleep -Milliseconds 50 }
         $s = $L.AcceptSocket(); $L.Stop(); $s.ReceiveTimeout = 15000; $s.SendTimeout = 15000
         $hdr = New-Object Collections.Generic.List[byte]; $b1 = New-Object byte[] 1
         while ($s.Receive($b1) -eq 1) { $hdr.Add($b1[0]); if ($b1[0] -eq 10 -or $hdr.Count -gt 200) { break } }
@@ -67,10 +83,9 @@ function Start-N1BedResponder([string]$N, [string]$Ch) {
         $off = 0; while ($off -lt $d.Length) { $off += $s.Send($d, $off, [Math]::Min(65536, $d.Length - $off), 'None') }
         $null = $s.Send([Text.Encoding]::ASCII.GetBytes("FSX1 END $N $Ch rx=$got rx_sha256=$rh tx=8388608 tx_sha256=$th`n"))
         $s.Shutdown('Send'); try { while ($s.Receive($buf) -gt 0) { } } catch { }; $s.Close(); "served rx=$got"
-    }).AddArgument($l).AddArgument($N).AddArgument($Ch)
+    }).AddArgument($l).AddArgument($N).AddArgument($Ch).AddArgument([int]$script:N1BedTiming.ListenMs)
     $h = $rs.BeginInvoke()
-    [AppDomain]::CurrentDomain.SetData('n1r3.bed.port', [int]$port)
-    Write-N1BedLog "device xfer step listening on [::1]:$port (fs-n1 $Ch)"
+    Write-N1BedLog "device xfer step listening on [::1]:$port for $($script:N1BedTiming.ListenMs) ms (fs-n1 $Ch)"
     [pscustomobject]@{ Ps = $rs; H = $h; Port = $port }
 }
 
@@ -104,6 +119,7 @@ function New-FsRawSerialTransport {
         Write-N1BedLog "write: $text"
         $this.Inner.WriteBytes($b)
         if ($this.Inner.Divergence.Count) { Write-N1BedLog "DIVERGENCE: $(@($this.Inner.Divergence) -join ' | ')" }
+        if ($text -ceq 'fs-done') { [AppDomain]::CurrentDomain.SetData('n1r3.bed.gone', $true); Write-N1BedLog 'the device leaves the bus (fs-done: it reboots)' }
         if ($text -cmatch '^fs-n1 ([0-9a-f]{32})\z') { $this.Emu = Start-N1BedResponder ([string]$script:N1BedCfg.Nonce) $Matches[1]; $this.Hold = $true; $this.HoldEnd = [DateTime]::UtcNow.AddSeconds(60) }
     }
     $t | Add-Member ScriptMethod Idle { param([long]$untilMs) if ($this.Held()) { Start-Sleep -Milliseconds 50; return }; $this.Inner.Idle($untilMs) }

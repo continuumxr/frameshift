@@ -17,6 +17,8 @@
 #   Start-FsN1XferJob / Wait-FsN1XferJob    the same in a background runspace (the collector's ACM engine runs meanwhile);
 #                                       N1 r3: the runspace writes NO file and needs no directory; the collector writes
 #                                       its result after the engine (which alone creates the output directory)
+#   Wait-FsN1XferReady                  fix/n1-linklocal: the collector's bounded readiness gate (the session reports
+#                                       the adapter Up with a preferred link-local address through its Sync table)
 #
 # The FSX1 protocol (normative text: devices/quest3/n1/README.md s.4; fs-xfer.c's header):
 #   PC -> device: "FSX1 <nonce> <chal> 8388608 8388608\n", then 8388608 random bytes;
@@ -80,6 +82,119 @@ public static class FsN1Stream {
 '@
 }
 
+# fix/n1-linklocal (the N1 r3 live failure, nonce 0dc233fcc7071b53): the adapter lookup's default sources were the PnP
+# and NetTCPIP cmdlets (CIM). In a fresh runspace one pass cost ~27 s on the PC (Get-PnpDevice ~3 s, each
+# Get-PnpDeviceProperty ~1.6-2.2 s, x 7 per pass, Get-NetAdapter ~4.4 s cold, Get-NetIPAddress ~3 s cold): the first
+# pass ended 28.5 s after the job started, 13 s after the device's 10 s listen window had closed. The defaults are now
+# the native read-only tables: the configuration manager (cfgmgr32: present devices, children, service, driver key),
+# the network class key (read only) and System.Net.NetworkInformation (status, MAC, ifIndex, IPv6 DAD state). Same
+# facts, same refusals; nothing is changed on the PC.
+if (-not ('FsN1Cm' -as [type])) {
+    Add-Type -Language CSharp -TypeDefinition @'
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
+public static class FsN1Cm {
+    [DllImport("cfgmgr32.dll", CharSet = CharSet.Unicode)] static extern int CM_Get_Device_ID_List_SizeW(out uint len, string filter, uint flags);
+    [DllImport("cfgmgr32.dll", CharSet = CharSet.Unicode)] static extern int CM_Get_Device_ID_ListW(string filter, char[] buf, uint len, uint flags);
+    [DllImport("cfgmgr32.dll", CharSet = CharSet.Unicode)] static extern int CM_Locate_DevNodeW(out uint inst, string id, uint flags);
+    [DllImport("cfgmgr32.dll")] static extern int CM_Get_Child(out uint child, uint inst, uint flags);
+    [DllImport("cfgmgr32.dll")] static extern int CM_Get_Sibling(out uint sib, uint inst, uint flags);
+    [DllImport("cfgmgr32.dll", CharSet = CharSet.Unicode)] static extern int CM_Get_Device_IDW(uint inst, StringBuilder buf, int len, uint flags);
+    [DllImport("cfgmgr32.dll", CharSet = CharSet.Unicode)] static extern int CM_Get_DevNode_Registry_PropertyW(uint inst, uint prop, out uint type, byte[] buf, ref uint len, uint flags);
+    const uint FILTER_ENUMERATOR = 0x1, FILTER_PRESENT = 0x100, CR_BUFFER_SMALL = 0x1A;
+    public const uint DRP_SERVICE = 0x5, DRP_DRIVER = 0xA;
+    // the instance ids of the PRESENT devices of one enumerator (e.g. "USB")
+    public static string[] PresentIds(string enumerator) {
+        for (int k = 0; k < 4; k++) {
+            uint n;
+            if (CM_Get_Device_ID_List_SizeW(out n, enumerator, FILTER_ENUMERATOR | FILTER_PRESENT) != 0 || n == 0) return new string[0];
+            char[] b = new char[n + 64];
+            int cr = CM_Get_Device_ID_ListW(enumerator, b, (uint)b.Length, FILTER_ENUMERATOR | FILTER_PRESENT);
+            if (cr == CR_BUFFER_SMALL) continue;
+            if (cr != 0) return new string[0];
+            return new string(b).Split(new char[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+        return new string[0];
+    }
+    // the direct children of a present device (DEVPKEY_Device_Children)
+    public static string[] Children(string id) {
+        List<string> r = new List<string>();
+        uint inst, ch;
+        if (CM_Locate_DevNodeW(out inst, id, 0) != 0) return r.ToArray();
+        if (CM_Get_Child(out ch, inst, 0) != 0) return r.ToArray();
+        for (int guard = 0; guard < 64; guard++) {
+            StringBuilder sb = new StringBuilder(512);
+            if (CM_Get_Device_IDW(ch, sb, sb.Capacity, 0) == 0) r.Add(sb.ToString());
+            uint nx;
+            if (CM_Get_Sibling(out nx, ch, 0) != 0) break;
+            ch = nx;
+        }
+        return r.ToArray();
+    }
+    // one string registry property of a present device (service, driver key), or null
+    public static string RegString(string id, uint prop) {
+        uint inst, type;
+        if (CM_Locate_DevNodeW(out inst, id, 0) != 0) return null;
+        byte[] b = new byte[2048];
+        uint len = (uint)b.Length;
+        if (CM_Get_DevNode_Registry_PropertyW(inst, prop, out type, b, ref len, 0) != 0) return null;
+        string s = Encoding.Unicode.GetString(b, 0, (int)Math.Min(len, (uint)b.Length));
+        int z = s.IndexOf('\0');
+        return z >= 0 ? s.Substring(0, z) : s;
+    }
+}
+'@
+}
+$script:FsN1NetClassKey = 'SYSTEM\CurrentControlSet\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}'
+# read-only: one value of a key under HKLM, or $null
+function Get-FsN1HklmValue([string]$Key, [string]$Name) {
+    $k = $null
+    try { $k = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($Key, $false); if ($null -eq $k) { return $null }; $v = $k.GetValue($Name); if ($null -eq $v) { return $null }; return [string]$v }
+    catch { return $null } finally { if ($null -ne $k) { $k.Close() } }
+}
+# read-only: the network adapters as the stack reports them (status, MAC, ifIndex), each with its PnP instance id
+# (the network class key: NetCfgInstanceId -> DeviceInstanceID)
+function Get-FsN1NetAdapters {
+    $map = @{}
+    $ck = $null
+    try {
+        $ck = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($script:FsN1NetClassKey, $false)
+        if ($null -ne $ck) {
+            foreach ($n in $ck.GetSubKeyNames()) {
+                if ($n -cnotmatch '^[0-9]{4}\z') { continue }
+                $sk = $null
+                try { $sk = $ck.OpenSubKey($n, $false); if ($null -ne $sk) { $g = $sk.GetValue('NetCfgInstanceId'); $d = $sk.GetValue('DeviceInstanceID'); if ($g -and $d) { $map[([string]$g).ToUpperInvariant()] = [string]$d } } }
+                catch { } finally { if ($null -ne $sk) { $sk.Close() } }
+            }
+        }
+    } catch { } finally { if ($null -ne $ck) { $ck.Close() } }
+    @(foreach ($ni in [Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces()) {
+        $idx = 0
+        try { $p = $ni.GetIPProperties(); try { $idx = [int]$p.GetIPv6Properties().Index } catch { try { $idx = [int]$p.GetIPv4Properties().Index } catch { } } } catch { }
+        $mac = (@($ni.GetPhysicalAddress().GetAddressBytes() | ForEach-Object { $_.ToString('X2') }) -join '-')
+        $gid = ([string]$ni.Id).ToUpperInvariant()
+        [pscustomobject]@{ IfIndex = $idx; Name = [string]$ni.Name; Description = [string]$ni.Description; Mac = $mac
+                           Status = [string]$ni.OperationalStatus; PnpId = $(if ($map.ContainsKey($gid)) { $map[$gid] } else { $null }) }
+    })
+}
+# read-only: the IPv6 link-local addresses of one interface, each "<address> <DAD state>" (Preferred | Tentative |
+# Duplicate | Deprecated | Invalid: the AddressState names of Get-NetIPAddress)
+function Get-FsN1LinkLocal([int]$IfIndex) {
+    foreach ($ni in [Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces()) {
+        $p = $null; $idx = -1
+        try { $p = $ni.GetIPProperties(); $idx = [int]$p.GetIPv6Properties().Index } catch { continue }
+        if ($idx -ne $IfIndex) { continue }
+        return @(foreach ($u in $p.UnicastAddresses) {
+            if ($u.Address.AddressFamily -eq [Net.Sockets.AddressFamily]::InterNetworkV6 -and $u.Address.IsIPv6LinkLocal) {
+                $st = 'Unknown'; try { $st = [string]$u.DuplicateAddressDetectionState } catch { }
+                "$($u.Address) $st"
+            } })
+    }
+    @()
+}
+
 function Test-FsN1Hex([string]$S, [int]$Len) { $S -cmatch ('^[0-9a-f]{' + $Len + '}\z') }
 function Get-FsN1Ids([string]$Nonce) {
     if (-not (Test-FsN1Hex $Nonce 16)) { throw 'refused: nonce must be 16 lowercase hex' }
@@ -102,24 +217,19 @@ function Get-FsN1UtcText { [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ss.ffff
 # addresses. Refusal is set (and the lookup stops) at the first thing that is not so. Read only.
 function Find-FsN1Adapter {
     param([Parameter(Mandatory)][string]$Nonce,
-          [scriptblock]$ListDevices = { Get-PnpDevice -PresentOnly -ErrorAction SilentlyContinue | ForEach-Object InstanceId },
-          [scriptblock]$GetChildren = { param($id)
-              $p = $null
-              try { $p = Get-PnpDeviceProperty -InstanceId $id -KeyName 'DEVPKEY_Device_Children' -ErrorAction Stop } catch { return @() }
-              if ($p -and ($p.PSObject.Properties.Name -contains 'Data') -and $p.Data) { return @($p.Data) }
-              return @() },
-          [scriptblock]$ListAdapters = { @(Get-NetAdapter -ErrorAction SilentlyContinue | ForEach-Object {
-              [pscustomobject]@{ IfIndex = [int]$_.ifIndex; Name = [string]$_.Name; Description = [string]$_.InterfaceDescription
-                                 Mac = [string]$_.MacAddress; Status = [string]$_.Status; PnpId = [string]$_.PnPDeviceID } }) },
+          [scriptblock]$ListDevices = { [FsN1Cm]::PresentIds('USB') },
+          [scriptblock]$GetChildren = { param($id) @([FsN1Cm]::Children([string]$id)) },
+          [scriptblock]$ListAdapters = { Get-FsN1NetAdapters },
           [scriptblock]$GetDriver = { param($id)
               $r = [ordered]@{ Service = $null; InfPath = $null; DriverVersion = $null; DriverProvider = $null }
-              foreach ($k in @(@('Service', 'DEVPKEY_Device_Service'), @('InfPath', 'DEVPKEY_Device_DriverInfPath'), @('DriverVersion', 'DEVPKEY_Device_DriverVersion'), @('DriverProvider', 'DEVPKEY_Device_DriverProvider'))) {
-                  try { $p = Get-PnpDeviceProperty -InstanceId $id -KeyName $k[1] -ErrorAction Stop; if ($p -and $p.PSObject.Properties['Data']) { $r[$k[0]] = [string]$p.Data } } catch { }
+              $r.Service = [FsN1Cm]::RegString([string]$id, [FsN1Cm]::DRP_SERVICE)
+              $dk = [FsN1Cm]::RegString([string]$id, [FsN1Cm]::DRP_DRIVER)
+              if ($dk -and $dk -cmatch '^\{[0-9A-Fa-f-]{36}\}\\[0-9]{4}\z') {
+                  $key = "SYSTEM\CurrentControlSet\Control\Class\$dk"
+                  $r.InfPath = Get-FsN1HklmValue $key 'InfPath'; $r.DriverVersion = Get-FsN1HklmValue $key 'DriverVersion'; $r.DriverProvider = Get-FsN1HklmValue $key 'ProviderName'
               }
               [pscustomobject]$r },
-          [scriptblock]$GetLinkLocal = { param($ifIndex)
-              @(Get-NetIPAddress -InterfaceIndex $ifIndex -AddressFamily IPv6 -ErrorAction SilentlyContinue |
-                Where-Object { $_.IPAddress -like 'fe80:*' } | ForEach-Object { [string]$_.IPAddress + ' ' + [string]$_.AddressState }) })
+          [scriptblock]$GetLinkLocal = { param($ifIndex) @(Get-FsN1LinkLocal ([int]$ifIndex)) })
     $ids = Get-FsN1Ids $Nonce
     $want = $ids.Serial
     $r = [ordered]@{ Nonce = $Nonce; Utc = (Get-FsN1UtcText); Parent = $null; Serials = @(); Adapter = $null; Driver = $null; HostLinkLocal = @()
@@ -268,31 +378,47 @@ function Save-FsN1XferJson($X, [string]$Path) {
 }
 
 # The live session (the collector runs it in a background runspace, Start-FsN1XferJob): BOUNDED ENUMERATION - the
-# adapter of THIS attempt is looked up once a second until it is Up with a preferred link-local address, or until
+# adapter of THIS attempt is looked up every PollMs (250 ms) until it is Up with a preferred link-local address, or until
 # AdapterWaitSec have passed, or until WindowEndUtc, or until $Sync.Stop; every change is recorded (the timeline). Then
 # the FSX1 session until WindowEndUtc. Returns the object (and writes <OutDir>\xfer.json when -OutDir is given).
+# fix/n1-linklocal: every lookup is timed (LookupMs on each timeline entry; Lookups, LookupMsMax on the object), the
+# poll is 250 ms (an address leaving DAD is seen within a quarter second), the session's own start is recorded
+# (SessionStartUtc; r3 wrote StartUtc = EndUtc, both taken at the end, when no adapter was ready), and readiness is
+# published to the collector through $Sync (Ready, ReadyMs, State: the collector's bounded readiness gate waits for it
+# BEFORE the console session, so the PC side is ready before the runner's xfer step listens).
 function Invoke-FsN1XferSession {
     param([Parameter(Mandatory)][string]$Nonce, [Parameter(Mandatory)][string]$Chal, [string]$OutDir = '',
-          [Parameter(Mandatory)][DateTime]$WindowEndUtc, [int]$AdapterWaitSec = 60, $Sync = $null, [scriptblock]$Find = $null)
+          [Parameter(Mandatory)][DateTime]$WindowEndUtc, [int]$AdapterWaitSec = 60, $Sync = $null, [scriptblock]$Find = $null, [int]$PollMs = 250)
     $ids = Get-FsN1Ids $Nonce
+    $startU = Get-FsN1UtcText
     $tl = New-Object System.Collections.Generic.List[object]
     $sw = [Diagnostics.Stopwatch]::StartNew()
-    $found = $null; $last = ''; $a = $null
-    $expD = Get-FsN1D2hExpectedSha $Nonce $Chal        # computed before the device listens (it takes about a second)
+    $found = $null; $last = ''; $a = $null; $nLook = 0; $maxLook = 0L; $readyMs = $null
     while ($true) {
         if ($null -ne $Sync -and $Sync.Stop) { break }
+        $lk = [Diagnostics.Stopwatch]::StartNew()
         $a = if ($null -ne $Find) { & $Find $Nonce } else { Find-FsN1Adapter -Nonce $Nonce }
+        $lkMs = $lk.ElapsedMilliseconds; $nLook++; if ($lkMs -gt $maxLook) { $maxLook = $lkMs }
+        # N1 r4 review RB4 F4: a lookup that returned nothing is "not ready" (never read as ready), and the polling goes on
+        if ($null -eq $a) { $a = [pscustomobject]@{ Parent = $null; Serials = @(); Adapter = $null; Driver = $null; HostLinkLocal = @(); MacExpected = $null; MacMatches = $false; Refusal = 'the adapter lookup returned nothing' } }
         $st = if ($a.Refusal) { [string]$a.Refusal } else { 'ready' }
-        if ($st -cne $last) { $tl.Add([ordered]@{ Ms = $sw.ElapsedMilliseconds; Utc = (Get-FsN1UtcText); State = (ConvertTo-FsN1Printable $st) }); $last = $st }
-        if (-not $a.Refusal) { $found = $a; break }
+        if ($st -cne $last) {
+            $tl.Add([ordered]@{ Ms = $sw.ElapsedMilliseconds; Utc = (Get-FsN1UtcText); State = (ConvertTo-FsN1Printable $st); LookupMs = $lkMs }); $last = $st
+            if ($null -ne $Sync) { $Sync.State = (ConvertTo-FsN1Printable $st) }
+        }
+        if (-not $a.Refusal) { $found = $a; $readyMs = $sw.ElapsedMilliseconds; break }
         if ($sw.Elapsed.TotalSeconds -ge $AdapterWaitSec -or [DateTime]::UtcNow -ge $WindowEndUtc) { break }
-        Start-Sleep -Milliseconds 1000
+        Start-Sleep -Milliseconds $PollMs
     }
+    $expD = Get-FsN1D2hExpectedSha $Nonce $Chal        # after the lookup (about a second), before the runner's xfer step
+    # N1 r4 review RB4: readiness is published only now, after the expected-stream hash, so the gate releases the console
+    # when the next thing this session does is its first connect (ReadyMs: when the lookup saw the adapter ready)
+    if ($null -ne $found -and $null -ne $Sync) { $Sync.ReadyMs = $readyMs; $Sync.Ready = $true }
     $snap = $null
     if ($null -ne $a) { $snap = [ordered]@{ Parent = $a.Parent; Serials = @($a.Serials); Adapter = $a.Adapter; Driver = $a.Driver; HostLinkLocal = @($a.HostLinkLocal); MacExpected = $a.MacExpected; MacMatches = $a.MacMatches; Refusal = $a.Refusal } }
     if ($null -eq $found) {
         $x = [ordered]@{ Schema = $script:FsN1XferSchema; Client = 'devices/quest3/host/fs-xfer-n1.ps1'; Fixture = $false; Mode = 'ok'; Nonce = $Nonce; Challenge = $Chal
-                         Port = $script:FsN1XferPort; Address = $ids.LinkLocal; ScopeId = 0; StartUtc = (Get-FsN1UtcText); EndUtc = (Get-FsN1UtcText); Adapter = $snap
+                         Port = $script:FsN1XferPort; Address = $ids.LinkLocal; ScopeId = 0; StartUtc = $startU; EndUtc = (Get-FsN1UtcText); Adapter = $snap
                          ConnectAttempts = 0; ConnectRefused = 0; ConnectedAfterMs = $null
                          Result = $(if ($null -ne $Sync -and $Sync.Stop) { 'stopped' } else { 'no-adapter' })
                          H2d = [ordered]@{ Bytes = 0; Sha256 = $null; Ms = $null }; D2h = [ordered]@{ Bytes = 0; Sha256 = $null; ExpectedSha256 = $expD; Ms = $null }
@@ -305,6 +431,9 @@ function Invoke-FsN1XferSession {
     }
     $x | Add-Member NoteProperty AdapterTimeline $tl.ToArray()
     $x | Add-Member NoteProperty AdapterWaitSec $AdapterWaitSec
+    $x | Add-Member NoteProperty SessionStartUtc $startU
+    $x | Add-Member NoteProperty Lookups $nLook
+    $x | Add-Member NoteProperty LookupMsMax $maxLook
     if ($OutDir) { Save-FsN1XferJson $x (Join-Path $OutDir 'xfer.json') }
     $x
 }
@@ -314,7 +443,7 @@ function Invoke-FsN1XferSession {
 function Start-FsN1XferJob {
     param([Parameter(Mandatory)][string]$Nonce, [Parameter(Mandatory)][string]$Chal,
           [Parameter(Mandatory)][DateTime]$WindowEndUtc, [int]$AdapterWaitSec = 60)
-    $sync = [hashtable]::Synchronized(@{ Stop = $false })
+    $sync = [hashtable]::Synchronized(@{ Stop = $false; Ready = $false; ReadyMs = $null; State = '' })
     $ps = [PowerShell]::Create()
     $lib = Join-Path $PSScriptRoot 'fs-xfer-n1.ps1'
     $null = $ps.AddScript({ param($Lib, $Nonce, $Chal, $WindowEndUtc, $AdapterWaitSec, $Sync)
@@ -334,4 +463,12 @@ function Wait-FsN1XferJob($Job, [int]$TimeoutMs = 90000) {
     try { $errs += @($Job.PowerShell.Streams.Error | ForEach-Object { ConvertTo-FsN1Printable $_.ToString() }) } catch { }
     try { $Job.PowerShell.Dispose() } catch { }
     [pscustomobject]@{ Completed = [bool]$done; Result = $out; Errors = $errs }
+}
+# fix/n1-linklocal: the collector's readiness gate. Waits (bounded: until UntilUtc) for the background session to report
+# this attempt's adapter Up with a preferred link-local address, or for the session to end. Never stops the session
+# (a session not ready yet keeps looking until its own bounds). Returns @{ Ready; WaitedMs; ReadyMs; State; Ended }.
+function Wait-FsN1XferReady($Job, [DateTime]$UntilUtc, [int]$PollMs = 100) {
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    while (-not $Job.Sync.Ready -and -not $Job.Handle.IsCompleted -and [DateTime]::UtcNow -lt $UntilUtc) { Start-Sleep -Milliseconds $PollMs }
+    [pscustomobject]@{ Ready = [bool]$Job.Sync.Ready; WaitedMs = $sw.ElapsedMilliseconds; ReadyMs = $Job.Sync.ReadyMs; State = [string]$Job.Sync.State; Ended = [bool]$Job.Handle.IsCompleted }
 }

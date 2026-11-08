@@ -2,9 +2,11 @@
 
 **Licence:** CC-BY-4.0 (our own documentation; [PROVENANCE-POLICY.md](PROVENANCE-POLICY.md) §6).
 
+*FrameShift is an independent project. It is not affiliated with, endorsed by or sponsored by Valve or Meta. Steam, SteamOS, Meta and Quest are trademarks of their respective owners.*
+
 *A plain-language guide to what FrameShift is, how it boots, how it keeps a headset safe, and what
-has actually been shown so far. It is updated at each milestone. **Current as of 2026-10-23 UTC**
-(journal up to J-244). The status line of the root [README](../README.md) is the project's single
+has actually been shown so far. It is updated at each milestone. **Current as of 2026-11-08 UTC**
+(journal up to J-257). The status line of the root [README](../README.md) is the project's single
 status source and may lag this guide between exports. [JOURNAL.md](JOURNAL.md) is the day-by-day
 record; "J-222" and similar labels are its entry numbers.*
 
@@ -523,11 +525,13 @@ UTC. The names in bold (M1, K1a and so on) are the project's milestone codes.
   attempt came out REVIEW (the probe stopped before arming; nothing written) and the replacement
   attempt **passed**. Unit 1 **passed** on its one attempt (2026-10-23). Each pass: 411 of 411
   cases, 402 of them refusals, protected partitions unchanged, no kernel warning.
-- **N1, USB network link (2026-10-21 and 10-23), Unit 2: not yet passed.** The first run stopped
-  on our own PC-side tool before anything was sent (fixed). The second run brought the headset's
-  side of the link up exactly as designed, but our PC-side tool took about 28 seconds to find the
-  new network adapter while the headset listens for 10, so the transfer never started: **N1 FAIL**,
-  a timing problem in our own PC tool. A faster tool is built; another run needs a new review.
+- **N1, USB network link (2026-10-21 to 11-08), Unit 2: passed on the third run.** A network link
+  over the USB cable, next to the serial console, carried 8 MiB each way between our kernel and the
+  PC, with matching hashes on both sides and no kernel warning. The first run stopped on our own
+  PC-side tool before anything was sent; the second failed because that tool took about 28 seconds
+  to find the new network adapter while the headset listens for 10. Both stay on the record. With a
+  faster tool, the adapter was ready in under 2 seconds. **Not shown:** Unit 1 (a separate run is
+  planned), sustained or high-throughput networking.
 
 ### In an emulator
 
@@ -607,6 +611,11 @@ follow, and all four move together after R-1.
   thermal service is proven, runs are short, bounded and attended, with temperature limits before,
   during and after. The full rules are in [PROJECT_SETUP.md](PROJECT_SETUP.md) §6A and the
   ["Do not go here" list](JOURNAL.md#do-not-go-here) in the journal.
+- **Boot before flash; never brick.** Every image is first proven by a temporary boot (`fastboot
+  boot`, nothing written) before writing it to a headset is even proposed. Any future install or
+  update method must show, before it is used, that every failure leaves the headset able to start
+  Horizon OS or a recovery path the owner can use by hand, and it never touches the boot chain.
+  FrameShift assumes an already-unlocked headset; how to unlock one is outside its scope.
 - **No redistribution of Valve or Meta files.** This repository contains no Valve or Meta software,
   firmware or images. Users get SteamOS from Valve. Meta's drivers and firmware are used from the
   user's own headset at run time, or rebuilt from Meta's published source.

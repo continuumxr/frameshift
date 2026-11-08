@@ -57,6 +57,7 @@ Set-StrictMode -Version 2.0
 . (Join-Path $PSScriptRoot '..\stage1\fs-proto.ps1')     # Invoke-FsNative, Get-FsFastbootSerials, Get-FsHandoffClass, Get-FsGadget, Register-FsAttempt, Test-FsAttemptFree (read only)
 . (Join-Path $PSScriptRoot 'fs-k1g-units.ps1')         # the two units and THE ORDER GATE (Get-FsK1gOrderGate; read only)
 . (Join-Path $PSScriptRoot 'fs-nonceonly-k1g.ps1')      # Test-FsNonceOnlyK1g, the reviewed K1g candidate (its parameters K1gNo* and fs-nonceonly3d's Reference, Candidate, ReferenceSha collide with none of this file's)
+. (Join-Path $PSScriptRoot 'fs-admission-r2.ps1')   # Test-FsAdmissionBatteryRule: the ONE battery/temperature admission rule (admission r2; read only)
 
 # the v2.7 OTA inputs (as K1a) and the pinned K1g kernel and probe (IMAGE PINS: k1g/kernel/record/run1, kgate
 # check-k1g.json; k1g/build-probe.sh). The coordinator fills in K1gKernel and FsbgProbe; empty = every image refused.
@@ -128,20 +129,16 @@ function Test-FsObsDwell {
 # Console checklist gate (J-118): the last entries of phases A, B and E of the K1g sign-off tooling (private) passed (A for this
 # nonce, in the order A, B, E), E (presence) at most FsObsChecklistMaxAgeSec old, every entry written by the pinned
 # fs-checklist3d.ps1, the single temperature reading of B (J-125) passed (below 350 with status 3/4/5, or below 300 while
-# charging, J-145; the battery level above 50 %, FS-R-012 s.5), phase A of today's PC date (J-143 review MAJOR-2), and tied to this
+# charging, J-145, or below 350 while charging with the level above 70 %, admission r2; the battery level above 50 %, FS-R-012 s.5), phase A of today's PC date (J-143 review MAJOR-2), and tied to this
 # BA (reading <= BA start, BA start - reading <= FsObsReadingToBaMaxSec), and E begun at or after BF's start.
 # Returns @{ Ok; Why; Path; Sha256; EUtc; AgeSec; TxtPath; TxtSha256; ReadingToBaSec }.
 $script:FsObsChecklistMaxAgeSec = 300
 $script:FsObsReadingToBaMaxSec = 900
-# J-145 (PM): the battery rule of a reading (phase B's typed reading and BA10): status 3, 4 or 5 (discharging, not
-# charging, full) below 350 (checked by the caller), or status 2 (charging) only below 300 (30.0 deg C); status 1 (unknown)
-# never. $T and $S are the digits as text (already checked to be digits). Returns $null when the rule holds, else why.
-$script:FsObsChargingLimit = 300
-function Test-FsObsBatteryRule([string]$T, [string]$S) {
-    if ($S -cmatch '^[345]\z') { return $null }
-    if ($S -ceq '2') { if ([int]$T -lt $script:FsObsChargingLimit) { return $null }; return "battery status 2 (charging) with temperature ${T}: charging is accepted only below $($script:FsObsChargingLimit) (30.0 deg C; J-145)" }
-    "battery status $S is not 3, 4 or 5 (discharging, not charging, full), nor 2 (charging) below $($script:FsObsChargingLimit): the battery state is unknown or not accepted"
-}
+# J-145 (PM), admission r2 (PM direction 2026-10-23, Chair ruling pending): the battery rule of a reading (phase B's typed reading and
+# BA10) is the ONE shared function Test-FsAdmissionBatteryRule (fs-admission-r2.ps1): status 3, 4 or 5 below 350 (35.0 deg C, checked by the
+# caller), or status 2 (charging) below 300 (30.0 deg C), or below 350 when the battery level is above 70 %; status 1 never. $T, $S and $L are
+# the digits as text (already checked to be digits). Returns $null when the rule holds, else why.
+function Test-FsObsBatteryRule([string]$T, [string]$S, [string]$L = '') { Test-FsAdmissionBatteryRule $T $S $L }
 # Default: <withheld capture tool> (default captures root <repo>\captures, <cycle> = captures\<nonce>) writes
 # <cycle>\BA\SUMMARY.txt, so the checklist is looked for in the BA directory's parent (<cycle>) and then its
 # grandparent (for <dir>\<nonce>\BA: <dir>); the first that exists is used.
@@ -173,7 +170,7 @@ function Get-FsObsChecklistPin([string]$Q3) {
 # Review MAJOR-1: BA's own machine-captured battery row. In the BA SUMMARY.txt that Read-FsObsPhaseSummary has
 # accepted (this nonce, this serial, PHASE BA OK) the BA10 row must have exit 0, its file BA10.txt (next to the
 # SUMMARY) must hash to the recorded SHA-256, and its dumpsys battery text must hold exactly one temperature line
-# below 350 and exactly one status line of 3, 4 or 5 (or 2 with the temperature below 300, J-145), and exactly one
+# below 350 and exactly one status line of 3, 4 or 5 (or 2 with the temperature below 300, J-145, or below 350 with the level above 70 %, admission r2), and exactly one
 # level line above 50 (FS-R-012 s.5; 0-100, no leading zero, as phase B's typed level). Returns @{ Ok; Why; Temp; Status; Level; File; Sha256 }.
 function Test-FsObsBa10 {
     param([string]$BaSummary)
@@ -196,8 +193,8 @@ function Test-FsObsBa10 {
     if ($tv -cnotmatch '^[0-9]{1,4}\z' -or [int]$tv -ge 350) { return (& $no "temperature $tv at BA is not below 350 (35.0 deg C)") }
     # second review MINOR-2: the same floor as the typed reading (below 100 = 10.0 deg C is not a plausible reading)
     if ([int]$tv -lt 100) { return (& $no "temperature $tv at BA is below 100 (10.0 deg C): not a plausible reading (100 to 349)") }
-    # J-145: the same battery rule as phase B (status 3/4/5 below 350; status 2, charging, only below 300)
-    $bw = Test-FsObsBatteryRule $tv $sv
+    # J-145 / admission r2: the same battery rule as phase B (status 3/4/5 below 350; status 2, charging, below 300, or below 350 with the level above 70 %)
+    $bw = Test-FsObsBatteryRule $tv $sv $lv
     if ($bw) { return (& $no "at BA: $bw") }
     # second review MINOR-5: BA10's level is machine-checked too (SIGNOFF C: level > 50)
     if ($lm.Count -ne 1 -or $lv -cnotmatch '^(100|[1-9]?[0-9])\z') { return (& $no "$f does not hold exactly one 'level:' line of 0 to 100 (found $($lm.Count): '$lv')") }
@@ -289,8 +286,8 @@ function Test-FsObsChecklist {
     if (-not ($rS -is [string]) -or $rS -cnotmatch '^[1-5]\z') { return (& $no "phase B's battery status '$rS' is not one digit 1 to 5") }
     # FS-R-012 s.5: the battery above 50 % (phase B's typed level; BA10's level is checked the same way)
     if (-not ($rC -is [string]) -or $rC -cnotmatch '^(100|[1-9]?[0-9])\z' -or [int]$rC -le 50) { return (& $no "phase B's battery level '$rC' is not above 50 % (FS-R-012 s.5; -R1Charge, required)") }
-    # J-145: status 3/4/5 below 350, or status 2 (charging) only below 300
-    $bw = Test-FsObsBatteryRule $rT $rS
+    # J-145 / admission r2: status 3/4/5 below 350, or status 2 (charging) below 300, or below 350 with the level above 70 %
+    $bw = Test-FsObsBatteryRule $rT $rS $rC
     if ($bw) { return (& $no "phase B's reading: $bw") }
     # review MAJOR-2: the reading was taken on this unit
     if (-not ($rU -is [string]) -or $rU -cne $Serial) { return (& $no "phase B's temperature reading was taken on unit '$rU', not on this attempt's unit $Serial ($($script:FsObsUnits[$Serial])): take a reading on $Serial (the K1g sign-off tooling (private) -Phase B -R1Serial $Serial)") }

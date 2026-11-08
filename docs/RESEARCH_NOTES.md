@@ -340,3 +340,24 @@ need the PM's approval and its own relay.
 | VA_BITS 39 vs 48 for K1i | `docs/research/va-bits-k1i.md` |
 | Stearlight (static study) | `docs/research/stearlight.md` |
 | Reframed VR (ArmadaVR renamed) | `docs/research/reframed-vr.md` |
+| panel geometry, stereo, cant and roll | `docs/research/display-geometry-stereo.md` |
+| emergency shutdown design | `docs/research/emergency-shutdown-design.md` |
+| GPU route decision (route e′, J-154) | `docs/research/gpu-route-decision.md` |
+| open-source tracking survey | `docs/research/oss-tracking-survey.md` |
+| performance envelope, Quest 1 and Quest 2 | `docs/research/perf-envelope-quest1-2.md` |
+| performance envelope, XR Elite (shelved) | `docs/research/perf-envelope-xr-elite.md` |
+| community Quest ports: tracking | `docs/research/quest-ports-tracking.md` |
+| stage 3 (GPU) and stage 4 (SteamOS rootfs) plan | `docs/research/stage3-4-plan.md` |
+| SteamOS ports survey | `docs/research/steamos-ports-survey.md` |
+| SteamOS update channels (D7) | `docs/research/steamos-update-channels.md` |
+| tracking and input route | `docs/research/tracking-input-route.md` |
+| USB link design (PD-8) | `docs/research/usb-link-design.md` |
+| slotting Valve's image in (distribution architecture) | `docs/research/valve-image-slot-in.md` |
+| Valve's hardware writers and protections | `docs/research/valve-writer-inventory.md` |
+| device health design | `docs/research/device-health-design.md` |
+| PD mapper (battery service) | `docs/research/pd-mapper.md` |
+| HibiscusXR | `docs/research/hibiscusxr.md` |
+| fs-blkguard, the boot-chain write guard (design) | `docs/research/fs-blkguard-design.md` |
+| VA_BITS 39 vs 48 for K1i | `docs/research/va-bits-k1i.md` |
+| Stearlight (static study) | `docs/research/stearlight.md` |
+| Reframed VR (ArmadaVR renamed) | `docs/research/reframed-vr.md` |

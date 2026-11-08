@@ -7,6 +7,7 @@
 - **Kernel:** the **same source tree as the Quest 3** (Meta's README lists
   `eureka`, `panther` and `xse_panther`), built with its own config
   (36 lines differ).
+- **Status (2026-11-08):** the offline study is done (private note; J-251). Still offline/build only, no unit.
 - **No PM-owned unit.** A third-party tester may run reviewed images later
   (`docs/PROJECT_SETUP.md` §6A item 9).
 
