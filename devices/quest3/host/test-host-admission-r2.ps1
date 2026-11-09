@@ -4,10 +4,10 @@
 # Sections:
 #   P  Test-FsAdmissionBatteryRule (fs-admission-r2.ps1) against an independent integer oracle; the boundary cases (status 2 at
 #      69/70/71 %, 29.9/30.0/34.9/35.0 deg C); status 3/4/5 unchanged; status 1 and malformed text never
-#   W  the observers' wrapper Test-FsObsBatteryRule (K1g, N1) answers exactly as the shared function
+#   (W, the observers' wrapper: moved to test-host-admission-r3.ps1 with thermal r3; the K1g/N1 tools now use fs-admission-r3.ps1)
 #   X  parity: the T0 checker's Python mirror (ts/tools/t0_check.py) answers as the PowerShell rule (needs python)
-#   S  source: the four enforcing tools dot-source the shared file and hold no second copy of the rule; the SIGNOFF host-pin
-#      tables of K1g and N1 pin fs-admission-r2.ps1 as the working file
+#   S  source: r2 stays for the T0 tools (fs-t0-capture.ps1 dot-sources it, SIGNOFF-t0.md pins it) and for history; thermal r3
+#      (devices/quest3/THERMAL-R3.md) moved the K1g/N1 tools to fs-admission-r3.ps1, so they no longer dot-source or pin r2
 # The end-to-end cases (phase B of the checklists, BA10 and the recorded reading at the observers) are in test-host-k1g.ps1
 # (L4, L4b, O8, O8b) and test-host-n1.ps1 (ADM1, ADM2); the T0 session in test-host-t0.ps1 (admission cases) and
 # ts/tools/test_t0.py (the checker, run under WSL with a native fs-thermald test build).
@@ -82,19 +82,6 @@ $why2 = Test-FsAdmissionBatteryRule '350' '2' '100'
 T 'P9 35.0 C is refused by the rule itself with a reason naming the limit' ($why2 -like '*350*35.0 deg C*') $why2
 T 'P10 the limits are the documented ones: 35.0 C (350), 30.0 C (300), the status 2 level above 70 %, the level above 50 %, the floor 100' ($script:FsAdmTempLimit -eq 350 -and $script:FsAdmChargingLimit -eq 300 -and $script:FsAdmChargingHighLevel -eq 70 -and $script:FsAdmLevelAbove -eq 50 -and $script:FsAdmTempMin -eq 100) "$($script:FsAdmTempLimit)/$($script:FsAdmChargingLimit)/$($script:FsAdmChargingHighLevel)/$($script:FsAdmLevelAbove)/$($script:FsAdmTempMin)"
 
-# W: the observers' wrapper is the same function
-foreach ($ob in 'fs-observe-k1g.ps1', 'fs-observe-n1.ps1') {
-    $f = Join-Path $here $ob
-    $res = & { param($file, $ts, $ls, $ss) . $file
-        $o = New-Object System.Collections.Generic.List[string]
-        foreach ($t in $ts) { foreach ($l in $ls) { foreach ($s in $ss) { $a = Test-FsObsBatteryRule "$t" "$s" "$l"; $b2 = Test-FsAdmissionBatteryRule "$t" "$s" "$l"; if ([string]$a -cne [string]$b2) { $o.Add("T=$t S=$s L=$l wrapper '$a' shared '$b2'") } } } }
-        $o.Add("TWOARG-299:$(if ($null -eq (Test-FsObsBatteryRule '299' '2')) { 'accepted' } else { 'refused' })")
-        $o.Add("TWOARG-340:$(if ($null -eq (Test-FsObsBatteryRule '340' '2')) { 'accepted' } else { 'refused' })")
-        $o } $f $temps $levels $statuses
-    $diff = @($res | Where-Object { $_ -notlike 'TWOARG-*' })
-    T "W $ob Test-FsObsBatteryRule answers exactly as the shared rule on the grid; with no level, status 2 passes below 30.0 C and not above" ($diff.Count -eq 0 -and ($res -contains 'TWOARG-299:accepted') -and ($res -contains 'TWOARG-340:refused')) ($res -join '; ')
-}
-
 # X: parity with the T0 checker's Python mirror (ts/tools/t0_check.py admission_battery_ok); skipped when no python is installed
 $py = Get-Command python -ErrorAction SilentlyContinue
 if ($py) {
@@ -119,23 +106,21 @@ print('X', 1 if m.admission_battery_ok(2, 340, None) else 0, 1 if m.admission_ba
     T "X1 the T0 checker's Python mirror answers exactly as the PowerShell rule on the same grid ($cnt cases), and refuses status 2 above 30.0 C with an unknown level" ($bad.Count -eq 0 -and $cnt -eq 560) (($bad | Select-Object -First 5) -join '; ')
 } else { $log.Add('SKIP  X1: no python on the PATH') }
 
-# S: the source
-$files = 'fs-checklist-k1g.ps1', 'fs-observe-k1g.ps1', 'fs-checklist-n1.ps1', 'fs-observe-n1.ps1', 'fs-t0-capture.ps1'
+# S: the source (thermal r3: the K1g/N1 tools use fs-admission-r3.ps1; T0 keeps r2)
 $bad = @()
-foreach ($f in $files) {
-    $t = [IO.File]::ReadAllText((Join-Path $here $f))
-    if ($t -cnotmatch "(?m)^\. \(Join-Path \`$PSScriptRoot 'fs-admission-r2\.ps1'\)") { $bad += "$f does not dot-source fs-admission-r2.ps1" }
-    if ($t -cnotmatch 'Test-FsAdmissionBatteryRule') { $bad += "$f never calls the shared rule" }
-    if ($t -cmatch '-lt \$script:\w*ChargingLimit' -or $t -cmatch '\$script:\w*StatusOk\b') { $bad += "$f still holds its own copy of the charging rule" }
-}
-T 'S1 the five enforcing PowerShell tools (K1g and N1 checklists and observers, the T0 capture) dot-source fs-admission-r2.ps1, call the shared rule and hold no second copy of it' ($bad.Count -eq 0) ($bad -join '; ')
+$t = [IO.File]::ReadAllText((Join-Path $here 'fs-t0-capture.ps1'))
+if ($t -cnotmatch "(?m)^\. \(Join-Path \`$PSScriptRoot 'fs-admission-r2\.ps1'\)") { $bad += 'fs-t0-capture.ps1 does not dot-source fs-admission-r2.ps1' }
+if ($t -cnotmatch 'Test-FsAdmissionBatteryRule') { $bad += 'fs-t0-capture.ps1 never calls the shared rule' }
+if ($t -cmatch '-lt \$script:\w*ChargingLimit' -or $t -cmatch '\$script:\w*StatusOk\b') { $bad += 'fs-t0-capture.ps1 still holds its own copy of the charging rule' }
+foreach ($f in 'fs-checklist-k1g.ps1', 'fs-observe-k1g.ps1', 'fs-checklist-n1.ps1', 'fs-observe-n1.ps1') {
+    if ([IO.File]::ReadAllText((Join-Path $here $f)) -cmatch "fs-admission-r2\.ps1'\)") { $bad += "$f still dot-sources fs-admission-r2.ps1 (thermal r3 moved it to fs-admission-r3.ps1)" } }
+T 'S1 the T0 capture dot-sources fs-admission-r2.ps1, calls the shared rule and holds no second copy of it; the K1g/N1 checklists and observers no longer dot-source r2 (thermal r3)' ($bad.Count -eq 0) ($bad -join '; ')
 $q3 = Split-Path -Parent $here
 $wk = Sha (Join-Path $here 'fs-admission-r2.ps1'); $bad = @()
-foreach ($sg in 'SIGNOFF-k1g.md', 'SIGNOFF-n1.md', 'SIGNOFF-t0.md') {
-    $m = [regex]::Match([IO.File]::ReadAllText((Join-Path $q3 $sg)), '\| `devices\\quest3\\host\\fs-admission-r2\.ps1` \| `([0-9a-f]{64})` \|')
-    if (-not $m.Success) { $bad += "$sg has no fs-admission-r2.ps1 pin row" } elseif ($m.Groups[1].Value -cne $wk) { $bad += "$sg pins $($m.Groups[1].Value), the working file is $wk" }
-}
-T 'S2 SIGNOFF-k1g.md, SIGNOFF-n1.md and SIGNOFF-t0.md pin fs-admission-r2.ps1 as the working file (make-signoff-k1g.ps1, make-signoff-n1.ps1 and make-signoff-t0.ps1 were run after the last change)' ($bad.Count -eq 0) (($bad -join '; ') + " [$wk]")
+$m = [regex]::Match([IO.File]::ReadAllText((Join-Path $q3 'SIGNOFF-t0.md')), '\| `devices\\quest3\\host\\fs-admission-r2\.ps1` \| `([0-9a-f]{64})` \|')
+if (-not $m.Success) { $bad += 'SIGNOFF-t0.md has no fs-admission-r2.ps1 pin row' } elseif ($m.Groups[1].Value -cne $wk) { $bad += "SIGNOFF-t0.md pins $($m.Groups[1].Value), the working file is $wk" }
+foreach ($sg in 'SIGNOFF-k1g.md', 'SIGNOFF-n1.md') { if ([IO.File]::ReadAllText((Join-Path $q3 $sg)) -cmatch 'fs-admission-r2\.ps1') { $bad += "$sg still pins fs-admission-r2.ps1" } }
+T 'S2 SIGNOFF-t0.md pins fs-admission-r2.ps1 as the working file (unchanged since admission r2); SIGNOFF-k1g.md and SIGNOFF-n1.md no longer name it (thermal r3)' ($bad.Count -eq 0) (($bad -join '; ') + " [$wk]")
 
 $log.Add("TOTAL: $n cases, $fail failed")
 Write-Output "TOTAL: $n cases, $fail failed"

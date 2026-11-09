@@ -19,7 +19,8 @@ function Find-FsN1Adapter {
     $goneAtStart = ($true -eq [AppDomain]::CurrentDomain.GetData('n1r3.bed.gone'))
     if ($n -eq 1 -and $tm[2] -gt 0) { Start-Sleep -Milliseconds $tm[2] }
     $goneAtEnd = ($true -eq [AppDomain]::CurrentDomain.GetData('n1r3.bed.gone'))
-    $el = ([DateTime]::UtcNow.Ticks - [long][AppDomain]::CurrentDomain.GetData('n1r3.bed.t0')) / 10000
+    $now = [DateTime]::UtcNow.Ticks
+    $el = ($now - [long][AppDomain]::CurrentDomain.GetData('n1r3.bed.t0')) / 10000
     $r = [ordered]@{ Nonce = $Nonce; Utc = (Get-FsN1UtcText); Parent = $null; Serials = @(); Adapter = $null; Driver = $null; HostLinkLocal = @()
                      MacExpected = $ids.HostMac; MacMatches = $false; DeviceAddress = $ids.LinkLocal; Refusal = $null }
     # the device left the bus (fs-done): a lookup that began after it sees no device; a slow lookup that straddled it saw
@@ -37,7 +38,10 @@ function Find-FsN1Adapter {
     $r.Adapter = [pscustomobject]@{ IfIndex = 1; Name = 'n1r3 test bed'; Description = 'TEST BED loopback stand-in (::1)'; Mac = $ids.HostMac; Status = 'Up'; PnpId = 'TESTBED\N1R3\0' }
     $r.Driver = [pscustomobject]@{ Service = 'TESTBED'; InfPath = 'none'; DriverVersion = 'none'; DriverProvider = 'test bed' }
     $r.MacMatches = $true
-    if ($el -lt $tm[0] + $tm[1]) { $r.HostLinkLocal = @('::1 Tentative'); $r.Refusal = "adapter ifIndex 1 has no preferred IPv6 link-local address yet (::1 Tentative)"; return [pscustomobject]$r }
+    # LV7 (test-only correction, FS-A-021): the Tentative window starts at the FIRST lookup that sees the present adapter (its read time $now),
+    # not at the bed's load, so the client's first view is Tentative whatever the CPU load (TentativeMs is unchanged).
+    if ($null -eq [AppDomain]::CurrentDomain.GetData('n1r3.bed.tent0')) { [AppDomain]::CurrentDomain.SetData('n1r3.bed.tent0', [long]$now) }
+    if ($now -lt [long][AppDomain]::CurrentDomain.GetData('n1r3.bed.tent0') + $tm[1] * 10000) { $r.HostLinkLocal = @('::1 Tentative'); $r.Refusal = "adapter ifIndex 1 has no preferred IPv6 link-local address yet (::1 Tentative)"; return [pscustomobject]$r }
     $r.HostLinkLocal = @('::1 Preferred')
     [pscustomobject]$r
 }

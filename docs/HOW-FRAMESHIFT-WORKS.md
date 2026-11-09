@@ -6,7 +6,7 @@
 
 *A plain-language guide to what FrameShift is, how it boots, how it keeps a headset safe, and what
 has actually been shown so far. It is updated at each milestone. **Current as of 2026-11-08 UTC**
-(journal up to J-257). The status line of the root [README](../README.md) is the project's single
+(journal up to J-263). The status line of the root [README](../README.md) is the project's single
 status source and may lag this guide between exports. [JOURNAL.md](JOURNAL.md) is the day-by-day
 record; "J-222" and similar labels are its entry numbers.*
 
@@ -405,7 +405,7 @@ The planned run:
 
 1. **Boot.** The K1i kernel and our initramfs start by `fastboot boot`, as in section 2.1. Nothing
    is flashed.
-2. **Load.** A USB network link (N1, built and reviewed; device test pending) carries Valve's
+2. **Load.** A USB network link (N1, passed on both units) carries Valve's
    signed SteamOS image from the PC **into the headset's memory**. It is never written to the
    headset's storage.
 3. **Verify, twice.**
@@ -442,10 +442,10 @@ from the same Meta source with the guard, and Valve's real 0.4.5 image:
 
 Before R-1 may run on a headset, it needs:
 
-- K1g passed (done on Unit 2);
+- K1g passed (done on both units);
 - the K1i kernel run;
 - the thermal service stages T1 to T5 on that kernel;
-- the N1 link test;
+- the N1 link test (done on both units);
 - a review of the session length as extended operation;
 - concurrence from the external review board on the concrete package.
 
@@ -525,13 +525,12 @@ UTC. The names in bold (M1, K1a and so on) are the project's milestone codes.
   attempt came out REVIEW (the probe stopped before arming; nothing written) and the replacement
   attempt **passed**. Unit 1 **passed** on its one attempt (2026-10-23). Each pass: 411 of 411
   cases, 402 of them refusals, protected partitions unchanged, no kernel warning.
-- **N1, USB network link (2026-10-21 to 11-08), Unit 2: passed on the third run.** A network link
+- **N1, USB network link (2026-10-21 to 11-08), both units: passed.** Unit 2 passed on its third run; Unit 1 passed on its first attempt (2026-11-08). The milestone is complete. On Unit 2: A network link
   over the USB cable, next to the serial console, carried 8 MiB each way between our kernel and the
   PC, with matching hashes on both sides and no kernel warning. The first run stopped on our own
   PC-side tool before anything was sent; the second failed because that tool took about 28 seconds
   to find the new network adapter while the headset listens for 10. Both stay on the record. With a
-  faster tool, the adapter was ready in under 2 seconds. **Not shown:** Unit 1 (a separate run is
-  planned), sustained or high-throughput networking.
+  faster tool, the adapter was ready in under 2 seconds. **Not shown:** sustained or high-throughput networking.
 
 ### In an emulator
 
@@ -572,7 +571,7 @@ The day-by-day record, including every result that did not go as hoped, is in
 The order below is the owner's. The project plans by milestones, not dates (the milestone table is
 in [PROJECT_SETUP.md](PROJECT_SETUP.md) §3).
 
-1. **K1g on Unit 1,** and **N1** (the USB network link) on Unit 2.
+1. **K1g and N1 are done on both units.** The thermal rules for these runs were updated (FS-R-021): a run may start when the headset is below 40 °C, it stops at 43 °C, and follow-up runs are shorter when the temperature is not rising.
 2. **K1i:** the Steam-ready kernel with its rebuilt modules and the restart lockdown, booted on both
    units, with the guard proven again on it.
 3. **TS T1 to T5:** the full thermal and battery service on K1i (sensors, CPU and GPU caps, fan,

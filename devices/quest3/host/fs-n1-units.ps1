@@ -9,8 +9,12 @@
 #     a bound, clean K1G PASS as fs-k1g-units.ps1's Get-FsK1gUnit2Outcome reads it (its gate revision r1: the r2 K1G
 #     REVIEW 0cbd71dd67acc301 stays REVIEW, superseded for progression by the one r3 successor, FS-R-016 s.5, s.6).
 #     Both rules are fs-k1g-units.ps1's (Get-FsK1gK1aGate, Get-FsK1gUnit2Outcome), read through it unchanged;
-#   - N1 on Unit 1 (QUEST3UNIT1) opens only when Unit 1's own K1a result is a bound, clean K1A PASS with a valid
-#     MemTotal AND Unit 2's N1 result is a bound, clean N1 PASS (and the PM was told: phase A question A5).
+#   - N1 on Unit 1 (QUEST3UNIT1; the N1 Unit 1 revision, n1/CHANGES-unit1.md) opens only when it is OPEN (the switch
+#     $script:FsN1Unit1Enabled AND the Chair's ruling on Unit 1 N1 pinned in $script:FsN1Unit1, EMPTY until then), every
+#     N1 trace of both units is attributed (Get-FsN1TraceMap), Unit 1 has no N1 trace at all (exactly one Unit 1 attempt),
+#     Unit 1's own K1a result is the pinned bound, clean K1A PASS with a valid MemTotal and its K1g result the pinned
+#     bound, clean K1G PASS (each equal to its committed evidence copy), AND Unit 2's N1 result is a bound, clean N1 PASS
+#     (and the PM was told: phase A question A5).
 # Each N1 attempt: its own fresh nonce (a nonce-only rebuild of the reviewed N1 candidate), its own readback rows (the
 # K1a READBACK-EXPECT files: same build, slot and ranges) and its own ledger entry (build\n1\attempted\<nonce>.attempted).
 # Any REVIEW, FAIL, INTEGRITY FAULT, INCONCLUSIVE, unclean PASS or attempt without an outcome record blocks the next
@@ -45,16 +49,30 @@
 #   (a ledger entry, attempt.lock or observe.json relabelled to Unit 1 counts as Unit 2's), an N1 ledger entry or lock
 #   whose unit= disagrees with its serial= is refused, and the N1 r4 ruling must be later than FS-R-018 and its text
 #   must name 0dc233fcc7071b53 and "N1 r4".
+# N1 ON UNIT 1 (the N1 Unit 1 revision, n1/CHANGES-unit1.md; FS-R-019 s.3, s.5d): fail-closed per-unit discovery.
+#   - Unit 2's paths NEVER skip a trace as Unit 1's, whether or not N1 on Unit 1 is open (Test-FsN1SkipUnit1 and
+#     Test-FsN1OnlyUnit1 are always $false): a Unit 1 N1 attempt can only follow Unit 2's N1 PASS, after which Unit 2 has
+#     no further attempt, so no legitimate Unit 1 trace can be what a Unit 2 admission skips; relabelling a Unit 2 trace
+#     as Unit 1's therefore never opens Unit 2. Unit 2's outcomes are those of N1 gate revision r2 as deployed.
+#   - N1 on Unit 1 is OPEN only with the switch on AND the Chair's ruling on Unit 1 N1 pinned ($script:FsN1Unit1, empty
+#     until then: flipping the switch alone does nothing). While it is open, every N1 trace (each ledger entry, attempt.lock,
+#     observe.json and committed ledger copy) must be attributed by exactly one known serial with a matching unit=, readable,
+#     not hidden, all traces of one nonce naming the same unit; anything else is refused for BOTH units (Get-FsN1TraceMap).
+#   - Unit 1 may have exactly ONE N1 attempt: any trace attributed to Unit 1 (any of the four paths) refuses another.
+#     Relabelling a Unit 2 trace as Unit 1's makes it a Unit 1 trace (Unit 1 refused) and leaves it a trace Unit 2's paths
+#     count as their own (Unit 2 refused); relabelling a Unit 1 trace as Unit 2's makes it an extra Unit 2 attempt, which
+#     blocks Unit 2's N1 result and so Unit 1.
 # The K1a units library and the shared FSB1 decoder are dot-sourced, never edited.
 . (Join-Path $PSScriptRoot 'fs-k1a-units.ps1')           # the two units, Get-FsK1aUnit2Outcome, the K1a pins (read only)
 . (Join-Path $PSScriptRoot '..\common\host\fsb1.ps1')    # Test-Fsb1Record (read only)
 . (Join-Path $PSScriptRoot 'fs-k1g-units.ps1')           # the K1g gate: both units' K1a (with MemTotal), Unit 2's K1g (read only)
 $script:FsN1UnitsDir = $PSScriptRoot
 # PM decision 2026-10-16 (a): N1 runs on Unit 2 only; a Unit 1 run is optional, for later. Coordinator decision
-# 2026-10-16: N1 on Unit 2 runs after both K1a attempts and after K1g on Unit 2 (Get-FsN1Prereq). The
-# Unit 1 rule below stays written but is not open: a Unit 1 attempt is refused until a new PM decision and package
-# revision set this to $true.
-$script:FsN1Unit1Enabled = $false
+# 2026-10-16: N1 on Unit 2 runs after both K1a attempts and after K1g on Unit 2 (Get-FsN1Prereq). PM preference
+# 2026-10-23 ("run every device test on both units"; FS-R-019 s.5d concurs in principle, Unit 2 first): the N1 Unit 1
+# revision turns the switch on. It is NOT sufficient: N1 on Unit 1 opens only once the Chair's ruling on Unit 1 N1 is
+# pinned in $script:FsN1Unit1 below (EMPTY until then: Unit 1 stays refused; Test-FsN1Unit1Open).
+$script:FsN1Unit1Enabled = $true
 $script:FsN1ClassifySchema = 'frameshift.fs-classify-n1.v1'
 $script:FsN1Outcomes = @('N1 PASS', 'N1 REVIEW', 'N1 FAIL', 'INTEGRITY FAULT', 'INCONCLUSIVE')
 $script:FsN1Steps = @('kernel', 'mem', 'modules', 'net', 'xfer', 'log')
@@ -152,16 +170,14 @@ function Test-FsN1NoteUnitsAgree([string]$Note) {
     foreach ($p in $pr) { $nm = Get-FsK1aUnitName $p.Groups[1].Value; if (-not $nm -or $nm -cne $p.Groups[2].Value) { return $false } }
     $true
 }
-# RA4c F1: may a Unit 2 path skip an N1 trace naming $Serial as Unit 1's? Only while N1 on Unit 1 is open
-# ($script:FsN1Unit1Enabled, a PM decision and package revision): until then no Unit 1 N1 attempt can exist, so a trace
-# naming Unit 1 (a relabelled ledger entry, attempt.lock or observe.json) counts as Unit 2's
-function Test-FsN1SkipUnit1([string]$Serial) { [bool]$script:FsN1Unit1Enabled -and $Serial -ceq $script:FsK1aUnit1 }
-# $true only when Unit 1's N1 rule is open, the text names a serial, EVERY serial= value is exactly Unit 1's and every
-# unit= agrees with its serial= (the only traces a Unit 2 path skips; RA4c F1: none while Unit 1 is not open)
-function Test-FsN1OnlyUnit1([string]$Note) {
-    if (-not $script:FsN1Unit1Enabled) { return $false }
-    $v = @(Get-FsN1NoteSerials $Note); ($v.Count -gt 0) -and (@($v | Where-Object { $_ -cne $script:FsK1aUnit1 }).Count -eq 0) -and (Test-FsN1NoteUnitsAgree $Note)
-}
+# RA4c F1: may a Unit 2 path skip an N1 trace naming $Serial as Unit 1's? N1 Unit 1 revision (FS-R-019 s.3): NEVER,
+# whether or not N1 on Unit 1 is open. A Unit 1 N1 attempt can only follow Unit 2's clean N1 PASS (Get-FsN1Prereq), after
+# which Unit 2 has no further attempt, so no legitimate Unit 1 trace is ever what a Unit 2 admission would skip; and a
+# relabelled Unit 2 trace (a ledger entry, attempt.lock or observe.json naming Unit 1, unit= and serial= agreeing) must
+# keep counting as Unit 2's. The two functions stay (every Unit 2 call site reads them) and answer $false.
+function Test-FsN1SkipUnit1([string]$Serial) { $false }
+# (was: $true when Unit 1's rule was on and every serial= of the text was exactly Unit 1's; N1 Unit 1 revision: never)
+function Test-FsN1OnlyUnit1([string]$Note) { $false }
 # a property of a parsed JSON object by its EXACT name (case-sensitive; another spelling is absent); $null if absent
 function Get-FsN1Prop($o, [string]$n) {
     if ($null -eq $o -or -not ($o -is [psobject])) { return $null }
@@ -658,6 +674,194 @@ function Test-FsN1SpentPrior([string]$N1Root, [string]$Serial, [string[]]$Nonces
     if (-not $sv.Ok) { return (& $no "the supersession of $($s.Nonce) is not applied: $($sv.Why)") }
     [pscustomobject]@{ Ok = $true; Why = "Unit 2's earlier N1 attempts: $($sv1.Why), superseded for progression (not a result, never a PASS) under $($pp1.Ref); $($sv.Why), superseded for progression (never a PASS, never cleared) under $($pp.Ref): ONE further Unit 2 N1 attempt ($($s.Revision): the reviewed candidate $($s.ReviewedNonce) or a nonce-only rebuild of it, with the $($s.Revision) collector and PC-side library; once registered, no other)" }
 }
+
+# N1 ON UNIT 1 (the N1 Unit 1 revision; devices/quest3/n1/CHANGES-unit1.md; for the Chair). Every value is pinned here;
+# none is taken from a record. Unit 1's own prerequisites as recorded, each checked against its committed evidence copy
+# before it is relied on (FS-R-019 s.3: "compare the relevant build records/ledgers with their committed evidence copies"):
+#   - its one K1a attempt 0ac82c68b2e33b8d (K1A PASS): the SHA-256 of its classify-k1a.json and of its ledger entry, in
+#     build\k1a AND the committed copies (evidence unit1-k1a-20261017, k1a-attempt-ledger-20261017), whose observe.json,
+#     collect.json and capture.raw equal the record's bound hashes;
+#   - its one K1g attempt 81c7a8a43d7da124 (K1G PASS, accepted in FS-R-019 s.2, record 75f0e6d4...): likewise (evidence
+#     unit1-k1g-r3-20261023, k1g-attempt-ledger-20261023);
+#   - the ruling: the Chair's ruling on Unit 1 N1, by name, sections and the SHA-256 of its committed LF bytes, LATER than
+#     the N1 r4 ruling (FsN1SupersessionR4, which must be pinned), its text naming "Unit 1 N1" AND Unit 1's serial
+#     QUEST3UNIT1. UNTIL THE CHAIR RULES, Ruling, RulingSections and RulingSha256 are EMPTY and N1 on Unit 1 is NOT
+#     OPEN (fail-closed) although the switch $script:FsN1Unit1Enabled is on: those three values are the only edit expected
+#     after the Chair's ruling.
+#   Unit 1 has NO N1 attempt (no N1 trace names it): exactly ONE Unit 1 N1 attempt is admitted; once any of its traces
+#   exists (ledger entry, attempt.lock, observe.json or committed ledger copy), another is refused, whatever its outcome.
+$script:FsN1Unit1 = [ordered]@{
+    Serial            = 'QUEST3UNIT1'
+    K1aNonce          = '0ac82c68b2e33b8d'
+    K1aRecordSha256   = 'f9c22e35cc391907464c720aee8ca97f493138105516072467a0750988cfdd8e'
+    K1aLedgerSha256   = '2bfd65969c06bd1cc88156399fc19ca02a2bc499dfe94821d9af4e945dac71c8'
+    K1aEvidenceDir    = 'devices\quest3\evidence\unit1-k1a-20261017'
+    K1aEvidenceLedger = 'devices\quest3\evidence\k1a-attempt-ledger-20261017\0ac82c68b2e33b8d.attempted'
+    K1gNonce          = '81c7a8a43d7da124'
+    K1gRecordSha256   = '75f0e6d470e3e5ca157ba554e8ec9e8a6a2f25e16932470dbe43c06531c17b2d'
+    K1gLedgerSha256   = '5f8325809fc879f5dafe86608da85b20d9a1ee25b34366d05947b7560a774210'
+    K1gEvidenceDir    = 'devices\quest3\evidence\unit1-k1g-r3-20261023'
+    K1gEvidenceLedger = 'devices\quest3\evidence\k1g-attempt-ledger-20261023\81c7a8a43d7da124.attempted'
+    Revision          = 'Unit 1 N1'
+    Ruling            = 'FS-R-021'
+    RulingSections    = 's.4, s.6'
+    RulingSha256      = '6e8d31b018764592257bae4efc03c9c2189ba2287c04c0bde88c647759219b47'
+}
+# The Unit 1 pins: well-formed, naming Unit 1 and its two committed prerequisites, and the ruling pinned (later than the
+# N1 r4 ruling, naming "Unit 1 N1") and committed as pinned. Returns @{ Ok; Why; Ref }.
+function Test-FsN1Unit1Pins {
+    $s = $script:FsN1Unit1; $s2 = $script:FsN1SupersessionR4; $s1 = $script:FsN1Supersession
+    $no = { param($w) [pscustomobject]@{ Ok = $false; Why = "N1 on Unit 1 is not open: $w"; Ref = '' } }
+    $ev = '^devices\\quest3\\evidence\\'
+    if ([string]$s.Serial -cne $script:FsK1aUnit1 -or [string]$s.K1aNonce -cnotmatch '^[0-9a-f]{16}\z' -or [string]$s.K1gNonce -cnotmatch '^[0-9a-f]{16}\z' -or
+        @(@('K1aRecordSha256', 'K1aLedgerSha256', 'K1gRecordSha256', 'K1gLedgerSha256') | Where-Object { [string]$s[$_] -cnotmatch '^[0-9a-f]{64}\z' }).Count -gt 0 -or
+        [string]$s.K1aEvidenceDir -cnotmatch ($ev + 'unit1-k1a-[0-9]{8}\z') -or [string]$s.K1gEvidenceDir -cnotmatch ($ev + 'unit1-k1g(-r[0-9]+)?-[0-9]{8}\z') -or
+        [string]$s.K1aEvidenceLedger -cnotmatch ($ev + 'k1a-attempt-ledger-[0-9]{8}\\' + [string]$s.K1aNonce + '\.attempted\z') -or
+        [string]$s.K1gEvidenceLedger -cnotmatch ($ev + 'k1g-attempt-ledger-[0-9]{8}\\' + [string]$s.K1gNonce + '\.attempted\z') -or [string]$s.Revision -cne 'Unit 1 N1') {
+        return (& $no 'its pinned values are malformed or name something other than Unit 1 and its committed K1a and K1g attempts') }
+    if (-not [string]$s.Ruling -and -not [string]$s.RulingSections -and -not [string]$s.RulingSha256) { return (& $no "no ruling is pinned yet: it awaits the Chair's ruling on $($s.Revision) (until then Unit 1 is refused; the switch alone opens nothing)") }
+    if ([string]$s.Ruling -cnotmatch '^FS-R-[0-9]{3}\z' -or [string]$s.RulingSha256 -cnotmatch '^[0-9a-f]{64}\z' -or [string]$s.RulingSections -cnotmatch '^s\.[0-9]+[a-z]?(, s\.[0-9]+[a-z]?)*\z') { return (& $no 'its ruling pin is malformed or has no sections') }
+    if ([string]$s2.Ruling -cnotmatch '^FS-R-[0-9]{3}\z') { return (& $no "the N1 r4 ruling is not pinned (Unit 2's one N1 r4 attempt and its N1 PASS come first)") }
+    if ([int]([string]$s.Ruling).Substring(5) -le [int]([string]$s2.Ruling).Substring(5) -or [string]$s.Ruling -ceq [string]$s1.Ruling -or [string]$s.RulingSha256 -ceq [string]$s2.RulingSha256) {
+        return (& $no "its ruling $($s.Ruling) is not later than $($s2.Ruling), the ruling on N1 r4 (an earlier ruling is not one on Unit 1 N1)") }
+    $rf = Join-Path $script:FsN1RepoRoot "relays\$($s.Ruling).md"
+    $rh = Get-FsN1LfSha $rf
+    if (-not $rh) { return (& $no "the ruling file relays\$($s.Ruling).md is missing") }
+    if ($rh -cne [string]$s.RulingSha256) { return (& $no "relays\$($s.Ruling).md has SHA-256 $rh (CR-LF read as LF), not the pinned $($s.RulingSha256)") }
+    $rt = @(Get-FsN1TextLines $rf) -join "`n"
+    if (-not $rt.Contains([string]$s.Revision) -or -not $rt.Contains([string]$s.Serial)) { return (& $no "relays\$($s.Ruling).md does not name both '$($s.Revision)' and Unit 1's serial $($s.Serial) (a ruling on another matter)") }
+    [pscustomobject]@{ Ok = $true; Why = 'ok'; Ref = "$($s.Ruling) $($s.RulingSections)" }
+}
+# Is N1 on Unit 1 OPEN? The switch AND the pinned ruling (Test-FsN1Unit1Pins). Returns @{ Ok; Why; Ref }.
+function Test-FsN1Unit1Open {
+    if (-not $script:FsN1Unit1Enabled) { return [pscustomobject]@{ Ok = $false; Why = 'N1 on Unit 1 is not open: the switch is off (a new PM decision and package revision)'; Ref = '' } }
+    Test-FsN1Unit1Pins
+}
+# PER-UNIT DISCOVERY (while N1 on Unit 1 is open, for BOTH units): every N1 trace on the four discovery paths - each entry
+# of build\n1\attempted, each attempt.lock in a directory directly under build\n1, each observe.json under build\n1 (two
+# levels, hidden included) and each committed ledger copy (devices\quest3\evidence\n1-attempt-ledger-*) - must be readable,
+# not hidden (nor in a hidden directory), at its place (<16 hex>.attempted; <stamp>-<nonce>\attempt.lock;
+# <stamp>-<nonce>\observe-*\observe.json naming that nonce) and attributed to exactly ONE unit: a ledger entry, lock or copy
+# names exactly one serial=, one of the two units', immediately followed by that serial's unit=; an observe.json names
+# one of the two units' serials and its nonce also has a ledger entry, lock or copy (the unit= attribution). All traces of
+# one nonce name the same unit, and a committed copy equals its ledger entry byte for byte. Anything else refuses (both
+# units). Returns @{ Ok; Why; Units } (Units: nonce -> serial).
+function Get-FsN1TraceMap([string]$N1Root) {
+    $no = { param($w) [pscustomobject]@{ Ok = $false; Why = "an N1 trace is not attributed to exactly one unit (per-unit discovery, N1 on Unit 1 open): $w"; Units = @{} } }
+    $seen = @{}; $att = @{}; $obs = @{}; $ledSha = @{}
+    $hid = { param([string]$p, [string]$top)      # the item or a directory between it and $top is hidden (or unreadable)
+        $x = $p
+        while ($x -and $x.Length -gt $top.Length) { try { $a = [IO.File]::GetAttributes($x) } catch { return $true }; if ($a -band [IO.FileAttributes]::Hidden) { return $true }; $x = Split-Path -Parent $x }
+        $false }
+    $one = { param([string]$f)      # the one serial a ledger entry, lock or copy is attributed to, or ''
+        $t = try { (@([IO.File]::ReadAllLines($f)) -join ' ') } catch { $null }
+        if ($null -eq $t) { return '' }
+        $v = @(Get-FsN1NoteSerials $t)
+        if ($v.Count -ne 1 -or -not (Get-FsK1aUnitName $v[0]) -or -not (Test-FsN1NoteUnitsAgree $t)) { return '' }
+        $v[0] }
+    $put = { param([string]$n, [string]$sr, [string]$what)      # '' or the disagreement
+        if ($seen.ContainsKey($n)) { if ([string]$seen[$n] -cne $sr) { return "$what names $sr ($(Get-FsK1aUnitName $sr)), another trace of nonce $n names $($seen[$n]) ($(Get-FsK1aUnitName ([string]$seen[$n])))" } }
+        else { $seen[$n] = $sr }
+        '' }
+    $br = if ($N1Root -and (Test-Path -LiteralPath $N1Root -PathType Container)) { [IO.Path]::GetFullPath($N1Root).TrimEnd('\', '/') } else { '' }
+    if ($br) {
+        foreach ($m in @(Get-ChildItem -LiteralPath (Join-Path $br 'attempted') -Force -ErrorAction SilentlyContinue)) {
+            $mm = [regex]::Match($m.Name, '^([0-9a-f]{16})\.attempted\z')
+            if ($m.PSIsContainer -or -not $mm.Success) { return (& $no "the ledger holds $($m.FullName) (not <16 hex>.attempted)") }
+            if (& $hid $m.FullName $br) { return (& $no "the ledger entry $($m.FullName) is hidden") }
+            $sr = & $one $m.FullName
+            if (-not $sr) { return (& $no "the ledger entry $($m.FullName) is unreadable or does not name exactly one of the two units' serials with its unit=") }
+            $e = & $put $mm.Groups[1].Value $sr "the ledger entry $($m.FullName)"; if ($e) { return (& $no $e) }
+            $att[$mm.Groups[1].Value] = $true; $ledSha[$mm.Groups[1].Value] = Get-FsN1FileSha $m.FullName
+        }
+        foreach ($bd in @(Get-ChildItem -LiteralPath $br -Directory -Force -ErrorAction SilentlyContinue)) {
+            $lk = Join-Path $bd.FullName 'attempt.lock'
+            if (-not (Test-Path -LiteralPath $lk)) { continue }
+            $mm = [regex]::Match($bd.Name, '^[0-9]{8}T[0-9]{6}Z-([0-9a-f]{16})\z')
+            if (-not $mm.Success -or -not (Test-Path -LiteralPath $lk -PathType Leaf)) { return (& $no "the attempt.lock $lk is not a file in a directory named <stamp>-<nonce> (renamed)") }
+            if (& $hid $lk $br) { return (& $no "the attempt.lock $lk is hidden or in a hidden directory") }
+            $sr = & $one $lk
+            if (-not $sr) { return (& $no "the attempt.lock $lk is unreadable or does not name exactly one of the two units' serials with its unit=") }
+            $e = & $put $mm.Groups[1].Value $sr "the attempt.lock $lk"; if ($e) { return (& $no $e) }
+            $att[$mm.Groups[1].Value] = $true
+        }
+        foreach ($oj in @(Get-ChildItem -LiteralPath $br -Recurse -Depth 2 -Force -File -Filter 'observe.json' -ErrorAction SilentlyContinue)) {
+            $od = Split-Path -Parent $oj.FullName; $bdp = Split-Path -Parent $od
+            $mm = [regex]::Match((Split-Path -Leaf $bdp), '^[0-9]{8}T[0-9]{6}Z-([0-9a-f]{16})\z')
+            if ((Split-Path -Leaf $od) -cnotmatch '^observe-' -or -not $mm.Success -or [IO.Path]::GetFullPath((Split-Path -Parent $bdp)).TrimEnd('\', '/') -cne $br) { return (& $no "the observer record $($oj.FullName) is not at <stamp>-<nonce>\observe-*\observe.json") }
+            if (& $hid $oj.FullName $br) { return (& $no "the observer record $($oj.FullName) is hidden or in a hidden directory") }
+            $ob = try { [IO.File]::ReadAllText($oj.FullName) | ConvertFrom-Json } catch { $null }
+            $sr = [string](Get-FsN1Prop $ob 'Serial')
+            if ($null -eq $ob -or -not (Get-FsK1aUnitName $sr) -or [string](Get-FsN1Prop $ob 'Nonce') -cne $mm.Groups[1].Value) { return (& $no "the observer record $($oj.FullName) is unreadable, names no serial of the two units, or another nonce") }
+            $e = & $put $mm.Groups[1].Value $sr "the observer record $($oj.FullName)"; if ($e) { return (& $no $e) }
+            $obs[$mm.Groups[1].Value] = $oj.FullName
+        }
+    }
+    $evr = [IO.Path]::GetFullPath((Join-Path $script:FsN1RepoRoot 'devices\quest3\evidence')).TrimEnd('\', '/')
+    foreach ($d in @(Get-ChildItem -LiteralPath $evr -Directory -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -cmatch '^n1-attempt-ledger-' })) {
+        foreach ($m in @(Get-ChildItem -LiteralPath $d.FullName -Force -ErrorAction SilentlyContinue)) {
+            $mm = [regex]::Match($m.Name, '^([0-9a-f]{16})\.attempted\z')
+            if ($m.PSIsContainer -or -not $mm.Success) { return (& $no "the committed ledger copies hold $($m.FullName) (not <16 hex>.attempted)") }
+            if (& $hid $m.FullName $evr) { return (& $no "the committed ledger copy $($m.FullName) is hidden or in a hidden directory") }
+            $sr = & $one $m.FullName
+            if (-not $sr) { return (& $no "the committed ledger copy $($m.FullName) is unreadable or does not name exactly one of the two units' serials with its unit=") }
+            $n = $mm.Groups[1].Value
+            $e = & $put $n $sr "the committed ledger copy $($m.FullName)"; if ($e) { return (& $no $e) }
+            if ($ledSha.ContainsKey($n) -and (Get-FsN1FileSha $m.FullName) -cne [string]$ledSha[$n]) { return (& $no "the committed ledger copy $($m.FullName) differs from the ledger entry of nonce $n") }
+            $att[$n] = $true
+        }
+    }
+    foreach ($n in @($obs.Keys)) { if (-not $att.ContainsKey($n)) { return (& $no "the observer record $($obs[$n]) has no ledger entry, attempt.lock or committed copy of its nonce (no unit= attribution)") } }
+    [pscustomobject]@{ Ok = $true; Why = "$($seen.Count) N1 attempt(s) attributed: $(@($seen.Keys | Sort-Object | ForEach-Object { "$_ $(Get-FsK1aUnitName ([string]$seen[$_]))" }) -join ', ')"; Units = $seen }
+}
+# One of Unit 1's two prerequisite records, against its pins and its committed evidence copies: the ledger entry (build
+# and committed copy), the record (committed copy) and the record's bound observe.json, collect.json and capture.raw (the
+# committed copies). Returns @{ Ok; Why }.
+function Test-FsN1Unit1Copies([string]$What, [string]$RecFile, [string]$LedgerFile, [string]$LedgerSha, [string]$EvDir, [string]$RecName, [string]$EvLedger, [string]$RecSha) {
+    $no = { param($w) [pscustomobject]@{ Ok = $false; Why = "N1 on Unit 1 needs its pinned $What, equal to its committed evidence copy: $w" } }
+    $ev = Join-Path $script:FsN1RepoRoot $EvDir
+    foreach ($c in @(@($LedgerFile, 'its ledger entry'), @((Join-Path $script:FsN1RepoRoot $EvLedger), 'the committed ledger copy'))) {
+        $h = Get-FsN1FileSha $c[0]; if ($h -cne $LedgerSha) { return (& $no "$($c[1]) $($c[0]) has SHA-256 '$h', not the pinned $LedgerSha") } }
+    foreach ($f in @($RecFile, (Join-Path $ev "observe\$RecName"))) { $h = Get-FsN1FileSha $f; if ($h -cne $RecSha) { return (& $no "$f has SHA-256 '$h', not the pinned $RecSha") } }
+    $r = try { [IO.File]::ReadAllText($RecFile) | ConvertFrom-Json } catch { $null }
+    foreach ($c in @(@('ObserveJsonSha256', 'observe.json'), @('CollectJsonSha256', 'collect\collect.json'), @('CaptureSha256', 'collect\capture.raw'))) {
+        $h = Get-FsN1FileSha (Join-Path $ev "observe\$($c[1])")
+        if (-not $h -or [string](Get-FsN1Prop $r $c[0]) -cne $h) { return (& $no "the committed copy $EvDir\observe\$($c[1]) ('$h') is not the file its record binds ($($c[0]) '$(Get-FsN1Prop $r $c[0])')") } }
+    [pscustomobject]@{ Ok = $true; Why = 'ok' }
+}
+# Unit 1's own prerequisites for its one N1 attempt: its K1a result the pinned bound, clean K1A PASS with a valid
+# MemTotal (Get-FsN1StageOutcome, the K1a rules) and its only K1a attempt; its K1g result the pinned bound, clean K1G PASS
+# (fs-k1g-units.ps1's Get-FsK1gUnitRecords and Get-FsK1gCleanPass, read only, for Unit 1) and its only K1g attempt; each
+# equal to its committed evidence copy. Returns @{ Ok; Why; Records }.
+function Get-FsN1Unit1Prior([string]$RepoBuild) {
+    $s = $script:FsN1Unit1
+    $no = { param($w, $rs) [pscustomobject]@{ Ok = $false; Why = $w; Records = @($rs) } }
+    $k = Get-FsN1StageOutcome (Join-Path $RepoBuild 'k1a') 'k1a' ([string]$s.Serial)
+    if (-not $k.Ok) { return (& $no "N1 on Unit 1 needs its clean K1A PASS first: $($k.Why)" @()) }
+    $kled = Join-Path $RepoBuild 'k1a\attempted'
+    # every K1a ledger entry read (an unreadable one refuses: it cannot be told whose attempt it was); Unit 1's by its serial
+    $kn = @(); foreach ($m in @(Get-ChildItem -LiteralPath $kled -Force -ErrorAction SilentlyContinue)) {
+        $t = if ($m.PSIsContainer) { $null } else { try { (@([IO.File]::ReadAllLines($m.FullName)) -join ' ') } catch { $null } }
+        if ($null -eq $t) { return (& $no "N1 on Unit 1 needs its pinned K1A PASS: the K1a ledger entry $($m.FullName) cannot be read: blocked" @()) }
+        if ($t -cmatch (' serial=' + [string]$s.Serial + ' ')) { $kn += $m.Name.Substring(0, [Math]::Min(16, $m.Name.Length)) } }
+    if ($kn.Count -ne 1 -or $kn[0] -cne [string]$s.K1aNonce -or [string]$k.Nonce -cne [string]$s.K1aNonce -or [string]$k.Sha256 -cne [string]$s.K1aRecordSha256) {
+        return (& $no "N1 on Unit 1 needs its pinned K1A PASS (its only K1a attempt $($s.K1aNonce), classify-k1a.json $($s.K1aRecordSha256)): Unit 1's K1a attempts are '$($kn -join ', ')', its record nonce $($k.Nonce) SHA-256 $($k.Sha256)" @()) }
+    $c = Test-FsN1Unit1Copies 'K1A PASS' ([string]$k.File) (Join-Path $kled "$($s.K1aNonce).attempted") ([string]$s.K1aLedgerSha256) ([string]$s.K1aEvidenceDir) 'classify-k1a.json' ([string]$s.K1aEvidenceLedger) ([string]$s.K1aRecordSha256)
+    if (-not $c.Ok) { return (& $no $c.Why @()) }
+    $recs = @([pscustomobject]@{ Stage = 'k1a'; Serial = [string]$s.Serial; Nonce = $k.Nonce; Outcome = $k.Outcome; File = $k.File; Sha256 = $k.Sha256; MemTotalKb = $k.MemTotalKb })
+    $gb = Join-Path $RepoBuild 'k1g'
+    $w = Get-FsK1gUnitRecords -BuildRoot $gb -Serial ([string]$s.Serial) -Stage 'k1g' -RecordName 'classify-k1g.json' -Schema $script:FsK1gClassifySchema -Outcomes $script:FsK1gOutcomes `
+        -ClassifierFiles @('fs-classify-k1g.ps1') -PinBanner $script:FsK1gPinBanner -PinConfigSha $script:FsK1gPinConfigSha -PinModules $script:FsK1gPinModules -What 'K1g'
+    if (-not $w.Ok) { return (& $no "N1 on Unit 1 needs its clean K1G PASS first: $($w.Why)" $recs) }
+    $g = Get-FsK1gCleanPass @($w.Records) 'K1G PASS' 'K1G REVIEW' "Unit 1 ($($s.Serial)) K1g" 'N1 on Unit 1 opens only after its own clean K1G PASS'
+    if (-not $g.Ok) { return (& $no "N1 on Unit 1 needs its clean K1G PASS first: $($g.Why)" $recs) }
+    if (@($w.Records).Count -ne 1 -or [string]$g.Best.Nonce -cne [string]$s.K1gNonce -or [string]$g.Best.Sha256 -cne [string]$s.K1gRecordSha256) {
+        return (& $no "N1 on Unit 1 needs its pinned K1G PASS (its only K1g attempt $($s.K1gNonce), classify-k1g.json $($s.K1gRecordSha256)): Unit 1 has $(@($w.Records).Count) bound K1g attempt(s), the latest nonce $($g.Best.Nonce) SHA-256 $($g.Best.Sha256)" $recs) }
+    $c = Test-FsN1Unit1Copies 'K1G PASS' ([string]$g.Best.File) (Join-Path $gb "attempted\$($s.K1gNonce).attempted") ([string]$s.K1gLedgerSha256) ([string]$s.K1gEvidenceDir) 'classify-k1g.json' ([string]$s.K1gEvidenceLedger) ([string]$s.K1gRecordSha256)
+    if (-not $c.Ok) { return (& $no $c.Why $recs) }
+    $recs += [pscustomobject]@{ Stage = 'k1g'; Serial = [string]$s.Serial; Nonce = $g.Best.Nonce; Outcome = $g.Best.Outcome; File = $g.Best.File; Sha256 = $g.Best.Sha256; MemTotalKb = $null }
+    [pscustomobject]@{ Ok = $true; Why = 'ok'; Records = $recs }
+}
 function Test-FsN1Unit([string]$Serial) { Test-FsK1aUnit $Serial }
 function Get-FsN1UnitName([string]$Serial) { Get-FsK1aUnitName $Serial }
 
@@ -687,13 +891,23 @@ function Get-FsN1RecordMemTotal([string]$CollectDir, [string]$Stage) {
 # outcome record (classify-<stage>.json; the K1a rules of fs-k1a-units.ps1 for any unit and either stage) and clean;
 # all must be the stage's PASS with a clean after-session record and (k1a and n1) a valid positive MemTotal. Returns
 # @{ Ok; Why; Nonce; Outcome; File; Sha256; Utc; MemTotalKb }.
-function Get-FsN1StageOutcome([string]$BuildRoot, [string]$Stage, [string]$Serial) {
+# PROGRESSION ALIGNMENT (FS-R-021 s.3, thermal r3): the clean rule's highest reading is per stage (Get-FsN1ProgressionLimit):
+# K1a records stay "below 400", N1 records use "below 430" ($TempBelow overrides; 0 = the stage's limit). The pinned
+# historical N1 facts (Test-FsN1SupersededChecklist, Test-FsN1SpentChecklist) keep their recorded "below 400". Historical
+# records are not reclassified: every committed K1a/N1 record's highest reading is below 400.
+function Get-FsN1ProgressionLimit([string]$Stage) { if ($Stage -ceq 'n1') { 430 } else { 400 } }
+function Get-FsN1StageOutcome([string]$BuildRoot, [string]$Stage, [string]$Serial, [int]$TempBelow = 0) {
     $no = { param($w) [pscustomobject]@{ Ok = $false; Why = $w; Nonce = $null; Outcome = $null; File = $null; Sha256 = $null; Utc = $null; MemTotalKb = $null } }
     $pv = { param($o, [string]$n) if ($null -ne $o -and $o -is [psobject] -and $o.PSObject.Properties[$n]) { $o.$n } else { $null } }
     $rd = { param([string]$f) try { [IO.File]::ReadAllText($f) | ConvertFrom-Json } catch { $null } }
     $unit = Get-FsN1UnitName $Serial
     if (-not $unit) { return (& $no "'$Serial' is not one of the two units") }
     if (@('k1a', 'n1') -cnotcontains $Stage) { return (& $no "unknown stage '$Stage'") }
+    $lim = if ($TempBelow -gt 0) { $TempBelow } else { Get-FsN1ProgressionLimit $Stage }      # FS-R-021 s.3: per stage
+    # N1 Unit 1 revision: Unit 1's own N1 result is not read by this revision (exactly one Unit 1 attempt; nothing here
+    # needs its result); Unit 2's is read with every N1 trace attributed while N1 on Unit 1 is open (both units' rule)
+    if ($Stage -ceq 'n1' -and $Serial -ceq $script:FsK1aUnit1) { return (& $no "Unit 1's N1 result is not read by this gate revision (N1 Unit 1: exactly one attempt; a later revision that needs its result reads it)") }
+    if ($Stage -ceq 'n1' -and (Test-FsN1Unit1Open).Ok) { $tmo = Get-FsN1TraceMap $BuildRoot; if (-not $tmo.Ok) { return (& $no "$unit's N1 result: $($tmo.Why); blocked for both units") } }
     $schema = if ($Stage -ceq 'k1a') { $script:FsK1aClassifySchema } else { $script:FsN1ClassifySchema }
     $pass = if ($Stage -ceq 'k1a') { 'K1A PASS' } else { 'N1 PASS' }
     $outs = if ($Stage -ceq 'k1a') { $script:FsK1aOutcomes } else { $script:FsN1Outcomes }
@@ -718,7 +932,7 @@ function Get-FsN1StageOutcome([string]$BuildRoot, [string]$Stage, [string]$Seria
         # result an entry naming any other serial is skipped only if it is exactly Unit 1's AND N1 on Unit 1 is open
         if ($Stage -ceq 'n1' -and -not (Test-FsN1NoteUnitsAgree $note)) { return (& $no "${tag}: ledger entry $($m.FullName) has a unit= that disagrees with its serial= (or none): cannot tell whose attempt it was; blocked") }
         if ($Stage -ceq 'n1' -and $Serial -ceq $script:FsK1aUnit2 -and $lm.Groups[1].Value -cne $Serial -and -not (Test-FsN1SkipUnit1 $lm.Groups[1].Value)) {
-            return (& $no "${tag}: ledger entry $($m.FullName) names serial $($lm.Groups[1].Value), but N1 on Unit 1 is not open (no other unit's N1 attempt can exist): it counts as Unit 2's and cannot be told apart; blocked") }
+            return (& $no "${tag}: ledger entry $($m.FullName) names serial $($lm.Groups[1].Value), but $(if ((Test-FsN1Unit1Open).Ok) { 'Unit 2''s N1 result never skips a trace naming another serial (a Unit 1 N1 attempt can only follow it)' } else { 'N1 on Unit 1 is not open (no other unit''s N1 attempt can exist)' }): it counts as Unit 2's and cannot be told apart; blocked") }
         if ($lm.Groups[1].Value -cne $Serial) { continue }
         $tm = [regex]::Match($note, '^([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{1,7})?Z) ')
         if (-not $tm.Success) { return (& $no "${tag}: ledger entry $($m.FullName) has no UTC time") }
@@ -756,7 +970,7 @@ function Get-FsN1StageOutcome([string]$BuildRoot, [string]$Stage, [string]$Seria
         else {
             foreach ($kv in @(@('Clean', $true), @('AfOk', $true), @('AaOk', $true), @('ReturnedByItself', $true), @('DumpMode', $false), @('RecoveryFault', $false), @('FollowUpsFinished', $true))) {
                 $x = & $pv $af $kv[0]; if (-not ($x -is [bool]) -or $x -ne $kv[1]) { $aw += "$($kv[0]) is '$x'" } }
-            $mt = & $pv $af 'MaxTemp'; if ($null -eq $mt -or [string]$mt -cnotmatch '^[0-9]{1,4}\z' -or [int]$mt -ge 400) { $aw += "highest reading '$mt' (below 400 required)" }
+            $mt = & $pv $af 'MaxTemp'; if ($null -eq $mt -or [string]$mt -cnotmatch '^[0-9]{1,4}\z' -or [int]$mt -ge $lim) { $aw += "highest reading '$mt' (below $lim required)" }
         }
         $mem = Get-FsN1RecordMemTotal (Join-Path $od 'collect') $Stage
         $recs.Add([pscustomobject]@{ Nonce = $n; Outcome = [string]$c.Outcome; File = $cj; Sha256 = (Get-FsK1aFileSha $cj); Utc = [string](& $pv $c 'Utc'); LedgerUtc = $tm.Groups[1].Value
@@ -876,6 +1090,17 @@ function Get-FsN1Prereq([string]$RepoBuild, [string]$Serial) {
     $no = { param($w, $rs) [pscustomobject]@{ Ok = $false; Why = $w; Records = @($rs) } }
     if (-not (Test-FsN1Unit $Serial)) { return (& $no "'$Serial' is not one of the two units (Unit 2 QUEST3UNIT2, Unit 1 QUEST3UNIT1)" @()) }
     if ($Serial -ceq $script:FsK1aUnit1 -and -not $script:FsN1Unit1Enabled) { return (& $no "N1 runs on Unit 2 only (PM decision 2026-10-16): a Unit 1 run needs a new PM decision and package revision" @()) }
+    # N1 Unit 1 revision: N1 on Unit 1 is OPEN only with the switch AND the Chair's ruling pinned (Test-FsN1Unit1Open)
+    $u1o = Test-FsN1Unit1Open
+    if ($Serial -ceq $script:FsK1aUnit1 -and -not $u1o.Ok) { return (& $no "N1 runs on Unit 2 only (PM decision 2026-10-16) until N1 on Unit 1 is open: $($u1o.Why)" @()) }
+    # ... and while it is open, every N1 trace of both units is attributed (per-unit discovery; refused for both units)
+    # and Unit 1 has no N1 trace at all: exactly ONE Unit 1 N1 attempt
+    if ($u1o.Ok) {
+        $tm = Get-FsN1TraceMap (Join-Path $RepoBuild 'n1')
+        if (-not $tm.Ok) { return (& $no "$(Get-FsN1UnitName $Serial) ($Serial): $($tm.Why); blocked for both units" @()) }
+        $u1n = @($tm.Units.Keys | Where-Object { [string]$tm.Units[$_] -ceq $script:FsK1aUnit1 } | Sort-Object)
+        if ($Serial -ceq $script:FsK1aUnit1 -and $u1n.Count) { return (& $no "Unit 1 already has an N1 attempt ($($u1n -join ', ')): exactly one Unit 1 N1 attempt ($($script:FsN1Unit1.Revision) under $($u1o.Ref)); once registered, no other, whatever its outcome (FS-R-013 s.3, s.5)" @()) }
+    }
     $pa = @(Get-FsN1PriorAttempts (Join-Path $RepoBuild 'n1') $Serial)
     $supWhy = ''
     # N1 r4: for Unit 2 the history check always runs first (both historical attempts must be in build\n1; review A F1)
@@ -902,13 +1127,15 @@ function Get-FsN1Prereq([string]$RepoBuild, [string]$Serial) {
                   [pscustomobject]@{ Stage = 'k1a'; Serial = $script:FsK1aUnit1; Nonce = $ka.Unit1.Nonce; Outcome = $ka.Unit1.Outcome; File = $ka.Unit1.File; Sha256 = $ka.Unit1.Sha256; MemTotalKb = (& $mk $ka.Unit1.MemTotal) },
                   [pscustomobject]@{ Stage = 'k1g'; Serial = $script:FsK1aUnit2; Nonce = $kg.Nonce; Outcome = $kg.Outcome; File = $kg.File; Sha256 = $kg.Sha256; MemTotalKb = $null })
     } else {
-        # the dormant Unit 1 rule (not open: PM decision 2026-10-16)
-        $k = Get-FsN1StageOutcome (Join-Path $RepoBuild 'k1a') 'k1a' $Serial
-        if (-not $k.Ok) { return (& $no "N1 on $(Get-FsN1UnitName $Serial) needs its clean K1A PASS first: $($k.Why)" @()) }
-        $recs = @([pscustomobject]@{ Stage = 'k1a'; Serial = $Serial; Nonce = $k.Nonce; Outcome = $k.Outcome; File = $k.File; Sha256 = $k.Sha256; MemTotalKb = $k.MemTotalKb })
+        # N1 ON UNIT 1 (open: the switch and the Chair's ruling; no Unit 1 N1 trace): Unit 1's own pinned K1A PASS and
+        # K1G PASS, each equal to its committed evidence copy, then Unit 2's bound, clean N1 PASS (its N1 r4 successor)
+        $p1 = Get-FsN1Unit1Prior $RepoBuild
+        if (-not $p1.Ok) { return (& $no $p1.Why @($p1.Records)) }
+        $recs = @($p1.Records)
         $n2 = Get-FsN1StageOutcome (Join-Path $RepoBuild 'n1') 'n1' $script:FsK1aUnit2
         if (-not $n2.Ok) { return (& $no "N1 on Unit 1 needs Unit 2's clean N1 PASS first: $($n2.Why)" $recs) }
         $recs += [pscustomobject]@{ Stage = 'n1'; Serial = $script:FsK1aUnit2; Nonce = $n2.Nonce; Outcome = $n2.Outcome; File = $n2.File; Sha256 = $n2.Sha256; MemTotalKb = $n2.MemTotalKb }
+        $supWhy = "N1 on Unit 1 open under $($u1o.Ref): ONE Unit 1 N1 attempt (once registered, no other); $($tm.Why)"
     }
     [pscustomobject]@{ Ok = $true; Why = ((@($recs | ForEach-Object { "$($_.Stage.ToUpper()) $(Get-FsN1UnitName $_.Serial) nonce $($_.Nonce): $($_.Outcome)$(if ($null -ne $_.MemTotalKb) { ", MemTotal $($_.MemTotalKb) kB" })" }) -join '; ') + $(if ($supWhy) { "; $supWhy" } else { '' })); Records = $recs }
 }

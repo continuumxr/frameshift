@@ -27,8 +27,9 @@ only, Android up on slot A, the single-reading admission rule (battery above 50 
    (at most 25 s, stopped by fs-supervise at 25 s, killed 2 s later), then the ACM gadget and the host shell.
 3. **Collect:** `fs-collect-k1g.ps1`: fs-verify, fs-ack, fs-status, `fs-k1g <challenge>` once (only before
    BootStartUtc + 53 s), then **fs-done**. PID 1 reboots about 1 s later into **fastboot** (`RECOVERY.md` §2 step 3).
-4. **After:** AF immediately, `fastboot -s <serial> reboot`, AA promptly, the follow-ups at about +5 and +10 minutes
-   after the end of AA (continuing while rising or concerning), phase F, then `fs-classify-k1g.ps1`.
+4. **After:** AF immediately, `fastboot -s <serial> reboot`, AA promptly, the follow-ups after the end of AA (thermal r3: one at about +5 minutes, taken by +7 minutes (420 s), finishes them when it is
+   not higher than AA10 and below 40.0 °C; otherwise +10 minutes and continuing while rising or concerning), phase F, then
+   `fs-classify-k1g.ps1`.
 
 ## 3. The timers (unchanged from K1a)
 
@@ -66,7 +67,7 @@ panic before that module loads) [C]. Every command names the run's unit (`-Seria
 | hung later (PID 1 ran, then nothing) | as the "no `FS-<nonce>` gadget" row: Th + 260 s, then hold power | [C] |
 
 The Th + 260 s schedule is a **fallback schedule, not an instruction to wait** through heat or another concerning
-physical condition: at **≥ 40 °C** (or any concerning sign) shut down and cool at once (power-menu power-off while
+physical condition: at **≥ 43 °C** (thermal r3; ≥ 40 °C before it) (or any concerning sign) shut down and cool at once (power-menu power-off while
 connected, physical observation that the unit is off, then unplug; physical shutdown and unplugging take precedence),
 and never restart merely to obtain a reading (`RECOVERY.md` "Battery after the attempt"; FS-R-013 §3).
 

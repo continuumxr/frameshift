@@ -1,0 +1,17 @@
+PASS  P1 the rule against the oracle on the grid (672 cases: 14 temperatures x 6 levels x 8 statuses)
+PASS  P2 the boundaries: 39.9 C (399) accepted for status 2, 3, 4 and 5; 40.0 C (400) refused for every status; status 1 refused at 39.9 C
+PASS  P3 status 1, 0, 6-9 and malformed status text ('', '22', '2 ', ' 2', 'x', '-1', '3 ', '03') never pass
+PASS  P4 malformed temperature text ('', 'x', '29.9', '-1', five digits, padded) is refused
+PASS  P5 the level does not change the rule (status 2 at 35.0 C passes with any level text; the level above 50 % is the callers' named check, battery-above-50 / BA10)
+PASS  P6 the refusal reasons name the limit (400, 40.0 deg C, thermal r3) and the accepted statuses (2, 3, 4 or 5)  [temperature 400 is not below 400 (40.0 deg C, thermal r3) / battery status 1 is not 2, 3, 4 or 5 (charging, discharging, not charging, full): the battery state is unknown or not accepted (thermal r3)]
+PASS  P7 the limits are the documented ones: ceiling 400, floor 100, level above 50, stop 430, follow-ups 270/420/570/240 s  [400/100/50/430]
+PASS  T1 the stop: 429 (42.9 C) is not, 430 (43.0 C) and above are (text or int); empty is not a reading
+PASS  F1 the follow-up rule (27 cases): one reading not higher than AA10 and below 400, 270 to 420 s after AA, finishes; higher, at 400, early, later than 420 s, no AA10 or none: not finished; two or more: the series rule (570 s, 240 s apart, not rising, the last below 400); any reading at 430: not finished
+PASS  F2 a higher or ceiling single reading names what to do next (a second reading at least 240 s later / every 5 min)  [reading 1 (351) is higher than AA10 (350): continue (a second reading at least 240 s later, about +10 min, then every 5 min while rising or concerning) / reading 1 (400) is not below 400 (40.0 deg C, the admission ceiling): continue every 5 min]
+PASS  F3 without an AA end time the timing is not judged here (the caller records "no AA end time"); the comparison with AA10 still is
+PASS  W fs-observe-k1g.ps1 Test-FsObsBatteryRule answers exactly as the shared r3 rule on the grid; with no level, status 2 at 39.9 C passes and status 5 at 40.0 C does not  [TWOARG-399:accepted; TWOARG-400:refused]
+PASS  W fs-observe-n1.ps1 Test-FsObsBatteryRule answers exactly as the shared r3 rule on the grid; with no level, status 2 at 39.9 C passes and status 5 at 40.0 C does not  [TWOARG-399:accepted; TWOARG-400:refused]
+PASS  S1 the four enforcing PowerShell tools (K1g and N1 checklists and observers) dot-source fs-admission-r3.ps1, call the shared rule (the checklists also the shared follow-up rule) and hold no r2 limit or literal 350/400 rule
+PASS  S2 the K1g sign-off sheet (private) and the N1 sign-off sheet (private) pin fs-admission-r3.ps1 as the working file and no longer name fs-admission-r2.ps1 (the K1g sign-off tooling (private) and the N1 sign-off tooling (private) were run after the last change)  [ [ebe495ab68888c5ce7e312cfc3d758546359e8d517d39e053f954de0463db7c7]]
+PASS  S3 tools/session/fs-wait-admission.sh offers r3 with the same limits (100..399, level above 50, status 2-5; ALERT at 430) and keeps r1/r2 (ALERT at 400)
+TOTAL: 16 cases, 0 failed
