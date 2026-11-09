@@ -39,6 +39,17 @@
 #   as "no attempt"); and on the supersession path the attempt.lock Register-FsAttempt leaves in each attempted image
 #   directory is a third discovery path (a hidden or renamed attempt still counts).
 #   There is no switch, no blanket REVIEW exclusion, no ledger deletion and no "latest record wins" rule.
+#   DISCOVERY AUDIT (k1g/DISCOVERY-AUDIT.md, FS-R-019 s.3; the N1 RA4b F1 / RA4c hole class): every build-root
+#   enumeration includes hidden items; a ledger entry or attempt.lock must name exactly one serial of the two units
+#   with its matching unit=; an observe.json, its ledger entry, its attempt.lock and its outcome record must name the
+#   same serial (a trace is skipped as the other unit's only when all of them agree); an unreadable observe.json, an
+#   observe.json or attempt.lock without its ledger entry, and a committed ledger copy
+#   (devices\quest3\evidence\<stage>-attempt-ledger-*) missing from or different in build\<stage>\attempted all block.
+#   PROGRESSION ALIGNMENT (FS-R-021 s.3, thermal r3): the clean after-session rule's highest reading is per stage
+#   (Get-FsK1gProgressionLimit): K1a records stay "below 400"; K1g records (the r3 K1g path, and K1i where it reads K1g
+#   results through this function) use "below 430"; any other stage keeps 400 until its own package adopts r3. The
+#   recognised historical record of the supersession keeps the rule it was recorded under (below 400). Historical
+#   records are not reclassified: every committed K1a/K1g record's highest reading is below 400.
 # Each K1g attempt: its own fresh nonce (a nonce-only rebuild of the reviewed K1g candidate), its own readback rows
 # (the readback rows (private), one set per unit; the same build, slot and ranges) and its own
 # ledger entry (build\k1g\attempted\<nonce>.attempted, the note names the serial). The spent-nonce ledger is shared with
@@ -47,7 +58,8 @@
 # K1g reads no sensor, so neither fault affects a K1g result.
 # Residual risk (as K1a's gate, documented, not detected): the gate trusts the records' fields and the files they bind; a
 # deliberate hand edit of a record, a capture or collect.json (FSB1 carries no MAC), or the removal of a whole attempt
-# directory together with its ledger entry is not detected. That would be falsification of a test record.
+# directory together with its ledger entry is not detected once its committed ledger copy is gone too (while that copy is
+# in the checkout, the removal is refused). That would be falsification of a test record.
 # The one exception: the historical record the supersession recognises is pinned byte for byte (its record and ledger
 # entry, in build\k1g and in the committed evidence copies), so an edit of THAT record is detected.
 . (Join-Path $PSScriptRoot 'fs-k1a-units.ps1')            # the K1a units, outcome schema and pins (read only)
@@ -110,6 +122,44 @@ function Get-FsK1gUnitName([string]$Serial) { if (Test-FsK1gUnit $Serial) { [str
 function Get-FsK1gFileSha([string]$Path) { try { (Get-FileHash -Algorithm SHA256 -LiteralPath $Path -ErrorAction Stop).Hash.ToLower() } catch { '' } }
 function Get-FsK1gTextSha([string]$Text) { $sh = [Security.Cryptography.SHA256]::Create(); try { -join ($sh.ComputeHash([Text.Encoding]::UTF8.GetBytes($Text)) | ForEach-Object { $_.ToString('x2') }) } finally { $sh.Dispose() } }
 
+# DISCOVERY AUDIT (k1g/DISCOVERY-AUDIT.md; FS-R-019 s.3; the N1 RA4b F1 / RA4c hole class). Every enumeration of a
+# build root includes hidden items (-Force); a trace is never skipped as another unit's unless every trace of that
+# attempt agrees on whose it is; and the committed ledger copies are a further discovery path.
+# A ledger entry's or attempt.lock's text, its lines joined by ' ' ($null if unreadable).
+function Get-FsK1gNote([string]$Path) { try { (@([IO.File]::ReadAllLines($Path)) -join ' ') } catch { $null } }
+# The serial a ledger entry or attempt.lock names, only when the text holds exactly one serial= and exactly one unit=,
+# written " serial=<serial> unit=<unit>" (as fs-observe-k1g.ps1 / fs-observe-k1a.ps1 register them), the serial is one of
+# the two units and unit= is exactly that unit's name; '' otherwise (cannot tell whose attempt it was).
+function Get-FsK1gNoteSerial([string]$Note) {
+    $t = [string]$Note
+    if ([regex]::Matches($t, 'serial=').Count -ne 1 -or [regex]::Matches($t, 'unit=').Count -ne 1) { return '' }
+    $m = [regex]::Match($t, ' serial=([A-Za-z0-9]+) unit=(Unit [0-9]+)(?=\s|\z)')
+    if (-not $m.Success) { return '' }
+    $nm = Get-FsK1gUnitName $m.Groups[1].Value
+    if (-not $nm -or $nm -cne $m.Groups[2].Value) { return '' }
+    $m.Groups[1].Value
+}
+# The committed ledger copies (the fourth discovery path, as N1 r4's): every committed copy
+# <repo>\devices\quest3\evidence\<stage>-attempt-ledger-*\<nonce>.attempted must be in <BuildRoot>\attempted byte for
+# byte; a ledger entry deleted, relabelled or edited, or a whole attempt removed together with its ledger entry, is
+# refused, not read as "no attempt". The historical K1g attempt's copy stays Get-FsK1gHistoryMissing's (and is pinned by
+# Test-FsK1gSupersededRecord). Returns '' (also when the checkout holds no evidence copies: nothing to compare), or the refusal.
+function Get-FsK1gCommittedMissing([string]$BuildRoot, [string]$Stage) {
+    $ev = Join-Path $script:FsK1gRepoRoot 'devices\quest3\evidence'
+    $led = Join-Path $BuildRoot 'attempted'
+    foreach ($d in @(Get-ChildItem -LiteralPath $ev -Directory -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -cmatch ('^' + $Stage + '-attempt-ledger-') })) {
+        foreach ($f in @(Get-ChildItem -LiteralPath $d.FullName -Force -ErrorAction SilentlyContinue)) {
+            if ($f.PSIsContainer -or $f.Name -cnotmatch '^[0-9a-f]{16}\.attempted\z') { return "unexpected committed $Stage ledger copy $($f.FullName) (not <16 hex>.attempted): blocked" }
+            if ($Stage -ceq 'k1g' -and $f.Name -ceq "$($script:FsK1gSupersession.Nonce).attempted") { continue }
+            $hb = Get-FsK1gFileSha (Join-Path $led $f.Name); $he = Get-FsK1gFileSha $f.FullName
+            if (-not $he -or $hb -cne $he) {
+                $st = if (-not $hb) { 'is missing from' } else { 'differs from its entry in' }
+                return "the committed $Stage ledger copy $($f.FullName) $st this ledger ($led): an attempt was removed, or its ledger entry relabelled or edited, or this working copy lacks the shared build\$Stage; blocked" }
+        }
+    }
+    ''
+}
+
 # FS-R-013 s.2: MemTotal is REQUIRED: exactly one "MemTotal:" line in the mem step, and it is a valid, positive integer kB
 # (ASCII digits, no leading zero, at most 16 digits). Returns @{ Ok; Value (long kB or $null); Why }.
 function Test-FsK1gMemTotal([string]$MemText) {
@@ -139,6 +189,10 @@ function Test-FsK1gK1aCaptureMem([string]$CollectDir) {
     [pscustomobject]@{ Ok = $m.Ok; Why = $m.Why; MemTotal = $m.Value }
 }
 
+# The progression limit of a record's highest after-session reading, by stage (FS-R-021 s.3): 430 for 'k1g' (thermal r3,
+# the stop at 43.0 deg C); 400 for 'k1a' (unchanged) and for every other stage (unchanged until its package adopts r3).
+function Get-FsK1gProgressionLimit([string]$Stage) { if ($Stage -ceq 'k1g') { 430 } else { 400 } }
+
 # One unit's attempts in one ledger (the K1a or the K1g one), as fs-k1a-units.ps1's Get-FsK1aUnit2Outcome walks Unit 2's,
 # for any unit and stage. EVERY ledger entry <BuildRoot>\attempted\<nonce>.attempted whose note names $Serial must
 # resolve to exactly one <stamp>-<nonce> build directory with exactly one observe-*\observe.json of this stage, nonce and
@@ -146,11 +200,13 @@ function Test-FsK1gK1aCaptureMem([string]$CollectDir) {
 # five outcomes, the SHA-256 of observe.json, collect\collect.json and collect\capture.raw, a classifier of
 # $ClassifierFiles in this checkout, the pinned banner/config/module count); an observe.json of $Serial without its
 # ledger entry blocks too. $Extra (optional) { param($dir) -> @{ Ok; Why } } adds a check per attempt (the K1a MemTotal).
-# Returns @{ Ok; Why; Records = [ { Nonce; Outcome; File; Sha256; Utc; LedgerUtc; Dir; AfterClean; AfterWhy; ExtraOk; ExtraWhy } ]; Ledger }.
+# Returns @{ Ok; Why; Records = [ { Nonce; Outcome; File; Sha256; Utc; LedgerUtc; Dir; AfterClean; AfterWhy; ExtraOk; ExtraWhy; MaxTemp } ]; Ledger }.
+# The highest-reading limit: $TempBelow if given, else Get-FsK1gProgressionLimit $Stage (FS-R-021 s.3).
 function Get-FsK1gUnitRecords {
     param([string]$BuildRoot, [string]$Serial, [string]$Stage, [string]$RecordName, [string]$Schema, [string[]]$Outcomes,
-          [string[]]$ClassifierFiles, [string]$PinBanner, [string]$PinConfigSha, [int]$PinModules, [string]$What, [scriptblock]$Extra = $null)
+          [string[]]$ClassifierFiles, [string]$PinBanner, [string]$PinConfigSha, [int]$PinModules, [string]$What, [scriptblock]$Extra = $null, [int]$TempBelow = 0)
     $unit = Get-FsK1gUnitName $Serial
+    $lim = if ($TempBelow -gt 0) { $TempBelow } else { Get-FsK1gProgressionLimit $Stage }      # FS-R-021 s.3: per stage
     $no = { param($w) [pscustomobject]@{ Ok = $false; Why = $w; Records = @(); Ledger = $null } }
     $pv = { param($o, [string]$n) if ($null -ne $o -and $o -is [psobject] -and $o.PSObject.Properties[$n]) { $o.$n } else { $null } }
     $rd = { param([string]$f) try { [IO.File]::ReadAllText($f) | ConvertFrom-Json } catch { $null } }
@@ -160,19 +216,25 @@ function Get-FsK1gUnitRecords {
     $all = @(Get-ChildItem -LiteralPath $led -Force -ErrorAction SilentlyContinue)     # every entry, no filter
     $odd = @($all | Where-Object { $_.PSIsContainer -or $_.Name -cnotmatch '^[0-9a-f]{16}\.attempted\z' })
     if ($odd.Count) { return (& $no "unexpected $What ledger file $($odd[0].FullName) (not <16 hex>.attempted): blocked") }
+    $cm = Get-FsK1gCommittedMissing $BuildRoot $Stage      # discovery audit F4: the committed ledger copies
+    if ($cm) { return (& $no $cm) }
     $recs = New-Object System.Collections.Generic.List[object]
+    $ledSer = @{}      # discovery audit F3: nonce -> the serial its ledger entry names
     foreach ($m in $all) {
         $n = $m.Name.Substring(0, 16)
         $note = (@([IO.File]::ReadAllLines($m.FullName)) -join ' ')
         $lm = [regex]::Match($note, ' serial=([A-Za-z0-9]+) ')
         if (-not $lm.Success) { return (& $no "$What ledger entry $($m.FullName) names no serial: cannot tell whose attempt it was; blocked") }
-        if ($lm.Groups[1].Value -cne $Serial) { continue }
+        $ns = Get-FsK1gNoteSerial $note      # discovery audit F3: one serial of the two units, its unit= agreeing
+        if (-not $ns) { return (& $no "$What ledger entry $($m.FullName) does not name exactly one serial of the two units with its matching unit= (relabelled or edited): cannot tell whose attempt it was; blocked") }
+        $ledSer[$n] = $ns
+        if ($ns -cne $Serial) { continue }
         $tm = [regex]::Match($note, '^([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{1,7})?Z) ')
         if (-not $tm.Success) { return (& $no "$What ledger entry $($m.FullName) has no UTC time (yyyy-MM-ddTHH:mm:ss[.fffffff]Z): blocked") }
         $why = "$unit $What attempt nonce $n (ledger $($m.FullName))"
-        $dirs = @(Get-ChildItem -LiteralPath $BuildRoot -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -cmatch ('^[0-9]{8}T[0-9]{6}Z-' + $n + '\z') })
+        $dirs = @(Get-ChildItem -LiteralPath $BuildRoot -Directory -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -cmatch ('^[0-9]{8}T[0-9]{6}Z-' + $n + '\z') })      # -Force: discovery audit F1
         if ($dirs.Count -ne 1) { return (& $no "${why}: $($dirs.Count) build directories (exactly 1 expected); blocked") }
-        $ods = @(Get-ChildItem -LiteralPath $dirs[0].FullName -Directory -Filter 'observe-*' -ErrorAction SilentlyContinue | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'observe.json') -PathType Leaf })
+        $ods = @(Get-ChildItem -LiteralPath $dirs[0].FullName -Directory -Force -Filter 'observe-*' -ErrorAction SilentlyContinue | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'observe.json') -PathType Leaf })
         if ($ods.Count -ne 1) { return (& $no "${why}: $($ods.Count) observe directories with observe.json (exactly 1 expected); blocked") }
         $od = $ods[0].FullName; $oj = Join-Path $od 'observe.json'; $cj = Join-Path $od $RecordName
         $ob = & $rd $oj
@@ -193,18 +255,35 @@ function Get-FsK1gUnitRecords {
         else {
             foreach ($kv in @(@('Clean', $true), @('AfOk', $true), @('AaOk', $true), @('ReturnedByItself', $true), @('DumpMode', $false), @('RecoveryFault', $false), @('FollowUpsFinished', $true))) {
                 $x = & $pv $af $kv[0]; if (-not ($x -is [bool]) -or $x -ne $kv[1]) { $aw += "$($kv[0]) is '$x'" } }
-            $mt = & $pv $af 'MaxTemp'; if ($null -eq $mt -or [string]$mt -cnotmatch '^[0-9]{1,4}\z' -or [int]$mt -ge 400) { $aw += "highest reading '$mt' (below 400 required)" }
+            $mt = & $pv $af 'MaxTemp'; if ($null -eq $mt -or [string]$mt -cnotmatch '^[0-9]{1,4}\z' -or [int]$mt -ge $lim) { $aw += "highest reading '$mt' (below $lim required)" }
         }
         $ex = if ($null -ne $Extra) { & $Extra $od } else { [pscustomobject]@{ Ok = $true; Why = '' } }
         $recs.Add([pscustomobject]@{ Nonce = $n; Outcome = [string]$c.Outcome; File = $cj; Sha256 = (Get-FsK1gFileSha $cj); Utc = [string](& $pv $c 'Utc'); LedgerUtc = $tm.Groups[1].Value; Dir = $od
-                                     AfterClean = ($aw.Count -eq 0); AfterWhy = ($aw -join '; '); ExtraOk = [bool]$ex.Ok; ExtraWhy = [string]$ex.Why })
+                                     AfterClean = ($aw.Count -eq 0); AfterWhy = ($aw -join '; '); ExtraOk = [bool]$ex.Ok; ExtraWhy = [string]$ex.Why
+                                     MaxTemp = $(if ($null -ne $af) { & $pv $af 'MaxTemp' } else { $null }) })
     }
-    foreach ($bd in @(Get-ChildItem -LiteralPath $BuildRoot -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -cmatch '^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{16}\z' })) {
-        $bn = $bd.Name.Substring($bd.Name.Length - 16)
-        foreach ($oj2 in @(Get-ChildItem -LiteralPath $bd.FullName -Directory -Filter 'observe-*' -ErrorAction SilentlyContinue | ForEach-Object { Join-Path $_.FullName 'observe.json' } | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf })) {
+    # every observe.json and attempt.lock under the build root (hidden ones included; discovery audit F1-F3): an
+    # unreadable observe.json, one without its ledger entry (whatever serial it names), one naming another serial than
+    # its ledger entry or its outcome record, and an attempt.lock without its ledger entry or naming another serial, block
+    foreach ($bd in @(Get-ChildItem -LiteralPath $BuildRoot -Directory -Force -ErrorAction SilentlyContinue)) {
+        $bn = if ($bd.Name -cmatch '^[0-9]{8}T[0-9]{6}Z-([0-9a-f]{16})\z') { $Matches[1] } else { '' }
+        $ls = if ($bn -and $ledSer.ContainsKey($bn)) { [string]$ledSer[$bn] } else { $null }
+        $lk = Join-Path $bd.FullName 'attempt.lock'
+        if (Test-Path -LiteralPath $lk) {
+            $ks = Get-FsK1gNoteSerial (Get-FsK1gNote $lk)
+            if ($null -eq $ls) { $ku = if ($ks) { Get-FsK1gUnitName $ks } else { 'unidentified' }; return (& $no "the attempt.lock $lk records a $ku $What attempt that is not in the ledger $led (hidden or renamed): blocked") }
+            if ($ks -cne $ls) { return (& $no "the attempt.lock $lk does not name the serial its ledger entry $led\$bn.attempted names ($ls): relabelled or edited; blocked") }
+        }
+        foreach ($oj2 in @(Get-ChildItem -LiteralPath $bd.FullName -Directory -Force -Filter 'observe-*' -ErrorAction SilentlyContinue | ForEach-Object { Join-Path $_.FullName 'observe.json' } | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf })) {
             $ob2 = & $rd $oj2
-            if ($null -ne $ob2 -and [string](& $pv $ob2 'Serial') -ceq $Serial -and -not (Test-Path -LiteralPath (Join-Path $led "$bn.attempted") -PathType Leaf)) {
-                return (& $no "a $unit $What attempt ($oj2) has no ledger entry $led\$bn.attempted (deleted or renamed): blocked") }
+            if ($null -eq $ob2) { return (& $no "an observe.json under the $What build root ($oj2) cannot be read: cannot tell whose attempt it was; blocked") }
+            $os = [string](& $pv $ob2 'Serial')
+            if ($null -eq $ls) {
+                $ou = if (Get-FsK1gUnitName $os) { Get-FsK1gUnitName $os } else { "'$os'" }
+                return (& $no "a $ou $What attempt ($oj2) has no ledger entry $led\$(if ($bn) { $bn } else { '<nonce>' }).attempted (deleted or renamed): blocked") }
+            if ($os -cne $ls) { return (& $no "a $What attempt ($oj2) names serial '$os' but its ledger entry $led\$bn.attempted names $ls (relabelled or edited): blocked") }
+            $cr = Join-Path (Split-Path -Parent $oj2) $RecordName
+            if (Test-Path -LiteralPath $cr) { $cs = [string](& $pv (& $rd $cr) 'Serial'); if ($cs -cne $os) { return (& $no "a $What outcome record ($cr) names serial '$cs' but its observe.json names '$os' (relabelled or edited): blocked") } }
         }
     }
     [pscustomobject]@{ Ok = $true; Why = "$($recs.Count) $unit $What attempt(s) bound"; Records = $recs.ToArray(); Ledger = $led }
@@ -258,7 +337,7 @@ function Get-FsK1gLfSha([string]$Path) {
 # not <stamp>-<nonce>).
 function Get-FsK1gUnitLocks([string]$BuildRoot, [string]$Serial) {
     $out = @()
-    foreach ($bd in @(Get-ChildItem -LiteralPath $BuildRoot -Directory -ErrorAction SilentlyContinue)) {
+    foreach ($bd in @(Get-ChildItem -LiteralPath $BuildRoot -Directory -Force -ErrorAction SilentlyContinue)) {      # -Force: discovery audit F1
         $lk = Join-Path $bd.FullName 'attempt.lock'
         if (-not (Test-Path -LiteralPath $lk)) { continue }
         $note = try { (@([IO.File]::ReadAllLines($lk)) -join ' ') } catch { '' }
@@ -325,6 +404,8 @@ function Test-FsK1gSupersededRecord($Rec, [string]$LedgerFile) {
     if ($ok) { $dp = 0; for ($i = $rs0.Length - 1; $i -lt $rsn.Length; $i++) { if ($rsn[$i] -ceq '(') { $dp++ } elseif ($rsn[$i] -ceq ')') { $dp--; if ($dp -eq 0) { break } } }; $ok = ($dp -eq 0 -and $i -eq $rsn.Length - 1) }
     if (-not $ok) { return (& $no 'its reason is not the ABORT-before-arming review reason alone') }
     if (-not $Rec.AfterClean) { return (& $no "its after-session record is not clean ($($Rec.AfterWhy))") }
+    # FS-R-021 s.3: the historical record keeps the rule it was recorded under (highest reading below 400), not r3's 430
+    if ([string]$Rec.MaxTemp -cnotmatch '^[0-9]{1,4}\z' -or [int]$Rec.MaxTemp -ge 400) { return (& $no "its after-session record is not clean (highest reading '$($Rec.MaxTemp)' (below 400 required: the rule it was recorded under))") }
     [pscustomobject]@{ Ok = $true; Why = "the r2 attempt $($s.Nonce) stays K1G REVIEW (the probe ABORTed before arming, cases=0; classify-k1g.json $($s.ClassifySha256))" }
 }
 # The successor's r3 lineage, from its bound evidence (r2 and r3 share the banner, config and module count): its
@@ -397,21 +478,46 @@ function Get-FsK1gUnit2Outcome([string]$BuildRoot) {
 function Get-FsK1gPriorAttempts([string]$BuildRoot, [string]$Serial) {
     $u = Get-FsK1gUnitName $Serial
     $rep = 'no automatic repeat (FS-R-013 s.5: successful execution does not create standing-repeat authority); a repeat needs a reviewed package revision or the Chair''s ruling'
-    $hits = @()
+    $hits = @(); $lockHits = @()
     $led = Join-Path $BuildRoot 'attempted'
+    $ledSer = @{}      # discovery audit F3: nonce -> the serial its ledger entry names
     foreach ($m in @(Get-ChildItem -LiteralPath $led -Force -ErrorAction SilentlyContinue)) {
         if ($m.PSIsContainer) { return [pscustomobject]@{ Ok = $false; Why = "unexpected K1g ledger entry $($m.FullName): cannot tell whether $u was attempted; $rep"; Superseded = $false } }
         $note = (@([IO.File]::ReadAllLines($m.FullName)) -join ' ')
         $lm = [regex]::Match($note, ' serial=([A-Za-z0-9]+) ')
         if (-not $lm.Success) { return [pscustomobject]@{ Ok = $false; Why = "K1g ledger entry $($m.FullName) names no serial: cannot tell whether $u was attempted; $rep"; Superseded = $false } }
-        if ($lm.Groups[1].Value -ceq $Serial) { $hits += $m.FullName }
+        $ns = Get-FsK1gNoteSerial $note
+        if (-not $ns) { return [pscustomobject]@{ Ok = $false; Why = "K1g ledger entry $($m.FullName) does not name exactly one serial of the two units with its matching unit= (relabelled or edited): cannot tell whether $u was attempted; $rep"; Superseded = $false } }
+        if ($m.Name -cmatch '^([0-9a-f]{16})\.attempted\z') { $ledSer[$Matches[1]] = $ns }
+        if ($ns -ceq $Serial) { $hits += $m.FullName }
     }
     if (Test-Path -LiteralPath $BuildRoot -PathType Container) {
-        foreach ($oj in @(Get-ChildItem -LiteralPath $BuildRoot -Directory -ErrorAction SilentlyContinue | ForEach-Object { Get-ChildItem -LiteralPath $_.FullName -Directory -Filter 'observe-*' -ErrorAction SilentlyContinue } | ForEach-Object { Join-Path $_.FullName 'observe.json' } | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf })) {
-            $s = try { [string]([IO.File]::ReadAllText($oj) | ConvertFrom-Json).Serial } catch { '?' }
-            if ($s -ceq $Serial -or $s -ceq '?') { $hits += $oj }
+        # discovery audit F1-F3: hidden directories included; an observe.json counts as this unit's unless it, its ledger
+        # entry (if any) and its outcome record (if any) all name the same other unit; an attempt.lock naming another serial than
+        # its ledger entry refuses; one without a ledger entry counts (naming this unit or no unit)
+        foreach ($bd in @(Get-ChildItem -LiteralPath $BuildRoot -Directory -Force -ErrorAction SilentlyContinue)) {
+            $bn = if ($bd.Name -cmatch '^[0-9]{8}T[0-9]{6}Z-([0-9a-f]{16})\z') { $Matches[1] } else { '' }
+            $ls = if ($bn -and $ledSer.ContainsKey($bn)) { [string]$ledSer[$bn] } else { $null }
+            $lk = Join-Path $bd.FullName 'attempt.lock'
+            if (Test-Path -LiteralPath $lk) {
+                $ks = Get-FsK1gNoteSerial (Get-FsK1gNote $lk)
+                if ($null -ne $ls -and $ks -cne $ls) { return [pscustomobject]@{ Ok = $false; Why = "the attempt.lock $lk does not name the serial its ledger entry names ($ls): relabelled or edited; cannot tell whether $u was attempted; $rep"; Superseded = $false } }
+                if ($null -eq $ls -and ($ks -ceq $Serial -or -not $ks)) { $lockHits += $lk }
+            }
+            foreach ($od in @(Get-ChildItem -LiteralPath $bd.FullName -Directory -Force -Filter 'observe-*' -ErrorAction SilentlyContinue)) {
+                $oj = Join-Path $od.FullName 'observe.json'
+                if (-not (Test-Path -LiteralPath $oj -PathType Leaf)) { continue }
+                $s = try { [string]([IO.File]::ReadAllText($oj) | ConvertFrom-Json).Serial } catch { '?' }
+                $cr = @(Get-ChildItem -LiteralPath $od.FullName -Force -File -Filter 'classify-k1g*.json' -ErrorAction SilentlyContinue | ForEach-Object { try { [string]([IO.File]::ReadAllText($_.FullName) | ConvertFrom-Json).Serial } catch { '?' } })
+                # an orphan (no ledger entry) naming exactly the other unit is that unit's trace here; the outcome side
+                # (Get-FsK1gUnitRecords, which every admission path behind an earlier attempt reads) blocks on it
+                if ($s -ceq $Serial -or $s -ceq '?' -or ($null -eq $ls -and -not (Get-FsK1gUnitName $s)) -or ($null -ne $ls -and $s -cne $ls) -or @($cr | Where-Object { $_ -cne $s }).Count) { $hits += $oj }
+            }
         }
     }
+    $cm = Get-FsK1gCommittedMissing $BuildRoot 'k1g'      # discovery audit F4: the committed ledger copies
+    if ($cm) { return [pscustomobject]@{ Ok = $false; Why = "$u ($Serial): $cm; cannot tell whether $u was attempted; $rep"; Superseded = $false } }
+    if ($hits.Count -eq 0 -and $lockHits.Count) { return [pscustomobject]@{ Ok = $false; Why = "$u ($Serial) already has a K1g attempt ($($lockHits[0]), an attempt.lock without its ledger entry or observer record: hidden or renamed): $rep"; Superseded = $false } }
     if ($hits.Count) {
         # THE ONE SUPERSESSION: Unit 2's one further attempt, only when every hit (both discovery paths) is the historical one
         $sv = Test-FsK1gSupersededPrior $BuildRoot $Serial $hits

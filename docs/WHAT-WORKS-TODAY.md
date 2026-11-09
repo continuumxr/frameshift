@@ -26,7 +26,7 @@ tests, no headset), **design only**, **not started**.
 | K1a | Our own kernel boots and loads Meta's stock modules | Passed on both test units | On hardware |
 | T0 | Thermal sensors identified and read | Passed on both test units | On hardware |
 | K1g | Storage write guard (refuses writes to boot storage) | Passed on both test units: 411 of 411 cases as expected, 402 of them refusals | On hardware |
-| N1 | USB network link to the PC | Passed on one test unit (8 MiB each way, matching hashes), on the third run: earlier runs failed on our own PC-side tool, and both stay on the record | On hardware |
+| N1 | USB network link to the PC | Passed on both test units (8 MiB each way, matching hashes); one unit needed a third run: earlier runs failed on our own PC-side tool, and both stay on the record | On hardware |
 | R-1 | SteamOS boots to a text console | Valve's image reaches the console behind the guard. Its full check now fits in a Quest 3's memory. Not run on a headset. | In an emulator only |
 | K1i | Kernel for Steam (IPC, 48-bit addresses, rebuilt modules) | Built; offline compatibility gate passed; device run pending | Offline |
 | Thermal service | Fan, speed caps and shutdown rules | Simulated scenarios pass; device stages pending | Offline |
