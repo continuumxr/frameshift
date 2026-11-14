@@ -1,8 +1,8 @@
 # kgate: offline kernel symbol-version gate
 
-This tool implements FS-R-006 §3: a kernel gate with an actual rejection path. Version 2.3 addresses the findings of five adversarial reviews. Each finding has fixtures, and the before/after runs are in `validation/fixture-results-*.txt`. That is evidence about the listed findings, not a claim that no defects remain.
+kgate is a kernel gate with an actual rejection path: it accepts or refuses a kernel build before any image is built around it. Every defect found in earlier versions has fixtures, and the before/after runs are in `validation/fixture-results-*.txt`. That is evidence about the listed defects, not a claim that no defects remain.
 
-It replaces the report-only gate scripts and `btfkinds.py` under FS-A-006 (private review record). Those scripts stay as evidence and are not modified.
+It replaces earlier report-only gate scripts.
 
 It runs offline only. It never talks to a device.
 
@@ -16,9 +16,9 @@ Reproducibility status, measured 2026-10-09 by rebuilding the Quest 2 stock conf
 
 - Module.symvers and `.config` reproduce exactly.
 - vmlinux and Image reproduce only if the object-directory path is the same (or remapped) and the build identity is pinned: `KBUILD_BUILD_TIMESTAMP`, `KBUILD_BUILD_USER`, `KBUILD_BUILD_HOST`, `KBUILD_BUILD_VERSION`.
-- The existing FS-A-006 builds pinned none of these, so they cannot be reproduced bit-for-bit.
+- The earliest FrameShift test builds pinned none of these, so they cannot be reproduced bit-for-bit.
 
-**What a PASS means:** the build *matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open* (FS-R-006 §2). A PASS is not "ABI-equivalent" and not "BTF validated".
+**What a PASS means:** the build *matches the checked symbol-version interfaces; complete module compatibility and runtime behaviour remain open*. A PASS is not "ABI-equivalent" and not "BTF validated".
 
 ## Files
 
@@ -30,7 +30,7 @@ Reproducibility status, measured 2026-10-09 by rebuilding the Quest 2 stock conf
 | `fixtures/make_fixtures.py`, `fixtures/data/` | Synthetic fixtures with no vendor binaries. `data/` is generated, and `MANIFEST.sha256` pins it. |
 | `validation/run_validation.sh`, `validation/SUMMARY.txt` | Gate-mode results on the real Quest 3 / 2 / 3S / Pro v2.7 builds, plus negative real-data runs. |
 | `validation/requests/` | The pinned per-device inputs, kept byte-exact by `validation/.gitattributes` (`-text`). |
-| `validation/fixture-results*.txt` | The suite run on this tool, on the pre-review tool (1.0), and on the committed 2.0, 2.1 and 2.2. |
+| `validation/fixture-results*.txt` | The suite run on this tool, on the first version (1.0), and on the committed 2.0, 2.1 and 2.2. |
 
 ## Exit codes
 
@@ -76,7 +76,7 @@ The device profile is `validation/requests/<dev>.profile.json`.
 
 | Pin | Anchored by |
 |---|---|
-| `counts.required_from_vmlinux` (2601 / 838 / 2583 / 776) | **Independent**: verified by the Chair in FS-R-006 §2. The re-derived sets are byte-identical to the FS-A-006 lists. |
+| `counts.required_from_vmlinux` (2601 / 838 / 2583 / 776) | **Independent**: checked separately from the tool. The re-derived sets are byte-identical to the earlier hand-derived lists. |
 | `counts.unique_modules`, `counts.module_copies` | Self-referential (first kgate inventory); cross-checked by `modules.load`/`modules.dep` coverage. |
 | `reference_sha256` | Self-referential (pinned from this project's own deterministic reference build). |
 | `stock_build_symvers_sha256` | Self-referential (our stock-config build). It is the only permitted baseline for that device's option-group builds. |
@@ -223,11 +223,11 @@ Finally, it counts kinds. **This is not BTF validation.**
 
 Decompression (gzip and lz4, for kernels and ramdisks) is capped at 256 MiB. A larger output is an ERROR (exit 2), not an out-of-memory kill.
 
-## What is NOT checked (consequential gaps, FS-R-006 §2)
+## What is NOT checked (consequential gaps)
 
 - **Forged binaries:** see the threat model. A builder who forges vmlinux, the Image *and* kallsyms consistently is out of scope. The defence is a bit-identical rebuild from pinned inputs.
 
-- **CFI**: whether CFI type hashes and jump tables match what the vendor modules were built against. The two-way config diff against the pinned stock IKCONFIG catches a changed `CFI_CLANG` setting, but agreement of the generated CFI metadata is plausible [C], not established.
+- **CFI**: whether CFI type hashes and jump tables match what the vendor modules were built against. The two-way config diff against the pinned stock IKCONFIG catches a changed `CFI_CLANG` setting, but agreement of the generated CFI metadata is plausible but not established.
 - **Config-dependent inline code, macros and constants** compiled into the vendor modules: struct layouts not covered by a CRC, static inlines, `#define` and enum values.
 - **Export/provider relationships** beyond the collision, namespace and GPL checks.
 - **Namespace assumptions** (USER_NS/PID_NS): unchanged CRCs do not repair behaviour compiled into existing vendor modules.
@@ -244,3 +244,10 @@ bash tools/kgate/validation/run_validation.sh      # gate-mode run on the real v
 ```
 
 See `validation/run_validation.sh` for the complete per-device command lines.
+
+---
+
+*Meta, Meta Quest and Meta Horizon are trademarks of Meta Platforms, Inc.; Valve, Steam, SteamOS and
+Steam Frame are trademarks of Valve Corporation; Qualcomm, Snapdragon and Adreno are trademarks of
+Qualcomm Incorporated; other names are the property of their respective owners. FrameShift is not
+affiliated with, endorsed by or sponsored by any of them.*

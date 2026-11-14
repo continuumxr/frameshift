@@ -8,76 +8,53 @@
 *.py      text eol=lf
 *.sha256  text eol=lf
 devices/*/*/target/** text eol=lf
-# Relay evidence must stay byte-exact on every checkout (hashes are pinned).
-captures/** -text
-devices/*/evidence/** -text
-# Stage-3b fixtures carry raw tty captures and emitted FSB1 bytes compared by hash.
+# Stage-3b fixtures carry raw tty captures and emitted record bytes compared by hash.
 devices/quest3/stage3b/fixtures/** -text
-# FSB1 decoder fixtures: CR bytes are significant (the CRLF, CRCRLF, pty and echo cases).
-# Never convert. (Four of them lost their CRs at commit under autocrlf before this rule; J-98.)
+# Record decoder fixtures: CR bytes are significant (the CRLF, CRCRLF, pty and echo cases). Never convert.
 devices/quest3/common/fixtures/fsb1/** -text
 # Generated LF outputs: check out as LF, so the working copy equals the committed blob.
-devices/*/*/*.output.txt text eol=lf
 devices/quest2/channel/fixtures/** text eol=lf
-# Host tools are pinned by hash: LF in the blob and in the working copy.
+# PC-side tools are pinned by hash: LF in the blob and in the working copy.
 devices/quest3/host/*.ps1 text eol=lf
 # Hash-pinned analysis outputs (SHA256SUMS) must check out byte-identical to their blobs.
 devices/quest2/analysis/v27-dt/** -text
-# Stage-3c fixtures (device and host replays, scripted keys) carry raw bytes compared by hash.
+# Stage-3c fixtures (device replays, scripted keys) carry raw bytes compared by hash.
 devices/quest3/stage3c/fixtures/** -text
-devices/quest3/host/fixtures/stage3c/** -text
-# Stage-3d host fixtures (replays, scripted keys, the generator): raw bytes compared by hash (2026-10-13).
-devices/quest3/host/fixtures/stage3d/** -text
-# The user-build capture rows are pinned in SIGNOFF-3d: LF in the blob and in every working copy.
-# Pinned shared host helpers: LF in the blob and in every working copy.
-devices/quest3/stage1/*.ps1 text eol=lf
+# Pinned shared PC-side helpers: LF in the blob and in every working copy.
 devices/quest3/common/host/*.ps1 text eol=lf
-docs/research/steamos-stable-0.4-metadata/** -text
-# Stage-3d fixtures and provenance reports carry raw bytes compared by hash.
+# Stage-3d fixtures carry raw bytes compared by hash.
 devices/quest3/stage3d/fixtures/** -text
-devices/quest3/stage3d/provenance/** -text
-# The stage-3d module list is pinned by hash and read by the device: LF in the blob and in every working copy.
-devices/quest3/stage3d/modules.load.v66 text eol=lf
-# fs-thermald / fs-metacfg (devices/thermal, 2026-10-14): sources and tools run on Linux: LF everywhere.
+# Thermal service: sources and tools run on Linux: LF everywhere.
 devices/thermal/** text eol=lf
-# Their fixture and result directories carry exact bytes compared by hash: never converted.
+# Its fixture and table directories carry exact bytes compared by hash: never converted.
 devices/thermal/fixtures/** -text
 devices/thermal/tables/** -text
-# K1a (2026-10-14): the kernel config, toolchain pins and build records are pinned by hash; the fixtures carry raw
-# bytes (captures, FSB1 slices) compared by hash; the kgate result is read by the builder. Never convert.
+# First kernel: the kernel config and toolchain pins are pinned by hash; the fixtures carry raw
+# bytes (captures, record slices) compared by hash; the kgate result is read by the builder. Never convert.
 devices/quest3/k1a/kernel/** -text
 devices/quest3/k1a/fixtures/** -text
 tools/kgate/validation/quest3/check-k1a.* -text
-devices/quest3/RECOVERY.md text eol=lf
-# Thermal part 2: the warnscreen patch is applied by patch(1) in WSL and pinned by its result hash.
+# Thermal service: the warning-screen patch is applied by patch(1) in WSL and pinned by its result hash.
 devices/thermal/src/warnscreen/warn.patch text eol=lf
 devices/thermal/src/*.h text eol=lf
 devices/thermal/src/warnscreen/*.h text eol=lf
 devices/thermal/valve/** text eol=lf
-# TS packages: pinned by hash; LF in the blob and in every working copy.
+# Thermal service inputs: pinned by hash; LF in the blob and in every working copy.
 devices/quest3/ts/** text eol=lf
 devices/quest3/host/*.ps1 text eol=lf
-# N1 (NCM next to ACM): fixtures carry raw tty captures and FSB1 bytes compared by hash; the build record and the
-# sign-off are pinned text (LF in the blob and in every working copy).
+# USB network test: fixtures carry raw tty captures and record bytes compared by hash.
 devices/quest3/n1/fixtures/** -text
-devices/quest3/n1/build-record/** text eol=lf
-devices/quest3/host/fixtures/n1/** -text
-# fs-blkguard: the kernel patches are applied byte-exact (git apply); run logs are evidence.
+# fs-blkguard: the kernel patches are applied byte-exact (git apply); run logs are results.
 tools/blkguard/patches/*.patch -text
 tools/blkguard/vm/*.patch -text
 tools/blkguard/vm/results/** -text
 tools/blkguard/kgate/results/** -text
-# K1g r3 (J-207): the probe test results are LF in the blob and in every working copy (a CRLF working copy made the
+# The probe test results are LF in the blob and in every working copy (a CRLF working copy made the
 # image builder's clean-checkout check refuse on a core.autocrlf=true checkout).
 tools/blkguard/**/RESULTS*.txt text eol=lf
-# K1g (2026-10-16): build records, fixtures and the kgate result are pinned by hash; never convert.
-devices/quest3/k1g/kernel/record/** -text
-devices/quest3/k1g/kernel/BUILD-RECORD.txt -text
+# Boot-storage guard test: fixtures and the kgate result are pinned by hash; never convert.
 devices/quest3/k1g/fixtures/** -text
 tools/kgate/validation/quest3/check-k1g.* -text
 devices/quest3/k1g/README.md text eol=lf
-devices/quest3/RECOVERY-K1g.md text eol=lf
-# H-1 loader (2026-10-16): phase lists are read by busybox on the target (LF everywhere); the derivation
-# report and test results are byte-exact records.
-devices/quest3/h1/lists/** text eol=lf
+# Module loader: the test results are byte-exact records.
 devices/quest3/h1/fixtures/** -text

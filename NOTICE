@@ -1,21 +1,30 @@
 FrameShift
 Copyright 2026 the FrameShift contributors
 
-Licences (see docs/PROVENANCE-POLICY.md section 6):
-- Code (tools, host scripts, on-device services, build scripts, test fixtures and
-  records): Apache License, Version 2.0 (see LICENSE).
-- Kernel patches in kernel-patches/ and FrameShift's own kernel modules:
-  GPL-2.0-only (see kernel-patches/README.md).
+Licences:
+- Code (tools, PC-side scripts, on-device services, build scripts, test
+  fixtures and results): Apache License, Version 2.0 (see LICENSE).
+- Kernel patches and FrameShift's own kernel modules: GPL-2.0-only
+  (see LICENSES/GPL-2.0-only.txt and kernel-patches/README.md).
+- Kernel configurations (for example devices/quest3/k1a/kernel/k1a.config) and
+  the kgate request lists (tools/kgate/validation/requests/), which are derived
+  from Meta's GPL-2.0 kernel source: GPL-2.0-only.
 - fs-blkguard (tools/blkguard/): its kernel patches and the C sources of its
   probe, harness, tests and bench, which share or compile the guard's policy
-  code: GPL-2.0-only (SPDX headers; docs/PROVENANCE-POLICY.md section 6).
+  code: GPL-2.0-only (LICENSES/GPL-2.0-only.txt). Its scripts and results stay
+  Apache-2.0.
 - Documentation (Markdown files and other prose): Creative Commons Attribution 4.0
-  International (CC-BY-4.0), https://creativecommons.org/licenses/by/4.0/.
+  International (CC-BY-4.0), see LICENSES/CC-BY-4.0.txt and
+  https://creativecommons.org/licenses/by/4.0/.
+
+Where a file carries an SPDX-License-Identifier header, that header applies.
 
 This repository contains no Valve or Meta software, firmware or images. Users
 obtain SteamOS from Valve; firmware stays on, and is read from, the user's own
 headset.
 
-Meta and Quest are trademarks of Meta Platforms, Inc.; Valve, Steam, SteamOS and
-Steam Frame are trademarks of Valve Corporation; other names are the property of
-their respective owners. FrameShift is not affiliated with or endorsed by them.
+Meta, Meta Quest and Meta Horizon are trademarks of Meta Platforms, Inc.; Valve,
+Steam, SteamOS and Steam Frame are trademarks of Valve Corporation; Qualcomm,
+Snapdragon and Adreno are trademarks of Qualcomm Incorporated; other names are
+the property of their respective owners. FrameShift is not affiliated with,
+endorsed by or sponsored by any of them.

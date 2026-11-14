@@ -1,17 +1,22 @@
-# Quest 3 thermal service (TS): device inputs
+# Meta Quest 3: thermal service inputs
 
-This folder holds the device-side inputs of FrameShift's thermal and battery service for the Quest 3
-(the service itself is in `devices/thermal/`):
+The Meta Quest 3 side of FrameShift's thermal and battery service. The service itself is in
+[devices/thermal/](../../thermal/).
 
-| file | what |
+| path | what it does |
 |---|---|
-| `SENSORS.md` | sensor identities, units, mappings and virtual-sensor equations; the PMIC channels |
-| `FIRMWARE.md`, `firmware-manifest.tsv` | firmware files (hashes only), triggers, load/start and error behaviour (ADSP, GPU staging) |
-| `target/fs-ts-info.sh`, `tools/test_ts_info.sh` | the composition identity rows each TS image's runner reads first (read-only), with their tests |
-| `fixtures/ts-info/` | the recorded results of those tests |
+| `firmware-manifest.tsv` | the firmware files the service relies on, by name and SHA-256 only (no firmware bytes); the files stay on the owner's headset |
+| `target/fs-ts-info.sh` | read-only checks of the image's composition that each thermal-service test image runs first, before the service starts |
+| `tools/test_ts_info.sh` | the offline tests of those checks |
+| `fixtures/ts-info/` | their recorded results |
 
-**Withheld from this public copy:** the T0 package (the first TS step, an Android-side probe under stock
-Horizon: its rows, capture tool, checker, sign-off sheet and fixtures) and its README, because the probe
-includes a row outside the public scope (see the root `README.md`, "About this public copy"). T0, the Android-side
-baseline, passed on both Quest 3 units (2026-10-18/19 UTC); the later stages (T1–T5) run on FrameShift's own
-kernel and have not run yet.
+**Temperature sensor test:** under stock Meta Horizon OS, the sensors the service needs were
+identified and read on both units (2026-10-18), and the headsets' fan-trip tables matched the
+service's built-in table. The thermal service tests on FrameShift's own kernel come next.
+
+---
+
+*Meta, Meta Quest and Meta Horizon are trademarks of Meta Platforms, Inc.; Valve, Steam, SteamOS and
+Steam Frame are trademarks of Valve Corporation; Qualcomm, Snapdragon and Adreno are trademarks of
+Qualcomm Incorporated; other names are the property of their respective owners. FrameShift is not
+affiliated with, endorsed by or sponsored by any of them.*
